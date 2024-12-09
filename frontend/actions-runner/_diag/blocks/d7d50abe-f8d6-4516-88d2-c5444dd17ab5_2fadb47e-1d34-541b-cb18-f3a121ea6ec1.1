@@ -1,0 +1,59 @@
+﻿2024-12-09T16:17:07.9374060Z Current runner version: '2.321.0'
+2024-12-09T16:17:07.9397460Z Runner name: 'Will'
+2024-12-09T16:17:07.9400920Z Runner group name: 'Default'
+2024-12-09T16:17:07.9403360Z Machine name: 'MacBookPro'
+2024-12-09T16:17:07.9411360Z ##[group]GITHUB_TOKEN Permissions
+2024-12-09T16:17:07.9419020Z Actions: write
+2024-12-09T16:17:07.9419740Z Attestations: write
+2024-12-09T16:17:07.9420720Z Checks: write
+2024-12-09T16:17:07.9421440Z Contents: write
+2024-12-09T16:17:07.9422130Z Deployments: write
+2024-12-09T16:17:07.9422950Z Discussions: write
+2024-12-09T16:17:07.9423820Z Issues: write
+2024-12-09T16:17:07.9424580Z Metadata: read
+2024-12-09T16:17:07.9425350Z Packages: write
+2024-12-09T16:17:07.9426080Z Pages: write
+2024-12-09T16:17:07.9426850Z PullRequests: write
+2024-12-09T16:17:07.9427660Z RepositoryProjects: write
+2024-12-09T16:17:07.9428500Z SecurityEvents: write
+2024-12-09T16:17:07.9429280Z Statuses: write
+2024-12-09T16:17:07.9430320Z ##[endgroup]
+2024-12-09T16:17:07.9437410Z Secret source: Actions
+2024-12-09T16:17:07.9441630Z Prepare workflow directory
+2024-12-09T16:17:08.0514920Z Prepare all required actions
+2024-12-09T16:17:08.0579870Z Getting action download info
+2024-12-09T16:17:08.5349390Z Download action repository 'actions/checkout@v2' (SHA:ee0669bd1cc54295c223e0bb666b733df41de1c5)
+2024-12-09T16:17:10.3136720Z Download action repository 'actions/setup-node@v2' (SHA:7c12f8017d5436eb855f1ed4399f037a36fbd9e8)
+2024-12-09T16:17:11.7611010Z Download action repository 'peaceiris/actions-gh-pages@v3' (SHA:373f7f263a76c20808c831209c920827a82a2847)
+2024-12-09T16:17:13.2705410Z Complete job name: build-deploy
+2024-12-09T16:17:13.4002170Z ##[group]Run actions/checkout@v2
+2024-12-09T16:17:13.4005160Z with:
+2024-12-09T16:17:13.4005460Z   repository: nextlw/cmex_poc
+2024-12-09T16:17:13.4005960Z   token: ***
+2024-12-09T16:17:13.4006160Z   ssh-strict: true
+2024-12-09T16:17:13.4006380Z   persist-credentials: true
+2024-12-09T16:17:13.4006620Z   clean: true
+2024-12-09T16:17:13.4006820Z   fetch-depth: 1
+2024-12-09T16:17:13.4007030Z   lfs: false
+2024-12-09T16:17:13.4007260Z   submodules: false
+2024-12-09T16:17:13.4007490Z   set-safe-directory: true
+2024-12-09T16:17:13.4009490Z ##[endgroup]
+2024-12-09T16:17:13.6076570Z Syncing repository: nextlw/cmex_poc
+2024-12-09T16:17:13.6080050Z ##[group]Getting Git version info
+2024-12-09T16:17:13.6080890Z Working directory is '/Users/williamduarte/Documents/Empresa/Projeto/cmex_poc/frontend/actions-runner/_work/cmex_poc/cmex_poc'
+2024-12-09T16:17:13.6082110Z [command]/usr/bin/git version
+2024-12-09T16:17:13.6487510Z git version 2.39.5 (Apple Git-154)
+2024-12-09T16:17:13.6526350Z ##[endgroup]
+2024-12-09T16:17:13.6540110Z Copying '/Users/williamduarte/.gitconfig' to '/Users/williamduarte/Documents/Empresa/Projeto/cmex_poc/frontend/actions-runner/_work/_temp/ed6813d3-9b9f-4f15-9a1f-281131a2d5fa/.gitconfig'
+2024-12-09T16:17:13.6550910Z Temporarily overriding HOME='/Users/williamduarte/Documents/Empresa/Projeto/cmex_poc/frontend/actions-runner/_work/_temp/ed6813d3-9b9f-4f15-9a1f-281131a2d5fa' before making global git config changes
+2024-12-09T16:17:13.6552240Z Adding repository directory to the temporary git global config as a safe directory
+2024-12-09T16:17:13.6561010Z [command]/usr/bin/git config --global --add safe.directory /Users/williamduarte/Documents/Empresa/Projeto/cmex_poc/frontend/actions-runner/_work/cmex_poc/cmex_poc
+2024-12-09T16:17:13.7238700Z [command]/usr/bin/git config --local --get remote.origin.url
+2024-12-09T16:17:13.7867200Z https://github.com/nextlw/cmex_poc
+2024-12-09T16:17:13.7890750Z ##[group]Removing previously created refs, to avoid conflicts
+2024-12-09T16:17:13.7891720Z [command]/usr/bin/git rev-parse --symbolic-full-name --verify --quiet HEAD
+2024-12-09T16:17:13.8500200Z refs/heads/prod
+2024-12-09T16:17:13.8518280Z [command]/usr/bin/git checkout --detach
+2024-12-09T16:17:13.9382290Z HEAD is now at 0be1fcc Create static.yml
+2024-12-09T16:17:13.9383160Z M	frontend/package-lock.json
+2024-12-09T16:17:13.9405820Z [command]/usr/bin/git rev-parse --symboli
