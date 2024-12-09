@@ -1,0 +1,46 @@
+name: Deploy Frontend to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - desenvolvimento
+      - homolog
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build project
+        run: |
+          cd frontend
+          if [ "${GITHUB_REF##*/}" == "main" ]; then
+            npm run build -- --mode production
+          elif [ "${GITHUB_REF##*/}" == "homolog" ]; then
+            npm run build -- --mode homolog
+          else
+            npm run build -- --mode development
+          fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/build
+          destination_dir: ${{ github.ref_name }}
+          keep_files: true
+          publish_branch: gh-pages

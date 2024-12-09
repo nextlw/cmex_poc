@@ -12,7 +12,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 if not openai.api_key:
     raise HTTPException(status_code=500, detail="A chave de API da OpenAI não está definida.")
 
-origins = ["https://cmexfront-willy3087-williams-projects-2c392421.vercel.app/", "https://localhost:3000", "https://localhost:8000", "https://cmexfront-willy3087-williams-projects-2c392421.vercel.app/openai"]
+origins = ["https://localhost:3000", "https://localhost:8000"]
 # Configuração de CORS
 app.add_middleware(
     CORSMiddleware,
