@@ -3,7 +3,7 @@ name: Deploy Frontend to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - prod
       - desenvolvimento
       - homolog
 
@@ -28,19 +28,19 @@ jobs:
       - name: Build project
         run: |
           cd frontend
-          if [ "${GITHUB_REF##*/}" == "main" ]; then
-            npm run build -- --mode production
+          if [ "${GITHUB_REF##*/}" == "prod" ]; then
+            npm run build:production
           elif [ "${GITHUB_REF##*/}" == "homolog" ]; then
-            npm run build -- --mode homolog
+            npm run build:homolog
           else
-            npm run build -- --mode development
+            npm run build:development
           fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend/build
+          publish_dir: ./frontend/dist # Ajuste se o diretório de build for diferente
           destination_dir: ${{ github.ref_name }}
           keep_files: true
           publish_branch: gh-pages
