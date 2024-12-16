@@ -15,7 +15,7 @@ const SessionContext = createContext<SessionContextType | undefined>(undefined);
 const loadAndValidateSession = async (): Promise<Session | null> => {
 
     // Chave do localStorage
-    const localStorageKey = `sb-onpoluundzgoigcjuthw-auth-token`
+    const localStorageKey = `sb-qrfxqaovpddcziulqflw-auth-token`
 
     // Verifica se existe uma sessão salva no localStorage
     const storedSession = localStorage.getItem(localStorageKey);
