@@ -4,6 +4,7 @@ import axiosInstance from "../axiosConfig";
 import InputAi from "./InputAi";
 import ProgressBar from "./ProgressBar";
 import Button from "./Button";
+import { BiSearch } from "react-icons/bi";
 
 const LoginForm: React.FC = () => {
   const [resetTime, setResetTime] = useState(false);
@@ -71,7 +72,11 @@ const LoginForm: React.FC = () => {
               placeholder="Digite o nome do produto"
             />
 
-            <Button onClick={handleSearch} isLoading={isLoading} />
+            <Button
+              onClick={handleSearch}
+              isLoading={isLoading}
+              icon={<BiSearch />}
+            />
           </div>
 
           <ProgressBar isLoading={isLoading} resetTime={resetTime} />
