@@ -35,8 +35,9 @@
     "vite": "^4.5.5"
   },
   "scripts": {
+    "start": "NODE_ENV=development react-scripts start",
+    "build": "NODE_ENV=production react-scripts build",
     "dev": "vite",
-    "build": "vite build",
     "build:development": "env-cmd -f .env.development vite build",
     "build:homolog": "env-cmd -f .env.homolog vite build",
     "build:production": "env-cmd -f .env.production vite build"

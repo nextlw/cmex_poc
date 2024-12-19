@@ -1,15 +1,26 @@
 import axios from "axios";
 
+console.log("NODE_ENV:", process.env.NODE_ENV); // Verificar o valor de NODE_ENV
+
+const baseURL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:8000" // URL para ambiente de desenvolvimento
+    : "https://pocrender-569a.onrender.com"; // URL para ambiente de produção
+
 const axiosInstance = axios.create({
-  baseURL: "https://pocrender-569a.onrender.com", // Base URL para todas as requisições
+  baseURL, // Base URL para todas as requisições
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const supabaseToken = localStorage.getItem('sb-qrfxqaovpddcziulqflw-auth-token');
+  const supabaseToken = localStorage.getItem(
+    "sb-qrfxqaovpddcziulqflw-auth-token"
+  );
   if (supabaseToken) {
-    config.headers.Authorization = `Bearer ${JSON.parse(supabaseToken).access_token}`;
+    config.headers.Authorization = `Bearer ${
+      JSON.parse(supabaseToken).access_token
+    }`;
   }
-  config.headers["Content-Type"] = "application/json"
+  config.headers["Content-Type"] = "application/json";
   return config;
 });
 

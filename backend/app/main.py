@@ -12,7 +12,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 if not openai.api_key:
     raise HTTPException(status_code=500, detail="A chave de API da OpenAI não está definida.")
 
-origins = ["https://localhost:3000", "https://localhost:8000"]
+origins = ["http://localhost:3000", "http://localhost:8000", "http://localhost:5173"]  # Adicione http://localhost:5173 às origens permitidas
 # Configuração de CORS
 app.add_middleware(
     CORSMiddleware,

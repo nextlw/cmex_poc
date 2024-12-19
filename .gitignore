@@ -135,15 +135,8 @@ dist
 .pnp.*
 .vercel
 
-# Ignorar arquivos de cache do Python
-__pycache__/
-*.py[cod]
-
 # Ignorar arquivos específicos do macOS
 .DS_Store
 
 # Ignorar arquivos de atalho de desktop
 *.desktop
-
-# Ignorar ambientes virtuais do Python
-venv/
