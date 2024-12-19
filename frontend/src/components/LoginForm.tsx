@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Suggestion } from "../types";
 import axiosInstance from "../axiosConfig";
 import InputAi from "./InputAi";
-import ProgressBar from "./ProgressBar";
 import Button from "./Button";
 import { BiSearch } from "react-icons/bi";
+import TaxRatesDisplay from "./TaxRatesDisplay";
 
 const LoginForm: React.FC = () => {
   const [resetTime, setResetTime] = useState(false);
@@ -79,22 +79,22 @@ const LoginForm: React.FC = () => {
             />
           </div>
 
-          <ProgressBar isLoading={isLoading} resetTime={resetTime} />
+          {/* <ProgressBar isLoading={isLoading} resetTime={resetTime} /> */}
 
-          <div className="flex flex-wrap gap-2">
+          {/* <div className="flex flex-wrap gap-2">
             {selectedFilters.map((filter) => (
               <span key={filter} className="filter-chip">
                 {filter}
               </span>
             ))}
-          </div>
+          </div> */}
 
           {suggestions.length > 0 && (
             <div className="suggestions-container">
               {suggestions.map((suggestion, index) => (
                 <div
                   key={index}
-                  className="suggestion-chip"
+                  className="suggestion-chip justify-center"
                   onClick={() => handleSuggestionSelect(suggestion)}
                 >
                   <span className="font-medium">{suggestion.ncm}</span>
@@ -105,7 +105,7 @@ const LoginForm: React.FC = () => {
             </div>
           )}
 
-          <div className="mt-8 p-4 bg-gray-800/50 rounded-lg backdrop-blur-sm">
+          {/* <div className="mt-8 p-4 bg-gray-800/50 rounded-lg backdrop-blur-sm">
             <h3 className="text-white text-lg font-semibold mb-4">
               Resultado da Busca
             </h3>
@@ -117,7 +117,76 @@ const LoginForm: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
+
+          {suggestions.length > 0 && (
+            <div className="mt-8 space-y-6">
+              {suggestions.map((suggestion, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-800/50 rounded-lg p-6 backdrop-blur-sm"
+                >
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-6">
+                      {/* Informações básicas */}
+                      <div>
+                        <h3 className="text-xl font-semibold text-white mb-4">
+                          Informações Básicas
+                        </h3>
+                        <div className="space-y-2">
+                          <p className="text-gray-300">
+                            <span className="font-medium">NCM:</span>{" "}
+                            {suggestion.ncm}
+                          </p>
+                          <p className="text-gray-300">
+                            <span className="font-medium">Descrição:</span>{" "}
+                            {suggestion.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Atributos */}
+                      <div>
+                        <h3 className="text-xl font-semibold text-white mb-4">
+                          Atributos do Produto
+                        </h3>
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="text-gray-400 mb-2">
+                              Características Gerais
+                            </h4>
+                            <ul className="list-disc list-inside text-gray-300">
+                              {suggestion.attributes.map((attr, i) => (
+                                <li key={i}>{attr}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="text-gray-400 mb-2">
+                              Atributos TIPI
+                            </h4>
+                            <ul className="list-disc list-inside text-gray-300">
+                              {suggestion.tipi_attributes.map((attr, i) => (
+                                <li key={i}>{attr}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Alíquotas */}
+                    <div>
+                      <h3 className="text-xl font-semibold text-white mb-4">
+                        Alíquotas Tributárias
+                      </h3>
+                      <TaxRatesDisplay taxRates={suggestion.tax_rates} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </form>
       </div>
     </div>
