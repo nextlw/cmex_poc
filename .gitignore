@@ -140,3 +140,14 @@ dist
 
 # Ignorar arquivos de atalho de desktop
 *.desktop
+
+# Cache do Python
+*.pyc
+
+# Ignorar arquivos de cache do Python
+__pycache__/
+*.py[cod]
+
+# Ignorar ambientes virtuais do Python
+venv/
+
