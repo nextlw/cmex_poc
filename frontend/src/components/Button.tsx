@@ -25,7 +25,7 @@ const Button: React.FC<ButtonProps> = ({ onClick, isLoading, label, icon }) => {
       focus:outline-none focus:ring-2 focus:ring-blue-900 focus:ring-opacity-50
       flex items-center justify-center
       `}
-      style={{ minWidth: "44px" }}
+      style={{ minWidth: "48px" }}
     >
       {isLoading ? (
         <div

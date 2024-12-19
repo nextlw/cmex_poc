@@ -67,7 +67,7 @@
 
 .input-wrapper input {
   width: 100%;
-  min-height: 40px;
+  min-height: 44px;
   box-sizing: border-box;
   border: none;
   outline: none;
@@ -218,6 +218,58 @@
   border border-gray-600/50
   hover:bg-gray-600/50 cursor-pointer
   transition-all duration-200;
+}
+
+/* --------------------------- */
+
+/* Estilos para o InputField */
+.inputfield-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.inputfield-label {
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.inputfield-wrapper {
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  border: 2px solid #007bff; /* Borda azul */
+  border-radius: 98px;
+  padding-left: 1rem;
+  transition: border-color 0.3s;
+}
+
+.inputfield-wrapper.focused {
+  border-color: #0056b3; /* Borda azul mais escura quando focado */
+}
+
+.inputfield-icon {
+  margin-right: 0.5rem;
+  color: #007bff;
+}
+
+.inputfield-field {
+  min-height: 44px;
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 4px;
+  font-size: 1rem;
+  color: #aaa;
+  border-radius: 98px;
+  background-color: rgb(21, 29, 41);
+  font-family: "Roboto", sans-serif;
+}
+
+.inputfield-field::placeholder {
+  color: #aaa;
 }
 
 /* --------------------------- */

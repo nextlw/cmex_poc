@@ -5,17 +5,16 @@ import InputAi from "./InputAi";
 import Button from "./Button";
 import { BiSearch } from "react-icons/bi";
 import TaxRatesDisplay from "./TaxRatesDisplay";
+import InputField from "./InputField";
+import { BiUser } from "react-icons/bi"; // Exemplo de ícone
 
 const LoginForm: React.FC = () => {
   const [resetTime, setResetTime] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedFilters] = useState<string[]>([
-    "NCM",
-    "Atributos",
-    "Matéria prima",
-  ]);
+  const [value, setValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
 
   const handleSearch = async () => {
     if (query.length < 3) {
@@ -40,6 +39,10 @@ const LoginForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -190,6 +193,16 @@ const LoginForm: React.FC = () => {
             </div>
           )}
         </form>
+        <div className="flex gap-2 pt-10">
+          <InputField
+            width="100%"
+            placeholder="Nos conte como foi a sua pesquisa?"
+            value={searchValue}
+            onChange={handleSearchChange}
+            readOnly={false}
+            icon={<BiUser />}
+          />
+        </div>
       </div>
     </div>
   );
