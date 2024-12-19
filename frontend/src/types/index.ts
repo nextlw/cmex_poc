@@ -1,5 +1,5 @@
 export interface ICMSByState {
-  [state: string]: string; // exemplo: { "SP": "18%", "RJ": "20%" }
+  [state: string]: string;
 }
 
 export interface TaxRates {

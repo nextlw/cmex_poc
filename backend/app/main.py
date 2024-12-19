@@ -31,14 +31,13 @@ class ProductSuggestion(BaseModel):
     description: str = Field(..., description="Descrição do produto")
     attributes: List[str] = Field(default=[], description="Lista de atributos do produto")
     tax_rates: dict = Field(
-        default={},
-        description="Alíquotas tributárias do produto",
-        example={
+        default={
             "ipi": "0%",
-            "icms": "18%",
+            "icms": {},
             "pis": "1.65%",
             "cofins": "7.6%"
-        }
+        },
+        description="Alíquotas tributárias do produto"
     )
     tipi_attributes: List[str] = Field(
         default=[],
@@ -128,13 +127,22 @@ async def get_suggestions(product_query: ProductQuery):
         try:
             import json
             data = json.loads(content)
-            logging.debug(f"Dados processados: {data}")
+            tax_rates = data.get("tax_rates", {})
             
+            # Garantir que temos um objeto ICMS válido
+            if not isinstance(tax_rates.get("icms"), dict):
+                tax_rates["icms"] = {}
+                
             suggestions = [
                 ProductSuggestion(
                     ncm=data.get("ncm", ""),
                     description=data.get("description", ""),
-                    tax_rates=data.get("tax_rates", {}),
+                    tax_rates={
+                        "ipi": tax_rates.get("ipi", "0%"),
+                        "icms": tax_rates.get("icms", {}),
+                        "pis": tax_rates.get("pis", "1.65%"),
+                        "cofins": tax_rates.get("cofins", "7.6%")
+                    },
                     tipi_attributes=data.get("tipi_attributes", []),
                     attributes=data.get("attributes", [])
                 )

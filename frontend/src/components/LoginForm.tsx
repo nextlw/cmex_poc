@@ -90,15 +90,17 @@ const LoginForm: React.FC = () => {
           </div> */}
 
           {suggestions.length > 0 && (
-            <div className="suggestions-container">
+            <div className="suggestions-container align-middle">
               {suggestions.map((suggestion, index) => (
                 <div
                   key={index}
                   className="suggestion-chip justify-center"
                   onClick={() => handleSuggestionSelect(suggestion)}
                 >
-                  <span className="font-medium">{suggestion.ncm}</span>
-                  <span className="mx-2">-</span>
+                  <span className="font-medium justify-center">
+                    {suggestion.ncm}
+                  </span>
+                  <span className="mx-2 justify-center">-</span>
                   <span>{suggestion.description}</span>
                 </div>
               ))}
