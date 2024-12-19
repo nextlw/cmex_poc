@@ -21,6 +21,24 @@
     "react-router-dom": "^7.0.2",
     "styled-components": "^6.1.13"
   },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "devDependencies": {
     "@types/lodash": "^4.17.13",
     "@types/react-icons": "^2.2.7",
@@ -40,6 +58,7 @@
     "dev": "vite",
     "build:development": "env-cmd -f .env.development vite build",
     "build:homolog": "env-cmd -f .env.homolog vite build",
-    "build:production": "env-cmd -f .env.production vite build"
+    "build:production": "env-cmd -f .env.production vite build",
+    "preview": "vite preview"
   }
 }
