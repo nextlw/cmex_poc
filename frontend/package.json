@@ -35,11 +35,31 @@
     "vite": "^4.5.5"
   },
   "scripts": {
-    "start": "NODE_ENV=development react-scripts start",
-    "build": "NODE_ENV=production react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "dev": "vite",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
     "build:development": "env-cmd -f .env.development vite build",
     "build:homolog": "env-cmd -f .env.homolog vite build",
     "build:production": "env-cmd -f .env.production vite build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
