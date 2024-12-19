@@ -36,7 +36,7 @@ const TaxRatesDisplay: React.FC<TaxRatesDisplayProps> = ({ taxRates }) => {
           <table className="w-full">
             <thead className="text-gray-400 text-sm">
               <tr>
-                <th className="text-left p-2 sticky top-0 bg-gray-700 z-10">
+                <th className="text-left p-3 sticky top-0 bg-gray-700 z-10">
                   Estado
                 </th>
                 <th className="text-right p-2 sticky top-0 bg-gray-700 z-10">
