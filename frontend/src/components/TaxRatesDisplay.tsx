@@ -2,7 +2,7 @@ import React from "react";
 import { TaxRates } from "../types";
 
 interface TaxRatesDisplayProps {
-  taxRates: TaxRates;
+  taxRates: TaxRates | null;
 }
 
 const TaxRatesDisplay: React.FC<TaxRatesDisplayProps> = ({ taxRates }) => {
