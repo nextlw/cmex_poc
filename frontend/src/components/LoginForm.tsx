@@ -65,7 +65,6 @@ const LoginForm: React.FC = () => {
               onChange={handleChange}
               onKeyPress={handleKeyPress}
               isLoading={isLoading}
-              disabled={isLoading}
               placeholder="Digite o nome do produto"
             />
             
@@ -76,10 +75,8 @@ const LoginForm: React.FC = () => {
             />
           </div>
 
-          {/* Barra de progresso */}
           <ProgressBar isLoading={isLoading} />
 
-          {/* Filtros */}
           <div className="flex flex-wrap gap-2">
             {selectedFilters.map((filter) => (
               <span key={filter} className="filter-chip">
@@ -88,7 +85,6 @@ const LoginForm: React.FC = () => {
             ))}
           </div>
 
-          {/* Sugestões */}
           {suggestions.length > 0 && (
             <div className="suggestions-container">
               {suggestions.map((suggestion, index) => (
@@ -105,7 +101,6 @@ const LoginForm: React.FC = () => {
             </div>
           )}
 
-          {/* Área de resultados selecionados */}
           <div className="mt-8 p-4 bg-gray-800/50 rounded-lg backdrop-blur-sm">
             <h3 className="text-white text-lg font-semibold mb-4">
               Resultado da Busca
