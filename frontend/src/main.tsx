@@ -2,7 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./styles/globals.css";
-import { SessionProvider } from './auth/SessionContext';
+import { SessionProvider } from "./auth/SessionContext";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const rootElement = document.getElementById("root");
 if (rootElement) {

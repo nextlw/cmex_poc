@@ -6,6 +6,7 @@ import ProgressBar from "./ProgressBar";
 import Button from "./Button";
 
 const LoginForm: React.FC = () => {
+  const [resetTime, setResetTime] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,6 +23,7 @@ const LoginForm: React.FC = () => {
     }
 
     setIsLoading(true);
+    setResetTime(true);
     try {
       const response = await axiosInstance.post("/openai", {
         query: query,
@@ -31,6 +33,7 @@ const LoginForm: React.FC = () => {
       console.error("Erro ao buscar sugestões:", error);
     } finally {
       setIsLoading(false);
+      setResetTime(false);
     }
   };
 
@@ -58,7 +61,7 @@ const LoginForm: React.FC = () => {
             Busca Inteligente de NCM
           </h2>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex gap-2">
             <InputAi
               width="100%"
               value={query}
@@ -67,15 +70,11 @@ const LoginForm: React.FC = () => {
               isLoading={isLoading}
               placeholder="Digite o nome do produto"
             />
-            
-            <Button 
-              onClick={handleSearch}
-              label="Buscar"
-              isLoading={isLoading}
-            />
+
+            <Button onClick={handleSearch} isLoading={isLoading} />
           </div>
 
-          <ProgressBar isLoading={isLoading} />
+          <ProgressBar isLoading={isLoading} resetTime={resetTime} />
 
           <div className="flex flex-wrap gap-2">
             {selectedFilters.map((filter) => (
