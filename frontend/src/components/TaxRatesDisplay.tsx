@@ -6,7 +6,7 @@ interface TaxRatesDisplayProps {
 }
 
 const TaxRatesDisplay: React.FC<TaxRatesDisplayProps> = ({ taxRates }) => {
-  const { icms = {}, ipi = "0%", pis = "0%", cofins = "0%" } = taxRates || {};
+  const { icms, ipi, pis, cofins } = taxRates;
 
   return (
     <div className="space-y-6 h-full">
@@ -30,16 +30,16 @@ const TaxRatesDisplay: React.FC<TaxRatesDisplayProps> = ({ taxRates }) => {
       <div className="flex-1">
         <h4 className="text-gray-400 mb-2">ICMS por Estado</h4>
         <div
-          className="bg-gray-700/50 p-4 rounded-lg overflow-y-auto"
-          style={{ maxHeight: "calc(100vh - 600px)", minHeight: "200px" }}
+          className="bg-gray-700/50 p-0 px-2 rounded-lg overflow-y-auto"
+          style={{ maxHeight: "calc(100vh - 900px)", minHeight: "200px" }}
         >
           <table className="w-full">
             <thead className="text-gray-400 text-sm">
               <tr>
-                <th className="text-left pb-2 sticky top-0 bg-gray-700/50 z-10">
+                <th className="text-left p-3 sticky top-0 bg-gray-700 z-10">
                   Estado
                 </th>
-                <th className="text-right pb-2 sticky top-0 bg-gray-700/50 z-10">
+                <th className="text-right p-2 sticky top-0 bg-gray-700 z-10">
                   Alíquota
                 </th>
               </tr>
