@@ -33,10 +33,12 @@ const InputAi: React.FC<InputAiProps> = ({
       overlayRef.current?.classList.add("loading");
       overlayRef.current!.style.animation = "moveGradient 2s linear infinite";
       containerRef.current!.style.animation = "glowingBorder 4s ease-in-out infinite";
+      inputWrapperRef.current?.classList.add("loading");
       iconRef.current?.classList.add("loading");
       iconRef.current!.style.animation = "moveGradient 2s linear infinite";
     } else {
       overlayRef.current?.classList.remove("loading");
+      inputWrapperRef.current?.classList.remove("loading");
       overlayRef.current!.style.animation = "none";
       containerRef.current!.style.animation = "none";
       iconRef.current?.classList.remove("loading");
