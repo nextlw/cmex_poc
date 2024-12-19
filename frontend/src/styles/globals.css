@@ -91,7 +91,7 @@
   background: #4ecaff;
 }
 
-.gradient-overlay.loading .input-wrapper {
+.gradient-overlay.loading {
   background: radial-gradient(circle, yellow, orange, #4ecaff, hwb(224 30% 0%));
   background-size: 200% 200%;
   background-position: 0% 50%;
