@@ -3,7 +3,6 @@ import { debounce } from "lodash";
 import { Suggestion } from "../types";
 import axiosInstance from "../axiosConfig"; // Importa a instância configurada do axios
 import InputAi from "./InputAi";
-import ProgressBar from "./ProgressBar.tsx"
 import Button from "./Button.tsx"
 
 const LoginForm: React.FC = () => {
@@ -74,11 +73,13 @@ const LoginForm: React.FC = () => {
           </div>
           
           {/* Botão de busca */}
-          <Button onClick={() => fetchSuggestions(query)} label="Buscar" />
+          <div>
+            <Button onClick={() => fetchSuggestions(query)} label="Buscar" />
+          </div>
 
 
-          {/* Barra de progresso */}
-          <ProgressBar isLoading={isLoading} resetTime={resetTime} />
+          {/* Barra de progresso
+          <ProgressBar isLoading={isLoading} resetTime={resetTime} />*/}
 
           {/* Filtros */}
           <div className="flex flex-wrap gap-2">
