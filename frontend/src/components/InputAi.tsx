@@ -86,7 +86,7 @@ const InputAi: React.FC<InputAiProps> = ({
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder={placeholder}
-          readOnly={readOnly || isLoading}
+          readOnly={isLoading}
         />
       </div>
       <div className="gradient-overlay" ref={overlayRef}></div>
