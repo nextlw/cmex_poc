@@ -3,7 +3,6 @@ import { debounce } from "lodash";
 import { Suggestion } from "../types";
 import axiosInstance from "../axiosConfig"; // Importa a instância configurada do axios
 import InputAi from "./InputAi";
-import Button from "./Button.tsx"
 
 const LoginForm: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -71,15 +70,9 @@ const LoginForm: React.FC = () => {
               placeholder="Digite o nome do produto"
             />
           </div>
-          
-          {/* Botão de busca */}
-          <div>
-            <Button onClick={() => fetchSuggestions(query)} label="Buscar" />
-          </div>
 
-
-          {/* Barra de progresso
-          <ProgressBar isLoading={isLoading} resetTime={resetTime} />*/}
+          {/* Barra de progresso */}
+          {/* <ProgressBar isLoading={isLoading} resetTime={resetTime} /> */}
 
           {/* Filtros */}
           <div className="flex flex-wrap gap-2">
