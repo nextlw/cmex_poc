@@ -74,6 +74,15 @@
   opacity: 0.9;
 }
 
+.input-wrapper.loading {
+  padding: 2px;
+  position: relative;
+  z-index: 1;
+  transition: 0.8s ease-in-out;
+  opacity: 0.9;
+}
+
+
 .gradient-overlay {
   position: absolute;
   top: 0;
