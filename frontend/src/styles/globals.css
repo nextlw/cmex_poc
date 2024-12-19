@@ -85,14 +85,13 @@
   background-position: 0% 50%;
   z-index: 0;
   transition: background 0.3s ease;
-  opacity: 0.9;
 }
 
 .gradient-overlay.focused {
   background: #4ecaff;
 }
 
-.gradient-overlay.loading {
+.gradient-overlay.loading .input-wrapper {
   background: radial-gradient(circle, yellow, orange, #4ecaff, hwb(224 30% 0%));
   background-size: 200% 200%;
   background-position: 0% 50%;
