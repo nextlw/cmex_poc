@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { debounce } from "lodash";
-import AppleStyleInput from "./AppleStyleInput";
-import ProgressBar from "./ProgressBar";
 import { Suggestion } from "../types";
 import axiosInstance from "../axiosConfig"; // Importa a instância configurada do axios
+import InputAi from "./InputAi";
 
 const LoginForm: React.FC = () => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [resetTime, setResetTime] = useState(false);
   const [selectedFilters] = useState<string[]>([
     "NCM",
     "Atributos",
@@ -23,7 +21,6 @@ const LoginForm: React.FC = () => {
     }
 
     setIsLoading(true);
-    setResetTime(false);
     try {
       const response = await axiosInstance.post("/openai", {
         // Usa a instância configurada do axios
@@ -36,26 +33,18 @@ const LoginForm: React.FC = () => {
       console.error("Erro ao buscar sugestões:", error);
     } finally {
       setIsLoading(false);
-      setResetTime(true);
     }
   };
 
-  const debouncedFetch = useRef(
-    debounce((value: string) => {
-      fetchSuggestions(value);
-    }, 500)
-  ).current;
-
-  useEffect(() => {
-    if (query) {
-      debouncedFetch(query);
-    } else {
-      setSuggestions([]);
-    }
-  }, [query]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      fetchSuggestions(query);
+    }
   };
 
   const handleSuggestionSelect = (suggestion: Suggestion) => {
@@ -66,23 +55,24 @@ const LoginForm: React.FC = () => {
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
           <h2 className="text-3xl font-bold text-white text-center mb-8">
             Busca Inteligente de NCM
           </h2>
 
-          <div className="search-container py-4">
-            <AppleStyleInput
+          <div>
+            <InputAi
               width="100%"
               value={query}
               onChange={handleChange}
+              onKeyPress={handleKeyPress}
               isLoading={isLoading}
               placeholder="Digite o nome do produto"
             />
           </div>
 
           {/* Barra de progresso */}
-          <ProgressBar isLoading={isLoading} resetTime={resetTime} />
+          {/* <ProgressBar isLoading={isLoading} resetTime={resetTime} /> */}
 
           {/* Filtros */}
           <div className="flex flex-wrap gap-2">

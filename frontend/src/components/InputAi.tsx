@@ -6,7 +6,7 @@ interface InputAiProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isLoading?: boolean;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onBlur?: () => void;
   readOnly?: boolean;
 }
@@ -16,7 +16,7 @@ const InputAi: React.FC<InputAiProps> = ({
   placeholder = "Descreva o seu produto",
   value,
   onChange,
-  onKeyDown,
+  onKeyPress,
   onBlur,
   isLoading = false,
   readOnly = false,
@@ -51,7 +51,7 @@ const InputAi: React.FC<InputAiProps> = ({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
       overlayRef.current?.classList.remove("focused");
@@ -60,18 +60,10 @@ const InputAi: React.FC<InputAiProps> = ({
       containerRef.current!.style.animation =
         "glowingBorder 4s ease-in-out infinite";
       iconRef.current?.classList.add("loading");
+      iconRef.current!.style.animation = "moveGradient 2s linear infinite";
 
-      const timeout = setTimeout(() => {
-        overlayRef.current?.classList.remove("loading");
-        overlayRef.current!.style.animation = "none";
-        containerRef.current!.style.animation = "none";
-        iconRef.current?.classList.remove("loading");
-      }, 10000);
-
-      setLoadingTimeout(timeout);
-
-      if (onKeyDown) {
-        onKeyDown(e);
+      if (onKeyPress) {
+        onKeyPress(e);
       }
     }
   };
@@ -97,6 +89,15 @@ const InputAi: React.FC<InputAiProps> = ({
     };
   }, [loadingTimeout]);
 
+  useEffect(() => {
+    if (!isLoading) {
+      overlayRef.current?.classList.remove("loading");
+      overlayRef.current!.style.animation = "none";
+      containerRef.current!.style.animation = "none";
+      iconRef.current?.classList.remove("loading");
+    }
+  }, [isLoading]);
+
   return (
     <div
       className="gradient-container"
@@ -110,7 +111,7 @@ const InputAi: React.FC<InputAiProps> = ({
           ref={inputRef}
           value={value}
           onChange={onChange}
-          onKeyDown={handleKeyDown}
+          onKeyPress={handleKeyPress}
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder={placeholder}
