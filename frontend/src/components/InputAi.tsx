@@ -9,6 +9,7 @@ interface InputAiProps {
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onBlur?: () => void;
   readOnly?: boolean;
+  disabled?: boolean;
 }
 
 const InputAi: React.FC<InputAiProps> = ({
@@ -20,6 +21,7 @@ const InputAi: React.FC<InputAiProps> = ({
   onBlur,
   isLoading = false,
   readOnly = false,
+  disabled = false,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -116,6 +118,7 @@ const InputAi: React.FC<InputAiProps> = ({
           onBlur={handleBlur}
           placeholder={placeholder}
           readOnly={readOnly}
+          disabled={disabled || isLoading}
         />
       </div>
       <div className="gradient-overlay" ref={overlayRef}></div>

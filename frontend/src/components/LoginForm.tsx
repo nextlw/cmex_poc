@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
-import { debounce } from "lodash";
+import React, { useState } from "react";
 import { Suggestion } from "../types";
-import axiosInstance from "../axiosConfig"; // Importa a instância configurada do axios
+import axiosInstance from "../axiosConfig";
 import InputAi from "./InputAi";
-import Button from "./Button.tsx"
+import ProgressBar from "./ProgressBar";
+import Button from "./Button";
 
 const LoginForm: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -15,8 +15,8 @@ const LoginForm: React.FC = () => {
     "Matéria prima",
   ]);
 
-  const fetchSuggestions = async (value: string) => {
-    if (value.length < 3) {
+  const handleSearch = async () => {
+    if (query.length < 3) {
       setSuggestions([]);
       return;
     }
@@ -24,12 +24,9 @@ const LoginForm: React.FC = () => {
     setIsLoading(true);
     try {
       const response = await axiosInstance.post("/openai", {
-        // Usa a instância configurada do axios
-        query: value,
+        query: query,
       });
-
-      const data = response.data;
-      setSuggestions(data);
+      setSuggestions(response.data);
     } catch (error) {
       console.error("Erro ao buscar sugestões:", error);
     } finally {
@@ -44,7 +41,7 @@ const LoginForm: React.FC = () => {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      fetchSuggestions(query);
+      handleSearch();
     }
   };
 
@@ -61,25 +58,26 @@ const LoginForm: React.FC = () => {
             Busca Inteligente de NCM
           </h2>
 
-          <div>
+          <div className="flex flex-col gap-4">
             <InputAi
               width="100%"
               value={query}
               onChange={handleChange}
               onKeyPress={handleKeyPress}
               isLoading={isLoading}
+              disabled={isLoading}
               placeholder="Digite o nome do produto"
             />
-          </div>
-          
-          {/* Botão de busca */}
-          <div>
-            <Button onClick={() => fetchSuggestions(query)} label="Buscar" />
+            
+            <Button 
+              onClick={handleSearch}
+              label="Buscar"
+              isLoading={isLoading}
+            />
           </div>
 
-
-          {/* Barra de progresso
-          <ProgressBar isLoading={isLoading} resetTime={resetTime} />*/}
+          {/* Barra de progresso */}
+          <ProgressBar isLoading={isLoading} />
 
           {/* Filtros */}
           <div className="flex flex-wrap gap-2">
