@@ -156,9 +156,9 @@ const LoginForm: React.FC = () => {
                               Características Gerais
                             </h4>
                             <ul className="list-disc list-inside text-gray-300">
-                              {suggestion.attributes.map((attr, i) => (
+                              {suggestion.attributes?.map((attr, i) => (
                                 <li key={i}>{attr}</li>
-                              ))}
+                              )) || <li>Nenhuma característica encontrada</li>}
                             </ul>
                           </div>
                           <div>
@@ -166,9 +166,9 @@ const LoginForm: React.FC = () => {
                               Atributos TIPI
                             </h4>
                             <ul className="list-disc list-inside text-gray-300">
-                              {suggestion.tipi_attributes.map((attr, i) => (
+                              {suggestion.tipi_attributes?.map((attr, i) => (
                                 <li key={i}>{attr}</li>
-                              ))}
+                              )) || <li>Nenhum atributo TIPI encontrado</li>}
                             </ul>
                           </div>
                         </div>
