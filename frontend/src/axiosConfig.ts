@@ -14,7 +14,9 @@ axiosInstance.interceptors.request.use((config) => {
     "sb-qrfxqaovpddcziulqflw-auth-token"
   );
   if (supabaseToken) {
-    config.headers.Authorization = `Bearer ${JSON.parse(supabaseToken).access_token}`;
+    config.headers.Authorization = `Bearer ${
+      JSON.parse(supabaseToken).access_token
+    }`;
   }
   config.headers["Content-Type"] = "application/json";
   return config;
