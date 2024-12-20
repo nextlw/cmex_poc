@@ -1,18 +1,21 @@
 import React from "react";
-import { TaxRates } from "../types";
+import { TaxRates } from "../types/search";
 
 interface TaxRatesDisplayProps {
-  taxRates: TaxRates | null;
+  taxRates: TaxRates;
 }
 
-const TaxRatesDisplay: React.FC<TaxRatesDisplayProps> = ({ taxRates }) => {
-  // Garantindo que temos um objeto ICMS válido
-  const {
-    icms = {},
-    ipi = "0%",
-    pis = "1.65%",
-    cofins = "7.6%",
-  } = taxRates || {};
+const DEFAULT_TAX_RATES: TaxRates = {
+  ipi: "0%",
+  icms: {},
+  pis: "1.65%",
+  cofins: "7.6%",
+};
+
+const TaxRatesDisplay: React.FC<TaxRatesDisplayProps> = ({
+  taxRates = DEFAULT_TAX_RATES,
+}) => {
+  const { icms, ipi, pis, cofins } = taxRates;
 
   return (
     <div className="space-y-6">

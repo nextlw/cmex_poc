@@ -25,3 +25,12 @@ export interface AutocompleteProps {
   onSuggestionSelect?: (suggestion: Suggestion) => void;
   placeholder?: string;
 }
+
+export interface TaxSuggestion {
+  value?: string; // Adicionada a propriedade value
+  ncm: string;
+  description: string;
+  attributes: string[];
+  tax_rates: TaxRates;
+  tipi_attributes: string[];
+}

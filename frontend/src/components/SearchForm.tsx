@@ -51,14 +51,6 @@ const LoginForm: React.FC = () => {
   };
 
   const handleSuggestionSelect = (suggestion: Suggestion) => {
-    if (!suggestion.tax_rates) {
-      suggestion.tax_rates = {
-        ipi: "0%",
-        icms: {},
-        pis: "1.65%",
-        cofins: "7.6%",
-      };
-    }
     setQuery(suggestion.description);
     setSuggestions([]);
   };

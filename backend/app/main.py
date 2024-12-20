@@ -144,7 +144,8 @@ async def get_suggestions(product_query: ProductQuery):
                         "cofins": tax_rates.get("cofins", "7.6%")
                     },
                     tipi_attributes=data.get("tipi_attributes", []),
-                    attributes=data.get("attributes", [])
+                    attributes=data.get("attributes", []),
+                    value=data.get("value", "0%") # Se a propriedade value for necessária
                 )
             ]
         except json.JSONDecodeError as e:
