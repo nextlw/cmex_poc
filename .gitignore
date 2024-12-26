@@ -151,3 +151,4 @@ __pycache__/
 # Ignorar ambientes virtuais do Python
 venv/
 
+backend/.env
