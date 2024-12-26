@@ -11,6 +11,39 @@ interface InputAiProps {
   readOnly?: boolean;
 }
 
+/**
+ * Componente de entrada que exibe animações visuais em diferentes estados de foco e carregamento.
+ * Útil para capturar descrições ou textos relacionados a produtos.
+ *
+ * @component
+ *
+ * @typedef {Object} InputAiProps
+ * @property {string} [width] - Largura opcional do componente. Caso não seja fornecida, utiliza 100%.
+ * @property {string} [placeholder="Descreva o seu produto"] - Texto exibido quando o campo está vazio.
+ * @property {string} value - Valor atual do campo de texto.
+ * @property {React.ChangeEventHandler<HTMLInputElement>} onChange - Função de callback chamada quando há alteração no valor do campo.
+ * @property {React.KeyboardEventHandler<HTMLInputElement>} [onKeyPress] - Função de callback chamada ao pressionar uma tecla. Aqui, a tecla "Enter" dispara tratamentos específicos.
+ * @property {() => void} [onBlur] - Função de callback chamada quando o campo perde o foco.
+ * @property {boolean} [isLoading=false] - Indica se o componente deve exibir animações de carregamento (loading).
+ * @property {boolean} [readOnly=false] - Define se o campo está desabilitado para edição.
+ *
+ * @example
+ * <InputAi
+ *   width="50%"
+ *   placeholder="Digite aqui..."
+ *   value={valor}
+ *   onChange={(e) => setValor(e.target.value)}
+ *   isLoading={false}
+ * />
+ *
+ * @remarks
+ * - O componente utiliza diversos refs (inputRef, containerRef, overlayRef, etc.) para manipulações de estilo e animação.
+ * - O efeito principal (useEffect) aplica ou remove classes CSS e animações conforme o estado de carregamento (isLoading).
+ * - Ao focar no campo (handleFocus), adiciona animações visuais; ao desfocar (handleBlur), remove e executa o callback onBlur caso definido.
+ * - A função handleKeyPress intercepta a tecla "Enter" para evitar envios padrão do formulário quando o campo não está em estado de carregamento.
+ *
+ * @returns {JSX.Element} Retorna o elemento JSX com os estilos e comportamentos descritos.
+ */
 const InputAi: React.FC<InputAiProps> = ({
   width,
   placeholder = "Descreva o seu produto",
