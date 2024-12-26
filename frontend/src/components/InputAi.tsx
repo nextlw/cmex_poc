@@ -52,7 +52,6 @@ const InputAi: React.FC<InputAiProps> = ({
   onKeyPress,
   onBlur,
   isLoading = false,
-  readOnly = false,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -62,37 +61,41 @@ const InputAi: React.FC<InputAiProps> = ({
 
   useEffect(() => {
     if (isLoading) {
-      overlayRef.current?.classList.remove("focused");
-      overlayRef.current?.classList.add("loading");
-      overlayRef.current!.style.animation = "moveGradient 2s linear infinite";
+      overlayRef.current?.classList.remove("sobreposicao-gradiente-focado");
+      overlayRef.current?.classList.add("sobreposicao-gradiente-carregando");
+      overlayRef.current!.style.animation = "moverGradiente 2s linear infinite";
       containerRef.current!.style.animation =
-        "glowingBorder 4s ease-in-out infinite";
-      inputWrapperRef.current?.classList.add("loading");
-      iconRef.current?.classList.add("loading");
-      iconRef.current!.style.animation = "moveGradient 2s linear infinite";
+        "bordaBrilhante 4s ease-in-out infinite";
+      inputWrapperRef.current?.classList.add("envoltorio-input-carregando");
+      iconRef.current?.classList.add("icone-carregando-carregando");
+      iconRef.current!.style.animation = "moverGradiente 2s linear infinite";
     } else {
-      overlayRef.current?.classList.remove("loading");
-      inputWrapperRef.current?.classList.remove("loading");
+      overlayRef.current?.classList.remove("sobreposicao-gradiente-carregando");
+      inputWrapperRef.current?.classList.remove("envoltorio-input-carregando");
       overlayRef.current!.style.animation = "none";
       containerRef.current!.style.animation = "none";
-      iconRef.current?.classList.remove("loading");
+      iconRef.current?.classList.remove("icone-carregando-carregando");
       iconRef.current!.style.animation = "none";
     }
   }, [isLoading]);
 
   const handleFocus = () => {
-    if (!overlayRef.current?.classList.contains("loading")) {
-      overlayRef.current?.classList.add("focused");
-      inputWrapperRef.current?.classList.add("focused");
-      iconRef.current?.classList.add("focused");
+    if (
+      !overlayRef.current?.classList.contains(
+        "sobreposicao-gradiente-carregando"
+      )
+    ) {
+      overlayRef.current?.classList.add("sobreposicao-gradiente-focado");
+      inputWrapperRef.current?.classList.add("envoltorio-input-focado");
+      iconRef.current?.classList.add("icone-carregando-focado");
     }
   };
 
   const handleBlur = () => {
-    overlayRef.current?.classList.remove("focused");
-    inputWrapperRef.current?.classList.remove("focused");
-    iconRef.current?.classList.remove("focused");
-    iconRef.current?.classList.remove("loading");
+    overlayRef.current?.classList.remove("sobreposicao-gradiente-focado");
+    inputWrapperRef.current?.classList.remove("envoltorio-input-focado");
+    iconRef.current?.classList.remove("icone-carregando-focado");
+    iconRef.current?.classList.remove("icone-carregando-carregando");
     if (onBlur) {
       onBlur();
     }
@@ -109,11 +112,11 @@ const InputAi: React.FC<InputAiProps> = ({
 
   return (
     <div
-      className="gradient-container"
+      className="container-gradiente"
       ref={containerRef}
       style={{ width: width || "100%" }}
     >
-      <div className="input-wrapper" ref={inputWrapperRef}>
+      <div className="envoltorio-input" ref={inputWrapperRef}>
         <i className="bi bi-stars" ref={iconRef}></i>
         <input
           type="text"
@@ -127,7 +130,7 @@ const InputAi: React.FC<InputAiProps> = ({
           readOnly={isLoading}
         />
       </div>
-      <div className="gradient-overlay" ref={overlayRef}></div>
+      <div className="sobreposicao-gradiente" ref={overlayRef}></div>
     </div>
   );
 };

@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = ({ onClick, isLoading, label, icon }) => {
       onClick={onClick}
       disabled={isLoading}
       className={`
-      w-auto al shadow-inner
+      w-auto al
       ${
         isLoading
           ? "bg-gray-900 outline-none ring-2 ring-blue-900 ring-opacity-50"
