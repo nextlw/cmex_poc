@@ -11,10 +11,36 @@ export interface ValoresdeImpostos {
 
 export interface SugerirNCM {
   ncm: string;
+
   description: string;
+
   attributes: string[];
-  valores_de_impostos: ValoresdeImpostos;
+
   tipi_attributes: string[];
+
+  valores_de_impostos: ValoresdeImpostos;
+
+  classificacao_tributaria?: {
+    monofasico: boolean;
+
+    aliquota_zero: boolean;
+
+    ipi_entrada: string;
+
+    ipi_saida: string;
+
+    pis_entrada: string;
+
+    pis_saida: string;
+
+    cofins_entrada: string;
+
+    cofins_saida: string;
+
+    cst_entrada: string;
+
+    cst_saida: string;
+  };
 }
 
 export interface ProdutodaPesquisa {

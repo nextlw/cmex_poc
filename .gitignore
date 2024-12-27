@@ -7,7 +7,14 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 actions-runner/
+llama3-main/
+.venv/
+.ncm/
+.vscode/
 .github/
+.ipynb_checkpoints/
+notebooks/
+
 
 
 # Diagnostic reports (https://nodejs.org/api/report.html)

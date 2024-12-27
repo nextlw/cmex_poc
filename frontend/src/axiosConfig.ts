@@ -1,12 +1,16 @@
 import axios from "axios";
 
-const baseURL =
-  import.meta.env.VITE_APP_NODE_ENV === "development"
-    ? "http://localhost:8000" // URL para ambiente de desenvolvimento
-    : "https://pocrender-569a.onrender.com"; // URL para ambiente de produção
+// Verifica se estamos em ambiente local
+const isLocal =
+  typeof window !== "undefined" && window.location.hostname === "localhost";
+
+// Ajuste aqui para a porta correta do servidor backend
+const baseURL = isLocal
+  ? "http://localhost:8000" // Porta configurada no main.py
+  : "https://pocrender-569a.onrender.com"; // Sua API em produção
 
 const axiosInstance = axios.create({
-  baseURL, // Base URL para todas as requisições
+  baseURL,
 });
 
 axiosInstance.interceptors.request.use((config) => {

@@ -10,6 +10,7 @@ import { BiUser } from "react-icons/bi"; // Exemplo de ícone
 import TabelaICMS from "./TabelaICMS"; // Importando o novo componente
 import { BiChevronDown, BiChevronUp, BiChevronRight } from "react-icons/bi"; // Importar ícones para expandir/recolher
 import debounce from "lodash.debounce"; // Importar debounce
+import CardSituacao from "./CardSituacao";
 
 const LoginForm: React.FC = () => {
   const [pesquisa, setPesquisa] = useState("");
@@ -27,7 +28,7 @@ const LoginForm: React.FC = () => {
     setIsLoading(true);
     try {
       const response = await axiosInstance.post("/openai", {
-        query: pesquisa,
+        consulta: pesquisa,
       });
       setSugerirNCM(response.data);
     } catch (error) {
@@ -88,21 +89,40 @@ const LoginForm: React.FC = () => {
             />
           </div>
           {sugerirNCM.length > 0 && (
-            <div className="container-sugestoes align-middle">
-              {sugerirNCM.map((suggestion, index) => (
-                <div
-                  key={index}
-                  className="chip-sugestao justify-center"
-                  onClick={() => handleSuggestionSelect(suggestion)}
-                >
-                  <span className="font-medium justify-center">
-                    {suggestion.ncm}
-                  </span>
-                  <span className="mx-2 justify-center">-</span>
-                  <span>{suggestion.description}</span>
-                </div>
-              ))}
-            </div>
+            <>
+              <div className="container-sugestoes align-middle">
+                {sugerirNCM.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    className="chip-sugestao justify-center"
+                    onClick={() => handleSuggestionSelect(suggestion)}
+                  >
+                    <span className="font-medium justify-center">
+                      {suggestion.ncm}
+                    </span>
+                    <span className="mx-2 justify-center">-</span>
+                    <span>{suggestion.description}</span>
+                  </div>
+                ))}
+              </div>
+              <CardSituacao
+                classificacao={
+                  // Pega a classificação tributária do primeiro resultado
+                  sugerirNCM[0]?.classificacao_tributaria || {
+                    monofasico: false,
+                    aliquota_zero: false,
+                    ipi_entrada: "não tributado",
+                    ipi_saida: "não tributado",
+                    pis_entrada: "não tributado",
+                    pis_saida: "não tributado",
+                    cofins_entrada: "não tributado",
+                    cofins_saida: "não tributado",
+                    cst_entrada: "sem CST",
+                    cst_saida: "sem CST",
+                  }
+                }
+              />
+            </>
           )}
           <div className="mt-8 space-y-6">
             <div className="bg-gray-800/50 rounded-lg p-6 backdrop-blur-sm">
