@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { SugerirNCM } from "../types";
 import axiosInstance from "../axiosConfig";
 import InputAi from "./InputAi";
@@ -9,6 +9,7 @@ import InputField from "./InputField";
 import { BiUser } from "react-icons/bi"; // Exemplo de ícone
 import TabelaICMS from "./TabelaICMS"; // Importando o novo componente
 import { BiChevronDown, BiChevronUp, BiChevronRight } from "react-icons/bi"; // Importar ícones para expandir/recolher
+import debounce from "lodash.debounce"; // Importar debounce
 
 const LoginForm: React.FC = () => {
   const [pesquisa, setPesquisa] = useState("");
@@ -17,7 +18,7 @@ const LoginForm: React.FC = () => {
   const [buscarValor, setBuscarValor] = useState("");
   const [isTabelaICMSOpen, setIsTabelaICMSOpen] = useState(false); // Estado para controlar a expansão da tabela
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (pesquisa.length < 3) {
       setSugerirNCM([]);
       return;
@@ -34,10 +35,16 @@ const LoginForm: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [pesquisa]);
+
+  const debouncedHandleSearch = useMemo(
+    () => debounce(handleSearch, 5000),
+    [handleSearch]
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPesquisa(e.target.value);
+    debouncedHandleSearch();
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

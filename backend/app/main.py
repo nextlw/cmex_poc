@@ -89,52 +89,6 @@ async def obter_sugestoes(consulta_produto: ConsultaProduto):
         5. Características relevantes do produto
 
         Produto: {consulta_produto.consulta}
-
-        Aqui estão as alíquotas de ICMS atuais por estado:
-
-        Região Norte
-        Acre: 19%
-        Amapá: 18%
-        Amazonas: 20%
-        Pará: 19%
-        Rondônia: 19,5%
-        Roraima: 20%
-        Tocantins: 20%
-
-        Região Nordeste
-        Alagoas: 19%
-        Bahia: 20,5%
-        Ceará: 20%
-        Maranhão: 22%
-        Paraíba: 20%
-        Pernambuco: 20,5%
-        Piauí: 21%
-        Rio Grande do Norte: 18%
-        Sergipe: 19%
-
-        Região Centro-Oeste
-        Distrito Federal: 20%
-        Goiás: 19%
-        Mato Grosso: 17%
-        Mato Grosso do Sul: 17%
-
-        Região Sudeste
-        Espírito Santo: 17%
-        Minas Gerais: 18%
-        Rio de Janeiro: 20%
-        São Paulo: 18%
-
-        Região Sul
-        Paraná: 19,5%
-        Rio Grande do Sul: 17%
-        Santa Catarina: 17%
-
-        Retorne a resposta em formato JSON estruturado, com os campos:
-        - ncm
-        - descricao
-        - aliquotas (com icms sendo um objeto para cada estado)
-        - atributos_tipis
-        - atributos
         """
 
         logging.debug(f"Prompt enviado para OpenAI: {prompt}")
