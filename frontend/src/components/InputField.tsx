@@ -27,21 +27,21 @@ const InputField: React.FC<InputFieldProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleFocus = () => {
-    containerRef.current?.classList.add("inputfield-focused");
+    containerRef.current?.classList.add("envoltorio-campo-input-focado");
   };
 
   const handleBlur = () => {
-    containerRef.current?.classList.remove("inputfield-focused");
+    containerRef.current?.classList.remove("envoltorio-campo-input-focado");
     if (onBlur) {
       onBlur();
     }
   };
 
   return (
-    <div className="inputfield-container" ref={containerRef} style={{ width }}>
-      {label && <label className="inputfield-label">{label}</label>}
-      <div className="inputfield-wrapper">
-        {icon && <span className="inputfield-icon">{icon}</span>}
+    <div className="container-campo-input" ref={containerRef} style={{ width }}>
+      {label && <label className="rotulo-campo-input">{label}</label>}
+      <div className="envoltorio-campo-input">
+        {icon && <span className="icone-campo-input">{icon}</span>}
         <input
           ref={inputRef}
           type="text"
@@ -52,7 +52,7 @@ const InputField: React.FC<InputFieldProps> = ({
           onFocus={handleFocus}
           onBlur={handleBlur}
           readOnly={readOnly}
-          className="inputfield-field"
+          className="campo-input"
         />
       </div>
     </div>

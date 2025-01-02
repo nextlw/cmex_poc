@@ -1,3 +1,8 @@
 openai==0.28
 fastapi
 uvicorn
+torch
+fairscale
+fire
+tiktoken==0.4.0
+blobfile

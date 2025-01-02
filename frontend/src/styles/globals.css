@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ------InputBorderInteligence------ */
-.gradient-container {
+/* ------InputBordaInteligente------ */
+.container-gradiente {
   width: 100%;
   margin: 0 auto;
   border: none;
@@ -16,7 +16,7 @@
   min-height: 40px;
 }
 
-.gradient-overlay {
+.sobreposicao-gradiente {
   position: absolute;
   top: 0;
   left: 0;
@@ -29,11 +29,11 @@
   transition: background 0.3s ease;
 }
 
-.gradient-overlay.focused {
+.sobreposicao-gradiente-focado {
   background: #4ecaff;
 }
 
-.gradient-overlay.loading {
+.sobreposicao-gradiente-carregando {
   background: radial-gradient(circle, yellow, orange, #4ecaff, hwb(224 30% 0%));
   background-size: 200% 200%;
   background-position: 0% 50%;
@@ -43,21 +43,13 @@
 
 /* ------InputBaseText------ */
 
-.input-wrapper {
+.envoltorio-input {
   padding: 2px;
   position: relative;
   z-index: 1;
 }
 
-.input-wrapper.focused {
-  padding: 2px;
-  position: relative;
-  z-index: 1;
-  transition: 0.8s ease-in-out;
-  opacity: 0.9;
-}
-
-.input-wrapper.loading {
+.envoltorio-input-focado {
   padding: 2px;
   position: relative;
   z-index: 1;
@@ -65,7 +57,15 @@
   opacity: 0.9;
 }
 
-.input-wrapper input {
+.envoltorio-input-carregando {
+  padding: 2px;
+  position: relative;
+  z-index: 1;
+  transition: 0.8s ease-in-out;
+  opacity: 0.9;
+}
+
+.envoltorio-input input {
   width: 100%;
   min-height: 44px;
   box-sizing: border-box;
@@ -84,8 +84,8 @@
 
 /* ------IconInput------ */
 
-.input-wrapper i,
-.loading-icon {
+.envoltorio-input i,
+.icone-carregando {
   position: absolute;
   left: 16px;
   top: 50%;
@@ -103,8 +103,8 @@
   opacity: 0.9;
 }
 
-.input-wrapper i.focused,
-.loading-icon.focused {
+.envoltorio-input i.focado,
+.icone-carregando-focado {
   background: radial-gradient(circle, #ff6b6b, #f06595, #0073ff, fuchsia);
   background-clip: text;
   -webkit-background-clip: text;
@@ -115,8 +115,8 @@
   opacity: 0.9;
 }
 
-.input-wrapper i.loading,
-.loading-icon.loading {
+.envoltorio-input i.carregando,
+.icone-carregando-carregando {
   background: radial-gradient(circle, #ff6b6b, #f06595, #0073ff, fuchsia);
   background-clip: text;
   -webkit-background-clip: text;
@@ -129,7 +129,7 @@
 
 /* ------Animations------ */
 
-@keyframes moveGradient {
+@keyframes moverGradiente {
   0% {
     background-position: 0% 50%;
   }
@@ -138,7 +138,7 @@
   }
 }
 
-@keyframes glowingBorder {
+@keyframes bordaBrilhante {
   0% {
     box-shadow: 0px 0px 5px 0px yellow, 0px 0px 2px 0px orange,
       0px 0px 5px 0px fuchsia;
@@ -161,7 +161,7 @@
   }
 }
 
-@keyframes glow {
+@keyframes brilho {
   0% {
     box-shadow: 0 0 2px red, 0 0 4px orange, 0 0 6px purple, 0 0 8px green,
       0 0 10px blue, 0 0 12px purple;
@@ -184,7 +184,7 @@
   }
 }
 
-@keyframes spin {
+@keyframes girar {
   0% {
     transform: rotate(0deg);
   }
@@ -197,23 +197,23 @@
 
 /* ------Tags&Containers------ */
 
-.search-container {
+.container-pesquisa {
   @apply relative w-full;
 }
 
-.suggestions-container {
+.container-sugestoes {
   @apply mt-2 space-y-1 bg-gray-800/50 rounded-lg p-2 backdrop-blur-sm
   border border-gray-700/50;
 }
 
-.suggestion-chip {
+.chip-sugestao {
   @apply p-2 bg-gray-700/50 rounded-lg text-white
   hover:bg-gray-600/50 cursor-pointer
   transition-all duration-200
   flex items-center;
 }
 
-.filter-chip {
+.chip-filtro {
   @apply px-8 py-2 bg-gray-700/50 text-white rounded-full
   border border-gray-600/50
   hover:bg-gray-600/50 cursor-pointer
@@ -223,19 +223,19 @@
 /* --------------------------- */
 
 /* Estilos para o InputField */
-.inputfield-container {
+.container-campo-input {
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
 }
 
-.inputfield-label {
+.rotulo-campo-input {
   margin-bottom: 0.5rem;
   color: #333;
   font-weight: 500;
 }
 
-.inputfield-wrapper {
+.envoltorio-campo-input {
   width: 100%;
   min-height: 40px;
   display: flex;
@@ -246,16 +246,16 @@
   transition: border-color 0.3s;
 }
 
-.inputfield-wrapper.focused {
+.envoltorio-campo-input-focado {
   border-color: #0056b3; /* Borda azul mais escura quando focado */
 }
 
-.inputfield-icon {
+.icone-campo-input {
   margin-right: 0.5rem;
   color: #007bff;
 }
 
-.inputfield-field {
+.campo-input {
   min-height: 44px;
   flex: 1;
   border: none;
@@ -268,7 +268,7 @@
   font-family: "Roboto", sans-serif;
 }
 
-.inputfield-field::placeholder {
+.campo-input::placeholder {
   color: #aaa;
 }
 

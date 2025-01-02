@@ -7,7 +7,14 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 actions-runner/
+llama3-main/
+.venv/
+.ncm/
+.vscode/
 .github/
+.ipynb_checkpoints/
+notebooks/
+
 
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
@@ -78,7 +85,8 @@ web_modules/
 
 # dotenv environment variable files
 .env
-.env*
+*.env
+.env.*
 .env.development.local
 .env.test.local
 .env.production.local
@@ -151,3 +159,7 @@ __pycache__/
 # Ignorar ambientes virtuais do Python
 venv/
 
+backend/.env
+backend/.env
+force_replace_development.sh
+yarn.lock

@@ -11,6 +11,39 @@ interface InputAiProps {
   readOnly?: boolean;
 }
 
+/**
+ * Componente de entrada que exibe animações visuais em diferentes estados de foco e carregamento.
+ * Útil para capturar descrições ou textos relacionados a produtos.
+ *
+ * @component
+ *
+ * @typedef {Object} InputAiProps
+ * @property {string} [width] - Largura opcional do componente. Caso não seja fornecida, utiliza 100%.
+ * @property {string} [placeholder="Descreva o seu produto"] - Texto exibido quando o campo está vazio.
+ * @property {string} value - Valor atual do campo de texto.
+ * @property {React.ChangeEventHandler<HTMLInputElement>} onChange - Função de callback chamada quando há alteração no valor do campo.
+ * @property {React.KeyboardEventHandler<HTMLInputElement>} [onKeyPress] - Função de callback chamada ao pressionar uma tecla. Aqui, a tecla "Enter" dispara tratamentos específicos.
+ * @property {() => void} [onBlur] - Função de callback chamada quando o campo perde o foco.
+ * @property {boolean} [isLoading=false] - Indica se o componente deve exibir animações de carregamento (loading).
+ * @property {boolean} [readOnly=false] - Define se o campo está desabilitado para edição.
+ *
+ * @example
+ * <InputAi
+ *   width="50%"
+ *   placeholder="Digite aqui..."
+ *   value={valor}
+ *   onChange={(e) => setValor(e.target.value)}
+ *   isLoading={false}
+ * />
+ *
+ * @remarks
+ * - O componente utiliza diversos refs (inputRef, containerRef, overlayRef, etc.) para manipulações de estilo e animação.
+ * - O efeito principal (useEffect) aplica ou remove classes CSS e animações conforme o estado de carregamento (isLoading).
+ * - Ao focar no campo (handleFocus), adiciona animações visuais; ao desfocar (handleBlur), remove e executa o callback onBlur caso definido.
+ * - A função handleKeyPress intercepta a tecla "Enter" para evitar envios padrão do formulário quando o campo não está em estado de carregamento.
+ *
+ * @returns {JSX.Element} Retorna o elemento JSX com os estilos e comportamentos descritos.
+ */
 const InputAi: React.FC<InputAiProps> = ({
   width,
   placeholder = "Descreva o seu produto",
@@ -19,7 +52,6 @@ const InputAi: React.FC<InputAiProps> = ({
   onKeyPress,
   onBlur,
   isLoading = false,
-  readOnly = false,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -29,37 +61,41 @@ const InputAi: React.FC<InputAiProps> = ({
 
   useEffect(() => {
     if (isLoading) {
-      overlayRef.current?.classList.remove("focused");
-      overlayRef.current?.classList.add("loading");
-      overlayRef.current!.style.animation = "moveGradient 2s linear infinite";
+      overlayRef.current?.classList.remove("sobreposicao-gradiente-focado");
+      overlayRef.current?.classList.add("sobreposicao-gradiente-carregando");
+      overlayRef.current!.style.animation = "moverGradiente 2s linear infinite";
       containerRef.current!.style.animation =
-        "glowingBorder 4s ease-in-out infinite";
-      inputWrapperRef.current?.classList.add("loading");
-      iconRef.current?.classList.add("loading");
-      iconRef.current!.style.animation = "moveGradient 2s linear infinite";
+        "bordaBrilhante 4s ease-in-out infinite";
+      inputWrapperRef.current?.classList.add("envoltorio-input-carregando");
+      iconRef.current?.classList.add("icone-carregando-carregando");
+      iconRef.current!.style.animation = "moverGradiente 2s linear infinite";
     } else {
-      overlayRef.current?.classList.remove("loading");
-      inputWrapperRef.current?.classList.remove("loading");
+      overlayRef.current?.classList.remove("sobreposicao-gradiente-carregando");
+      inputWrapperRef.current?.classList.remove("envoltorio-input-carregando");
       overlayRef.current!.style.animation = "none";
       containerRef.current!.style.animation = "none";
-      iconRef.current?.classList.remove("loading");
+      iconRef.current?.classList.remove("icone-carregando-carregando");
       iconRef.current!.style.animation = "none";
     }
   }, [isLoading]);
 
   const handleFocus = () => {
-    if (!overlayRef.current?.classList.contains("loading")) {
-      overlayRef.current?.classList.add("focused");
-      inputWrapperRef.current?.classList.add("focused");
-      iconRef.current?.classList.add("focused");
+    if (
+      !overlayRef.current?.classList.contains(
+        "sobreposicao-gradiente-carregando"
+      )
+    ) {
+      overlayRef.current?.classList.add("sobreposicao-gradiente-focado");
+      inputWrapperRef.current?.classList.add("envoltorio-input-focado");
+      iconRef.current?.classList.add("icone-carregando-focado");
     }
   };
 
   const handleBlur = () => {
-    overlayRef.current?.classList.remove("focused");
-    inputWrapperRef.current?.classList.remove("focused");
-    iconRef.current?.classList.remove("focused");
-    iconRef.current?.classList.remove("loading");
+    overlayRef.current?.classList.remove("sobreposicao-gradiente-focado");
+    inputWrapperRef.current?.classList.remove("envoltorio-input-focado");
+    iconRef.current?.classList.remove("icone-carregando-focado");
+    iconRef.current?.classList.remove("icone-carregando-carregando");
     if (onBlur) {
       onBlur();
     }
@@ -76,11 +112,11 @@ const InputAi: React.FC<InputAiProps> = ({
 
   return (
     <div
-      className="gradient-container"
+      className="container-gradiente"
       ref={containerRef}
       style={{ width: width || "100%" }}
     >
-      <div className="input-wrapper" ref={inputWrapperRef}>
+      <div className="envoltorio-input" ref={inputWrapperRef}>
         <i className="bi bi-stars" ref={iconRef}></i>
         <input
           type="text"
@@ -94,7 +130,7 @@ const InputAi: React.FC<InputAiProps> = ({
           readOnly={isLoading}
         />
       </div>
-      <div className="gradient-overlay" ref={overlayRef}></div>
+      <div className="sobreposicao-gradiente" ref={overlayRef}></div>
     </div>
   );
 };
