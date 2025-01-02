@@ -1,9 +1,0 @@
-﻿{
-  "agentId": 2,
-  "agentName": "Will",
-  "poolId": 1,
-  "poolName": "Default",
-  "serverUrl": "https://pipelinesghubeus9.actions.githubusercontent.com/9NIMvQxjkEJoyyyLAN9AUghMm2ITl9eCrvRKL0YowVHv3aIWxu/",
-  "gitHubUrl": "https://github.com/nextlw/cmex_poc",
-  "workFolder": "_work"
-}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 interface ProgressBarProps {
   isLoading: boolean;
-  resetTime: boolean;
+  resetTime?: boolean;
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ isLoading, resetTime }) => {
