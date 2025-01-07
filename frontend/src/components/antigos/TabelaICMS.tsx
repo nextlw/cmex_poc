@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { RegiaoICMS } from "../types";
-import CardRegiao from "./CardRegiao";
+import { RegiaoICMS } from "../../types";
+import CardRegiao from "../CardRegiao";
 import Papa from "papaparse";
 
 const useCarregarDadosICMS = (): RegiaoICMS[] => {

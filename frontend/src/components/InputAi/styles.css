@@ -195,27 +195,10 @@
 
 /* --------------------------- */
 
-/* ------Tags&Containers------ */
-
-.container-pesquisa {
-  @apply relative w-full;
+/* ------ErrorMessage------ */
+.mensagem-erro {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  text-align: center;
 }
-
-.container-sugestoes {
-  @apply mt-2 space-y-1 bg-gray-800/50 rounded-lg p-2 backdrop-blur-sm
-  border border-gray-700/50;
-}
-
-.chip-sugestao {
-  @apply p-2 bg-gray-700/50 rounded-lg text-white
-  hover:bg-gray-600/50 cursor-pointer
-  transition-all duration-200
-  flex items-center;
-}
-
-.box-conteiner {
-  @apply px-8 py-2 bg-gray-700/50 text-white rounded-lg
-  border border-gray-600/50;
-}
-
-/* --------------------------- */

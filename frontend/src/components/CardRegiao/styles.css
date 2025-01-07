@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.container-sugestoes {
+  @apply mt-2 space-y-1 bg-gray-800/50 rounded-lg p-2 backdrop-blur-sm
+    border border-gray-700/50;
+}

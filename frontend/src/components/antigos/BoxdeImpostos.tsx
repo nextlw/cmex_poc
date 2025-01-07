@@ -1,9 +1,10 @@
 import React from "react";
-import { ValoresdeImpostos } from "../types";
-import TabelaICMS from "./TabelaICMS";
+import { ValoresdeImpostos } from "../../types";
+import { ClassificacaoTributaria } from "../../types"; // Exemplo
 
 interface BoxdeImpostosProps {
-  ValoresdeImpostos: ValoresdeImpostos | null;
+  valoresDeImpostos?: ValoresdeImpostos;
+  classificacao?: ClassificacaoTributaria;
 }
 
 /**
@@ -18,14 +19,17 @@ interface BoxdeImpostosProps {
  * @param {ValoresdeImpostos} props.ValoresdeImpostos - Objeto que contém as alíquotas de IPI, PIS, COFINS e ICMS.
  * @returns JSX.Element - O componente que exibe as alíquotas de impostos.
  */
-const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ ValoresdeImpostos }) => {
+const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({
+  valoresDeImpostos,
+  classificacao,
+}) => {
   // Comentário: Define as alíquotas padrão para IPI, PIS e COFINS e recebe o ICMS
   const {
     icms = {},
     ipi = "0%",
     pis = "1.65%",
     cofins = "7.6%",
-  } = ValoresdeImpostos || {};
+  } = valoresDeImpostos || {};
 
   return (
     <div className="space-y-6">
@@ -44,6 +48,18 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ ValoresdeImpostos }) => {
           <p className="text-white text-lg font-semibold">{cofins}</p>
         </div>
       </div>
+      {valoresDeImpostos && (
+        <div>
+          <p>IPI: {valoresDeImpostos.ipi}</p>
+          {/* ... */}
+        </div>
+      )}
+      {classificacao && (
+        <div>
+          <p>IPI Entrada: {classificacao.ipi_entrada}</p>
+          {/* ... */}
+        </div>
+      )}
     </div>
   );
 };

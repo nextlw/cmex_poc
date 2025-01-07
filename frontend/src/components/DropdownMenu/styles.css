@@ -1,0 +1,25 @@
+.dropdown-menu {
+  display: flex;
+  gap: 16px;
+  background: transparent 80;
+  width: 100%;
+  position: relative;
+  margin: 0 auto;
+}
+
+.dropdown-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.dropdown-item label {
+  color: #ffffff;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Removido: estilos do SelectWrapper */
+
+/* --------------------------- */

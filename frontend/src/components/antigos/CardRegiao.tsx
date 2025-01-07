@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
-import { RegiaoICMS } from "../types";
-import LinhaEstado from "./LinhaEstado";
+import { RegiaoICMS } from "../../types";
+import LinhaEstado from "../LinhaEstado";
 
 /**
  * Componente CardRegiao

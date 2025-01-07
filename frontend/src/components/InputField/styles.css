@@ -1,0 +1,47 @@
+/* Estilos para o InputField */
+.envoltorio-campo-input {
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #374151;
+  border-radius: 4px;
+  padding-left: 1rem;
+  transition: border-color 0.3s;
+  background-color: rgb(21, 29, 41);
+}
+
+.envoltorio-campo-input:focus {
+  border: 1px solid #007bff; /* Borda azul */
+}
+
+.envoltorio-campo-input:hover {
+  border: 1px solid #007bff; /* Borda azul */
+}
+
+.icone-campo-input {
+  margin-right: 0.5rem;
+  color: #007bff;
+}
+
+.campo-input {
+  height: 24px;
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 2px;
+  font-size: 1rem;
+  color: #aaa;
+  border-radius: 4px;
+  background-color: rgb(21, 29, 41);
+  font-family: "Roboto", sans-serif;
+  font-size: 0.875rem;
+}
+
+.campo-input::placeholder {
+  color: #aaa;
+  font-size: 0.875rem;
+  font-weight: 300;
+}
+
+/* --------------------------- */

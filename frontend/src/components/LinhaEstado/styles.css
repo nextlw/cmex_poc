@@ -1,0 +1,18 @@
+/* Estilos específicos do LinhaEstado */
+.linha-estado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: rgba(31, 41, 55, 0.5);
+  border-radius: 0.25rem;
+}
+
+.uf {
+  font-weight: 600;
+  color: white;
+}
+
+.aliquota {
+  color: rgb(156, 163, 175);
+} 

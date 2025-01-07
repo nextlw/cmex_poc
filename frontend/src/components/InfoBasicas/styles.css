@@ -1,0 +1,35 @@
+/* Estilos específicos do InfoBasicas */
+.info-basicas {
+  background-color: rgba(17, 24, 39, 0.5);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-white {
+  color: white;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+
+.text-gray-300 {
+  color: rgb(209, 213, 219);
+}
+
+.font-medium {
+  font-weight: 500;
+}

@@ -1,3 +1,14 @@
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_APP_SUPABASE_URL: string;
+  // ...outras variáveis...
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 import { createClient } from "@supabase/supabase-js";
 
 // Parâmetros do client

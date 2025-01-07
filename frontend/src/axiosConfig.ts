@@ -4,10 +4,12 @@ import axios from "axios";
 const isLocal =
   typeof window !== "undefined" && window.location.hostname === "localhost";
 
-// Ajuste aqui para a porta correta do servidor backend
-const baseURL = isLocal
-  ? "http://localhost:8000" // Porta configurada no main.py
-  : "https://pocrender-569a.onrender.com"; // Sua API em produção
+// Força o uso da API local para testes
+const baseURL = "http://localhost:8000";
+// Configuração original comentada
+// const baseURL = isLocal
+//   ? "http://localhost:8000"
+//   : "https://pocrender-569a.onrender.com";
 
 const axiosInstance = axios.create({
   baseURL,

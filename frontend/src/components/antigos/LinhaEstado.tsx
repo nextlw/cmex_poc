@@ -1,5 +1,5 @@
 import React from "react";
-import { EstadoICMS } from "../types";
+import { EstadoICMS } from "../../types";
 
 interface LinhaEstadoProps {
   estado: EstadoICMS;
