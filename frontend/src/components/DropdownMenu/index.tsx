@@ -7,7 +7,7 @@ import {
   regimeOptions,
   reductionOptions,
 } from "./types";
-import SelectWrapper from "../SelectWrapper";
+import Select from "../Select";
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
   const [selectedState, setSelectedState] = useState<string | null>(null);
@@ -37,7 +37,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
           </h2>
         </div>
         <div className="grid grid-cols-4 gap-2 w-full">
-          <SelectWrapper
+          <Select
             label="Estado de origem do produto?"
             options={stateOptions}
             value={selectedState}
@@ -48,7 +48,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             placeholder="Estado"
             handleParentChange={handleChange}
           />
-          <SelectWrapper
+          <Select
             label="Qual a operação do produto?"
             options={operationOptions}
             value={selectedOperation}
@@ -59,7 +59,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             placeholder="Operação"
             handleParentChange={handleChange}
           />
-          <SelectWrapper
+          <Select
             label="Regime tributário da empresa?"
             options={regimeOptions}
             value={selectedRegime}
@@ -70,7 +70,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             placeholder="Regime"
             handleParentChange={handleChange}
           />
-          <SelectWrapper
+          <Select
             label="Reduções ou isenções locais?"
             options={reductionOptions}
             value={selectedReduction}

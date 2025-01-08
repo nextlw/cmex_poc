@@ -1,16 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./styles.css";
-import { SelectWrapperProps } from "./types";
+import { SelectProps } from "./types";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 
-const SelectWrapper: React.FC<SelectWrapperProps> = ({
+const Select: React.FC<SelectProps> = ({
   label,
   options,
   value,
   onChange,
   placeholder,
   handleParentChange,
-}) => {
+  style = { width: "100%" },
+}): React.JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +40,10 @@ const SelectWrapper: React.FC<SelectWrapperProps> = ({
   };
 
   return (
-    <div className="select-wrapper flex flex-col h-[64px] justify-between gap-y-1">
+    <div
+      className="select-wrapper flex flex-col h-[64px] justify-between gap-y-1"
+      style={style}
+    >
       <label className="text-gray-200 text-xs font-regular">{label}</label>
       <div
         className="flex-1 flex items-end text-gray-200 text-xs font-regular"
@@ -75,4 +79,4 @@ const SelectWrapper: React.FC<SelectWrapperProps> = ({
   );
 };
 
-export default SelectWrapper;
+export default Select;

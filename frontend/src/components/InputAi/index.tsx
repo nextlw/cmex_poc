@@ -139,7 +139,7 @@ const InputAi: React.FC<InputAiProps> = ({
           }}
         >
           <Button
-            onClick={onButtonClick} // Usar prop para o clique do botão
+            onClick={onButtonClick} // Usa prop para o clique do botão
             isLoading={isLoading}
             icon={<BiSearch />}
             style={{

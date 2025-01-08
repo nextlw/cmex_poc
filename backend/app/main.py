@@ -156,7 +156,7 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
 
             {{
             "ncm": "XX.XX.XX.XX",
-            "descricao": "Texto",
+            "descricao": "Uma breve descrição do porque a ncm pertence a este produto",
             "atributos": ["..."],
             "atributos_tipi": ["..."],
             "valores_de_impostos": {{
@@ -193,8 +193,8 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
         response = gemini.generate_content(
             prompt,
             generation_config={
-                "temperature": 0.1,     # ou 0.1 para reduzir ao máximo a "criatividade"
-                "max_output_tokens": 1000
+                "temperature": 0.2,     # ou 0.1 para reduzir ao máximo a "criatividade"
+                "max_output_tokens": 500
             },
             safety_settings={},
             stream=False
