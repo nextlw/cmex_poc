@@ -1,0 +1,38 @@
+.bellIcon {
+  cursor: pointer;
+  color: #fff;
+}
+
+.notificationsMenu {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  width: 280px;
+  z-index: 100;
+}
+
+.notificationItem {
+  display: flex;
+  padding: 8px;
+}
+
+.notificationContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-left: 8px;
+}
+
+.notificationTitle {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.notificationButtons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}

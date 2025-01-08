@@ -41,24 +41,28 @@ const Select: React.FC<SelectProps> = ({
 
   return (
     <div
-      className="select-wrapper flex flex-col h-[64px] justify-between gap-y-1"
+      className="select-wrapper flex flex-col h-[62px] justify-between"
       style={style}
     >
-      <label className="text-gray-200 text-xs font-regular">{label}</label>
+      <label className="text-gray-200 text-xs font-regular pl-1 pb-0">
+        {label}
+      </label>
       <div
-        className="flex-1 flex items-end text-gray-200 text-xs font-regular"
+        className="flex-1 flex items-end text-gray-200 font-regular"
         ref={dropdownRef}
       >
         <div className="dropdown">
           <button
             type="button"
-            className="dark-select flex justify-between items-center w-full text-left"
+            className="dark-select w-full text-left"
             onClick={toggleDropdown}
           >
             {value
               ? options.find((opt) => opt.value === value)?.label
               : placeholder}
-            {isOpen ? <BiChevronUp /> : <BiChevronDown />}
+            <span className="icon">
+              {isOpen ? <BiChevronUp /> : <BiChevronDown />}
+            </span>
           </button>
           {isOpen && (
             <ul className="options-list">

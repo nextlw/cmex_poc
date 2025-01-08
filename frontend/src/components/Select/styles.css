@@ -5,18 +5,27 @@
 }
 
 .dark-select {
-  background-color: #1f2937;
+  background-color: #19222e;
   border: 1px solid #374151;
   color: #fff;
-  padding: 8px 12px;
+  padding: 8px 24px 8px 16px;
   border-radius: 4px;
   outline: none;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
-  display: flex;
+  display: flow-root;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px; /* Espaçamento acima */
+  white-space: nowrap; /* Impede a quebra de linha */
+  overflow: hidden; /* Esconde o texto que ultrapassa o limite */
+  text-overflow: ellipsis; /* Adiciona "..." ao final do texto truncado */
+}
+
+.dark-select .icon {
+  position: absolute;
+  right: 16px; /* Posiciona a seta 8px antes do final */
+  top: 30%; /* Centraliza verticalmente */
+  pointer-events: none; /* Garante que a seta não interfira no clique do botão */
 }
 
 .dark-select:hover {
@@ -52,6 +61,9 @@
   padding: 8px 12px;
   color: #fff;
   cursor: pointer;
+  white-space: nowrap; /* Impede a quebra de linha */
+  overflow: hidden; /* Esconde o texto que ultrapassa o limite */
+  text-overflow: ellipsis; /* Adiciona "..." ao final do texto truncado */
 }
 
 .option-item:hover {

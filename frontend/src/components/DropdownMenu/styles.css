@@ -20,6 +20,14 @@
   flex-shrink: 0;
 }
 
-/* Removido: estilos do SelectWrapper */
-
-/* --------------------------- */
+.box-conteiner {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: rgb(255 255 255);
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: rgb(75 85 99 / 0.5);
+  background-color: rgb(55 65 81 / 0.5);
+}

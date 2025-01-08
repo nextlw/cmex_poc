@@ -36,6 +36,8 @@ import DropdownMenu from "../../components/DropdownMenu";
 // Importa o tipo SelectionData do DropdownMenu
 import { SelectionData } from "../../components/DropdownMenu/types";
 import Header from "../../components/Header";
+import PageHeader from "../../components/PageHeader";
+import { AiFillCodeSandboxCircle } from "react-icons/ai";
 
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
@@ -147,40 +149,54 @@ const HomePage: React.FC = () => {
   // Retorna a estrutura visual do componente
   return (
     <div className="min-h-screen">
-      <Header selectedModel={selectedModel} onModelChange={handleModelChange} />
-      <div className="p-1">
-        <div className="max-w-4xl mx-auto">
+      <Header
+        selectedModel={selectedModel}
+        onModelChange={handleModelChange}
+        modeloSelecionado={null}
+        aoMudarModelo={function (valor: string | null): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
+      <PageHeader
+        icon={<AiFillCodeSandboxCircle />}
+        title="Busca Inteligente de NCM"
+      />
+
+      <div>
+        <div className="max-w-7xl mx-auto">
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-            <div className="flex gap-2">
-              <InputAi
-                width="100%"
-                value={pesquisa}
-                onChange={handleChange}
-                onKeyPress={handleKeyPress}
-                isLoading={isLoading}
-                placeholder="Digite o nome do produto"
-                onButtonClick={handleSearch}
-              />
-            </div>
-            <div className="space-y-4">
-              <div>
+            <div className="box-conteiner-search shadow-md">
+              <div className="shadow-input">
+                <InputAi
+                  width="100%"
+                  value={pesquisa}
+                  onChange={handleChange}
+                  onKeyPress={handleKeyPress}
+                  isLoading={isLoading}
+                  placeholder="Digite o nome do produto"
+                  onButtonClick={handleSearch}
+                />
+              </div>
+              <div className="p-4 pb-2">
                 <DropdownMenu onSelectionChange={handleDropdownChange} />
               </div>
-              <div className="box-conteiner mt-8 space-y-6">
+            </div>
+            <div className="gap-4">
+              <div>
                 {sugerirNCM.map((item, index) => (
-                  <div key={index} className="rounded-lg backdrop-blur-sm mt-4">
-                    <InfoBasicas ncm={item.ncm} descricao={item.descricao} />
-                    <div className="mt-4">
+                  <div key={index} className="grid grid-cols-2 gap-3 w-full">
+                    <div className="col-span-1 h-full">
+                      <InfoBasicas ncm={item.ncm} descricao={item.descricao} />
+                    </div>
+                    <div className="box-conteiner-dados grid-flow-row font-medium">
                       <Atributos
                         atributos={item.atributos}
                         atributos_tipi={item.atributos_tipi}
                         isLoading={isLoading}
                       />
                     </div>
-                    <div className="mt-4">
-                      <h3 className="text-xl font-semibold text-white mb-2">
-                        Classificação Tributária
-                      </h3>
+
+                    <div className="col-span-2">
                       <BoxdeImpostos
                         classificacao={item.classificacao_tributaria}
                       />
@@ -188,9 +204,9 @@ const HomePage: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <div className="box-conteiner p-4">
+              <div className="box-conteiner-dados gap-4">
                 <div
-                  className="flex items-center cursor-pointer"
+                  className="flex items-center cursor-pointer gap-2"
                   onClick={() => setIsTabelaICMSOpen(!isTabelaICMSOpen)}
                 >
                   <h3 className="text-xl font-semibold text-white mr-2">
@@ -209,7 +225,7 @@ const HomePage: React.FC = () => {
                   </div>
                 )}
               </div>
-              <div className="box-conteiner p-4 rounded-lg w-full flex flex-col gap-4">
+              <div className="box-conteiner-dados">
                 <InputField
                   width="100%"
                   placeholder="Nos conte como foi a sua pesquisa?"

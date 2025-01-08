@@ -57,8 +57,13 @@ export const operationOptions: DropdownOption[] = [
 ];
 
 export const regimeOptions: DropdownOption[] = [
-  { label: "Cumulativo", value: "Cumulativo" },
-  { label: "Não cumulativo", value: "Não cumulativo" },
+  {
+    label: "MEI (Microempreendedor Individual)",
+    value: "MEI (Microempreendedor Individual)",
+  },
+  { label: "Simples Nacional", value: "Simples Nacional" },
+  { label: "Lucro Presumido", value: "Lucro Presumido" },
+  { label: "Lucro Real", value: "Lucro Real" },
 ];
 
 export const taxationOptions: DropdownOption[] = [

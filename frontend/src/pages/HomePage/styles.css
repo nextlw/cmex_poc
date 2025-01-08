@@ -1,18 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Estilos específicos do LoginForm */
+/* Estilos específicos da home */
 .min-h-screen {
   min-height: 100vh;
 }
 
 .max-w-4xl {
   max-width: 56rem;
-}
-
-.space-y-6 > * + * {
-  margin-top: 1.5rem;
 }
 
 .bg-gray-800\/50 {
@@ -29,4 +21,45 @@
 
 .text-gray-500 {
   color: rgb(107, 114, 128);
+}
+
+.box-conteiner-dados {
+  padding-left: 16px;
+  padding-right: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  color: rgb(255 255 255);
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: rgba(71, 131, 208, 0.5);
+  background-color: rgb(55 65 81 / 0.5);
+  display: flow-root;
+  gap: 16px;
+}
+
+.box-conteiner-search {
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  color: rgb(255 255 255);
+  border-width: 1px;
+  border-color: rgba(71, 131, 208, 0.5);
+  background-color: rgb(55 65 81 / 0.5);
+  display: flow-root;
+  gap: 16px;
+}
+
+.shadow-input {
+  --tw-shadow: 0 40px 50px 5px rgba(0, 0, 0, 0.4),
+    0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --tw-shadow-colored: 0 50px 25px -3px var(--tw-shadow-color),
+    0 4px 6px -4px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 2 #0000),
+    var(--tw-ring-shadow, 0 2 #0000), var(--tw-shadow);
+  border-radius: 100%;
 }

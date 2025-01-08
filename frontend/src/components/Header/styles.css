@@ -1,14 +1,51 @@
 header {
+  display: flex;
   position: fixed;
+  flex-direction: row;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
   height: 56px;
   z-index: 50;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 24px;
+  border-bottom: 1px solid rgba(71, 131, 208, 0.5);
 }
 
-/* Adicionar padding-top ao corpo para compensar o header fixo */
-body {
-  padding-top: 56px; /* Ajustado para a nova altura do header */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: normal;
+  color: white;
+}
+
+.bg-header {
+  --tw-bg-opacity: 1;
+  background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1)) /* #1e293b */;
+  border-color: rgba(71, 131, 208, 0.5);
+}
+
+.shadow-header {
+  --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 10px 25px -3px var(--tw-shadow-color),
+    0 4px 6px -4px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+/* Classes para ícones no modo dark e light */
+.icon-dark {
+  color: white;
+}
+
+.icon-light {
+  color: blue;
 }

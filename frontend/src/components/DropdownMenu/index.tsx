@@ -30,11 +30,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
 
   return (
     <>
-      <div className="box-conteiner bg-gray-800 p-4 rounded-lg w-full flex flex-col gap-4">
+      <div>
         <div className="w-full">
-          <h2 className="text-md font-regular text-white">
+          {/* <h2 className="text-md font-regular text-white">
             Selecione as opções abaixo para uma resposta mais acertiva:
-          </h2>
+          </h2> */}
         </div>
         <div className="grid grid-cols-4 gap-2 w-full">
           <Select

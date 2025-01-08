@@ -8,4 +8,5 @@ export interface InputAiProps {
   onBlur?: () => void;
   readOnly?: boolean;
   onButtonClick?: () => void;
+  style?: React.CSSProperties;
 }

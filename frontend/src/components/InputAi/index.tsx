@@ -46,7 +46,8 @@ const InputAi: React.FC<InputAiProps> = ({
   onBlur,
   isLoading = false,
   onButtonClick = () => {}, // Provide default empty function
-}) => {
+  style,
+}): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
