@@ -68,9 +68,9 @@ class ValoresdeImpostos(BaseModel):
 
 
 class SugerirNCM(BaseModel):
-    ncm: str
-    descricao: str
-    atributos: List[str] = []
+    ncm: str = Field(..., description="Código NCM do produto")
+    descricao: str = Field(..., description="Descrição do produto")
+    atributos: List[str] = Field(default=[], description="Lista de atributos do produto")
     
     # Aqui usamos Field com default para caso o JSON venha sem "valores_de_impostos"
     valores_de_impostos: ValoresdeImpostos
@@ -117,7 +117,7 @@ class SugerirNCM(BaseModel):
             "examples": [
                 {
                     "ncm": "12345678",
-                    "descricao": "Exemplo de produto",
+                    "descricao": "Descrição do produto de acordo com a ncm encontrada",
                     "atributos": [],
                     "valores_de_impostos": {
                         "ipi": "0%",
@@ -156,9 +156,9 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
 
             {{
             "ncm": "XX.XX.XX.XX",
-            "descricao": "Uma breve descrição do porque a ncm pertence a este produto",
-            "atributos": ["..."],
-            "atributos_tipi": ["..."],
+            "descricao": "Uma breve descrição do produto com base nas características da ncm encontrada",
+            "atributos": ["...cada atributo deve ter como foco o produto que será cadastrado na duimp no novo sistema do governo CISCOMEX"],
+            "atributos_tipi": ["...cada atributo deve der retirado do que tem daquela ncm na tabela tipi 2024"],
             "valores_de_impostos": {{
             "ipi": "valor real do IPI",
             "icms": {{"estado": "valor real do ICMS"}},
@@ -219,7 +219,7 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
                 # Captura as chaves que vêm do modelo
                 atributos = item.get("atributos", [])
                 atributos_tipi = item.get("atributos_tipi", [])
-                descricao = item.get("decricao", "")
+                descricao = item.get("descricao", "")
 
                 # Criar objeto SugerirNCM com nomes coerentes ao front-end
                 sugestoes.append(

@@ -9,11 +9,50 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
     <div className="info-basicas">
       {" "}
       {/* Define a div principal com a classe CSS "box-impostos" */}
-      <div className=" gap-4">
+      <div className=" gap-4 w-full">
         {" "}
-        <h3 className="text-xl font-semibold text-white mb-2 gap-2 flex items-center">
-          <TbReceiptTax /> Classificação Tributária
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-semibold text-white gap-2 flex items-center w-m-fit">
+            <TbReceiptTax /> Classificação Tributária
+          </h3>
+          <div className="flex space-x-16">
+            {" "}
+            {/* Define uma margem superior */}
+            <div className="flex space-x-4 w-full">
+              {" "}
+              {/* Define um layout flexível com espaçamento horizontal */}
+              <div className="flex items-center w-full">
+                {" "}
+                {/* Define um layout flexível centralizado verticalmente */}
+                <span className="box-resultado ml-2 text-gray-300 font-medium mr-2">
+                  Monofásico: {/* Texto "Monofásico:" */}
+                  <span
+                    className={`text-${classificacao.monofasico ? "green" : "red"
+                      }-500`}
+                  >
+                    {classificacao.monofasico ? "Sim" : "Não"}{" "}
+                    {/* Exibe "Sim" ou "Não" baseado no valor de monofasico */}
+                  </span>
+                </span>{" "}
+
+              </div>
+              <div className="flex items-center w-full min-w-fit">
+                {" "}
+                {/* Define um layout flexível centralizado verticalmente */}
+                <span className="box-resultado text-gray-300 font-medium  mr-2">
+                  Alíquota Zero: {/* Texto "Alíquota Zero:" */}
+                  <span
+                    className={`text-${classificacao.aliquota_zero ? "green" : "red"
+                      }-500`}
+                  >
+                    {classificacao.aliquota_zero ? "Sim" : "Não"}{" "}
+                    {/* Exibe "Sim" ou "Não" baseado no valor de aliquota_zero */}
+                  </span>
+                </span>{" "}
+              </div>
+            </div>
+          </div>
+        </div>
         <hr className="border-gray-600 my-3" />
         {/* Define um grid com 2 colunas e espaçamento de 4 */}
         <div className="">
@@ -23,12 +62,12 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
             {" "}
             {/* Define um espaço vertical entre os elementos */}
             <p className="text-gray-300">
-              <span className="box-resultado font-medium">Entrada:</span>{" "}
-              {classificacao.ipi_entrada} {/* Exibe o valor de ipi_entrada */}
+              <span className="box-resultado font-medium">Entrada: {classificacao.ipi_entrada} {/* Exibe o valor de ipi_entrada */}</span>{" "}
+
             </p>
             <p className="text-gray-300">
-              <span className="box-resultado font-medium">Saída:</span>{" "}
-              {classificacao.ipi_saida} {/* Exibe o valor de ipi_saida */}
+              <span className="box-resultado font-medium">Saída: {classificacao.ipi_saida} {/* Exibe o valor de ipi_saida */}</span>{" "}
+
             </p>
           </div>
         </div>
@@ -39,12 +78,12 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
             {" "}
             {/* Define um espaço vertical entre os elementos */}
             <p className="text-gray-300">
-              <span className="box-resultado font-medium">Entrada:</span>{" "}
-              {classificacao.pis_entrada} {/* Exibe o valor de pis_entrada */}
+              <span className="box-resultado font-medium">Entrada: {classificacao.pis_entrada} {/* Exibe o valor de pis_entrada */}</span>{" "}
+
             </p>
             <p className="text-gray-300">
-              <span className="box-resultado font-medium">Saída:</span>{" "}
-              {classificacao.pis_saida} {/* Exibe o valor de pis_saida */}
+              <span className="box-resultado font-medium">Saída: {classificacao.pis_saida} {/* Exibe o valor de pis_saida */}</span>{" "}
+
             </p>
           </div>
         </div>
@@ -55,13 +94,13 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
             {" "}
             {/* Define um espaço vertical entre os elementos */}
             <p className="text-gray-300">
-              <span className="box-resultado font-medium">Entrada:</span>{" "}
-              {classificacao.cofins_entrada}{" "}
-              {/* Exibe o valor de cofins_entrada */}
+              <span className="box-resultado font-medium">Entrada: {classificacao.cofins_entrada}{" "}
+                {/* Exibe o valor de cofins_entrada */}</span>{" "}
+
             </p>
             <p className="text-gray-300">
-              <span className="box-resultado font-medium">Saída:</span>{" "}
-              {classificacao.cofins_saida} {/* Exibe o valor de cofins_saida */}
+              <span className="box-resultado font-medium">Saída: {classificacao.cofins_saida} {/* Exibe o valor de cofins_saida */}</span>{" "}
+
             </p>
           </div>
           <div>
@@ -71,54 +110,14 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
               {" "}
               {/* Define um espaço vertical entre os elementos */}
               <p className="text-gray-300">
-                <span className="box-resultado font-medium">Entrada:</span>{" "}
-                {classificacao.cst_entrada} {/* Exibe o valor de cst_entrada */}
+                <span className="box-resultado font-medium">Entrada: {classificacao.cst_entrada} {/* Exibe o valor de cst_entrada */}</span>{" "}
+
               </p>
               <p className="text-gray-300">
-                <span className="box-resultado font-medium">Saída:</span>{" "}
-                {classificacao.cst_saida} {/* Exibe o valor de cst_saida */}
+                <span className="box-resultado font-medium">Saída: {classificacao.cst_saida} {/* Exibe o valor de cst_saida */}</span>{" "}
+
               </p>
             </div>
-          </div>
-        </div>
-      </div>
-      <div className="mt-4">
-        {" "}
-        {/* Define uma margem superior */}
-        <div className="flex space-x-4">
-          {" "}
-          {/* Define um layout flexível com espaçamento horizontal */}
-          <div className="flex items-center">
-            {" "}
-            {/* Define um layout flexível centralizado verticalmente */}
-            <span className="box-resultado ml-2 text-gray-300 font-medium mr-2">
-              Monofásico:
-            </span>{" "}
-            {/* Texto "Monofásico:" */}
-            <span
-              className={`text-${
-                classificacao.monofasico ? "green" : "red"
-              }-500`}
-            >
-              {classificacao.monofasico ? "Sim" : "Não"}{" "}
-              {/* Exibe "Sim" ou "Não" baseado no valor de monofasico */}
-            </span>
-          </div>
-          <div className="flex items-center">
-            {" "}
-            {/* Define um layout flexível centralizado verticalmente */}
-            <span className="box-resultado text-gray-300 font-medium mr-2">
-              Alíquota Zero:
-            </span>{" "}
-            {/* Texto "Alíquota Zero:" */}
-            <span
-              className={`text-${
-                classificacao.aliquota_zero ? "green" : "red"
-              }-500`}
-            >
-              {classificacao.aliquota_zero ? "Sim" : "Não"}{" "}
-              {/* Exibe "Sim" ou "Não" baseado no valor de aliquota_zero */}
-            </span>
           </div>
         </div>
       </div>

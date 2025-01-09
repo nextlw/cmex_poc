@@ -141,11 +141,6 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const handleSuggestionSelect = (sugerir: SugerirNCM) => {
-    setPesquisa(sugerir.descricao);
-    setSugerirNCM([]);
-  };
-
   // Retorna a estrutura visual do componente
   return (
     <div className="min-h-screen">
@@ -181,11 +176,11 @@ const HomePage: React.FC = () => {
                 <DropdownMenu onSelectionChange={handleDropdownChange} />
               </div>
             </div>
-            <div className="gap-4">
+            <div className="gap-4 space-y-4">
               <div>
                 {sugerirNCM.map((item, index) => (
-                  <div key={index} className="grid grid-cols-2 gap-3 w-full">
-                    <div className="col-span-1 h-full">
+                  <div key={index} className="grid grid-cols-2 gap-3">
+                    <div>
                       <InfoBasicas ncm={item.ncm} descricao={item.descricao} />
                     </div>
                     <div className="box-conteiner-dados grid-flow-row font-medium">
