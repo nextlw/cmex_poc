@@ -370,3 +370,29 @@ export interface RegiaoICMS {
   nome: string;
   estados: EstadoICMS[];
 }
+
+export interface ClassificacaoTributaria {
+  monofasico: boolean;
+  aliquota_zero: boolean;
+  ipi_entrada: string;
+  ipi_saida: string;
+  pis_entrada: string;
+  pis_saida: string;
+  cofins_entrada: string;
+  cofins_saida: string;
+  cst_entrada: string;
+  cst_saida: string;
+}
+
+export interface Sugestao {
+  ncm: string;
+  descricao: string;
+  atributos: string[];
+  aliquotas: {
+    ipi: string;
+    icms: Record<string, string>;
+    pis: string;
+    cofins: string;
+  };
+  classificacao_tributaria: ClassificacaoTributaria;
+}

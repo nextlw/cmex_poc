@@ -1,0 +1,13 @@
+.header-links {
+  font-size: 16px;
+  color: white;
+  display: flex;
+  gap: 16px;
+  color: white;
+}
+
+.header-link-item {
+  font-size: 16px;
+  text-decoration: none;
+  color: inherit;
+}

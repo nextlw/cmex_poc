@@ -1,6 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Adicionar padding-top ao corpo para compensar o header fixo */
+body {
+  padding-top: 32px; /* Ajustado para a nova altura do header */
+  font-family: Roboto, sans-serif !important;
+}
 
 /* ------InputBordaInteligente------ */
 .container-gradiente {
@@ -196,80 +198,5 @@
 /* --------------------------- */
 
 /* ------Tags&Containers------ */
-
-.container-pesquisa {
-  @apply relative w-full;
-}
-
-.container-sugestoes {
-  @apply mt-2 space-y-1 bg-gray-800/50 rounded-lg p-2 backdrop-blur-sm
-  border border-gray-700/50;
-}
-
-.chip-sugestao {
-  @apply p-2 bg-gray-700/50 rounded-lg text-white
-  hover:bg-gray-600/50 cursor-pointer
-  transition-all duration-200
-  flex items-center;
-}
-
-.chip-filtro {
-  @apply px-8 py-2 bg-gray-700/50 text-white rounded-full
-  border border-gray-600/50
-  hover:bg-gray-600/50 cursor-pointer
-  transition-all duration-200;
-}
-
-/* --------------------------- */
-
-/* Estilos para o InputField */
-.container-campo-input {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
-}
-
-.rotulo-campo-input {
-  margin-bottom: 0.5rem;
-  color: #333;
-  font-weight: 500;
-}
-
-.envoltorio-campo-input {
-  width: 100%;
-  min-height: 40px;
-  display: flex;
-  align-items: center;
-  border: 2px solid #007bff; /* Borda azul */
-  border-radius: 98px;
-  padding-left: 1rem;
-  transition: border-color 0.3s;
-}
-
-.envoltorio-campo-input-focado {
-  border-color: #0056b3; /* Borda azul mais escura quando focado */
-}
-
-.icone-campo-input {
-  margin-right: 0.5rem;
-  color: #007bff;
-}
-
-.campo-input {
-  min-height: 44px;
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 4px;
-  font-size: 1rem;
-  color: #aaa;
-  border-radius: 98px;
-  background-color: rgb(21, 29, 41);
-  font-family: "Roboto", sans-serif;
-}
-
-.campo-input::placeholder {
-  color: #aaa;
-}
 
 /* --------------------------- */

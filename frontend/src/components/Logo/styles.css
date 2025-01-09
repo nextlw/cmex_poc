@@ -1,0 +1,12 @@
+.logo {
+  max-height: 32px;
+  width: auto;
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}

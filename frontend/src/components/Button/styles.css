@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos específicos do Button */
+.button {
+  display: inline-flex;
+  padding: 0.5rem 1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.button.primary {
+  background-color: rgb(59, 130, 246);
+  color: white;
+}
+
+.button.primary:hover:not(:disabled) {
+  background-color: rgb(37, 99, 235);
+}
+
+.button.secondary {
+  background-color: rgb(107, 114, 128);
+  color: white;
+}
+
+.button.secondary:hover:not(:disabled) {
+  background-color: rgb(75, 85, 99);
+}
+
+.button.danger {
+  background-color: rgb(239, 68, 68);
+  color: white;
+}
+
+.button.danger:hover:not(:disabled) {
+  background-color: rgb(220, 38, 38);
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.button .icon {
+  margin-right: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.button.loading {
+  position: relative;
+  color: transparent;
+}
+
+.loading-spinner {
+  position: absolute;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,57 @@
+/* Estilos específicos do InfoBasicas */
+.info-basicas {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  color: rgb(255 255 255);
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: rgba(66, 87, 127, 0.5);
+  background-color: rgba(30, 35, 45, 0.5);
+  display: flow-root;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+.box-resultado {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: rgb(255 255 255);
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: rgba(71, 131, 208, 0.5);
+  background-color: rgb(55 65 81 / 0.5);
+  display: flow-root;
+  gap: 16px;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-white {
+  color: white;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+
+.text-gray-300 {
+  color: rgb(209, 213, 219);
+}
+
+.font-medium {
+  font-weight: 500;
+}

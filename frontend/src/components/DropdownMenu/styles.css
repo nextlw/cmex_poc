@@ -1,0 +1,33 @@
+.dropdown-menu {
+  display: flex;
+  gap: 16px;
+  background: transparent 80;
+  width: 100%;
+  position: relative;
+  margin: 0 auto;
+}
+
+.dropdown-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.dropdown-item label {
+  color: #ffffff;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+
+.box-conteiner {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: rgb(255 255 255);
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: rgb(75 85 99 / 0.5);
+  background-color: rgb(55 65 81 / 0.5);
+}
