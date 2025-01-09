@@ -38,15 +38,15 @@ const TabelaICMS: React.FC = () => {
   const regioesICMS = useCarregarDadosICMS();
 
   return (
-    <div className="mt-4">
-      <div className="bg-gray-800/50 rounded-lg p-6 backdrop-blur-sm">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {regioesICMS.map((regiao, index) => (
-            <CardRegiao key={index} regiao={regiao} />
-          ))}
-        </div>
-      </div>
+
+
+    <div className="grid md:grid-cols-2">
+      {regioesICMS.map((regiao, index) => (
+        <CardRegiao key={index} regiao={regiao} />
+      ))}
     </div>
+
+
   );
 };
 

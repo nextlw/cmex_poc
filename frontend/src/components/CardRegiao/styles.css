@@ -1,8 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 .container-sugestoes {
-  @apply mt-2 space-y-1 bg-gray-800/50 rounded-lg p-2 backdrop-blur-sm
-    border border-gray-700/50;
+  background-color: #19222e;
+  border: 1px solid #374151;
+  color: #fff;
+  padding: 8px 24px 8px 16px;
+  border-radius: 4px;
+  outline: none;
+  font-size: 14px;
+  cursor: pointer;
+  display: flow-root;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap; /* Impede a quebra de linha */
+  overflow: hidden; /* Esconde o texto que ultrapassa o limite */
+  text-overflow: ellipsis; /* Adiciona "..." ao final do texto truncado */
 }

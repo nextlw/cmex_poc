@@ -42,7 +42,7 @@ import { AiFillCodeSandboxCircle } from "react-icons/ai";
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
   const [pesquisa, setPesquisa] = useState("");
-  const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string | null>("Gemini-1.5-pro");
   const [dropdownSelection, setDropdownSelection] =
     useState<SelectionData | null>(null);
   const [sugerirNCM, setSugerirNCM] = useState<SugerirNCM[]>([
@@ -95,10 +95,25 @@ const HomePage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const response = await axiosInstance.post("/gemini", {
-        consulta: pesquisa,
-        ...dropdownSelection,
-      });
+      let response;
+
+      if (selectedModel === "Gemini-1.5-pro") {
+        response = await axiosInstance.post("/gemini", {
+          consulta: pesquisa,
+          ...dropdownSelection,
+        });
+      } else if (selectedModel === "GPT-4") {
+        response = await axiosInstance.post("/gpt4", {
+          consulta: pesquisa,
+          ...dropdownSelection,
+        });
+      } else if (selectedModel === "Lama-3.2" || selectedModel === "Nexcode-0.1") {
+        setErrorMessage("A API selecionada ainda não está funcionando.");
+        setSugerirNCM([]);
+        setIsLoading(false);
+        return;
+      }
+
       console.log("Resposta do backend:", response.data);
       if (!response.data.precisa) {
         setErrorMessage(
@@ -146,11 +161,9 @@ const HomePage: React.FC = () => {
     <div className="min-h-screen">
       <Header
         selectedModel={selectedModel}
-        onModelChange={handleModelChange}
-        modeloSelecionado={null}
-        aoMudarModelo={function (valor: string | null): void {
-          throw new Error("Function not implemented.");
-        }}
+        onModelChange={setSelectedModel}
+        modeloSelecionado={selectedModel}
+        aoMudarModelo={handleModelChange}
       />
       <PageHeader
         icon={<AiFillCodeSandboxCircle />}
@@ -215,7 +228,9 @@ const HomePage: React.FC = () => {
                   </span>
                 </div>
                 {isTabelaICMSOpen && (
+
                   <div>
+                    <hr className="border-gray-600 my-4" />
                     <TabelaICMS />
                   </div>
                 )}
