@@ -14,14 +14,24 @@ class ConsultaProduto(BaseModel):
 class ClassificacaoTributaria(BaseModel):
     monofasico: bool = Field(False, description="Indica se o produto é monofásico")
     aliquota_zero: bool = Field(False, description="Indica se o produto possui alíquota zero")
-    ipi_entrada: str = Field("não tributado", description="Alíquota de IPI na entrada")
-    ipi_saida: str = Field("não tributado", description="Alíquota de IPI na saída")
-    pis_entrada: str = Field("não tributado", description="Alíquota de PIS na entrada")
-    pis_saida: str = Field("não tributado", description="Alíquota de PIS na saída")
-    cofins_entrada: str = Field("não tributado", description="Alíquota de COFINS na entrada")
-    cofins_saida: str = Field("não tributado", description="Alíquota de COFINS na saída")
+    ipi_entrada: Union[str, int, float] = Field("não tributado", description="Alíquota de IPI na entrada")
+    ipi_saida: Union[str, int, float] = Field("não tributado", description="Alíquota de IPI na saída")
+    pis_entrada: Union[str, int, float] = Field("não tributado", description="Alíquota de PIS na entrada")
+    pis_saida: Union[str, int, float] = Field("não tributado", description="Alíquota de PIS na saída")
+    cofins_entrada: Union[str, int, float] = Field("não tributado", description="Alíquota de COFINS na entrada")
+    cofins_saida: Union[str, int, float] = Field("não tributado", description="Alíquota de COFINS na saída")
     cst_entrada: str = Field("sem CST", description="Código CST de entrada")
     cst_saida: str = Field("sem CST", description="Código CST de saída")
+
+    def __init__(self, **data):
+        # Converte valores numéricos para string com "não tributado" como padrão
+        for field in ['ipi_entrada', 'ipi_saida', 'pis_entrada', 'pis_saida', 'cofins_entrada', 'cofins_saida']:
+            if field in data:
+                if data[field] in [0, 0.0]:
+                    data[field] = "não tributado"
+                elif not isinstance(data[field], str):
+                    data[field] = str(data[field])
+        super().__init__(**data)
 
 
 class ValoresdeImpostos(BaseModel):
