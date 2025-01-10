@@ -1,0 +1,1 @@
+# Transforma a pasta schemas em um módulo do Python
