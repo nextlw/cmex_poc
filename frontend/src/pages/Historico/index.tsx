@@ -4,6 +4,7 @@ import PageHeader from "../../components/PageHeader";
 import { AiOutlineHistory } from "react-icons/ai";
 import "./styles.css";
 import { HistoricoItem } from './types';
+import axiosInstance from "../../axiosConfig";
 
 const HistoricoPage: React.FC = () => {
   const [historico, setHistorico] = useState<HistoricoItem[]>([]);
@@ -16,13 +17,21 @@ const HistoricoPage: React.FC = () => {
 
   const fetchHistorico = async () => {
     try {
-      const response = await fetch('/api/historico');
-      const data = await response.json();
-      setHistorico(data.sort((a: HistoricoItem, b: HistoricoItem) => 
-        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-      ));
+      console.log("Buscando histórico..."); // Debug
+      const response = await axiosInstance.get("/historico");
+      console.log("Resposta do histórico:", response.data); // Debug
+      
+      if (Array.isArray(response.data)) {
+        setHistorico(response.data.sort((a: HistoricoItem, b: HistoricoItem) => 
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        ));
+      } else {
+        console.error("Dados do histórico não são um array:", response.data);
+        setHistorico([]);
+      }
     } catch (error) {
       console.error("Erro ao buscar histórico:", error);
+      setHistorico([]);
     } finally {
       setIsLoading(false);
     }
