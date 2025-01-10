@@ -42,7 +42,7 @@ import { AiFillCodeSandboxCircle } from "react-icons/ai";
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
   const [pesquisa, setPesquisa] = useState("");
-  const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string | null>("Gemini-1.5-pro");
   const [dropdownSelection, setDropdownSelection] =
     useState<SelectionData | null>(null);
   const [sugerirNCM, setSugerirNCM] = useState<SugerirNCM[]>([
@@ -95,16 +95,26 @@ const HomePage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const response = await axiosInstance.post("/gemini", {
-        consulta: pesquisa,
-        ...dropdownSelection,
-      });
-      console.log("Resposta do backend:", response.data);
-      if (!response.data.precisa) {
-        setErrorMessage(
-          "Para uma resposta mais precisa, selecione todos os campos do dropdown."
-        );
+      let response;
+
+      if (selectedModel === "Gemini-1.5-pro") {
+        response = await axiosInstance.post("/gemini", {
+          consulta: pesquisa,
+          ...dropdownSelection,
+        });
+      } else if (selectedModel === "GPT-4") {
+        response = await axiosInstance.post("/gpt4", {
+          consulta: pesquisa,
+          ...dropdownSelection,
+        });
+      } else {
+        setErrorMessage("A API selecionada ainda não está funcionando.");
+        setSugerirNCM([]);
+        setIsLoading(false);
+        return;
       }
+
+      console.log("Resposta do backend:", response.data);
       setSugerirNCM(response.data);
     } catch (error) {
       console.error("Erro ao buscar sugestões:", error);
@@ -141,21 +151,14 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const handleSuggestionSelect = (sugerir: SugerirNCM) => {
-    setPesquisa(sugerir.descricao);
-    setSugerirNCM([]);
-  };
-
   // Retorna a estrutura visual do componente
   return (
     <div className="min-h-screen">
       <Header
         selectedModel={selectedModel}
-        onModelChange={handleModelChange}
-        modeloSelecionado={null}
-        aoMudarModelo={function (valor: string | null): void {
-          throw new Error("Function not implemented.");
-        }}
+        onModelChange={setSelectedModel}
+        modeloSelecionado={selectedModel}
+        aoMudarModelo={handleModelChange}
       />
       <PageHeader
         icon={<AiFillCodeSandboxCircle />}
@@ -181,11 +184,11 @@ const HomePage: React.FC = () => {
                 <DropdownMenu onSelectionChange={handleDropdownChange} />
               </div>
             </div>
-            <div className="gap-4">
+            <div className="gap-4 space-y-4">
               <div>
                 {sugerirNCM.map((item, index) => (
-                  <div key={index} className="grid grid-cols-2 gap-3 w-full">
-                    <div className="col-span-1 h-full">
+                  <div key={index} className="grid grid-cols-2 gap-3">
+                    <div>
                       <InfoBasicas ncm={item.ncm} descricao={item.descricao} />
                     </div>
                     <div className="box-conteiner-dados grid-flow-row font-medium">
@@ -220,7 +223,9 @@ const HomePage: React.FC = () => {
                   </span>
                 </div>
                 {isTabelaICMSOpen && (
+
                   <div>
+                    <hr className="border-gray-600 my-4" />
                     <TabelaICMS />
                   </div>
                 )}

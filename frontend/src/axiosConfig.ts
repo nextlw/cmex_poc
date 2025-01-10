@@ -4,12 +4,10 @@ import axios from "axios";
 const isLocal =
   typeof window !== "undefined" && window.location.hostname === "localhost";
 
-// Força o uso da API local para testes
-const baseURL = "http://localhost:8000";
-// Configuração original comentada
-// const baseURL = isLocal
-//   ? "http://localhost:8000"
-//   : "https://pocrender-569a.onrender.com";
+// Define a URL base
+const baseURL = isLocal
+  ? "http://localhost:8000/api"  // Adicionei /api aqui
+  : "https://pocrender-569a.onrender.com/api";  // Adicionei /api aqui também
 
 const axiosInstance = axios.create({
   baseURL,
@@ -20,9 +18,7 @@ axiosInstance.interceptors.request.use((config) => {
     "sb-qrfxqaovpddcziulqflw-auth-token"
   );
   if (supabaseToken) {
-    config.headers.Authorization = `Bearer ${
-      JSON.parse(supabaseToken).access_token
-    }`;
+    config.headers.Authorization = `Bearer ${JSON.parse(supabaseToken).access_token}`;
   }
   config.headers["Content-Type"] = "application/json";
   return config;

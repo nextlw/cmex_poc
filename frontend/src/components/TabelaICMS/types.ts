@@ -1,19 +1,9 @@
 export interface Estado {
-  nome: string; // anteriormente 'uf'
-  icms: number; // anteriormente 'aliquota' como string
+  nome: string;
+  icms: number;
 }
 
 export interface RegiaoICMS {
   nome: string;
   estados: Estado[];
-}
-
-export interface CardRegiaoProps {
-  regiao: RegiaoICMS;
-}
-
-export interface PropriedadesTooltipImposto {
-  ncm: string;
-  attributes: string[];
-  appliedRules: string[];
 }

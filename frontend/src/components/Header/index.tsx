@@ -15,6 +15,16 @@ const Header: React.FC<HeaderProps> = ({
   modeloSelecionado,
   aoMudarModelo,
 }) => {
+  const handleModelChange = (novoModelo: string | null) => {
+    aoMudarModelo(novoModelo);
+    handleParentChange();
+    console.log(`✅ Modelo alterado com sucesso para: ${novoModelo}`);
+  };
+
+  const handleParentChange = () => {
+    // Função necessária para manter o mesmo padrão do DropdownMenu
+    console.log("Parent change triggered");
+  };
   return (
     <header className="bg-header shadow-header">
       <div className="section-header">
@@ -33,15 +43,15 @@ const Header: React.FC<HeaderProps> = ({
           style={{
             verticalAlign: "middle",
             width: "256px",
-            height: "36px", // Altura fixa para o Select
-            minHeight: "36px", // Garante altura mínima
+            height: "36px",
+            minHeight: "36px",
           }}
           label=""
           options={Modelos}
           value={modeloSelecionado}
-          onChange={aoMudarModelo}
+          onChange={handleModelChange}
           placeholder="Selecione o modelo"
-          handleParentChange={() => {}}
+          handleParentChange={handleParentChange}
         />
         <Notifications className="icon-dark" />
         <span className="user-name">Usuário</span>
