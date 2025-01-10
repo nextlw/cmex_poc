@@ -8,7 +8,6 @@ import HeaderLinks from "../HeaderLinks";
 import Avatar from "../Avatar";
 import Notifications from "../Notifications";
 import { HeaderProps } from "./types";
-import { FaBars } from "react-icons/fa";
 import { AiOutlineMenu } from "react-icons/ai";
 
 const Header: React.FC<HeaderProps> = ({

@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
     GOOGLE_MODEL: str = "gemini-1.5-pro"
     
+    # Configurações do Anthropic
+    ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
+    ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
+    
     # Configurações do servidor
     HOST: str = "0.0.0.0"
     PORT: int = 8000
@@ -68,6 +72,11 @@ MODEL_MAPPING = {
         "model_name": settings.GOOGLE_MODEL,
         "max_tokens": 500,
         "temperature": 0.2
+    },
+    "CLAUDE-3": {
+        "model_name": settings.ANTHROPIC_MODEL,  # ou outro modelo Claude disponível
+        "max_tokens": 4096,
+        "temperature": 0.7
     }
 }
 
