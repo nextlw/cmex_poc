@@ -8,6 +8,10 @@ import logging
 
 historico_router = APIRouter()
 
+# Configuração de logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Define o diretório para armazenar os dados
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data")
 CSV_FILE = os.path.join(DATA_DIR, "historico_consultas.csv")
@@ -62,6 +66,11 @@ def gerar_id(modelo: str) -> str:
 @historico_router.post("/historico")
 async def salvar_historico(dados: Dict[str, Any]):
     try:
+        logger.info(f"Recebendo dados para salvar: {dados}")
+        
+        # Garante que o diretório data existe
+        os.makedirs(os.path.dirname(CSV_FILE), exist_ok=True)
+        
         # Garante que o arquivo existe
         criar_arquivo_csv()
         
@@ -81,17 +90,23 @@ async def salvar_historico(dados: Dict[str, Any]):
             "classificacao_tributaria": json.dumps(dados.get('classificacao_tributaria', {}), ensure_ascii=False)
         }
         
+        logger.info(f"Registro formatado: {registro}")
+        
         # Abre o arquivo em modo append
         with open(CSV_FILE, 'a', newline='', encoding='utf-8') as file:
             writer = csv.DictWriter(file, fieldnames=CSV_HEADERS)
             writer.writerow(registro)
         
-        logging.info(f"Registro salvo com sucesso. ID: {id_consulta}")
+        logger.info(f"Registro salvo com sucesso. ID: {id_consulta}")
         return {"success": True, "id": id_consulta}
         
     except Exception as e:
-        logging.error(f"Erro ao salvar histórico: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erro ao salvar histórico: {str(e)}")
+        logger.error(f"Erro ao salvar histórico: {str(e)}")
+        logger.exception("Detalhes do erro:")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Erro ao salvar histórico: {str(e)}"
+        )
 
 @historico_router.get("/historico")
 async def obter_historico():
