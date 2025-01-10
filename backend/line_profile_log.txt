@@ -1,0 +1,261 @@
+Timer unit: 1e-09 s
+
+Total time: 0.000164 s
+File: /Users/williamduarte/.pyenv/versions/3.10.13/lib/python3.10/json/__init__.py
+Function: loads at line 299
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   299                                           def loads(s, *, cls=None, object_hook=None, parse_float=None,
+   300                                                   parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+   301                                               """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+   302                                               containing a JSON document) to a Python object.
+   303                                           
+   304                                               ``object_hook`` is an optional function that will be called with the
+   305                                               result of any object literal decode (a ``dict``). The return value of
+   306                                               ``object_hook`` will be used instead of the ``dict``. This feature
+   307                                               can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+   308                                           
+   309                                               ``object_pairs_hook`` is an optional function that will be called with the
+   310                                               result of any object literal decoded with an ordered list of pairs.  The
+   311                                               return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+   312                                               This feature can be used to implement custom decoders.  If ``object_hook``
+   313                                               is also defined, the ``object_pairs_hook`` takes priority.
+   314                                           
+   315                                               ``parse_float``, if specified, will be called with the string
+   316                                               of every JSON float to be decoded. By default this is equivalent to
+   317                                               float(num_str). This can be used to use another datatype or parser
+   318                                               for JSON floats (e.g. decimal.Decimal).
+   319                                           
+   320                                               ``parse_int``, if specified, will be called with the string
+   321                                               of every JSON int to be decoded. By default this is equivalent to
+   322                                               int(num_str). This can be used to use another datatype or parser
+   323                                               for JSON integers (e.g. float).
+   324                                           
+   325                                               ``parse_constant``, if specified, will be called with one of the
+   326                                               following strings: -Infinity, Infinity, NaN.
+   327                                               This can be used to raise an exception if invalid JSON numbers
+   328                                               are encountered.
+   329                                           
+   330                                               To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+   331                                               kwarg; otherwise ``JSONDecoder`` is used.
+   332                                               """
+   333         2      12000.0   6000.0      7.3      if isinstance(s, str):
+   334         1       1000.0   1000.0      0.6          if s.startswith('\ufeff'):
+   335                                                       raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+   336                                                                             s, 0)
+   337                                               else:
+   338         1       1000.0   1000.0      0.6          if not isinstance(s, (bytes, bytearray)):
+   339                                                       raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+   340                                                                       f'not {s.__class__.__name__}')
+   341         1      32000.0  32000.0     19.5          s = s.decode(detect_encoding(s), 'surrogatepass')
+   342                                           
+   343         2       2000.0   1000.0      1.2      if (cls is None and object_hook is None and
+   344         2          0.0      0.0      0.0              parse_int is None and parse_float is None and
+   345         2       1000.0    500.0      0.6              parse_constant is None and object_pairs_hook is None and not kw):
+   346         2     115000.0  57500.0     70.1          return _default_decoder.decode(s)
+   347                                               if cls is None:
+   348                                                   cls = JSONDecoder
+   349                                               if object_hook is not None:
+   350                                                   kw['object_hook'] = object_hook
+   351                                               if object_pairs_hook is not None:
+   352                                                   kw['object_pairs_hook'] = object_pairs_hook
+   353                                               if parse_float is not None:
+   354                                                   kw['parse_float'] = parse_float
+   355                                               if parse_int is not None:
+   356                                                   kw['parse_int'] = parse_int
+   357                                               if parse_constant is not None:
+   358                                                   kw['parse_constant'] = parse_constant
+   359                                               return cls(**kw).decode(s)
+
+Total time: 4e-06 s
+File: /Users/williamduarte/Documents/Empresa/Projeto/cursorDev/cmex_poc/backend/app/routes/openai.py
+Function: converter_para_booleano at line 18
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    18                                           @profile
+    19                                           def converter_para_booleano(valor):
+    20         2       4000.0   2000.0    100.0      return str(valor).lower() in ['sim', 'true', '1', 'verdadeiro']
+
+Total time: 32.2197 s
+File: /Users/williamduarte/Documents/Empresa/Projeto/cursorDev/cmex_poc/backend/app/routes/openai.py
+Function: obter_sugestoes_gpt4 at line 22
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    22                                           @openai_router.post("/gpt4")
+    23                                           @profile
+    24                                           async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
+    25                                               # Crie o LineProfiler antes do processamento
+    26                                               profiler = LineProfiler()
+    27                                               
+    28                                               try:
+    29                                                   # Adicione as funções que você quer perfilar
+    30                                                   profiler.add_function(json.loads)
+    31                                                   profiler.add_function(converter_para_booleano)
+    32                                                   profiler.add_function(obter_sugestoes_gpt4)
+    33                                                   # Ative o profiler
+    34                                                   profiler.enable()
+    35                                                   
+    36         1       1000.0   1000.0      0.0          start_time = time.time()
+    37                                                   
+    38                                                   # Verifique se a chave de API da OpenAI foi configurada
+    39         1       6000.0   6000.0      0.0          if not settings.OPENAI_API_KEY:
+    40                                                       raise HTTPException(
+    41                                                           status_code=500, 
+    42                                                           detail=ERROR_MESSAGES["api_key_missing"]
+    43                                                       )
+    44                                                   
+    45                                                   # Tempo para verificar a chave da API
+    46         1          0.0      0.0      0.0          api_key_check_time = time.time() - start_time
+    47         1      54000.0  54000.0      0.0          logging.info(f"Tempo para verificar API Key: {api_key_check_time} segundos")
+    48                                                   
+    49         1       1000.0   1000.0      0.0          model_config = MODEL_MAPPING["GPT-4"]
+    50                                                   
+    51                                                   # Use as configurações
+    52         1   36824000.0    4e+07      0.1          client = OpenAI(api_key=settings.OPENAI_API_KEY)
+    53                                                   
+    54         1       8000.0   8000.0      0.0          logging.info(f"Recebendo consulta GPT-4: {consulta_produto.consulta}")
+    55         1       1000.0   1000.0      0.0          texto = consulta_produto.consulta.strip()
+    56         1          0.0      0.0      0.0          if len(texto) < 3:
+    57                                                       return []
+    58                                           
+    59                                                   # Monta o prompt para o modelo
+    60         7       4000.0    571.4      0.0          prompt = f"""
+    61                                                       Você é um especialista em classificação NCM e tributação de produtos.
+    62                                                       Analise o seguinte produto e procure na tabela TIPI.
+    63         1       1000.0   1000.0      0.0              Produto: {consulta_produto.consulta}
+    64         1          0.0      0.0      0.0                  Estado de origem: {consulta_produto.estadoOrigem or 'Não informado'}
+    65         1          0.0      0.0      0.0                  Operação: {consulta_produto.operacao or 'Não informado'}
+    66         1          0.0      0.0      0.0                  Regime tributário: {consulta_produto.regimeTributario or 'Não informado'}
+    67         1          0.0      0.0      0.0                  Tributação: {consulta_produto.tributacao or 'Não informado'}
+    68         1          0.0      0.0      0.0                  Reduções ou isenções locais: {consulta_produto.reducaoOuIsencao or 'Não informado'}
+    69                                                       
+    70                                                       Retorne APENAS um JSON, **SEM** texto adicional, no seguinte formato:
+    71                                           
+    72                                                       {{
+    73                                                       "ncm": "XX.XX.XX.XX",
+    74                                                       "descricao": "Uma breve descrição do produto com base nas características da ncm encontrada",
+    75                                                       "atributos": ["...cada atributo deve ter como foco o produto que será cadastrado na duimp no novo sistema do governo CISCOMEX"],
+    76                                                       "atributos_tipi": ["...cada atributo deve der retirado do que tem daquela ncm na tabela tipi 2024"],
+    77                                                       "valores_de_impostos": {{
+    78                                                       "ipi": "valor real do IPI",
+    79                                                       "icms": {{"estado": "valor real do ICMS"}},
+    80                                                       "pis": "valor real do PIS",
+    81                                                       "cofins": "valor real do COFINS"
+    82                                                       }},
+    83                                                       "classificacao_tributaria": {{
+    84                                                       "monofasico": valor real,
+    85                                                       "aliquota_zero": valor real,
+    86                                                       "ipi_entrada": "valor real do IPI na entrada",
+    87                                                       "ipi_saida": "valor real do IPI na saída",
+    88                                                       "pis_entrada": "valor real do PIS na entrada",
+    89                                                       "pis_saida": "valor real do PIS na saída",
+    90                                                       "cofins_entrada": "valor real do COFINS na entrada",
+    91                                                       "cofins_saida": "valor real do COFINS na saída",
+    92                                                       "cst_entrada": "valor real do CST de entrada",
+    93                                                       "cst_saida": "valor real do CST de saída"
+    94                                                       }}
+    95                                                       }}
+    96                                                   """
+    97                                           
+    98         1       1000.0   1000.0      0.0          logging.info("Enviando prompt para GPT-4")
+    99         1       9000.0   9000.0      0.0          logging.debug(f"Prompt enviado para OpenAI: {prompt}")
+   100                                           
+   101                                                   # Chamada à API da OpenAI
+   102                                                   # Tempo para chamada da API OpenAI
+   103         1       1000.0   1000.0      0.0          start_openai_call = time.time()
+   104         2        3e+10    2e+10     99.9          response = client.chat.completions.create(
+   105         1          0.0      0.0      0.0              model=model_config["model_name"],          # Usa o nome do modelo definido no config
+   106         1       1000.0   1000.0      0.0              messages=[
+   107         1       1000.0   1000.0      0.0                  {"role": "system", "content": "Você é um especialista em classificação NCM e tributação de produtos."},
+   108         1          0.0      0.0      0.0                  {"role": "user", "content": prompt}
+   109                                                       ],
+   110         1          0.0      0.0      0.0              max_tokens=model_config["max_tokens"],     # Usa max_tokens do config
+   111         1          0.0      0.0      0.0              temperature=model_config["temperature"]     # Usa temperature do config
+   112                                                   )
+   113         1       4000.0   4000.0      0.0          openai_call_time = time.time() - start_openai_call
+   114         1      23000.0  23000.0      0.0          logging.info(f"Tempo para chamada OpenAI: {openai_call_time} segundos")
+   115                                           
+   116                                                   # Extrai o conteúdo da resposta
+   117         1       4000.0   4000.0      0.0          content = response.choices[0].message.content.strip()
+   118         1       4000.0   4000.0      0.0          logging.info(f"Resposta da OpenAI: {content}")
+   119                                           
+   120                                                   # Verificação do comprimento da resposta
+   121         1       1000.0   1000.0      0.0          try:
+   122         1      49000.0  49000.0      0.0              data = json.loads(content)
+   123                                           
+   124                                                       # Se não vier lista, transformamos em lista
+   125         1       1000.0   1000.0      0.0              if not isinstance(data, list):
+   126         1       1000.0   1000.0      0.0                  data = [data]
+   127                                           
+   128         1       1000.0   1000.0      0.0              sugestoes = []
+   129         2       1000.0    500.0      0.0              for item in data:
+   130                                                           # Captura as chaves que vêm do modelo
+   131         1       1000.0   1000.0      0.0                  atributos = item.get("atributos", [])
+   132         1          0.0      0.0      0.0                  atributos_tipi = item.get("atributos_tipi", [])
+   133         1          0.0      0.0      0.0                  descricao = item.get("descricao", "")
+   134                                           
+   135                                                           # Criar objeto SugerirNCM com nomes coerentes ao front-end
+   136         2       1000.0    500.0      0.0                  sugestoes.append(
+   137         2      16000.0   8000.0      0.0                      SugerirNCM(
+   138         1          0.0      0.0      0.0                          ncm=item.get("ncm", ""),
+   139         1          0.0      0.0      0.0                          descricao=descricao,
+   140         1          0.0      0.0      0.0                          atributos=atributos,
+   141         2      23000.0  11500.0      0.0                          valores_de_impostos=ValoresdeImpostos(
+   142         1       1000.0   1000.0      0.0                              ipi=item.get("valores_de_impostos", {}).get("ipi", "0%"),
+   143         1       1000.0   1000.0      0.0                              icms=item.get("valores_de_impostos", {}).get("icms", {}),
+   144         1       1000.0   1000.0      0.0                              pis=item.get("valores_de_impostos", {}).get("pis", "1.65%"),
+   145         1       1000.0   1000.0      0.0                              cofins=item.get("valores_de_impostos", {}).get("cofins", "7.6%")
+   146                                                                   ),
+   147         1          0.0      0.0      0.0                          atributos_tipi=atributos_tipi,
+   148         2      13000.0   6500.0      0.0                          classificacao_tributaria=ClassificacaoTributaria(
+   149         1      20000.0  20000.0      0.0                              monofasico=converter_para_booleano(item.get("classificacao_tributaria", {}).get("monofasico", False)),
+   150         1       3000.0   3000.0      0.0                              aliquota_zero=converter_para_booleano(item.get("classificacao_tributaria", {}).get("aliquota_zero", False)),
+   151         1          0.0      0.0      0.0                              ipi_entrada=item.get("classificacao_tributaria", {}).get("ipi_entrada"),
+   152         1          0.0      0.0      0.0                              ipi_saida=item.get("classificacao_tributaria", {}).get("ipi_saida"),
+   153         1          0.0      0.0      0.0                              pis_entrada=item.get("classificacao_tributaria", {}).get("pis_entrada"),
+   154         1          0.0      0.0      0.0                              pis_saida=item.get("classificacao_tributaria", {}).get("pis_saida"),
+   155         1          0.0      0.0      0.0                              cofins_entrada=item.get("classificacao_tributaria", {}).get("cofins_entrada"),
+   156         1          0.0      0.0      0.0                              cofins_saida=item.get("classificacao_tributaria", {}).get("cofins_saida"),
+   157         1          0.0      0.0      0.0                              cst_entrada=item.get("classificacao_tributaria", {}).get("cst_entrada"),
+   158         1          0.0      0.0      0.0                              cst_saida=item.get("classificacao_tributaria", {}).get("cst_saida")
+   159                                                                   )
+   160                                                               )
+   161                                                           )
+   162                                           
+   163         1      91000.0  91000.0      0.0              logging.info(f"Lista parseada com sucesso: {sugestoes}")
+   164         1     136000.0 136000.0      0.0              print(f"Resposta recebida: {sugestoes}")
+   165                                           
+   166                                                       # Loga cada sugestão para debug
+   167         2          0.0      0.0      0.0              for sugestao in sugestoes:
+   168         1     180000.0 180000.0      0.0                  logging.debug(f"Estrutura da sugestão: {sugestao.dict()}")
+   169                                                           
+   170         1      31000.0  31000.0      0.0              resultado = [sugestao.to_frontend_format() for sugestao in sugestoes]
+   171                                                       
+   172                                                       # Desative o profiler
+   173                                                       profiler.disable()
+   174                                                       
+   175                                                       # Capturar saída do perfil
+   176                                                       output = sys.stdout
+   177                                                       profiler.print_stats(output)
+   178                                                       
+   179                                                       # Salvar em arquivo de log
+   180                                                       with open('line_profile_log.txt', 'w') as f:
+   181                                                           profiler.print_stats(f)
+   182                                                       
+   183                                                       return resultado
+   184                                                   
+   185                                                   except json.JSONDecodeError as e:
+   186                                                       logging.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content}")
+   187                                                       return []
+   188                                           
+   189                                               except Exception as e:
+   190                                                   # Log de erro
+   191                                                   logging.error(f"Erro no processamento: {str(e)}")
+   192                                                   
+   193                                                   # Desative o profiler em caso de erro
+   194                                                   profiler.disable()
+   195                                                   raise
+

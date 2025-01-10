@@ -1,33 +1,58 @@
 from fastapi import APIRouter, HTTPException
+import google.generativeai as genai
+from ..config import settings, MODEL_MAPPING, ERROR_MESSAGES
 from ..models.schemas import (
     ConsultaProduto,
     SugerirNCM,
     ValoresdeImpostos,
     ClassificacaoTributaria
 )
+import time
 import logging
 import json
-import os
-import google.generativeai as genai
-from dotenv import load_dotenv
-
-load_dotenv()
-# Configurar a API key do Google
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-if not GOOGLE_API_KEY:
-    raise HTTPException(status_code=500, detail="GOOGLE_API_KEY não configurada no ambiente")
-
-genai.configure(api_key=GOOGLE_API_KEY)
+from line_profiler import LineProfiler, profile
+import sys
 
 gemini_router = APIRouter()
 
+@profile
+def converter_para_booleano(valor):
+    return str(valor).lower() in ['sim', 'true', '1', 'verdadeiro']
+
 @gemini_router.post("/gemini")
+@profile
 async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
-    """
-    Endpoint para consultar o Gemini e retornar um ou mais objetos SugestaoProduto.
-    """
+    # Crie o LineProfiler antes do processamento
+    profiler = LineProfiler()
+    
     try:
-        logging.info(f"Recebendo consulta: {consulta_produto.consulta}")
+        # Adicione as funções que você quer perfilar
+        profiler.add_function(json.loads)
+        profiler.add_function(converter_para_booleano)
+        profiler.add_function(obter_sugestoes_gemini)
+        
+        # Ative o profiler
+        profiler.enable()
+        
+        start_time = time.time()
+        
+        # Verifique se a chave da API do Gemini foi configurada
+        if not settings.GOOGLE_API_KEY:
+            raise HTTPException(
+                status_code=500, 
+                detail=ERROR_MESSAGES["api_key_missing"]
+            )
+        
+        # Tempo para verificar a chave da API
+        api_key_check_time = time.time() - start_time
+        logging.info(f"Tempo para verificar API Key: {api_key_check_time} segundos")
+        
+        model_config = MODEL_MAPPING["Gemini-1.5-pro"]
+        
+        # Configurar a API key do Google
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
+        
+        logging.info(f"Recebendo consulta Gemini: {consulta_produto.consulta}")
         texto = consulta_produto.consulta.strip()
         if len(texto) < 3:
             return []
@@ -42,7 +67,8 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
                 Regime tributário: {consulta_produto.regimeTributario or 'Não informado'}
                 Tributação: {consulta_produto.tributacao or 'Não informado'}
                 Reduções ou isenções locais: {consulta_produto.reducaoOuIsencao or 'Não informado'}
-            Em seguida, retorne APENAS um JSON, **SEM** texto adicional, no seguinte formato:
+            
+            Retorne APENAS um JSON, **SEM** texto adicional, no seguinte formato:
 
             {{
             "ncm": "XX.XX.XX.XX",
@@ -68,35 +94,32 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
             "cst_saida": "valor real do CST de saída"
             }}
             }}
-
-            **Importante**:
-            - Não retorne nada além desse JSON.
-            - em "classificacao_tributaria", coloque as aliquotas em porcentagem quando tiver, quando não informe o porque não tem com no máximo 2 palavras.
-
-            Produto: {texto}
         """
 
         logging.info("Enviando prompt para Gemini")
+        logging.debug(f"Prompt enviado para Gemini: {prompt}")
 
-        # Chamar o modelo Gemini
-        gemini = genai.GenerativeModel(model_name="gemini-1.5-pro")
+        # Chamada à API do Gemini
+        # Tempo para chamada da API Gemini
+        start_gemini_call = time.time()
+        gemini = genai.GenerativeModel(model_name=model_config["model_name"])
         response = gemini.generate_content(
             prompt,
             generation_config={
-                "temperature": 0.2,     # ou 0.1 para reduzir ao máximo a "criatividade"
-                "max_output_tokens": 500
+                "temperature": model_config["temperature"],
+                "max_output_tokens": model_config["max_tokens"]
             },
             safety_settings={},
             stream=False
         )
+        gemini_call_time = time.time() - start_gemini_call
+        logging.info(f"Tempo para chamada Gemini: {gemini_call_time} segundos")
 
-        content = response.text
-        content = content.replace("```json", "").replace("```", "").strip()
-
-        data = json.loads(content)
+        # Extrai o conteúdo da resposta
+        content = response.text.replace("```json", "").replace("```", "").strip()
         logging.info(f"Resposta do Gemini: {content}")
 
-        # Tentar fazer parse da string JSON
+        # Verificação do comprimento da resposta
         try:
             data = json.loads(content)
 
@@ -123,12 +146,10 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
                             pis=item.get("valores_de_impostos", {}).get("pis", "1.65%"),
                             cofins=item.get("valores_de_impostos", {}).get("cofins", "7.6%")
                         ),
-                        # Note que o "tipi_attributes" do JSON vai popular o "atributos_tipi"
-                        # por causa do validation_alias
                         atributos_tipi=atributos_tipi,
                         classificacao_tributaria=ClassificacaoTributaria(
-                            monofasico=item.get("classificacao_tributaria", {}).get("monofasico", False),
-                            aliquota_zero=item.get("classificacao_tributaria", {}).get("aliquota_zero", False),
+                            monofasico=converter_para_booleano(item.get("classificacao_tributaria", {}).get("monofasico", False)),
+                            aliquota_zero=converter_para_booleano(item.get("classificacao_tributaria", {}).get("aliquota_zero", False)),
                             ipi_entrada=item.get("classificacao_tributaria", {}).get("ipi_entrada"),
                             ipi_saida=item.get("classificacao_tributaria", {}).get("ipi_saida"),
                             pis_entrada=item.get("classificacao_tributaria", {}).get("pis_entrada"),
@@ -147,14 +168,54 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
             # Loga cada sugestão para debug
             for sugestao in sugestoes:
                 logging.debug(f"Estrutura da sugestão: {sugestao.dict()}")
-
-            # Converte cada sugestão para formato de frontend
-            return [sugestao.to_frontend_format() for sugestao in sugestoes]
-
+                
+            resultado = [sugestao.to_frontend_format() for sugestao in sugestoes]
+            
+            # Desative o profiler
+            profiler.disable()
+            
+            # Capturar saída do perfil
+            output = sys.stdout
+            profiler.print_stats(output)
+            
+            # Salvar em arquivo de log
+            with open('line_profile_log_gemini.txt', 'w') as f:
+                profiler.print_stats(f)
+            
+            return resultado
+        
         except json.JSONDecodeError as e:
             logging.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content}")
             return []
 
     except Exception as e:
-        logging.error(f"Erro inesperado: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        # Log de erro
+        logging.error(f"Erro no processamento: {str(e)}")
+        
+        # Desative o profiler em caso de erro
+        profiler.disable()
+        raise
+
+# Função: Executa perfil de desempenho separadamente
+def run_profile():
+    # Cria consulta de exemplo e roda perfil
+    consulta = ConsultaProduto(
+        consulta="Exemplo de produto para perfil",
+        estadoOrigem="SP",
+        operacao="Venda",
+        regimeTributario="Simples Nacional"
+    )
+
+    # Crie o profiler
+    profiler = LineProfiler(obter_sugestoes_gemini)
+    
+    # Execute a função com o profiler
+    with profiler:
+        resultado = obter_sugestoes_gemini(consulta)
+    
+    # Imprima as estatísticas
+    profiler.print_stats()
+
+# Função: Ponto de entrada para execução do perfil
+if __name__ == "__main__":
+    run_profile()

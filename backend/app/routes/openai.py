@@ -7,28 +7,49 @@ from ..models.schemas import (
     ValoresdeImpostos,
     ClassificacaoTributaria
 )
+import time
 import logging
 import json
+from line_profiler import LineProfiler, profile
+import sys
+
 
 openai_router = APIRouter()
-
+@profile
 def converter_para_booleano(valor):
     return str(valor).lower() in ['sim', 'true', '1', 'verdadeiro']
 
 @openai_router.post("/gpt4")
+@profile
 async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
-    if not settings.OPENAI_API_KEY:
-        raise HTTPException(
-            status_code=500, 
-            detail=ERROR_MESSAGES["api_key_missing"]
-        )
-    
-    model_config = MODEL_MAPPING["GPT-4"]
-    
-    # Use as configurações
-    client = OpenAI(api_key=settings.OPENAI_API_KEY)
+    # Crie o LineProfiler antes do processamento
+    profiler = LineProfiler()
     
     try:
+        # Adicione as funções que você quer perfilar
+        profiler.add_function(json.loads)
+        profiler.add_function(converter_para_booleano)
+        profiler.add_function(obter_sugestoes_gpt4)
+        # Ative o profiler
+        profiler.enable()
+        
+        start_time = time.time()
+        
+        # Verifique se a chave de API da OpenAI foi configurada
+        if not settings.OPENAI_API_KEY:
+            raise HTTPException(
+                status_code=500, 
+                detail=ERROR_MESSAGES["api_key_missing"]
+            )
+        
+        # Tempo para verificar a chave da API
+        api_key_check_time = time.time() - start_time
+        logging.info(f"Tempo para verificar API Key: {api_key_check_time} segundos")
+        
+        model_config = MODEL_MAPPING["GPT-4"]
+        # Usando as configurações
+        client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        
         logging.info(f"Recebendo consulta GPT-4: {consulta_produto.consulta}")
         texto = consulta_produto.consulta.strip()
         if len(texto) < 3:
@@ -77,6 +98,8 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
         logging.debug(f"Prompt enviado para OpenAI: {prompt}")
 
         # Chamada à API da OpenAI
+        # Tempo para chamada da API OpenAI
+        start_openai_call = time.time()
         response = client.chat.completions.create(
             model=model_config["model_name"],          # Usa o nome do modelo definido no config
             messages=[
@@ -86,6 +109,8 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
             max_tokens=model_config["max_tokens"],     # Usa max_tokens do config
             temperature=model_config["temperature"]     # Usa temperature do config
         )
+        openai_call_time = time.time() - start_openai_call
+        logging.info(f"Tempo para chamada OpenAI: {openai_call_time} segundos")
 
         # Extrai o conteúdo da resposta
         content = response.choices[0].message.content.strip()
@@ -140,14 +165,54 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
             # Loga cada sugestão para debug
             for sugestao in sugestoes:
                 logging.debug(f"Estrutura da sugestão: {sugestao.dict()}")
-
-            # Converte cada sugestão para formato de frontend
-            return [sugestao.to_frontend_format() for sugestao in sugestoes]
-
+                
+            resultado = [sugestao.to_frontend_format() for sugestao in sugestoes]
+            
+            # Desative o profiler
+            profiler.disable()
+            
+            # Capturar saída do perfil
+            output = sys.stdout
+            profiler.print_stats(output)
+            
+            # Salvar em arquivo de log
+            with open('line_profile_log.txt', 'w') as f:
+                profiler.print_stats(f)
+            
+            return resultado
+        
         except json.JSONDecodeError as e:
             logging.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content}")
             return []
 
     except Exception as e:
-        logging.error(f"Erro inesperado: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        # Log de erro
+        logging.error(f"Erro no processamento: {str(e)}")
+        
+        # Desative o profiler em caso de erro
+        profiler.disable()
+        raise
+
+# Função: Executa perfil de desempenho separadamente
+def run_profile():
+    # Cria consulta de exemplo e roda perfil
+    consulta = ConsultaProduto(
+        consulta="Exemplo de produto para perfil",
+        estadoOrigem="SP",
+        operacao="Venda",
+        regimeTributario="Simples Nacional"
+    )
+
+    # Crie o profiler
+    profiler = LineProfiler(obter_sugestoes_gpt4)
+    
+    # Execute a função com o profiler
+    with profiler:
+        resultado = obter_sugestoes_gpt4(consulta)
+    
+    # Imprima as estatísticas
+    profiler.print_stats()
+
+# Função: Ponto de entrada para execução do perfil
+if __name__ == "__main__":
+    run_profile()
