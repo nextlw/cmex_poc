@@ -12,12 +12,46 @@ import logging
 import json
 from line_profiler import LineProfiler, profile
 import sys
+from datetime import datetime
+import tiktoken  # Adicione esta importação para contar tokens
 
 
 openai_router = APIRouter()
 @profile
 def converter_para_booleano(valor):
     return str(valor).lower() in ['sim', 'true', '1', 'verdadeiro']
+
+def count_tokens_and_log(prompt: str, response: str, model: str = "gpt-4"):
+    """Conta tokens usando o tiktoken e salva em um arquivo de log"""
+    try:
+        # Inicializa o contador de tokens para o modelo específico
+        encoding = tiktoken.encoding_for_model(model)
+        
+        # Conta tokens
+        prompt_tokens = len(encoding.encode(prompt))
+        response_tokens = len(encoding.encode(response))
+        total_tokens = prompt_tokens + response_tokens
+        
+        # Prepara o log
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "model": model,
+            "prompt_tokens": prompt_tokens,
+            "response_tokens": response_tokens,
+            "total_tokens": total_tokens,
+            "prompt": prompt,
+            "response": response
+        }
+        
+        # Salva em arquivo
+        with open("openai_token_logs.txt", "a", encoding="utf-8") as f:
+            f.write(f"{json.dumps(log_entry, ensure_ascii=False)}\n")
+        
+        return prompt_tokens, response_tokens, total_tokens
+    
+    except Exception as e:
+        logging.error(f"Erro ao contar tokens: {str(e)}")
+        return 0, 0, 0
 
 @openai_router.post("/gpt4")
 @profile
@@ -114,6 +148,17 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
 
         # Extrai o conteúdo da resposta
         content = response.choices[0].message.content.strip()
+        
+        # Conta e loga os tokens
+        prompt_tokens, response_tokens, total_tokens = count_tokens_and_log(
+            prompt, 
+            content, 
+            model_config["model_name"]
+        )
+        
+        logging.info(f"Tokens do prompt: {prompt_tokens}")
+        logging.info(f"Tokens da resposta: {response_tokens}")
+        logging.info(f"Total de tokens: {total_tokens}")
         logging.info(f"Resposta da OpenAI: {content}")
 
         # Verificação do comprimento da resposta

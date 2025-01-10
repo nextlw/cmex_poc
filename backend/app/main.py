@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routes.openai import openai_router
 from .routes.gemini import gemini_router
-
+from .routes.claude import claude_router
+from .routes.historico import historico_router
 app = FastAPI()
 
 # Configuração CORS
@@ -25,6 +26,10 @@ app.add_middleware(
 # Inclui os roteadores com prefixo /api
 app.include_router(gemini_router, prefix="/api")
 app.include_router(openai_router, prefix="/api")
+app.include_router(claude_router, prefix="/api")
+app.include_router(historico_router, prefix="/api")
+
+
 
 # Executar via Uvicorn (opcional; caso já faça isso de outra forma, remova)
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 Timer unit: 1e-09 s
 
-Total time: 6.6e-05 s
+Total time: 5.1e-05 s
 File: /Users/williamduarte/.pyenv/versions/3.10.13/lib/python3.10/json/__init__.py
 Function: loads at line 299
 
@@ -40,8 +40,8 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    330                                               To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
    331                                               kwarg; otherwise ``JSONDecoder`` is used.
    332                                               """
-   333         1       1000.0   1000.0      1.5      if isinstance(s, str):
-   334         1       4000.0   4000.0      6.1          if s.startswith('\ufeff'):
+   333         1       1000.0   1000.0      2.0      if isinstance(s, str):
+   334         1       4000.0   4000.0      7.8          if s.startswith('\ufeff'):
    335                                                       raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
    336                                                                             s, 0)
    337                                               else:
@@ -50,10 +50,10 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    340                                                                       f'not {s.__class__.__name__}')
    341                                                   s = s.decode(detect_encoding(s), 'surrogatepass')
    342                                           
-   343         1       1000.0   1000.0      1.5      if (cls is None and object_hook is None and
+   343         1       1000.0   1000.0      2.0      if (cls is None and object_hook is None and
    344         1          0.0      0.0      0.0              parse_int is None and parse_float is None and
    345         1          0.0      0.0      0.0              parse_constant is None and object_pairs_hook is None and not kw):
-   346         1      60000.0  60000.0     90.9          return _default_decoder.decode(s)
+   346         1      45000.0  45000.0     88.2          return _default_decoder.decode(s)
    347                                               if cls is None:
    348                                                   cls = JSONDecoder
    349                                               if object_hook is not None:
@@ -68,7 +68,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    358                                                   kw['parse_constant'] = parse_constant
    359                                               return cls(**kw).decode(s)
 
-Total time: 0.000164 s
+Total time: 6e-06 s
 File: /Users/williamduarte/Documents/Empresa/Projeto/cursorDev/cmex_poc/backend/app/routes/gemini.py
 Function: converter_para_booleano at line 18
 
@@ -76,9 +76,9 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 ==============================================================
     18                                           @profile
     19                                           def converter_para_booleano(valor):
-    20         2     164000.0  82000.0    100.0      return str(valor).lower() in ['sim', 'true', '1', 'verdadeiro']
+    20         2       6000.0   3000.0    100.0      return str(valor).lower() in ['sim', 'true', '1', 'verdadeiro']
 
-Total time: 9.27287 s
+Total time: 9.48498 s
 File: /Users/williamduarte/Documents/Empresa/Projeto/cursorDev/cmex_poc/backend/app/routes/gemini.py
 Function: obter_sugestoes_gemini at line 22
 
@@ -99,38 +99,38 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     34                                                   # Ative o profiler
     35                                                   profiler.enable()
     36                                                   
-    37         1       8000.0   8000.0      0.0          start_time = time.time()
+    37         1       4000.0   4000.0      0.0          start_time = time.time()
     38                                                   
     39                                                   # Verifique se a chave da API do Gemini foi configurada
-    40         1       4000.0   4000.0      0.0          if not settings.GOOGLE_API_KEY:
+    40         1       3000.0   3000.0      0.0          if not settings.GOOGLE_API_KEY:
     41                                                       raise HTTPException(
     42                                                           status_code=500, 
     43                                                           detail=ERROR_MESSAGES["api_key_missing"]
     44                                                       )
     45                                                   
     46                                                   # Tempo para verificar a chave da API
-    47         1       2000.0   2000.0      0.0          api_key_check_time = time.time() - start_time
-    48         1      33000.0  33000.0      0.0          logging.info(f"Tempo para verificar API Key: {api_key_check_time} segundos")
+    47         1       1000.0   1000.0      0.0          api_key_check_time = time.time() - start_time
+    48         1     111000.0 111000.0      0.0          logging.info(f"Tempo para verificar API Key: {api_key_check_time} segundos")
     49                                                   
-    50         1       1000.0   1000.0      0.0          model_config = MODEL_MAPPING["Gemini-1.5-pro"]
+    50         1          0.0      0.0      0.0          model_config = MODEL_MAPPING["Gemini-1.5-pro"]
     51                                                   
     52                                                   # Configurar a API key do Google
-    53         1     391000.0 391000.0      0.0          genai.configure(api_key=settings.GOOGLE_API_KEY)
+    53         1     108000.0 108000.0      0.0          genai.configure(api_key=settings.GOOGLE_API_KEY)
     54                                                   
-    55         1      21000.0  21000.0      0.0          logging.info(f"Recebendo consulta Gemini: {consulta_produto.consulta}")
+    55         1       4000.0   4000.0      0.0          logging.info(f"Recebendo consulta Gemini: {consulta_produto.consulta}")
     56         1       2000.0   2000.0      0.0          texto = consulta_produto.consulta.strip()
-    57         1       1000.0   1000.0      0.0          if len(texto) < 3:
+    57         1          0.0      0.0      0.0          if len(texto) < 3:
     58                                                       return []
     59                                           
     60                                                   # Monta o prompt para o modelo
-    61         7      10000.0   1428.6      0.0          prompt = f"""
+    61         7       5000.0    714.3      0.0          prompt = f"""
     62                                                       Você é um especialista em classificação NCM e tributação de produtos.
     63                                                       Analise o seguinte produto e procure na tabela TIPI.
-    64         1       1000.0   1000.0      0.0              Produto: {consulta_produto.consulta}
+    64         1          0.0      0.0      0.0              Produto: {consulta_produto.consulta}
     65         1       1000.0   1000.0      0.0                  Estado de origem: {consulta_produto.estadoOrigem or 'Não informado'}
-    66         1       2000.0   2000.0      0.0                  Operação: {consulta_produto.operacao or 'Não informado'}
-    67         1       1000.0   1000.0      0.0                  Regime tributário: {consulta_produto.regimeTributario or 'Não informado'}
-    68         1       1000.0   1000.0      0.0                  Tributação: {consulta_produto.tributacao or 'Não informado'}
+    66         1       1000.0   1000.0      0.0                  Operação: {consulta_produto.operacao or 'Não informado'}
+    67         1       2000.0   2000.0      0.0                  Regime tributário: {consulta_produto.regimeTributario or 'Não informado'}
+    68         1          0.0      0.0      0.0                  Tributação: {consulta_produto.tributacao or 'Não informado'}
     69         1       1000.0   1000.0      0.0                  Reduções ou isenções locais: {consulta_produto.reducaoOuIsencao or 'Não informado'}
     70                                                       
     71                                                       Retorne APENAS um JSON, **SEM** texto adicional, no seguinte formato:
@@ -161,32 +161,32 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     96                                                       }}
     97                                                   """
     98                                           
-    99         1       3000.0   3000.0      0.0          logging.info("Enviando prompt para Gemini")
-   100         1       6000.0   6000.0      0.0          logging.debug(f"Prompt enviado para Gemini: {prompt}")
+    99         1       2000.0   2000.0      0.0          logging.info("Enviando prompt para Gemini")
+   100         1       8000.0   8000.0      0.0          logging.debug(f"Prompt enviado para Gemini: {prompt}")
    101                                           
    102                                                   # Chamada à API do Gemini
    103                                                   # Tempo para chamada da API Gemini
-   104         1       2000.0   2000.0      0.0          start_gemini_call = time.time()
-   105         1      28000.0  28000.0      0.0          gemini = genai.GenerativeModel(model_name=model_config["model_name"])
-   106         2 9270842000.0    5e+09    100.0          response = gemini.generate_content(
+   104         1          0.0      0.0      0.0          start_gemini_call = time.time()
+   105         1      77000.0  77000.0      0.0          gemini = genai.GenerativeModel(model_name=model_config["model_name"])
+   106         2 9483607000.0    5e+09    100.0          response = gemini.generate_content(
    107         1          0.0      0.0      0.0              prompt,
    108         1       1000.0   1000.0      0.0              generation_config={
-   109         1          0.0      0.0      0.0                  "temperature": model_config["temperature"],
+   109         1       1000.0   1000.0      0.0                  "temperature": model_config["temperature"],
    110         1          0.0      0.0      0.0                  "max_output_tokens": model_config["max_tokens"]
    111                                                       },
    112         1          0.0      0.0      0.0              safety_settings={},
    113         1          0.0      0.0      0.0              stream=False
    114                                                   )
-   115         1       5000.0   5000.0      0.0          gemini_call_time = time.time() - start_gemini_call
-   116         1      90000.0  90000.0      0.0          logging.info(f"Tempo para chamada Gemini: {gemini_call_time} segundos")
+   115         1       3000.0   3000.0      0.0          gemini_call_time = time.time() - start_gemini_call
+   116         1      27000.0  27000.0      0.0          logging.info(f"Tempo para chamada Gemini: {gemini_call_time} segundos")
    117                                           
    118                                                   # Extrai o conteúdo da resposta
-   119         1     294000.0 294000.0      0.0          content = response.text.replace("```json", "").replace("```", "").strip()
-   120         1       5000.0   5000.0      0.0          logging.info(f"Resposta do Gemini: {content}")
+   119         1     247000.0 247000.0      0.0          content = response.text.replace("```json", "").replace("```", "").strip()
+   120         1       7000.0   7000.0      0.0          logging.info(f"Resposta do Gemini: {content}")
    121                                           
    122                                                   # Verificação do comprimento da resposta
    123         1          0.0      0.0      0.0          try:
-   124         1      79000.0  79000.0      0.0              data = json.loads(content)
+   124         1      62000.0  62000.0      0.0              data = json.loads(content)
    125                                           
    126                                                       # Se não vier lista, transformamos em lista
    127         1       2000.0   2000.0      0.0              if not isinstance(data, list):
@@ -200,41 +200,41 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    135         1       1000.0   1000.0      0.0                  descricao = item.get("descricao", "")
    136                                           
    137                                                           # Criar objeto SugerirNCM com nomes coerentes ao front-end
-   138         2          0.0      0.0      0.0                  sugestoes.append(
-   139         2      24000.0  12000.0      0.0                      SugerirNCM(
-   140         1          0.0      0.0      0.0                          ncm=item.get("ncm", ""),
+   138         2       3000.0   1500.0      0.0                  sugestoes.append(
+   139         2      20000.0  10000.0      0.0                      SugerirNCM(
+   140         1       1000.0   1000.0      0.0                          ncm=item.get("ncm", ""),
    141         1          0.0      0.0      0.0                          descricao=descricao,
    142         1          0.0      0.0      0.0                          atributos=atributos,
-   143         2      58000.0  29000.0      0.0                          valores_de_impostos=ValoresdeImpostos(
+   143         2      32000.0  16000.0      0.0                          valores_de_impostos=ValoresdeImpostos(
    144         1       1000.0   1000.0      0.0                              ipi=item.get("valores_de_impostos", {}).get("ipi", "0%"),
-   145         1          0.0      0.0      0.0                              icms=item.get("valores_de_impostos", {}).get("icms", {}),
+   145         1       1000.0   1000.0      0.0                              icms=item.get("valores_de_impostos", {}).get("icms", {}),
    146         1       1000.0   1000.0      0.0                              pis=item.get("valores_de_impostos", {}).get("pis", "1.65%"),
-   147         1          0.0      0.0      0.0                              cofins=item.get("valores_de_impostos", {}).get("cofins", "7.6%")
+   147         1       1000.0   1000.0      0.0                              cofins=item.get("valores_de_impostos", {}).get("cofins", "7.6%")
    148                                                                   ),
    149         1          0.0      0.0      0.0                          atributos_tipi=atributos_tipi,
-   150         2      25000.0  12500.0      0.0                          classificacao_tributaria=ClassificacaoTributaria(
-   151         1     169000.0 169000.0      0.0                              monofasico=converter_para_booleano(item.get("classificacao_tributaria", {}).get("monofasico", False)),
+   150         2      21000.0  10500.0      0.0                          classificacao_tributaria=ClassificacaoTributaria(
+   151         1       9000.0   9000.0      0.0                              monofasico=converter_para_booleano(item.get("classificacao_tributaria", {}).get("monofasico", False)),
    152         1       5000.0   5000.0      0.0                              aliquota_zero=converter_para_booleano(item.get("classificacao_tributaria", {}).get("aliquota_zero", False)),
    153         1       1000.0   1000.0      0.0                              ipi_entrada=item.get("classificacao_tributaria", {}).get("ipi_entrada"),
    154         1       1000.0   1000.0      0.0                              ipi_saida=item.get("classificacao_tributaria", {}).get("ipi_saida"),
    155         1          0.0      0.0      0.0                              pis_entrada=item.get("classificacao_tributaria", {}).get("pis_entrada"),
-   156         1          0.0      0.0      0.0                              pis_saida=item.get("classificacao_tributaria", {}).get("pis_saida"),
+   156         1       1000.0   1000.0      0.0                              pis_saida=item.get("classificacao_tributaria", {}).get("pis_saida"),
    157         1          0.0      0.0      0.0                              cofins_entrada=item.get("classificacao_tributaria", {}).get("cofins_entrada"),
-   158         1          0.0      0.0      0.0                              cofins_saida=item.get("classificacao_tributaria", {}).get("cofins_saida"),
-   159         1          0.0      0.0      0.0                              cst_entrada=item.get("classificacao_tributaria", {}).get("cst_entrada"),
-   160         1          0.0      0.0      0.0                              cst_saida=item.get("classificacao_tributaria", {}).get("cst_saida")
+   158         1       1000.0   1000.0      0.0                              cofins_saida=item.get("classificacao_tributaria", {}).get("cofins_saida"),
+   159         1       1000.0   1000.0      0.0                              cst_entrada=item.get("classificacao_tributaria", {}).get("cst_entrada"),
+   160         1       1000.0   1000.0      0.0                              cst_saida=item.get("classificacao_tributaria", {}).get("cst_saida")
    161                                                                   )
    162                                                               )
    163                                                           )
    164                                           
-   165         1     143000.0 143000.0      0.0              logging.info(f"Lista parseada com sucesso: {sugestoes}")
-   166         1     267000.0 267000.0      0.0              print(f"Resposta recebida: {sugestoes}")
+   165         1     158000.0 158000.0      0.0              logging.info(f"Lista parseada com sucesso: {sugestoes}")
+   166         1     156000.0 156000.0      0.0              print(f"Resposta recebida: {sugestoes}")
    167                                           
    168                                                       # Loga cada sugestão para debug
    169         2       2000.0   1000.0      0.0              for sugestao in sugestoes:
-   170         1     316000.0 316000.0      0.0                  logging.debug(f"Estrutura da sugestão: {sugestao.dict()}")
+   170         1     216000.0 216000.0      0.0                  logging.debug(f"Estrutura da sugestão: {sugestao.dict()}")
    171                                                           
-   172         1      15000.0  15000.0      0.0              resultado = [sugestao.to_frontend_format() for sugestao in sugestoes]
+   172         1      56000.0  56000.0      0.0              resultado = [sugestao.to_frontend_format() for sugestao in sugestoes]
    173                                                       
    174                                                       # Desative o profiler
    175                                                       profiler.disable()

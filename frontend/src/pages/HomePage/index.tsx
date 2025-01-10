@@ -1,18 +1,11 @@
 // Importa o React e os hooks necessários
 import React, { useState, useMemo, useEffect } from "react";
-// Importa o tipo de modelos e a função Select do arquivo Select
-import Select from "../../components/Select";
-import { Option, Modelos } from "../../components/Select/types";
 // Importa o tipo SugerirNCM do arquivo types
 import { SugerirNCM } from "./types";
 // Importa a instância do axios configurada
 import axiosInstance from "../../axiosConfig";
 // Importa o componente InputAi
 import InputAi from "../../components/InputAi";
-// Importa o componente Button
-import Button from "../../components/Button";
-// Importa o ícone BiSearch da biblioteca react-icons
-import { BiSearch } from "react-icons/bi";
 // Importa o componente BoxdeImpostos
 import BoxdeImpostos from "../../components/BoxdeImpostos";
 // Importa o componente InputField
@@ -96,6 +89,7 @@ const HomePage: React.FC = () => {
     setIsLoading(true);
     try {
       let response;
+      let modeloUsado = selectedModel;
 
       if (selectedModel === "Gemini-1.5-pro") {
         response = await axiosInstance.post("/gemini", {
@@ -107,6 +101,11 @@ const HomePage: React.FC = () => {
           consulta: pesquisa,
           ...dropdownSelection,
         });
+      } else if (selectedModel === "CLAUDE-3") {
+        response = await axiosInstance.post("/claude", {
+          consulta: pesquisa,
+          ...dropdownSelection,
+        }); 
       } else {
         setErrorMessage("A API selecionada ainda não está funcionando.");
         setSugerirNCM([]);
@@ -116,6 +115,21 @@ const HomePage: React.FC = () => {
 
       console.log("Resposta do backend:", response.data);
       setSugerirNCM(response.data);
+
+      // Salva no histórico
+      try {
+        await axiosInstance.post("/historico", {
+          ...response.data[0], // Pega o primeiro resultado
+          modelo: modeloUsado,
+          timestamp: new Date().toISOString(),
+          consulta: pesquisa,
+          ...dropdownSelection
+        });
+      } catch (historyError) {
+        console.error("Erro ao salvar no histórico:", historyError);
+        // Não exibimos erro ao usuário pois a consulta principal funcionou
+      }
+
     } catch (error) {
       console.error("Erro ao buscar sugestões:", error);
       setErrorMessage("Erro ao buscar informações. Tente novamente.");
