@@ -107,7 +107,7 @@ const HomePage: React.FC = () => {
           consulta: pesquisa,
           ...dropdownSelection,
         });
-      } else if (selectedModel === "Lama-3.2" || selectedModel === "Nexcode-0.1") {
+      } else {
         setErrorMessage("A API selecionada ainda não está funcionando.");
         setSugerirNCM([]);
         setIsLoading(false);
@@ -115,11 +115,6 @@ const HomePage: React.FC = () => {
       }
 
       console.log("Resposta do backend:", response.data);
-      if (!response.data.precisa) {
-        setErrorMessage(
-          "Para uma resposta mais precisa, selecione todos os campos do dropdown."
-        );
-      }
       setSugerirNCM(response.data);
     } catch (error) {
       console.error("Erro ao buscar sugestões:", error);
