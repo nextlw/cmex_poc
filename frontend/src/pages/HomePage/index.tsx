@@ -89,6 +89,7 @@ const HomePage: React.FC = () => {
     setIsLoading(true);
     try {
       let response;
+      let modeloUsado = selectedModel;
 
       if (selectedModel === "Gemini-1.5-pro") {
         response = await axiosInstance.post("/gemini", {
@@ -105,7 +106,6 @@ const HomePage: React.FC = () => {
           consulta: pesquisa,
           ...dropdownSelection,
         }); 
-      
       } else {
         setErrorMessage("A API selecionada ainda não está funcionando.");
         setSugerirNCM([]);
@@ -117,10 +117,19 @@ const HomePage: React.FC = () => {
       setSugerirNCM(response.data);
 
       // Salva no histórico
-      await axiosInstance.post("/historico", {
-        ...response.data[0],
-        modelo: selectedModel
-      });
+      try {
+        await axiosInstance.post("/historico", {
+          ...response.data[0], // Pega o primeiro resultado
+          modelo: modeloUsado,
+          timestamp: new Date().toISOString(),
+          consulta: pesquisa,
+          ...dropdownSelection
+        });
+      } catch (historyError) {
+        console.error("Erro ao salvar no histórico:", historyError);
+        // Não exibimos erro ao usuário pois a consulta principal funcionou
+      }
+
     } catch (error) {
       console.error("Erro ao buscar sugestões:", error);
       setErrorMessage("Erro ao buscar informações. Tente novamente.");

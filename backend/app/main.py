@@ -29,6 +29,8 @@ app.include_router(openai_router, prefix="/api")
 app.include_router(claude_router, prefix="/api")
 app.include_router(historico_router, prefix="/api")
 
+
+
 # Executar via Uvicorn (opcional; caso já faça isso de outra forma, remova)
 if __name__ == "__main__":
     import uvicorn
