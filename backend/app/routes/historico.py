@@ -35,14 +35,9 @@ CSV_HEADERS = [
 def criar_arquivo_csv():
     """Cria o arquivo CSV com os cabeçalhos se ele não existir"""
     if not os.path.exists(CSV_FILE):
-        try:
-            with open(CSV_FILE, 'w', newline='', encoding='utf-8') as file:
-                writer = csv.DictWriter(file, fieldnames=CSV_HEADERS)
-                writer.writeheader()
-            logging.info(f"Arquivo {CSV_FILE} criado com sucesso")
-        except Exception as e:
-            logging.error(f"Erro ao criar arquivo {CSV_FILE}: {str(e)}")
-            raise
+        with open(CSV_FILE, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.DictWriter(file, fieldnames=CSV_HEADERS)
+            writer.writeheader()
 
 def gerar_id(modelo: str) -> str:
     ano = datetime.now().year
@@ -53,12 +48,13 @@ def gerar_id(modelo: str) -> str:
         with open(CSV_FILE, 'r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
-                if row['id'].startswith(f"{ano}{inicial}"):
-                    try:
+                try:
+                    if 'id' in row and row['id'] and row['id'].startswith(f"{ano}{inicial}"):
                         num = int(row['id'][5:])
                         ultimo_id = max(ultimo_id, num)
-                    except ValueError:
-                        continue
+                except (ValueError, KeyError) as e:
+                    logging.warning(f"Erro ao processar ID: {e}")
+                    continue
     
     novo_num = str(ultimo_id + 1).zfill(5)
     return f"{ano}{inicial}{novo_num}"
@@ -110,10 +106,7 @@ async def salvar_historico(dados: Dict[str, Any]):
 
 @historico_router.get("/historico")
 async def obter_historico():
-    try:
-        # Garante que o arquivo existe
-        criar_arquivo_csv()
-        
+    try:       
         historico = []
         with open(CSV_FILE, 'r', encoding='utf-8') as file:
             reader = csv.DictReader(file)

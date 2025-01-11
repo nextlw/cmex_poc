@@ -35,10 +35,6 @@ def count_tokens_and_log(prompt: str, response: str):
         "response": response
     }
     
-    # Salva em arquivo
-    with open("claude_token_logs.txt", "a", encoding="utf-8") as f:
-        f.write(f"{json.dumps(log_entry, ensure_ascii=False)}\n")
-    
     return prompt_tokens, response_tokens
 
 @claude_router.post("/claude")
@@ -177,10 +173,6 @@ async def obter_sugestoes_claude(consulta_produto: ConsultaProduto):
             s = io.StringIO()
             ps = pstats.Stats(pr, stream=s).sort_stats('cumulative')
             ps.print_stats()
-            
-            # Salva o profiling em um arquivo
-            with open(f"claude_profile_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt", "w") as f:
-                f.write(s.getvalue())
             
             total_time = time.time() - start_time
             logging.info(f"Tempo total de processamento: {total_time:.2f} segundos")
