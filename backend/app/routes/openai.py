@@ -41,12 +41,7 @@ def count_tokens_and_log(prompt: str, response: str, model: str = "gpt-4"):
             "total_tokens": total_tokens,
             "prompt": prompt,
             "response": response
-        }
-        
-        # Salva em arquivo
-        with open("openai_token_logs.txt", "a", encoding="utf-8") as f:
-            f.write(f"{json.dumps(log_entry, ensure_ascii=False)}\n")
-        
+        }        
         return prompt_tokens, response_tokens, total_tokens
     
     except Exception as e:
@@ -219,10 +214,6 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
             # Capturar saída do perfil
             output = sys.stdout
             profiler.print_stats(output)
-            
-            # Salvar em arquivo de log
-            with open('line_profile_log.txt', 'w') as f:
-                profiler.print_stats(f)
             
             return resultado
         

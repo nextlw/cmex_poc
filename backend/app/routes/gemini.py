@@ -178,10 +178,6 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
             output = sys.stdout
             profiler.print_stats(output)
             
-            # Salvar em arquivo de log
-            with open('line_profile_log_gemini.txt', 'w') as f:
-                profiler.print_stats(f)
-            
             return resultado
         
         except json.JSONDecodeError as e:
