@@ -1,4 +1,5 @@
 import React from "react";
+import { useSession } from "../../auth/SessionContext";
 import Select from "../Select";
 import { Modelos } from "../Select/types";
 import "./styles.css";
@@ -15,6 +16,9 @@ const Header: React.FC<HeaderProps> = ({
   modeloSelecionado,
   aoMudarModelo,
 }) => {
+  const { session } = useSession();
+  const userEmail = session?.user?.email || "Usuário";
+
   const handleModelChange = (novoModelo: string | null) => {
     aoMudarModelo(novoModelo);
     handleParentChange();
@@ -25,6 +29,7 @@ const Header: React.FC<HeaderProps> = ({
     // Função necessária para manter o mesmo padrão do DropdownMenu
     console.log("Parent change triggered");
   };
+
   return (
     <header className="bg-header shadow-header">
       <div className="section-header">
@@ -73,8 +78,8 @@ const Header: React.FC<HeaderProps> = ({
           handleParentChange={handleParentChange}
         />
         <Notifications className="icon-dark" />
-        <span className="user-name">Usuário</span>
-        <Avatar name={"Usuário"} />
+        <span className="user-name">{userEmail}</span>
+        <Avatar name={userEmail} />
       </div>
     </header>
   );
