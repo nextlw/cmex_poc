@@ -4,11 +4,9 @@ export interface Option {
 }
 
 export const Modelos: Option[] = [
-  { label: "Nexcode-0.1", value: "Nexcode-0.1" },
-  { label: "Claude-3-Opus", value: "CLAUDE-3" },
-  { label: "Gemini-1.5-pro", value: "Gemini-1.5-pro" },
-  { label: "GPT-4", value: "GPT-4" },
-  { label: "Llama-3.2", value: "Llama-3.2" },
+  { label: "Nex-0.3-Preview-2024", value: "Nex-0.3-Preview-2024" },
+  { label: "Nexcode-0.1-BETA", value: "Nexcode-0.1-BETA" },
+  { label: "Nex-0.1-Pro-2024", value: "Nex-0.1-Pro-2024" },
 ];
 
 export interface SelectProps {
