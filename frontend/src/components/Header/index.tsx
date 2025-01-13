@@ -9,6 +9,7 @@ import Avatar from "../Avatar";
 import Notifications from "../Notifications";
 import { HeaderProps } from "./types";
 import { AiOutlineMenu } from "react-icons/ai";
+import { RiAiGenerate2 } from "react-icons/ri";
 
 const Header: React.FC<HeaderProps> = ({
   modeloSelecionado,
@@ -38,6 +39,25 @@ const Header: React.FC<HeaderProps> = ({
         <HeaderLinks links={["Início", "Histórico", "Configurações"]} />
       </div>
       <div className="section-header">
+        <RiAiGenerate2
+          style={{
+            color: "rgb(129, 150, 181)",
+            fontSize: "20px",
+            verticalAlign: "middle",
+            fontWeight: 100,
+          }}
+        />
+        <p
+          style={{
+            marginRight: "10px",
+            color: "rgb(129, 150, 181)",
+            fontSize: "14px",
+            verticalAlign: "middle",
+            fontWeight: 100,
+          }}
+        >
+          Selecione modelo de IA:
+        </p>
         <Select
           style={{
             verticalAlign: "middle",
