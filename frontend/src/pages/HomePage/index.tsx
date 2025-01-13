@@ -178,6 +178,7 @@ const HomePage: React.FC = () => {
       <PageHeader
         icon={<AiFillCodeSandboxCircle />}
         title="Busca Inteligente de NCM"
+        icon_size="40px"
       />
 
       <div>

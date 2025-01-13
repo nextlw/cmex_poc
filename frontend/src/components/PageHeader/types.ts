@@ -3,5 +3,5 @@ import { IconBaseProps } from 'react-icons';
 export interface PageHeaderProps {
   icon?: React.ReactElement<IconBaseProps>;
   title: string;
-  iconSize?: number;
+  icon_size?: string | number;
 }

@@ -1,18 +1,15 @@
-.page-header {
+.page-header-text {
   padding: 24px 0;
   text-align: left;
 }
 
-.page-header h1 {
+.page-header-text h1 {
   margin: 0;
   font-size: 24px;
   color: #ffffff;
 }
 
-.page-header img,
-.page-header svg {
-  width: 40px;
-  height: 40px;
+.page-header-icon {
   object-fit: cover;
   color: #fff;
 }

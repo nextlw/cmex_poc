@@ -55,7 +55,7 @@ const HistoricoPage: React.FC = () => {
       <PageHeader
           icon={<PiListStarFill />}
           title="Histórico de Consultas"
-          iconSize={22} // Sobrescreve o padrão de 22px
+          icon_size="26px"
         />
 
         <table className="box-table table-auto text-sm">

@@ -2,14 +2,12 @@ import React from "react";
 import "./styles.css";
 import { PageHeaderProps } from "./types";
 
-const PageHeader: React.FC<PageHeaderProps> = ({ icon, title, iconSize = 22 }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({ icon, title, icon_size}) => {
   return (
-    <div className="page-header">
+    <div>
       <div className="flex items-center gap-2">
-        <div style={{ fontSize: iconSize }}>
-          {icon}
-        </div>
-        <h1 className="text-2xl font-bold text-white">{title}</h1>
+        <div className="page-header-icon">{icon ? React.cloneElement(icon, { size: icon_size}) : null}</div>
+        <h1 className="page-header-text text-2xl font-bold text-white">{title}</h1>
       </div>
     </div>
   );
