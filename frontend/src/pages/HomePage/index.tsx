@@ -35,7 +35,9 @@ import { AiFillCodeSandboxCircle } from "react-icons/ai";
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
   const [pesquisa, setPesquisa] = useState("");
-  const [selectedModel, setSelectedModel] = useState<string | null>("Gemini-1.5-pro");
+  const [selectedModel, setSelectedModel] = useState<string | null>(
+    "Nexcode-0.1-BETA"
+  );
   const [dropdownSelection, setDropdownSelection] =
     useState<SelectionData | null>(null);
   const [sugerirNCM, setSugerirNCM] = useState<SugerirNCM[]>([
@@ -91,21 +93,21 @@ const HomePage: React.FC = () => {
       let response;
       let modeloUsado = selectedModel;
 
-      if (selectedModel === "Gemini-1.5-pro") {
+      if (selectedModel === "Nexcode-0.1-BETA") {
         response = await axiosInstance.post("/gemini", {
           consulta: pesquisa,
           ...dropdownSelection,
         });
-      } else if (selectedModel === "GPT-4") {
+      } else if (selectedModel === "Nex-0.1-Pro-2024") {
         response = await axiosInstance.post("/gpt4", {
           consulta: pesquisa,
           ...dropdownSelection,
         });
-      } else if (selectedModel === "CLAUDE-3") {
+      } else if (selectedModel === "Nex-0.3-Preview-2024") {
         response = await axiosInstance.post("/claude", {
           consulta: pesquisa,
           ...dropdownSelection,
-        }); 
+        });
       } else {
         setErrorMessage("A API selecionada ainda não está funcionando.");
         setSugerirNCM([]);
@@ -123,13 +125,12 @@ const HomePage: React.FC = () => {
           modelo: modeloUsado,
           timestamp: new Date().toISOString(),
           consulta: pesquisa,
-          ...dropdownSelection
+          ...dropdownSelection,
         });
       } catch (historyError) {
         console.error("Erro ao salvar no histórico:", historyError);
         // Não exibimos erro ao usuário pois a consulta principal funcionou
       }
-
     } catch (error) {
       console.error("Erro ao buscar sugestões:", error);
       setErrorMessage("Erro ao buscar informações. Tente novamente.");
@@ -237,7 +238,6 @@ const HomePage: React.FC = () => {
                   </span>
                 </div>
                 {isTabelaICMSOpen && (
-
                   <div>
                     <hr className="border-gray-600 my-4" />
                     <TabelaICMS />

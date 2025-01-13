@@ -9,7 +9,7 @@ import axiosInstance from "../../axiosConfig";
 const HistoricoPage: React.FC = () => {
   const [historico, setHistorico] = useState<HistoricoItem[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | null>(
-    "Gemini-1.5-pro"
+    "Nexcode-0.1-BETA"
   );
   const [isLoading, setIsLoading] = useState(true);
 
