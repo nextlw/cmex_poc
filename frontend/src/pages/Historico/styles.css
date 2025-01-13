@@ -1,47 +1,23 @@
-
-
-.box-conteiner-search-table {
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-  border-bottom-left-radius: 1rem;
-  border-bottom-right-radius: 1rem;
-  padding-left: 0.2rem;
-  padding-right: 0.2rem;
-  padding-top: 0.2rem;
-  padding-bottom: 0.2rem;
+.box-table {
+  border-radius: 8px;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
   color: rgb(255 255 255);
   border-width: 1px;
   border-color: rgba(71, 131, 208, 0.5);
   background-color: rgb(55 65 81 / 0.5);
   display: flow-root;
-  gap: 16px;
-}
-
-.shadow-input-table {
-  --tw-shadow: 0 40px 50px 5px rgba(0, 0, 0, 0.4),
-    0 4px 6px -4px rgb(0 0 0 / 0.5);
-  --tw-shadow-colored: 0 50px 25px -3px var(--tw-shadow-color),
-    0 4px 6px -4px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 2 #0000),
-    var(--tw-ring-shadow, 0 2 #0000), var(--tw-shadow);
-  border-radius: 100%;
-}
-
-.overflow-x-auto {
-  overflow-x: auto;
-  width: 100%;
-}
-
-.table-auto {
-  width: 100%;
-  min-width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  overflow: hidden;
 }
 
 /* Estilos para o cabeçalho da tabela */
 thead tr {
   width: 100%;
+  background-color: #18212f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 th {
@@ -51,54 +27,61 @@ th {
   text-align: left;
   font-weight: 400;
   font-size: 14px;
-  color: #ffffff;
-  border-bottom: 2px solid #4a4a4a;
+  color: #86abff;
+  border-bottom: 2px solid #476171;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Estilos para as células da tabela */
 td {
   padding: 0.75rem 1rem;
   color: #e0e0e0;
-  border-bottom: 1px solid #404040;
+  border-bottom: 1px solid #476171;
+  border-right: 1px solid #476171;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 /* Hover na linha da tabela */
 tbody tr:hover {
-  background-color: rgba(61, 61, 61, 0.5);
+  background-color: rgba(25, 26, 50, 0.5);
   transition: background-color 0.2s ease;
 }
 
 /* Estilo para células com conteúdo longo */
 td.truncate {
-  max-width: 200px;
-  white-space: nowrap;
+  max-width: 150px;
   overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 /* Estilo para a última coluna (timestamp) */
 td:last-child {
-  white-space: nowrap;
+  white-space: normal;
 }
 
 /* Responsividade */
-@media (max-width: 1024px) {
+@media (max-width: 300px) {
   .max-w-7xl {
     padding: 0 1rem;
   }
-  
+
   .box-conteiner-dados {
     margin: 1rem 0;
   }
-  
-  td, th {
+
+  td,
+  th {
     padding: 0.5rem;
     font-size: 0.875rem;
   }
-  
+
   .truncate {
-    max-width: 150px;
+    max-width: 400px;
   }
 }
 
@@ -118,7 +101,7 @@ td:last-child {
 }
 
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-  background: #5a5a5a;
+  background: #273a46;
 }
 
 /* Animação de loading */
@@ -130,7 +113,7 @@ td:last-child {
 /* Estilo para células vazias */
 td:empty::before {
   content: "—";
-  color: #505b71;
+  color: #384766;
 }
 
 /* Estilo para badges de modelo */
@@ -170,7 +153,7 @@ td:empty::before {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 10;
   white-space: normal;
-  max-width: 300px;
+  max-width: 150px;
   font-size: 0.875rem;
 }
 
@@ -201,8 +184,8 @@ td:empty::before {
 
 /* Ajustes para garantir largura total */
 .container-full {
-  width: calc(100% - 48px);
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  /* Removidas as propriedades que centralizam o conteúdo */
+  margin: 0;
   padding: 0;
 }

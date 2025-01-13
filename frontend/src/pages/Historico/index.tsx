@@ -3,12 +3,14 @@ import Header from "../../components/Header";
 import PageHeader from "../../components/PageHeader";
 import { AiOutlineHistory } from "react-icons/ai";
 import "./styles.css";
-import { HistoricoItem } from './types';
+import { HistoricoItem } from "./types";
 import axiosInstance from "../../axiosConfig";
 
 const HistoricoPage: React.FC = () => {
   const [historico, setHistorico] = useState<HistoricoItem[]>([]);
-  const [selectedModel, setSelectedModel] = useState<string | null>("Gemini-1.5-pro");
+  const [selectedModel, setSelectedModel] = useState<string | null>(
+    "Gemini-1.5-pro"
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -20,11 +22,14 @@ const HistoricoPage: React.FC = () => {
       console.log("Buscando histórico..."); // Debug
       const response = await axiosInstance.get("/historico");
       console.log("Resposta do histórico:", response.data); // Debug
-      
+
       if (Array.isArray(response.data)) {
-        setHistorico(response.data.sort((a: HistoricoItem, b: HistoricoItem) => 
-          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-        ));
+        setHistorico(
+          response.data.sort(
+            (a: HistoricoItem, b: HistoricoItem) =>
+              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          )
+        );
       } else {
         console.error("Dados do histórico não são um array:", response.data);
         setHistorico([]);
@@ -38,21 +43,21 @@ const HistoricoPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="container-full">
       <Header
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
         modeloSelecionado={selectedModel}
         aoMudarModelo={(value) => setSelectedModel(value)}
       />
-      
-      <div className="container-full">
+
+      <div className="container">
         <PageHeader
           icon={<AiOutlineHistory size={24} />}
           title="Histórico de Consultas"
         />
 
-        <table className="table-auto box-conteiner-search-table">
+        <table className="box-table table-auto text-sm">
           <thead>
             <tr className="text-white">
               <th>ID</th>
@@ -84,10 +89,15 @@ const HistoricoPage: React.FC = () => {
               </tr>
             ) : (
               historico.map((item) => (
-                <tr key={item.id} className="text-white border-b border-gray-700">
+                <tr
+                  key={item.id}
+                  className="text-white border-b border-gray-700"
+                >
                   <td>{item.id}</td>
                   <td>
-                    <span className={`modelo-badge modelo-${item.modelo.toLowerCase()}`}>
+                    <span
+                      className={`modelo-badge modelo-${item.modelo.toLowerCase()}`}
+                    >
                       {item.modelo}
                     </span>
                   </td>
@@ -95,10 +105,16 @@ const HistoricoPage: React.FC = () => {
                   <td className="truncate-cell" data-full-text={item.descricao}>
                     {item.descricao}
                   </td>
-                  <td className="truncate-cell" data-full-text={item.atributos.join(", ")}>
+                  <td
+                    className="truncate-cell"
+                    data-full-text={item.atributos.join(", ")}
+                  >
                     {item.atributos.join(", ")}
                   </td>
-                  <td className="truncate-cell" data-full-text={item.atributos_tipi.join(", ")}>
+                  <td
+                    className="truncate-cell"
+                    data-full-text={item.atributos_tipi.join(", ")}
+                  >
                     {item.atributos_tipi.join(", ")}
                   </td>
                   <td>{item.valores_de_impostos.ipi}</td>
