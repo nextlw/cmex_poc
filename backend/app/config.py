@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     
     # Configurações do servidor
     HOST: str = "0.0.0.0"
-    PORT: int = 8000
+    PORT: int = 10000
     
     # Configurações de CORS
     BACKEND_CORS_ORIGINS: list = [
