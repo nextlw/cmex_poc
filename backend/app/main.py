@@ -4,6 +4,8 @@ from .routes.openai import openai_router
 from .routes.gemini import gemini_router
 from .routes.claude import claude_router
 from .routes.historico import historico_router
+from .routes.hearth import hearth_router
+import os
 
 app = FastAPI()
 
@@ -25,10 +27,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Adiciona rota raiz para health check
+# Rota raiz para health check
 @app.get("/")
 async def root():
-    """Rota raiz para verificar se a API está disponível"""
     return {"status": "ok", "message": "API está funcionando"}
 
 # Inclui os roteadores com prefixo /api
@@ -36,10 +37,10 @@ app.include_router(gemini_router, prefix="/api")
 app.include_router(openai_router, prefix="/api")
 app.include_router(claude_router, prefix="/api")
 app.include_router(historico_router, prefix="/api")
+app.include_router(hearth_router, prefix="/api")
 
-# Executar via Uvicorn (opcional; caso já faça isso de outra forma, remova)
+# Executar via Uvicorn
 if __name__ == "__main__":
     import uvicorn
-    import os
-    port = int(os.environ.get("PORT", 10000))
+    port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
