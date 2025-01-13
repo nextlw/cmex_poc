@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from .routes.openai import openai_router
 from .routes.gemini import gemini_router
@@ -26,19 +26,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Rota raiz para health check
 @app.get("/")
+@app.head("/")
 async def root():
-    return {"status": "ok", "message": "API está funcionando"}
+    """Rota raiz para verificar se a API está disponível"""
+    return Response(content="API está funcionando", media_type="text/plain")
 
 # Inclui os roteadores com prefixo /api
 app.include_router(gemini_router, prefix="/api")
 app.include_router(openai_router, prefix="/api")
 app.include_router(claude_router, prefix="/api")
 app.include_router(historico_router, prefix="/api")
-# Executar via Uvicorn
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 10000))
-    uvicorn.run(app, host='0.0.0.0', port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port)
     
