@@ -19,9 +19,6 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
     
-    # Configurações do PYTHONANYWARE
-    PYTHONANYWARE_API_KEY: str = os.getenv("PYTHONANYWARE_API_KEY", "")
-    
     
     
     # Configurações do servidor
@@ -33,7 +30,9 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://localhost:8000",
         "http://localhost:5173",
-        "http://localhost:10000"
+        "http://localhost:10000",
+        "https://cmex-poc.onrender.com",
+        "https://cmex-poc.vercel.app"
     ]
     
     # Configurações de logging
@@ -45,6 +44,7 @@ class Settings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = ".env"
+        extra = "allow"
 
 # Criar uma instância única das configurações
 @lru_cache()
@@ -83,9 +83,6 @@ MODEL_MAPPING = {
         "max_tokens": 4096,
         "temperature": 0.7
     },
-    "PYTHONANYWARE": {
-        "API_TOKEN": settings.PYTHONANYWARE_API_KEY,
-    }
 }
 
 # Configurações de resposta padrão

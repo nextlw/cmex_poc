@@ -14,8 +14,8 @@ origins = [
     "http://localhost:8000",
     "http://localhost:5173",
     "http://localhost:10000",
-    "https://pocrender-569a.onrender.com",
-    "https://cmex-poc.onrender.com"
+    "https://cmex-poc.onrender.com",
+    "https://cmex-poc.vercel.app"
 ]
 
 app.add_middleware(
