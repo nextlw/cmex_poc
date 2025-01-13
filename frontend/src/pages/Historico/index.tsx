@@ -119,7 +119,7 @@ const HistoricoPage: React.FC = () => {
                   </td>
                   <td>{item.valores_de_impostos.ipi}</td>
                   <td>
-                    {Object.entries(item.valores_de_impostos.icms)
+                    {Object.entries(item.valores_de_impostos.icms || {})
                       .map(([estado, valor]) => `${estado}: ${valor}`)
                       .join(", ")}
                   </td>
