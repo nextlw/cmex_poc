@@ -1,0 +1,62 @@
+/* Estilos específicos do Atributos */
+.atributos {
+  background-color: rgba(17, 24, 39, 0.5);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.loading {
+  color: rgb(209, 213, 219);
+  font-style: italic;
+  padding: 1rem;
+  text-align: center;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-white {
+  color: white;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.space-y-1 > * + * {
+  margin-top: 0.25rem;
+}
+
+.text-gray-300 {
+  color: rgb(209, 213, 219);
+}
+
+.list-disc {
+  list-style-type: disc;
+}
+
+.list-inside {
+  list-style-position: inside;
+} 
+
+.item-atributos {
+  padding-left: 16px;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: rgb(255 255 255);
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: rgba(71, 131, 208, 0.5);
+  background-color: rgb(55 65 81 / 0.5);
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../components/Header";
 import PageHeader from "../../components/PageHeader";
-import { AiOutlineHistory } from "react-icons/ai";
+import { PiListStarFill } from "react-icons/pi";
 import "./styles.css";
 import { HistoricoItem } from "./types";
 import axiosInstance from "../../axiosConfig";
@@ -9,7 +9,7 @@ import axiosInstance from "../../axiosConfig";
 const HistoricoPage: React.FC = () => {
   const [historico, setHistorico] = useState<HistoricoItem[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | null>(
-    "Nexcode-0.1-BETA"
+    "Nex-0.3-Preview-2024"
   );
   const [isLoading, setIsLoading] = useState(true);
 
@@ -52,9 +52,10 @@ const HistoricoPage: React.FC = () => {
       />
 
       <div className="container">
-        <PageHeader
-          icon={<AiOutlineHistory size={24} />}
+      <PageHeader
+          icon={<PiListStarFill />}
           title="Histórico de Consultas"
+          iconSize={22} // Sobrescreve o padrão de 22px
         />
 
         <table className="box-table table-auto text-sm">
