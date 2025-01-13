@@ -12,7 +12,6 @@ import logging
 import json
 from line_profiler import LineProfiler, profile
 import sys
-from datetime import datetime
 
 
 openai_router = APIRouter()
