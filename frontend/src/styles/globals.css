@@ -1,6 +1,6 @@
 /* Adicionar padding-top ao corpo para compensar o header fixo */
 body {
-  padding-top: 32px; /* Ajustado para a nova altura do header */
+  padding-top: 56px; /* Ajuste conforme a altura real do header */
   font-family: Roboto, sans-serif !important;
 }
 

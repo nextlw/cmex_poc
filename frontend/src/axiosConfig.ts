@@ -6,8 +6,8 @@ const isLocal =
 
 // Define a URL base
 const baseURL = isLocal
-  ? "http://localhost:8000/api"  // Adicionei /api aqui
-  : "https://pocrender-569a.onrender.com/api";  // Adicionei /api aqui também
+  ? "http://localhost:8000/api"  
+  : "https://cmex-poc.onrender.com/api";  
 
 const axiosInstance = axios.create({
   baseURL,

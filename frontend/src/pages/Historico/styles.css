@@ -1,34 +1,4 @@
-/* Estilos específicos da home */
-.min-h-screen {
-  width: 100%;
-}
 
-.max-w-7xl {
-  width: 100%;
-  padding: 0;
-}
-
-.bg-gray-800\/50 {
-  background-color: rgba(31, 41, 55, 0.5);
-}
-
-.backdrop-blur-sm {
-  backdrop-filter: blur(4px);
-}
-
-.text-white {
-  color: white;
-}
-
-.text-gray-500 {
-  color: rgb(107, 114, 128);
-}
-
-.box-conteiner-table {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
 
 .box-conteiner-search-table {
   border-top-left-radius: 1rem;
@@ -231,8 +201,8 @@ td:empty::before {
 
 /* Ajustes para garantir largura total */
 .container-full {
-  width: calc(100% - 48px); /* 24px de cada lado */
-  max-width: 1920px;
-  margin: 0 24px;
+  width: calc(100% - 48px);
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 0;
 }
