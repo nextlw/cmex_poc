@@ -4,6 +4,7 @@ from .routes.openai import openai_router
 from .routes.gemini import gemini_router
 from .routes.claude import claude_router
 from .routes.historico import historico_router
+from .routes.pythonanyware import pythonanyware_router
 app = FastAPI()
 
 # Configuração CORS
@@ -28,8 +29,11 @@ app.include_router(gemini_router, prefix="/api")
 app.include_router(openai_router, prefix="/api")
 app.include_router(claude_router, prefix="/api")
 app.include_router(historico_router, prefix="/api")
-
-
+app.include_router(pythonanyware_router, prefix="/api")
+# Rota de verificação de saúde
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
 
 # Executar via Uvicorn (opcional; caso já faça isso de outra forma, remova)
 if __name__ == "__main__":

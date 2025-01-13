@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
     
+    # Configurações do PYTHONANYWARE
+    PYTHONANYWARE_API_KEY: str = os.getenv("PYTHONANYWARE_API_KEY", "")
+    
     # Configurações do servidor
     HOST: str = "0.0.0.0"
     PORT: int = 8000
@@ -77,6 +80,9 @@ MODEL_MAPPING = {
         "model_name": settings.ANTHROPIC_MODEL,  # ou outro modelo Claude disponível
         "max_tokens": 4096,
         "temperature": 0.7
+    },
+    "PYTHONANYWARE": {
+        "API_TOKEN": settings.PYTHONANYWARE_API_KEY,
     }
 }
 
