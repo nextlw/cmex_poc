@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     # Configurações do PYTHONANYWARE
     PYTHONANYWARE_API_KEY: str = os.getenv("PYTHONANYWARE_API_KEY", "")
     
+    
+    
     # Configurações do servidor
     HOST: str = "0.0.0.0"
     PORT: int = 8000
