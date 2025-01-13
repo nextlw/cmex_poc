@@ -18,7 +18,6 @@ body {
   padding-top: 56px; /* Ajuste conforme a altura real do header */
   font-family: Roboto, sans-serif !important;
   width: fit-content;
-  margin: 0 auto;
 }
 /* ------InputBordaInteligente------ */
 .container-gradiente {

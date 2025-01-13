@@ -36,7 +36,7 @@ import { AiFillCodeSandboxCircle } from "react-icons/ai";
 const HomePage: React.FC = () => {
   const [pesquisa, setPesquisa] = useState("");
   const [selectedModel, setSelectedModel] = useState<string | null>(
-    "Nexcode-0.1-BETA"
+    "Nex-0.3-Preview-2024"
   );
   const [dropdownSelection, setDropdownSelection] =
     useState<SelectionData | null>(null);
@@ -168,7 +168,7 @@ const HomePage: React.FC = () => {
 
   // Retorna a estrutura visual do componente
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen max-w-7xl mx-auto">
       <Header
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
