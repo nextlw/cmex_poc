@@ -153,50 +153,88 @@ const InputAi: React.FC<InputAiProps> = ({
   }
 
   return (
-    <div
-      className="container-gradiente"
-      ref={containerRef}
-      style={{ width: width || "100%" }}
-    >
-      <div className="envoltorio-input" ref={inputWrapperRef}>
-        <i className="bi bi-stars" ref={iconRef}></i>
-        <input
-          type="text"
-          ref={inputRef}
-          value={value}
-          onChange={onChange}
-          onKeyDown={handleKeyPress}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          placeholder={placeholder}
-          readOnly={isLoading}
-        />
-        <div
-          style={{
-            position: "absolute",
-            right: "8px",
-            top: "2px",
-            bottom: "2px",
-            display: "flex",
-            alignItems: "center",
-            zIndex: 10,
-          }}
-        >
-          <Button
-            onClick={onButtonClick}
-            isLoading={isLoading}
-            icon={<BiSearch />}
+    <>
+      {/* Container principal - div externa que controla o tamanho e efeitos de borda
+          - Usa a classe container-gradiente pra estilização base
+          - Referenciado por containerRef pra manipular animações
+          - Width pode ser customizado via props ou usa 100% como padrão
+      */}
+      <div
+        className="container-gradiente"
+        ref={containerRef}
+        style={{ width: width || "100%" }}
+      >
+        {/* Wrapper do input - agrupa o input, ícone e botão
+            - Classe envoltorio-input controla padding e posicionamento
+            - Referenciado por inputWrapperRef pra animações de foco/carregamento
+        */}
+        <div className="envoltorio-input" ref={inputWrapperRef}>
+          {/* Ícone à esquerda do input
+              - Usa biblioteca bootstrap-icons (classe bi-stars)
+              - Referenciado por iconRef pra animações de gradiente
+          */}
+          <i className="bi bi-stars" ref={iconRef}></i>
+
+          {/* Input text principal
+              - Controlado via value/onChange props
+              - Handlers pra focus, blur e keypress
+              - Fica readonly quando isLoading é true
+          */}
+          <input
+            type="text"
+            ref={inputRef}
+            value={value}
+            onChange={onChange}
+            onKeyDown={handleKeyPress}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            placeholder={placeholder}
+            readOnly={isLoading}
+          />
+
+          {/* Container do botão de busca
+              - Posicionado absolutamente à direita do input
+              - z-index 10 pra ficar sobre outros elementos
+          */}
+          <div
             style={{
-              borderRadius: "100%",
+              position: "absolute",
+              right: "8px",
+              top: "2px",
+              bottom: "2px",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              zIndex: 10,
             }}
-          />
+          >
+            {/* Botão de busca customizado
+                - Usa componente Button reutilizável
+                - Ícone de lupa da react-icons
+                - Herda estado de loading do input
+                - Estilizado como círculo
+            */}
+            <Button
+              onClick={onButtonClick}
+              isLoading={isLoading}
+              icon={<BiSearch />}
+              style={{
+                borderRadius: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            />
+          </div>
         </div>
+
+        {/* Camada de gradiente
+            - Fica por baixo do input (z-index 0)
+            - Muda de cor/animação baseado no estado (foco/carregando)
+            - Referenciado por overlayRef pra controle de animações
+        */}
+        <div className="sobreposicao-gradiente" ref={overlayRef}></div>
       </div>
-      <div className="sobreposicao-gradiente" ref={overlayRef}></div>
-    </div>
+    </>
   );
 };
 
