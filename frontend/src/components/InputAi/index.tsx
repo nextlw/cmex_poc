@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "./styles.css";
 import { InputAiProps } from "./types";
 import Button from "../Button";
 import { BiSearch } from "react-icons/bi";
 
 /**
- * Componente de entrada que exibe animações visuais em diferentes estados de foco e carregamento.
- * Útil para capturar descrições ou textos relacionados a produtos.
+ * Componente de input com animações visuais quando você interage ou quando tá carregando.
+ * Perfeito pra capturar descrições ou textos de produtos.
  *
  * @component
  *
  * @typedef {Object} InputAiProps
- * @property {string} [width] - Largura opcional do componente. Caso não seja fornecida, utiliza 100%.
- * @property {string} [placeholder="Descreva o seu produto"] - Texto exibido quando o campo está vazio.
- * @property {string} value - Valor atual do campo de texto.
- * @property {React.ChangeEventHandler<HTMLInputElement>} onChange - Função de callback chamada quando há alteração no valor do campo.
- * @property {React.KeyboardEventHandler<HTMLInputElement>} [onKeyPress] - Função de callback chamada ao pressionar uma tecla. Aqui, a tecla "Enter" dispara tratamentos específicos.
- * @property {() => void} [onBlur] - Função de callback chamada quando o campo perde o foco.
- * @property {boolean} [isLoading=false] - Indica se o componente deve exibir animações de carregamento (loading).
- * @property {boolean} [readOnly=false] - Define se o campo está desabilitado para edição.
+ * @property {string} [width] - Largura opcional do componente. Se não passar nada, ele usa 100%.
+ * @property {string} [placeholder="Descreva o seu produto"] - Texto que aparece quando o campo tá vazio.
+ * @property {string} value - Valor atual do input.
+ * @property {React.ChangeEventHandler<HTMLInputElement>} onChange - Função chamada quando o valor do campo muda.
+ * @property {React.KeyboardEventHandler<HTMLInputElement>} [onKeyPress] - Função chamada ao pressionar uma tecla. A tecla "Enter" pode desencadear uma ação especial.
+ * @property {() => void} [onBlur] - Função chamada quando o campo perde o foco.
+ * @property {boolean} [isLoading=false] - Indica se deve mostrar as animações de carregamento.
+ * @property {boolean} [readOnly=false] - Define se o campo está somente leitura.
  *
  * @example
  * <InputAi
@@ -30,12 +30,12 @@ import { BiSearch } from "react-icons/bi";
  * />
  *
  * @remarks
- * - O componente utiliza diversos refs (inputRef, containerRef, overlayRef, etc.) para manipulações de estilo e animação.
- * - O efeito principal (useEffect) aplica ou remove classes CSS e animações conforme o estado de carregamento (isLoading).
- * - Ao focar no campo (handleFocus), adiciona animações visuais; ao desfocar (handleBlur), remove e executa o callback onBlur caso definido.
- * - A função handleKeyPress intercepta a tecla "Enter" para evitar envios padrão do formulário quando o campo não está em estado de carregamento.
+ * - Usa refs (inputRef, containerRef, overlayRef, etc.) pra manipular estilos e animações.
+ * - O useEffect principal adiciona ou remove classes CSS e animações baseado no estado de carregamento (isLoading).
+ * - Quando você foca no campo (handleFocus), rolam umas animações; ao desfocar (handleBlur), ele remove elas e chama o onBlur se tiver.
+ * - A função handleKeyPress intercepta o "Enter" pra evitar que o formulário seja enviado quando não deve.
  *
- * @returns {JSX.Element} Retorna o elemento JSX com os estilos e comportamentos descritos.
+ * @returns {JSX.Element} Retorna o componente com os estilos e comportamentos definidos.
  */
 const InputAi: React.FC<InputAiProps> = ({
   width,
@@ -45,7 +45,7 @@ const InputAi: React.FC<InputAiProps> = ({
   onKeyPress,
   onBlur,
   isLoading = false,
-  onButtonClick = () => {}, // Provide default empty function
+  onButtonClick = () => { }, // Função vazia, o botão eu implementei dentro do input de forma opcional.
   style,
 }): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,23 +55,48 @@ const InputAi: React.FC<InputAiProps> = ({
   const iconRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (isLoading) {
-      overlayRef.current?.classList.remove("sobreposicao-gradiente-focado");
-      overlayRef.current?.classList.add("sobreposicao-gradiente-carregando");
-      overlayRef.current!.style.animation = "moverGradiente 2s linear infinite";
-      containerRef.current!.style.animation =
-        "bordaBrilhante 4s ease-in-out infinite";
-      inputWrapperRef.current?.classList.add("envoltorio-input-carregando");
-      iconRef.current?.classList.add("icone-carregando-carregando");
-      iconRef.current!.style.animation = "moverGradiente 2s linear infinite";
-    } else {
-      overlayRef.current?.classList.remove("sobreposicao-gradiente-carregando");
-      inputWrapperRef.current?.classList.remove("envoltorio-input-carregando");
-      overlayRef.current!.style.animation = "none";
-      containerRef.current!.style.animation = "none";
-      iconRef.current?.classList.remove("icone-carregando-carregando");
-      iconRef.current!.style.animation = "none";
-    }
+    // Objeto que mapeia os elementos e suas configurações de loading
+    // Isso deixa o código mais organizado e fácil de manter
+    const loadingConfig = [
+      {
+        ref: overlayRef,
+        loadingClasses: ["sobreposicao-gradiente-carregando"],
+        removeClasses: ["sobreposicao-gradiente-focado"],
+        animation: "moverGradiente 2s linear infinite"
+      },
+      {
+        ref: containerRef,
+        animation: "bordaBrilhante 4s ease-in-out infinite"
+      },
+      {
+        ref: inputWrapperRef,
+        loadingClasses: ["envoltorio-input-carregando"]
+      },
+      {
+        ref: iconRef,
+        loadingClasses: ["icone-carregando-carregando"],
+        animation: "moverGradiente 2s linear infinite"
+      }
+    ];
+
+    // Função helper pra manipular as classes e animações
+    const updateElement = (config: any, isLoading: boolean) => {
+      const { ref, loadingClasses = [], removeClasses = [], animation } = config;
+      
+      if (!ref.current) return;
+
+      if (isLoading) {
+        removeClasses.forEach(cls => ref.current.classList.remove(cls));
+        loadingClasses.forEach(cls => ref.current.classList.add(cls));
+        if (animation) ref.current.style.animation = animation;
+      } else {
+        loadingClasses.forEach(cls => ref.current.classList.remove(cls));
+        if (animation) ref.current.style.animation = 'none';
+      }
+    };
+
+    // Aplica as configurações em todos os elementos
+    loadingConfig.forEach(config => updateElement(config, isLoading));
   }, [isLoading]);
 
   const handleFocus = () => {
@@ -87,10 +112,28 @@ const InputAi: React.FC<InputAiProps> = ({
   };
 
   const handleBlur = () => {
-    overlayRef.current?.classList.remove("sobreposicao-gradiente-focado");
-    inputWrapperRef.current?.classList.remove("envoltorio-input-focado");
-    iconRef.current?.classList.remove("icone-carregando-focado");
-    iconRef.current?.classList.remove("icone-carregando-carregando");
+    // Esse array guarda todos os elementos que precisam ter suas classes removidas
+    // quando o usuário tira o foco do input. Funciona assim:
+    // 
+    // - Cada objeto no array tem:
+    //   * ref: referência pro elemento DOM que queremos modificar
+    //   * classes: array com os nomes das classes CSS que precisam ser removidas
+    //
+    // Antes eu tinha várias linhas repetidas tipo "ref.current?.classList.remove()",
+    // agora com esse array:
+    //   1. Organiza melhor quais elementos são afetados
+    //   2. Facilita adicionar ou remover elementos no futuro
+    //   3. Evita repetição de código usando loops (bem mais elegante, né?)
+    const elements = [
+      { ref: overlayRef, classes: ["sobreposicao-gradiente-focado"] },
+      { ref: inputWrapperRef, classes: ["envoltorio-input-focado"] },
+      { ref: iconRef, classes: ["icone-carregando-focado", "icone-carregando-carregando"] },
+    ];
+
+    elements.forEach(({ ref, classes }) => {
+      classes.forEach((className) => ref.current?.classList.remove(className));
+    });
+
     if (onBlur) {
       onBlur();
     }
@@ -140,7 +183,7 @@ const InputAi: React.FC<InputAiProps> = ({
           }}
         >
           <Button
-            onClick={onButtonClick} // Usa prop para o clique do botão
+            onClick={onButtonClick}
             isLoading={isLoading}
             icon={<BiSearch />}
             style={{
