@@ -20,6 +20,7 @@ node_modules/
 terraform.tfstate
 terraform.tfstate.backup
 Terraform Configuração/
+.DS_Store
 
 
 
