@@ -1,6 +1,16 @@
-/* Tokens de Cores */
 :root {
   /* Cores padrão (tema dark) */
+
+  --color-gray-300: rgb(209, 213, 219);
+  --color-gray-400: rgb(156, 163, 175);
+  --color-gray-500: rgb(107, 114, 128);
+  --color-gray-600: rgb(75, 85, 99);
+  --color-gray-100: rgb(243, 244, 246);
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-shadow-md: rgba(0, 0, 0, 0.15);
+  --color-text-primary-30: rgba(255, 255, 255, 0.3);
+  --color-input-background: rgb(21, 29, 41);
+
   --color-primary: rgb(59, 130, 246);
   --color-primary-hover: rgb(37, 99, 235);
   --color-secondary: rgb(107, 114, 128);
@@ -27,11 +37,34 @@
   --color-blue-500: #3b82f6;
   --color-blue-600: #2563eb;
   --color-gray-800-50: rgba(31, 41, 55, 0.5);
+  --color-gray-900-transparent: rgba(17, 24, 39, 0.9);
+  --color-gray-900: rgb(21, 29, 41);
   --color-header: var(--color-background-dark);
+  --color-background: linear-gradient(to bottom right, 
+  var(--color-gray-900), 
+  var(--color-gray-900-transparent)
+);
+
+  /* Cores de Select */
+  --color-select-background: #19222e;
+  --color-select-border: #374151;
+  --color-select-text: #fff;
+  --color-select-hover-background: #374151;
+  --color-select-hover-border: #007bff;
 }
 
 /* Tema Light */
 :root[data-theme="light"] {
+  --color-gray-300: rgb(229, 231, 235);
+  --color-gray-400: rgb(156, 163, 175);
+  --color-gray-500: rgb(107, 114, 128);
+  --color-gray-600: rgb(75, 85, 99);
+  --color-gray-100: rgb(243, 244, 246);
+  --color-shadow: rgba(0, 0, 0, 0.05);
+  --color-shadow-md: rgba(0, 0, 0, 0.1);
+  --color-text-primary-30: rgba(0, 0, 0, 0.3);
+  --color-input-background: rgb(21, 29, 41);
+
   --color-primary: rgb(99, 179, 255);
   --color-primary-hover: rgb(77, 149, 255);
   --color-secondary: rgb(167, 174, 188);
@@ -58,7 +91,19 @@
   --color-blue-500: #60a5fa;
   --color-blue-600: #3b82f6;
   --color-gray-800-50: rgba(243, 244, 246, 0.5);
+  --color-background: linear-gradient(to bottom right, 
+  var(--color-gray-100), 
+  var(--color-gray-100-transparent)
+);
   --color-header: var(--color-background-dark);
+  /* Novas cores para o tema light */
+  
+  /* Cores de Select */
+  --color-select-background: #f3f4f6;
+  --color-select-border: #d1d5db;
+  --color-select-text: #000;
+  --color-select-hover-background: #e5e7eb;
+  --color-select-hover-border: #3b82f6;
 }
 
 /* Tokens de Fontes */
@@ -140,4 +185,14 @@
   --padding-complex-xl: 16px 48px 16px 32px;
   --padding-complex-xxl: 20px 60px 20px 40px;
   --padding-complex-xxxl: 24px 72px 24px 48px;
+}
+
+/* Tokens de Layout */
+:root {
+  --max-width-7xl: 80rem;
+  --min-height-screen: 100vh;
+  --grid-cols-2: repeat(2, minmax(0, 1fr));
+  --gap-2: var(--sp-sm);
+  --gap-3: var(--sp-sml);
+  --gap-4: var(--sp-md);
 }

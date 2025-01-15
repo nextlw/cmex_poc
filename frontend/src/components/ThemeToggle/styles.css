@@ -1,0 +1,32 @@
+.theme-toggle {
+  background: none;
+  border: none;
+  padding: var(--pd-sm);
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-large);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.theme-toggle:hover {
+  background-color: var(--color-background-dark);
+  transform: scale(1.1);
+}
+
+.theme-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-border);
+}
+
+/* Animação do ícone */
+.theme-toggle svg {
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover svg {
+  transform: rotate(30deg);
+} 

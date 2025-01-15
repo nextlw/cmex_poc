@@ -1,28 +1,21 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./styles.css";
-
-interface HeaderLinksProps {
-  links: string[];
-}
+import { HeaderLinksProps } from "./types";
 
 const HeaderLinks: React.FC<HeaderLinksProps> = ({ links }) => {
-  const navigate = useNavigate();
   const location = useLocation();
 
-  const handleNavigation = (link: string) => {
+  const getLinkPath = (link: string): string => {
     switch (link) {
       case "Início":
-        navigate("/");
-        break;
+        return "/";
       case "Histórico":
-        navigate("/historico");
-        break;
+        return "/historico";
       case "Configurações":
-        // Desabilitado por enquanto
-        break;
+        return "/configuracoes";
       default:
-        break;
+        return "/";
     }
   };
 
@@ -40,16 +33,20 @@ const HeaderLinks: React.FC<HeaderLinksProps> = ({ links }) => {
   return (
     <nav className="header-links">
       {links.map((link) => (
-        <button
+        <Link
           key={link}
-          onClick={() => handleNavigation(link)}
+          to={getLinkPath(link)}
           className={`header-link ${isLinkActive(link) ? "active" : ""} ${
             link === "Configurações" ? "disabled" : ""
           }`}
-          disabled={link === "Configurações"}
+          onClick={(e) => {
+            if (link === "Configurações") {
+              e.preventDefault();
+            }
+          }}
         >
           {link}
-        </button>
+        </Link>
       ))}
     </nav>
   );

@@ -1,21 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Adicionar padding-top ao corpo para compensar o header fixo */
 
 .from-gray-900 {
-  --tw-gradient-from: #111827 var(--tw-gradient-from-position);
-  --tw-gradient-to: rgb(17 24 39 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-from: var(--color-gray-900) var(--tw-gradient-from-position);
+  --tw-gradient-to: var(--color-gray-900-transparent) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
 .to-gray-800 {
-  --tw-gradient-to: #1f2937 var(--tw-gradient-to-position);
+  --tw-gradient-to: var(--color-gray-800) var(--tw-gradient-to-position);
 }
 
 .bg-gradient-to-br {
-  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+  background-image: var(--color-background);
 }
 
 body {
-  padding-top: 56px; /* Ajuste conforme a altura real do header */
-  font-family: Roboto, sans-serif !important;
+  padding-top: var(--pd-xlm); /* Ajuste conforme a altura real do header */
+  font-family: var(--font-family-primary) !important;
   width: fit-content;
 }

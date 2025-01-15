@@ -11,7 +11,7 @@
   overflow: hidden;
   position: relative;
   line-height: 0%;
-  background: #3837428e;
+  background: var(--color-input-background);
   transition: box-shadow 0.3s ease-in;
   min-height: 40px;
 }
@@ -43,7 +43,6 @@
   background: radial-gradient(circle, yellow, orange, #4ecaff, hwb(224 30% 0%));
   background-size: 200% 200%;
   background-position: 0% 50%;
-
 }
 
 /* 
@@ -54,8 +53,6 @@
   padding: 1px;
   position: relative;
   z-index: 1;
-
-
 }
 
 .envoltorio-input-focado {
@@ -72,7 +69,6 @@
   z-index: 1;
   transition: 0.8s ease-in-out;
   opacity: 0.9;
-
 }
 
 /* 
@@ -87,21 +83,21 @@
   border: none;
   outline: none;
   border-radius: 98px;
-  color: rgb(184, 216, 255);
-  background-color: rgb(21, 29, 41);
-  font-family: "Roboto", sans-serif;
-  font-size: 1em;
-  font-weight: 400;
+  color: var(--color-text-secondary);
+  background-color: var(--color-background-dark);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
   padding-left: 40px;
 }
 
 /* Estilo do input durante o carregamento */
 .envoltorio-input-carregando input {
-  color: rgb(130, 160, 182); ;
+  color: var(--color-text-muted);
 }
 
 .envoltorio-input-focado input {
-  color: white; 
+  color: var(--color-text-primary);
 }
 
 /* 
@@ -188,8 +184,8 @@
   Mensagem de erro - Aparece abaixo do input quando necessário
 */
 .mensagem-erro {
-  color: red;
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
+  color: var(--color-danger);
+  font-size: var(--font-size-small);
+  margin-top: var(--mg-sm);
   text-align: center;
 }

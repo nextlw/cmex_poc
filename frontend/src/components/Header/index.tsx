@@ -11,7 +11,7 @@ import Notifications from "../Notifications";
 import { HeaderProps } from "./types";
 import { AiOutlineMenu } from "react-icons/ai";
 import { RiAiGenerate2 } from "react-icons/ri";
-
+import ThemeToggle from "../ThemeToggle";
 const Header: React.FC<HeaderProps> = ({
   modeloSelecionado,
   aoMudarModelo,
@@ -78,6 +78,7 @@ const Header: React.FC<HeaderProps> = ({
           handleParentChange={handleParentChange}
         />
         <Notifications className="icon-dark" />
+        <ThemeToggle />
         <span className="user-name">{userEmail}</span>
         <Avatar name={userEmail} />
       </div>
