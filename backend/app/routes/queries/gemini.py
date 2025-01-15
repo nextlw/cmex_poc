@@ -1,11 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import HTTPException
 import google.generativeai as genai
-from ..config import settings, MODEL_MAPPING, ERROR_MESSAGES
-from ..models.schemas import (
+from ...config import settings, MODEL_MAPPING, ERROR_MESSAGES
+from ...models.schemas import (
     ConsultaProduto,
     SugerirNCM,
     ValoresdeImpostos,
-    ClassificacaoTributaria
+    ClassificacaoTributaria,
 )
 import time
 import logging
@@ -13,45 +13,43 @@ import json
 from line_profiler import LineProfiler, profile
 import sys
 
-gemini_router = APIRouter()
 
 @profile
 def converter_para_booleano(valor):
-    return str(valor).lower() in ['sim', 'true', '1', 'verdadeiro']
+    return str(valor).lower() in ["sim", "true", "1", "verdadeiro"]
 
-@gemini_router.post("/gemini")
+
 @profile
 async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
     # Crie o LineProfiler antes do processamento
     profiler = LineProfiler()
-    
+
     try:
         # Adicione as funções que você quer perfilar
         profiler.add_function(json.loads)
         profiler.add_function(converter_para_booleano)
         profiler.add_function(obter_sugestoes_gemini)
-        
+
         # Ative o profiler
         profiler.enable()
-        
+
         start_time = time.time()
-        
+
         # Verifique se a chave da API do Gemini foi configurada
         if not settings.GOOGLE_API_KEY:
             raise HTTPException(
-                status_code=500, 
-                detail=ERROR_MESSAGES["api_key_missing"]
+                status_code=500, detail=ERROR_MESSAGES["api_key_missing"]
             )
-        
+
         # Tempo para verificar a chave da API
         api_key_check_time = time.time() - start_time
         logging.info(f"Tempo para verificar API Key: {api_key_check_time} segundos")
-        
+
         model_config = MODEL_MAPPING["Gemini-1.5-pro"]
-        
+
         # Configurar a API key do Google
         genai.configure(api_key=settings.GOOGLE_API_KEY)
-        
+
         logging.info(f"Recebendo consulta Gemini: {consulta_produto.consulta}")
         texto = consulta_produto.consulta.strip()
         if len(texto) < 3:
@@ -107,10 +105,10 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
             prompt,
             generation_config={
                 "temperature": model_config["temperature"],
-                "max_output_tokens": model_config["max_tokens"]
+                "max_output_tokens": model_config["max_tokens"],
             },
             safety_settings={},
-            stream=False
+            stream=False,
         )
         gemini_call_time = time.time() - start_gemini_call
         logging.info(f"Tempo para chamada Gemini: {gemini_call_time} segundos")
@@ -144,21 +142,47 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
                             ipi=item.get("valores_de_impostos", {}).get("ipi", "0%"),
                             icms=item.get("valores_de_impostos", {}).get("icms", {}),
                             pis=item.get("valores_de_impostos", {}).get("pis", "1.65%"),
-                            cofins=item.get("valores_de_impostos", {}).get("cofins", "7.6%")
+                            cofins=item.get("valores_de_impostos", {}).get(
+                                "cofins", "7.6%"
+                            ),
                         ),
                         atributos_tipi=atributos_tipi,
                         classificacao_tributaria=ClassificacaoTributaria(
-                            monofasico=converter_para_booleano(item.get("classificacao_tributaria", {}).get("monofasico", False)),
-                            aliquota_zero=converter_para_booleano(item.get("classificacao_tributaria", {}).get("aliquota_zero", False)),
-                            ipi_entrada=item.get("classificacao_tributaria", {}).get("ipi_entrada"),
-                            ipi_saida=item.get("classificacao_tributaria", {}).get("ipi_saida"),
-                            pis_entrada=item.get("classificacao_tributaria", {}).get("pis_entrada"),
-                            pis_saida=item.get("classificacao_tributaria", {}).get("pis_saida"),
-                            cofins_entrada=item.get("classificacao_tributaria", {}).get("cofins_entrada"),
-                            cofins_saida=item.get("classificacao_tributaria", {}).get("cofins_saida"),
-                            cst_entrada=item.get("classificacao_tributaria", {}).get("cst_entrada"),
-                            cst_saida=item.get("classificacao_tributaria", {}).get("cst_saida")
-                        )
+                            monofasico=converter_para_booleano(
+                                item.get("classificacao_tributaria", {}).get(
+                                    "monofasico", False
+                                )
+                            ),
+                            aliquota_zero=converter_para_booleano(
+                                item.get("classificacao_tributaria", {}).get(
+                                    "aliquota_zero", False
+                                )
+                            ),
+                            ipi_entrada=item.get("classificacao_tributaria", {}).get(
+                                "ipi_entrada"
+                            ),
+                            ipi_saida=item.get("classificacao_tributaria", {}).get(
+                                "ipi_saida"
+                            ),
+                            pis_entrada=item.get("classificacao_tributaria", {}).get(
+                                "pis_entrada"
+                            ),
+                            pis_saida=item.get("classificacao_tributaria", {}).get(
+                                "pis_saida"
+                            ),
+                            cofins_entrada=item.get("classificacao_tributaria", {}).get(
+                                "cofins_entrada"
+                            ),
+                            cofins_saida=item.get("classificacao_tributaria", {}).get(
+                                "cofins_saida"
+                            ),
+                            cst_entrada=item.get("classificacao_tributaria", {}).get(
+                                "cst_entrada"
+                            ),
+                            cst_saida=item.get("classificacao_tributaria", {}).get(
+                                "cst_saida"
+                            ),
+                        ),
                     )
                 )
 
@@ -168,29 +192,32 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
             # Loga cada sugestão para debug
             for sugestao in sugestoes:
                 logging.debug(f"Estrutura da sugestão: {sugestao.dict()}")
-                
+
             resultado = [sugestao.to_frontend_format() for sugestao in sugestoes]
-            
+
             # Desative o profiler
             profiler.disable()
-            
+
             # Capturar saída do perfil
             output = sys.stdout
             profiler.print_stats(output)
-            
+
             return resultado
-        
+
         except json.JSONDecodeError as e:
-            logging.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content}")
+            logging.error(
+                f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content}"
+            )
             return []
 
     except Exception as e:
         # Log de erro
         logging.error(f"Erro no processamento: {str(e)}")
-        
+
         # Desative o profiler em caso de erro
         profiler.disable()
         raise
+
 
 # Função: Executa perfil de desempenho separadamente
 def run_profile():
@@ -199,18 +226,19 @@ def run_profile():
         consulta="Exemplo de produto para perfil",
         estadoOrigem="SP",
         operacao="Venda",
-        regimeTributario="Simples Nacional"
+        regimeTributario="Simples Nacional",
     )
 
     # Crie o profiler
     profiler = LineProfiler(obter_sugestoes_gemini)
-    
+
     # Execute a função com o profiler
     with profiler:
         resultado = obter_sugestoes_gemini(consulta)
-    
+
     # Imprima as estatísticas
     profiler.print_stats()
+
 
 # Função: Ponto de entrada para execução do perfil
 if __name__ == "__main__":

@@ -93,27 +93,12 @@ const HomePage: React.FC = () => {
       let response;
       let modeloUsado = selectedModel;
 
-      if (selectedModel === "Nexcode-0.1-BETA") {
-        response = await axiosInstance.post("/gemini", {
-          consulta: pesquisa,
-          ...dropdownSelection,
-        });
-      } else if (selectedModel === "Nex-0.1-Pro-2024") {
-        response = await axiosInstance.post("/gpt4", {
-          consulta: pesquisa,
-          ...dropdownSelection,
-        });
-      } else if (selectedModel === "Nex-0.3-Preview-2024") {
-        response = await axiosInstance.post("/claude", {
-          consulta: pesquisa,
-          ...dropdownSelection,
-        });
-      } else {
-        setErrorMessage("A API selecionada ainda não está funcionando.");
-        setSugerirNCM([]);
-        setIsLoading(false);
-        return;
-      }
+      // Envia os dados para a rota de queries
+      response = await axiosInstance.post("/queries", {
+        consulta: pesquisa,
+        modelo: modeloUsado,
+        ...dropdownSelection,
+      });
 
       console.log("Resposta do backend:", response.data);
       setSugerirNCM(response.data);
