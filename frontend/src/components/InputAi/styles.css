@@ -43,6 +43,7 @@
   background: radial-gradient(circle, yellow, orange, #4ecaff, hwb(224 30% 0%));
   background-size: 200% 200%;
   background-position: 0% 50%;
+
 }
 
 /* 
@@ -53,6 +54,8 @@
   padding: 1px;
   position: relative;
   z-index: 1;
+
+
 }
 
 .envoltorio-input-focado {
@@ -69,6 +72,7 @@
   z-index: 1;
   transition: 0.8s ease-in-out;
   opacity: 0.9;
+
 }
 
 /* 
@@ -83,12 +87,21 @@
   border: none;
   outline: none;
   border-radius: 98px;
-  color: white;
+  color: rgb(184, 216, 255);
   background-color: rgb(21, 29, 41);
   font-family: "Roboto", sans-serif;
   font-size: 1em;
   font-weight: 400;
   padding-left: 40px;
+}
+
+/* Estilo do input durante o carregamento */
+.envoltorio-input-carregando input {
+  color: rgb(130, 160, 182); ;
+}
+
+.envoltorio-input-focado input {
+  color: white; 
 }
 
 /* 
