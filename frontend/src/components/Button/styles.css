@@ -1,15 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Estilos específicos do Button */
 .button {
   display: inline-flex;
-  padding: 0.5rem 1rem;
+  padding: var(--pd-sm) var(--pd-md);
   align-items: center;
   justify-content: center;
   border-radius: 100%;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   transition: all 0.2s;
   cursor: pointer;
   border: none;
@@ -17,30 +13,30 @@
 }
 
 .button.primary {
-  background-color: rgb(59, 130, 246);
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .button.primary:hover:not(:disabled) {
-  background-color: rgb(37, 99, 235);
+  background-color: var(--color-primary-hover);
 }
 
 .button.secondary {
-  background-color: rgb(107, 114, 128);
-  color: white;
+  background-color: var(--color-secondary);
+  color: var(--color-text-primary);
 }
 
 .button.secondary:hover:not(:disabled) {
-  background-color: rgb(75, 85, 99);
+  background-color: var(--color-secondary-hover);
 }
 
 .button.danger {
-  background-color: rgb(239, 68, 68);
-  color: white;
+  background-color: var(--color-danger);
+  color: var(--color-text-primary);
 }
 
 .button.danger:hover:not(:disabled) {
-  background-color: rgb(220, 38, 38);
+  background-color: var(--color-danger-hover);
 }
 
 .button:disabled {
@@ -49,8 +45,8 @@
 }
 
 .button .icon {
-  margin-right: 0.5rem;
-  font-size: 1.25rem;
+  margin-right: var(--mg-sm);
+  font-size: var(--font-size-large);
 }
 
 .button.loading {
@@ -60,11 +56,11 @@
 
 .loading-spinner {
   position: absolute;
-  width: 1.25rem;
-  height: 1.25rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  width: var(--sp-lg);
+  height: var(--sp-lg);
+  border: var(--sp-ssm) solid var(--color-text-primary-30);
   border-radius: 50%;
-  border-top-color: white;
+  border-top-color: var(--color-text-primary);
   animation: spin 1s linear infinite;
 }
 

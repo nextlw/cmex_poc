@@ -18,9 +18,11 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
           <span className="box-resultado text-gray-300 font-medium mr-2 flex w-full gap-1">
             Monofásico:
             <span
-              className={`text-${
-                classificacao.monofasico ? "green" : "red"
-              }-500 ml-1`}
+              className={`${
+                classificacao.monofasico 
+                  ? "text-[var(--color-text-green-500)]" 
+                  : "text-[var(--color-text-red-500)]"
+              } ml-1`}
             >
               {classificacao.monofasico ? "Sim" : "Não"}
             </span>
@@ -30,9 +32,11 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
           <span className="box-resultado text-gray-300 font-medium mr-2 flex w-full gap-1">
             Alíquota Zero:
             <span
-              className={`text-${
-                classificacao.aliquota_zero ? "green" : "red"
-              }-500 ml-1`}
+              className={`${
+                classificacao.aliquota_zero 
+                  ? "text-[var(--color-text-green-500)]" 
+                  : "text-[var(--color-text-red-500)]"
+              } ml-1`}
             >
               {classificacao.aliquota_zero
                 ? "Sim possui aliquota zero"
