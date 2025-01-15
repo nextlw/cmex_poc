@@ -234,13 +234,13 @@ const HomePage: React.FC = () => {
                   <span className="text-white">
                     {isTabelaICMSOpen ? <BiChevronDown /> : <BiChevronRight />}
                   </span>
-                  <span className="text-gray-500 ml-2">
+                  <span className="text-[var(--color-text-gray-500)] ml-2">
                     Clique para expandir
                   </span>
                 </div>
                 {isTabelaICMSOpen && (
                   <div>
-                    <hr className="border-gray-600 my-4" />
+                    <hr className="border-[var(--color-border-hr)] my-4" />
                     <TabelaICMS />
                   </div>
                 )}

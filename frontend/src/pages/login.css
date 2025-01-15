@@ -1,0 +1,123 @@
+/* Estilos para a página de Login */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding: var(--pd-lg);
+}
+
+.login-content {
+  display: flex;
+  width: 100%;
+  max-width: 800px;
+  gap: var(--sp-lg);
+}
+
+.login-title-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-title {
+  display: flex;
+  flex-direction: column;
+  color: var(--color-text-primary);
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: var(--sp-lg);
+  text-align: left;
+  line-height: 1.2;
+  width: 100%;
+}
+
+.login-title span {
+  display: block;
+}
+
+.login-title .text-primary {
+  color: var(--color-primary);
+}
+
+.login-form-container {
+  flex: 1;
+}
+
+.login-wrapper {
+  width: 100%;
+  max-width: 380px;
+  padding: var(--pd-lg);
+  background-color: var(--color-info-basicas-background);
+  border-radius: var(--sp-md);
+  box-shadow: 0 4px 6px rgba(0, 5, 2, 0.2);
+  border: 1px solid var(--color-primary);
+}
+
+.login-subtitle {
+  color: var(--color-text-primary);
+  text-align: left;
+  font-size: 2rem;
+  margin-bottom: var(--sp-md);
+  width: 100%;
+}
+
+/* Sobrescrever estilos do Supabase Auth UI */
+.login-auth-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md);
+}
+
+.login-auth-label {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-small);
+  margin-bottom: var(--sp-sm);
+}
+
+.login-auth-input {
+  width: 100%;
+  padding: var(--pd-sm);
+  border: 1px solid var(--color-input-field-border);
+  border-radius: var(--sp-sm);
+  background-color: var(--color-input-background);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+}
+
+.login-auth-button {
+  width: 100%;
+  padding: var(--pd-sm);
+  background-color: var(--color-primary);
+  color: var(--color-text-primary);
+  border: none;
+  border-radius: var(--sp-sm);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-auth-button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .login-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .login-title {
+    text-align: center;
+    font-size: 2.5rem;
+  }
+
+  .login-wrapper {
+    width: 100%;
+  }
+} 

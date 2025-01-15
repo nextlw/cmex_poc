@@ -1,12 +1,12 @@
 /* Estilos específicos do Atributos */
 .atributos {
-  background-color: rgba(17, 24, 39, 0.5);
+  background-color: var(--color-atributos-background);
   border-radius: 0.5rem;
   padding: 1rem;
 }
 
 .loading {
-  color: rgb(209, 213, 219);
+  color: var(--color-atributos-loading);
   font-style: italic;
   padding: 1rem;
   text-align: center;
@@ -22,7 +22,7 @@
 }
 
 .text-white {
-  color: white;
+  color: var(--color-atributos-text);
 }
 
 .mb-2 {
@@ -38,7 +38,7 @@
 }
 
 .text-gray-300 {
-  color: rgb(209, 213, 219);
+  color: var(--color-atributos-loading);
 }
 
 .list-disc {
@@ -54,9 +54,9 @@
   padding-right: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  color: rgb(255 255 255);
+  color: var(--color-atributos-text);
   border-radius: 0.5rem;
   border-width: 1px;
-  border-color: rgba(71, 131, 208, 0.5);
-  background-color: rgb(55 65 81 / 0.5);
+  border-color: var(--color-atributos-item-border);
+  background-color: var(--color-atributos-item-background);
 }

@@ -12,12 +12,15 @@ import { HeaderProps } from "./types";
 import { AiOutlineMenu } from "react-icons/ai";
 import { RiAiGenerate2 } from "react-icons/ri";
 import ThemeToggle from "../ThemeToggle";
+import AvatarMenu from "../Avatar/AvatarMenu";
+
 const Header: React.FC<HeaderProps> = ({
   modeloSelecionado,
   aoMudarModelo,
 }) => {
   const { session } = useSession();
   const userEmail = session?.user?.email || "Usuário";
+  const userName = userEmail.split('@')[0] || 'Usuário';
 
   const handleModelChange = (novoModelo: string | null) => {
     aoMudarModelo(novoModelo);
@@ -80,7 +83,9 @@ const Header: React.FC<HeaderProps> = ({
         <Notifications className="icon-dark" />
         <ThemeToggle />
         <span className="user-name">{userEmail}</span>
-        <Avatar name={userEmail} />
+        {session && (
+          <AvatarMenu name={userName} />
+        )}
       </div>
     </header>
   );

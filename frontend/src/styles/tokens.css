@@ -51,6 +51,33 @@
   --color-select-text: #fff;
   --color-select-hover-background: #374151;
   --color-select-hover-border: #007bff;
+
+  /* Cores de Atributos */
+  --color-atributos-background: rgba(17, 24, 39, 0.5);
+  --color-atributos-loading: rgb(209, 213, 219);
+  --color-atributos-text: white;
+  --color-atributos-item-background: rgb(55 65 81 / 0.5);
+  --color-atributos-item-border: rgba(71, 131, 208, 0.5);
+
+  /* Cores de HomePage Tailwind */
+  --color-border-search: rgba(71, 131, 208, 0.5);
+  --color-background-search: rgb(55 65 81 / 0.5);
+  --color-text-gray-500: rgb(107, 114, 128);
+  --color-border-hr: rgb(75, 85, 99);
+
+  /* Cores de InfoBasicas e BoxdeImpostos */
+  --color-info-basicas-border: rgba(66, 87, 127, 0.5);
+  --color-info-basicas-background: rgba(30, 35, 45, 0.5);
+  --color-box-resultado-border: rgba(71, 131, 208, 0.5);
+  --color-box-resultado-background: rgb(55 65 81 / 0.5);
+  --color-text-green-500: rgb(34, 197, 94);
+  --color-text-red-500: rgb(239, 68, 68);
+
+  /* Cores de InputField */
+  --color-input-field-border: #374151;
+  --color-input-field-border-focus: #007bff;
+  --color-input-field-icon: #007bff;
+  --color-input-field-placeholder: #aaa;
 }
 
 /* Tema Light */
@@ -104,6 +131,33 @@
   --color-select-text: #000;
   --color-select-hover-background: #e5e7eb;
   --color-select-hover-border: #3b82f6;
+
+  /* Cores de Atributos */
+  --color-atributos-background: rgba(243, 244, 246, 0.5);
+  --color-atributos-loading: rgb(75, 85, 99);
+  --color-atributos-text: black;
+  --color-atributos-item-background: rgb(209, 213, 219 / 0.5);
+  --color-atributos-item-border: rgba(59, 130, 246, 0.5);
+
+  /* Cores de HomePage Tailwind */
+  --color-border-search: rgba(59, 130, 246, 0.5);
+  --color-background-search: rgb(209, 213, 219 / 0.5);
+  --color-text-gray-500: rgb(107, 114, 128);
+  --color-border-hr: rgb(209, 213, 219);
+
+  /* Cores de InfoBasicas e BoxdeImpostos */
+  --color-info-basicas-border: rgba(59, 130, 246, 0.5);
+  --color-info-basicas-background: rgba(209, 213, 219, 0.5);
+  --color-box-resultado-border: rgba(59, 130, 246, 0.5);
+  --color-box-resultado-background: rgb(209, 213, 219 / 0.5);
+  --color-text-green-500: rgb(22, 163, 74);
+  --color-text-red-500: rgb(220, 38, 38);
+
+  /* Cores de InputField */
+  --color-input-field-border: #d1d5db;
+  --color-input-field-border-focus: #3b82f6;
+  --color-input-field-icon: #3b82f6;
+  --color-input-field-placeholder: #666;
 }
 
 /* Tokens de Fontes */
@@ -195,4 +249,17 @@
   --gap-2: var(--sp-sm);
   --gap-3: var(--sp-sml);
   --gap-4: var(--sp-md);
+  /* Cores de Atributos Tailwind */
+  --color-border-gray: #4b5563;
+  --color-text-gray-400: #9ca3af;
+  --color-text-gray-100: #f3f4f6;
+}
+
+
+
+/* Tema Light */
+:root[data-theme="light"] {
+  --color-border-gray: #d1d5db;
+  --color-text-gray-400: #6b7280;
+  --color-text-gray-100: #111827;
 }
