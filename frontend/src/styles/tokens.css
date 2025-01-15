@@ -1,0 +1,143 @@
+/* Tokens de Cores */
+:root {
+  /* Cores padrão (tema dark) */
+  --color-primary: rgb(59, 130, 246);
+  --color-primary-hover: rgb(37, 99, 235);
+  --color-secondary: rgb(107, 114, 128);
+  --color-secondary-hover: rgb(75, 85, 99);
+  --color-danger: rgb(239, 68, 68);
+  --color-danger-hover: rgb(220, 38, 38);
+  --color-background-dark: rgb(21, 29, 41);
+  --color-background-light: #ffffff;
+  --color-text-primary: white;
+  --color-text-secondary: rgb(184, 216, 255);
+  --color-text-muted: rgb(130, 160, 182);
+  --color-border: rgba(71, 131, 208, 0.5);
+  --color-gradient-start: #4ecaff;
+  --color-gradient-end: #3837428e;
+  --color-icon: #fff;
+  --color-placeholder: #aaa;
+  --color-scrollbar-track: #2d2d2d;
+  --color-scrollbar-thumb: #4a4a4a;
+  --color-scrollbar-thumb-hover: #273a46;
+  --color-badge-gemini: #4285f4;
+  --color-badge-gpt4: #10a37f;
+  --color-badge-claude: #7c3aed;
+  --color-gray-700: #374151;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-gray-800-50: rgba(31, 41, 55, 0.5);
+  --color-header: var(--color-background-dark);
+}
+
+/* Tema Light */
+:root[data-theme="light"] {
+  --color-primary: rgb(99, 179, 255);
+  --color-primary-hover: rgb(77, 149, 255);
+  --color-secondary: rgb(167, 174, 188);
+  --color-secondary-hover: rgb(135, 145, 159);
+  --color-danger: rgb(255, 128, 128);
+  --color-danger-hover: rgb(255, 100, 100);
+  --color-background-dark: rgb(241, 245, 249);
+  --color-background-light: #f8f9fa;
+  --color-text-primary: black;
+  --color-text-secondary: rgb(71, 85, 105);
+  --color-text-muted: rgb(100, 116, 139);
+  --color-border: rgba(191, 219, 254, 0.5);
+  --color-gradient-start: #a0e7ff;
+  --color-gradient-end: #d1d5db;
+  --color-icon: #000;
+  --color-placeholder: #666;
+  --color-scrollbar-track: #e5e7eb;
+  --color-scrollbar-thumb: #cbd5e1;
+  --color-scrollbar-thumb-hover: #94a3b8;
+  --color-badge-gemini: #8ab4f8;
+  --color-badge-gpt4: #34d399;
+  --color-badge-claude: #c084fc;
+  --color-gray-700: #f3f4f6;
+  --color-blue-500: #60a5fa;
+  --color-blue-600: #3b82f6;
+  --color-gray-800-50: rgba(243, 244, 246, 0.5);
+  --color-header: var(--color-background-dark);
+}
+
+/* Tokens de Fontes */
+:root {
+  --font-family-primary: 'Roboto', sans-serif;
+  --font-size-base: 1rem;
+  --font-size-small: 0.875rem;
+  --font-size-large: 1.25rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: bold;
+}
+
+/* Espaçamentos */
+:root {
+  --sp-sss: 2px;
+  --sp-ssm: 4px;
+  --sp-smm: 6px;
+  --sp-sm: 8px;
+  --sp-smd: 10px;
+  --sp-sml: 12px;
+  --sp-smx: 14px;
+  --sp-md: 16px;
+  --sp-lg: 24px;
+  --sp-xls: 32px;
+  --sp-xxs: 40px;
+  --sp-xs: 48px;
+  --sp-xlm: 56px;
+  --sp-xxm: 64px;
+  --sp-xm: 72px;
+  --sp-xlg: 80px;
+  --sp-xl: 32px;
+
+  --pd-0: 0px;
+  --pd-sss: 2px;
+  --pd-ssm: 4px;
+  --pd-smm: 6px;
+  --pd-sm: 8px;
+  --pd-smd: 10px;
+  --pd-sml: 12px;
+  --pd-smx: 14px;
+  --pd-md: 16px;
+  --pd-lg: 24px;
+  --pd-xls: 32px;
+  --pd-xxs: 40px;
+  --pd-xs: 48px;
+  --pd-xlm: 56px;
+  --pd-xxm: 64px;
+  --pd-xm: 72px;
+  --pd-xlg: 80px;
+  --pd-xl: 32px;
+  --pd-100: 100px;
+
+  --mg-0: 0px;
+  --mg-sss: 2px;
+  --mg-ssm: 4px;
+  --mg-smm: 6px;
+  --mg-sm: 8px;
+  --mg-smd: 10px;
+  --mg-sml: 12px;
+  --mg-smx: 14px;
+  --mg-md: 16px;
+  --mg-lg: 24px;
+  --mg-xls: 32px;
+  --mg-xxs: 40px;
+  --mg-xs: 48px;
+  --mg-xlm: 56px;
+  --mg-xxm: 64px;
+  --mg-xm: 72px;
+  --mg-xlg: 80px;
+  --mg-xl: 32px;
+  --mg-100: 100px;
+
+  /* Paddings Complexos */
+  --padding-complex-sm: 4px 12px 4px 8px;
+  --padding-complex-md: 8px 24px 8px 16px;
+  --padding-complex-lg: 12px 36px 12px 24px;
+  --padding-complex-xl: 16px 48px 16px 32px;
+  --padding-complex-xxl: 20px 60px 20px 40px;
+  --padding-complex-xxxl: 24px 72px 24px 48px;
+}
