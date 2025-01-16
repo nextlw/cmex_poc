@@ -1,14 +1,55 @@
 /* Estilos para a página de Login */
+body {
+  overflow: hidden;
+}
+
 .login-container {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: var(--color-background);
-  padding: var(--pd-lg);
+  padding: 0 var(--pd-lg);
+  background-size: cover;
+  background-position: center;
+
+}
+
+@keyframes fadeBackground {
+  0% {
+    background-image: url('/Users/williamduarte/Documents/Empresa/Projeto/nexcode/cmex_poc/frontend/src/assets/bg9.jpg');
+  }
+  33% {
+    background-image: url('/Users/williamduarte/Documents/Empresa/Projeto/nexcode/cmex_poc/frontend/src/assets/bg3.jpg');
+  }
+  66% {
+    background-image: url('/Users/williamduarte/Documents/Empresa/Projeto/nexcode/cmex_poc/frontend/src/assets/bg4.jpg');
+  }
+  100% {
+    background-image: url('/Users/williamduarte/Documents/Empresa/Projeto/nexcode/cmex_poc/frontend/src/assets/bg9.jpg');
+  }
+}
+
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: fadeBackground 10s infinite;
+  background-color: rgba(0, 0, 255, 0.5); /* Azul com opacidade */
+  opacity: 0.6; /* Ajuste a opacidade conforme necessário */
+  z-index: 1;
+  filter: blur(2px);
+  background-blend-mode: overlay;
+  background-size: cover;
+  background-position: center;
 }
 
 .login-content {
+  position: relative;
+  z-index: 10;
   display: flex;
   width: 100%;
   max-width: 800px;
