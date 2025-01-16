@@ -195,12 +195,12 @@ const HomePage: React.FC = () => {
 
             <div className="gap-4 space-y-4">
               {sugerirNCM.map((item, index) => (
-                <div key={index} className="grid-container-inner">
-                  <div className="col-span-6 tablet-col-span-3 mobile-col-span-4">
-                    <InfoBasicas ncm={item.ncm} descricao={item.descricao} />
-                  </div>
-                  <div className="col-span-6 tablet-col-span-3 mobile-col-span-4">
-                    <div className="box-conteiner-dados h-full">
+                <div key={index} className="box-page">
+                  <div className="box-page grid-container-inner">
+                    <div className="page-item col-span-6 mobile-col-span-4 w-full">
+                      <InfoBasicas ncm={item.ncm} descricao={item.descricao} />
+                    </div>
+                    <div className="page-item col-span-6 mobile-col-span-4 w-full">
                       <Atributos
                         atributos={item.atributos}
                         atributos_tipi={item.atributos_tipi}
@@ -208,7 +208,7 @@ const HomePage: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-span-12 tablet-col-span-6 mobile-col-span-4">
+                  <div className="col-span-12 box-page">
                     <BoxdeImpostos classificacao={item.classificacao_tributaria} />
                   </div>
                 </div>

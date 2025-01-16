@@ -1,11 +1,17 @@
 import React from "react";
 import "./styles.css";
-import { HamburgerProps } from "./types";
+
+interface HamburgerProps {
+  onClick: () => void;
+  reactIcon: React.ReactElement;
+}
+
 const Hamburger: React.FC<HamburgerProps> = ({ onClick, reactIcon }) => {
   return (
-    <div className="hamburger" onClick={onClick}>
+    <button className="hamburger-button" onClick={onClick}>
       {reactIcon}
-    </div>
+    </button>
   );
 };
+
 export default Hamburger;
