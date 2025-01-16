@@ -11,13 +11,9 @@ import Select from "../Select";
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
   const [selectedState, setSelectedState] = useState<string | null>(null);
-  const [selectedOperation, setSelectedOperation] = useState<string | null>(
-    null
-  );
+  const [selectedOperation, setSelectedOperation] = useState<string | null>(null);
   const [selectedRegime, setSelectedRegime] = useState<string | null>(null);
-  const [selectedReduction, setSelectedReduction] = useState<string | null>(
-    null
-  );
+  const [selectedReduction, setSelectedReduction] = useState<string | null>(null);
 
   const handleChange = () => {
     onSelectionChange({
@@ -29,14 +25,9 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
   };
 
   return (
-    <>
-      <div>
-        <div className="w-full">
-          {/* <h2 className="text-md font-regular text-white">
-            Selecione as opções abaixo para uma resposta mais acertiva:
-          </h2> */}
-        </div>
-        <div className="grid grid-cols-4 gap-2 w-full">
+    <div className="dropdown-menu">
+      <div className="grid-container-inner">
+        <div className="col-span-3 tablet-col-span-3 mobile-col-span-4">
           <Select
             label="Estado de origem do produto?"
             options={stateOptions}
@@ -48,6 +39,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             placeholder="Estado"
             handleParentChange={handleChange}
           />
+        </div>
+        <div className="col-span-3 tablet-col-span-3 mobile-col-span-4">
           <Select
             label="Qual a operação do produto?"
             options={operationOptions}
@@ -59,6 +52,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             placeholder="Operação"
             handleParentChange={handleChange}
           />
+        </div>
+        <div className="col-span-3 tablet-col-span-3 mobile-col-span-4">
           <Select
             label="Regime tributário da empresa?"
             options={regimeOptions}
@@ -70,6 +65,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             placeholder="Regime"
             handleParentChange={handleChange}
           />
+        </div>
+        <div className="col-span-3 tablet-col-span-3 mobile-col-span-4">
           <Select
             label="Reduções ou isenções locais?"
             options={reductionOptions}
@@ -83,7 +80,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

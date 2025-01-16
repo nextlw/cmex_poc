@@ -6,7 +6,6 @@ import "./styles.css";
 import Hamburger from "../Hamburger";
 import Logo from "../Logo";
 import HeaderLinks from "../HeaderLinks";
-import Avatar from "../Avatar";
 import Notifications from "../Notifications";
 import { HeaderProps } from "./types";
 import { AiOutlineMenu } from "react-icons/ai";

@@ -40,7 +40,7 @@ const Atributos: React.FC<AtributosProps> = ({
   if (!temAtributos && !temAtributosTipi) {
     return (
       <div>
-        <h3 className="text-xl font-semibold text-white mb-2 gap-2 flex items-center">
+        <h3 className="text-xl font-semibold color-gray-100 gap-2 flex items-center">
           <BsBoxes /> Atributos
         </h3>
         <hr className="border-gray-600 my-3" />
@@ -53,7 +53,7 @@ const Atributos: React.FC<AtributosProps> = ({
     <div className="space-y-4">
       {temAtributos && (
         <div>
-          <h3 className="text-xl font-semibold text-white mb-2 gap-2 flex items-center">
+          <h3 className="text-xl font-semibold color-gray-100 gap-2 flex items-center">
             <BsBoxes /> Atributos
           </h3>
           <hr className="border-[var(--color-border-gray)] my-3" />

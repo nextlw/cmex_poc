@@ -1,6 +1,9 @@
 /* Estilos para a página de Login */
-body {
+body.login-page {
   overflow: hidden;
+  margin-top: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 .login-container {

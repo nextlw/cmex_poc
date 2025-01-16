@@ -29,6 +29,7 @@
     "styled-components": "^6.1.13"
   },
   "devDependencies": {
+    "@stitches/core": "^1.2.8",
     "@types/lodash": "^4.17.13",
     "@types/lodash.debounce": "^4.0.9",
     "@types/papaparse": "^5.3.15",
@@ -38,6 +39,7 @@
     "autoprefixer": "^10.4.20",
     "dotenv": "^16.4.7",
     "env-cmd": "^10.1.0",
+    "esbuild": "^0.24.2",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "vite": "^4.5.5"
