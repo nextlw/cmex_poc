@@ -173,7 +173,7 @@ const HomePage: React.FC = () => {
 
         <div className="col-span-12 -mt-4">
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-            <div className="box-conteiner-search shadow-md">
+            <div className="box-conteiner-search">
               <div className="shadow-input">
                 <InputAi
                   width="100%"
@@ -221,10 +221,10 @@ const HomePage: React.FC = () => {
                       className="flex items-center cursor-pointer gap-2"
                       onClick={() => setIsTabelaICMSOpen(!isTabelaICMSOpen)}
                     >
-                      <h3 className="text-xl font-semibold text-white mr-2">
+                      <h3 className="text-xl font-semibold mr-2">
                         Tabela ICMS
                       </h3>
-                      <span className="text-white">
+                      <span>
                         {isTabelaICMSOpen ? <BiChevronDown /> : <BiChevronRight />}
                       </span>
                       <span className="text-[var(--color-text-gray-500)] ml-2">

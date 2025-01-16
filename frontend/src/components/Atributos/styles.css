@@ -1,5 +1,5 @@
 /* Estilos específicos do Atributos */
-.box-atributos {
+.box-atributos-container {
   display: flex;
   flex-direction: column;
   padding-left: 1rem;
@@ -11,6 +11,7 @@
   border-width: 1px;
   border-color: var(--color-atributos-item-border);
   background-color: var(--color-atributos-background);
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
 
 .atributos-row {
@@ -35,7 +36,6 @@
 
 
 .atributos {
-  background-color: var(--color-atributos-background);
   border-radius: 0.5rem;
   padding: 1rem;
 }

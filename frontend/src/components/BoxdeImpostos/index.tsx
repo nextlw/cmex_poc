@@ -28,7 +28,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
               </span>
 
               <div className="box-tributaria-row">
-                <h4 className="text-sm text-white mb-2">IPI</h4>
+                <h4 className="text-sm mb-2">IPI</h4>
                 <div className="flex w-full gap-3">
                   <p className="w-1/2 text-gray-300">
                     <span className="box-resultado font-medium">
@@ -44,7 +44,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
               </div>
 
               <div className="box-tributaria-item">
-                <h4 className="text-sm text-white mb-2">COFINS</h4>
+                <h4 className="text-sm mb-2">COFINS</h4>
                 <div className="flex w-full gap-3">
                   <p className="w-1/2 text-gray-300">
                     <span className="box-resultado font-medium">
@@ -73,7 +73,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
               </span>
 
               <div className="box-tributaria-row">
-                <h4 className="text-sm text-white mb-2">PIS</h4>
+                <h4 className="text-sm mb-2">PIS</h4>
                 <div className="flex w-full gap-3">
                   <p className="w-1/2 text-gray-300">
                     <span className="box-resultado font-medium">
@@ -89,7 +89,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
               </div>
 
               <div className="box-tributaria-item" >
-                <h4 className="text-sm text-white mb-2">CST</h4>
+                <h4 className="text-sm mb-2">CST</h4>
                 <div className="flex w-full gap-3">
                   <p className="w-1/2 text-gray-300">
                     <span className="box-resultado font-medium">

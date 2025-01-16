@@ -22,4 +22,6 @@ body {
   padding-top: var(--pd-xlm); /* Ajuste conforme a altura real do header */
   font-family: var(--font-family-primary) !important;
   width: fit-content;
+  background-color: var(--color-background);
+  color: var(--color-text-primary) !important;
 }

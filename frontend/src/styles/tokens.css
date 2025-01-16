@@ -67,7 +67,7 @@
 
   /* Cores de InfoBasicas e BoxdeImpostos */
   --color-info-basicas-border: rgba(66, 87, 127, 0.5);
-  --color-info-basicas-background: rgba(30, 35, 45, 0.5);
+  --color-info-basicas-background: rgba(50, 57, 74, 0.5);
   --color-box-resultado-border: rgba(71, 131, 208, 0.5);
   --color-box-resultado-background: rgb(55 65 81 / 0.5);
   --color-text-green-500: rgb(34, 197, 94);
@@ -77,17 +77,17 @@
   --color-input-field-border: #374151;
   --color-input-field-border-focus: #007bff;
   --color-input-field-icon: #007bff;
-  --color-input-field-placeholder: #aaa;
+  --color-input-field-placeholder: #aaaaaa;
 }
 
 /* Tema Light */
 :root[data-theme="light"] {/* Cores padrão (tema light) */
 
-  --color-gray-300: rgb(209, 213, 219); /* Mantém igual */
-  --color-gray-400: rgb(156, 163, 175); /* Mantém igual */
-  --color-gray-500: rgb(107, 114, 128); /* Mantém igual */
-  --color-gray-600: rgb(75, 85, 99); /* Mantém igual */
-  --color-gray-100: rgb(243, 244, 246); /* Mantém igual */
+  --color-gray-300: rgb(96, 110, 130); /* Mantém igual */
+  --color-gray-400: rgb(75, 86, 106); /* Mantém igual */
+  --color-gray-500: rgb(66, 73, 84); /* Mantém igual */
+  --color-gray-600: rgb(35, 57, 88); /* Mantém igual */
+  --color-gray-100: rgb(201, 207, 232); /* Mantém igual */
   --color-shadow: rgba(0, 0, 0, 0.05); /* Sombra mais clara */
   --color-shadow-md: rgba(0, 0, 0, 0.1); /* Sombra mais clara */
   --color-text-primary-30: rgba(0, 0, 0, 0.3); /* Ajustado para contraste no tema claro */
@@ -119,8 +119,8 @@
   --color-blue-500: #3b82f6; /* Mantém igual */
   --color-blue-600: #2563eb; /* Mantém igual */
   --color-gray-800-50: rgba(55, 65, 81, 0.2); /* Menor opacidade */
-  --color-gray-900-transparent: rgba(240, 240, 240, 0.9); /* Fundo claro translúcido */
-  --color-gray-900: rgb(240, 240, 240); /* Fundo cinza claro */
+  --color-gray-900-transparent: rgba(57, 82, 107, 0.682); /* Fundo claro translúcido */
+  --color-gray-900: rgb(139, 162, 188); /* Fundo cinza claro */
   --color-header: var(--color-background-light); /* Fundo claro */
   --color-background: linear-gradient(to bottom right, 
     var(--color-gray-100), 
@@ -129,8 +129,8 @@
 
   /* Cores de Select */
   --color-select-background: #ffffff; /* Fundo branco */
-  --color-select-border: #cccccc; /* Borda cinza clara */
-  --color-select-text: #333; /* Texto escuro */
+  --color-select-border: #5f8be2; /* Borda cinza clara */
+  --color-select-text: #4a4a4a; /* Texto escuro */
   --color-select-hover-background: #f0f0f0; /* Fundo hover claro */
   --color-select-hover-border: #007bff; /* Azul no hover */
 
@@ -142,9 +142,9 @@
   --color-atributos-item-border: rgba(71, 131, 208, 0.7); /* Borda mais visível */
 
   /* Cores de HomePage Tailwind */
-  --color-border-search: rgba(71, 131, 208, 0.7); /* Borda mais visível */
-  --color-background-search: rgb(245, 245, 245); /* Fundo cinza muito claro */
-  --color-text-gray-500: rgb(107, 114, 128); /* Texto secundário */
+  --color-border-search: rgba(24, 56, 98, 0.787); /* Borda mais visível */
+  --color-background-search: rgba(32, 79, 154, 0.657); /* Fundo cinza muito claro */
+  --color-text-gray-500: rgb(72, 80, 96); /* Texto secundário */
   --color-border-hr: rgb(209, 213, 219); /* Borda cinza clara */
 
   /* Cores de InfoBasicas e BoxdeImpostos */
@@ -156,10 +156,13 @@
   --color-text-red-500: rgb(220, 38, 38); /* Mantém igual */
 
   /* Cores de InputField */
-  --color-input-field-border: #cccccc; /* Borda cinza clara */
+  --color-input-field-border: #a4a8aa; /* Borda cinza clara */
   --color-input-field-border-focus: #007bff; /* Azul no foco */
   --color-input-field-icon: #007bff; /* Ícone azul */
-  --color-input-field-placeholder: #666; /* Placeholder mais visível */
+  --color-input-field-placeholder: #5c6a71; /* Placeholder mais visível */
+  --color-border-gray: #7687a0;
+  --color-text-gray-400: #6b7280;
+  --color-text-gray-100: #232d43;
 }
   /* Tokens de Fontes */
   :root {
@@ -254,13 +257,4 @@
   --color-border-gray: #4b5563;
   --color-text-gray-400: #9ca3af;
   --color-text-gray-100: #f3f4f6;
-}
-
-
-
-/* Tema Light */
-:root[data-theme="light"] {
-  --color-border-gray: #d1d5db;
-  --color-text-gray-400: #6b7280;
-  --color-text-gray-100: #111827;
 }

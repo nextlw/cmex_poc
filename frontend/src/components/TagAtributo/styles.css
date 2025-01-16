@@ -54,9 +54,9 @@
   padding-right: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  color: rgb(255 255 255);
+  color: var(--color-text-primary);
   border-radius: 0.5rem;
   border-width: 1px;
   border-color: rgba(71, 131, 208, 0.5);
-  background-color: rgb(55 65 81 / 0.5);
+  background-color: var(--color-atributos-item-background);
 }
