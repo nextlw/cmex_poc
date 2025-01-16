@@ -1,26 +1,26 @@
-/* Grid Container */
-.grid-container {
-  display: grid;
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 24px;
-  gap: 16px;
-}
-
-/* Grid Container sem padding para uso interno */
+/* Grid Container Base */
+.grid-container,
 .grid-container-inner {
   display: grid;
   width: 100%;
   gap: 16px;
 }
 
-/* Desktop (≥1025px) */
-@media (min-width: 1025px) {
-  .grid-container, .grid-container-inner {
+/* Grid Container com padding */
+.grid-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Desktop (≥721px) */
+@media (min-width: 721px) {
+  .grid-container,
+  .grid-container-inner {
     grid-template-columns: repeat(12, 1fr);
   }
 
+  /* Classes de span para desktop */
   .col-span-1 { grid-column: span 1; }
   .col-span-2 { grid-column: span 2; }
   .col-span-3 { grid-column: span 3; }
@@ -35,42 +35,27 @@
   .col-span-12 { grid-column: span 12; }
 }
 
-/* Tablet (733px - 1024px) */
-@media (min-width: 733px) and (max-width: 1024px) {
+/* Mobile (≤720px) */
+@media (max-width: 720px) {
   .grid-container {
-    grid-template-columns: repeat(6, 1fr);
-    padding: 0 16px;
-    gap: 16px;
-  }
-
-  .grid-container-inner {
-    grid-template-columns: repeat(6, 1fr);
-    gap: 16px;
-  }
-
-  .tablet-col-span-1 { grid-column: span 1; }
-  .tablet-col-span-2 { grid-column: span 2; }
-  .tablet-col-span-3 { grid-column: span 3; }
-  .tablet-col-span-4 { grid-column: span 4; }
-  .tablet-col-span-5 { grid-column: span 5; }
-  .tablet-col-span-6 { grid-column: span 6; }
-}
-
-/* Mobile (≤732px) */
-@media (max-width: 732px) {
-  .grid-container {
-    grid-template-columns: repeat(4, 1fr);
     padding: 0 16px;
     gap: 8px;
   }
 
+  .grid-container,
   .grid-container-inner {
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
   }
 
+  /* Empilha o conteúdo em uma coluna */
+  .grid-container-inner.flex-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  /* Classes de span para mobile */
   .mobile-col-span-1 { grid-column: span 1; }
   .mobile-col-span-2 { grid-column: span 2; }
   .mobile-col-span-3 { grid-column: span 3; }
   .mobile-col-span-4 { grid-column: span 4; }
-} 
+}

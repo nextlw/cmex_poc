@@ -26,10 +26,10 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
 
   return (
     <div className="dropdown-menu">
-      <div className="grid-container-inner">
-        <div className="col-span-3 tablet-col-span-3 mobile-col-span-4">
+      <div className="dropdown-menu-row">
+        <div className="dropdown-menu-item">
           <Select
-            label="Estado de origem do produto?"
+            label="Origem do produto"
             options={stateOptions}
             value={selectedState}
             onChange={(value) => {
@@ -40,9 +40,10 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             handleParentChange={handleChange}
           />
         </div>
-        <div className="col-span-3 tablet-col-span-3 mobile-col-span-4">
+        
+        <div className="dropdown-menu-item">
           <Select
-            label="Qual a operação do produto?"
+            label="Operação do produto"
             options={operationOptions}
             value={selectedOperation}
             onChange={(value) => {
@@ -53,9 +54,10 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             handleParentChange={handleChange}
           />
         </div>
-        <div className="col-span-3 tablet-col-span-3 mobile-col-span-4">
+        
+        <div className="dropdown-menu-item">
           <Select
-            label="Regime tributário da empresa?"
+            label="Regime tributário"
             options={regimeOptions}
             value={selectedRegime}
             onChange={(value) => {
@@ -66,9 +68,10 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             handleParentChange={handleChange}
           />
         </div>
-        <div className="col-span-3 tablet-col-span-3 mobile-col-span-4">
+        
+        <div className="dropdown-menu-item">
           <Select
-            label="Reduções ou isenções locais?"
+            label="Reduções ou isenções"
             options={reductionOptions}
             value={selectedReduction}
             onChange={(value) => {

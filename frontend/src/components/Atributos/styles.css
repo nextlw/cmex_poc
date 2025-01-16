@@ -1,4 +1,39 @@
 /* Estilos específicos do Atributos */
+.box-atributos {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  color: var(--color-text-primary);
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: var(--color-atributos-item-border);
+  background-color: var(--color-atributos-background);
+}
+
+.atributos-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-md);
+  width: 100%;
+}
+
+.atributos-item {
+  flex: 1;
+  min-width: 200px;
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  .atributos-item {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+
 .atributos {
   background-color: var(--color-atributos-background);
   border-radius: 0.5rem;

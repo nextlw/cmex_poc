@@ -1,11 +1,38 @@
 /* Estilos específicos do BoxdeImpostos */
-.box-impostos {
+.box-tributaria {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md);
+}
+
+.box-tributaria-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-md);
+  width: 100%;
+}
+
+.box-tributaria-item {
+  flex: 1;
+  min-width: 200px;
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  .box-tributaria-item {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+
+.class-tributaria {
   background-color: var(--color-info-basicas-background);
   border-radius: 0.5rem;
   padding: 1.5rem;
 }
 
-.info-basicas {
+.class-tributaria-title {
   padding-left: 1rem;
   padding-right: 1rem;
   padding-top: 0.5rem;

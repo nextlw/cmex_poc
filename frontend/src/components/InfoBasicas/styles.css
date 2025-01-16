@@ -1,5 +1,7 @@
 /* Estilos específicos do InfoBasicas */
-.info-basicas {
+.info-bas {
+  display: flex;
+  flex-direction: column;
   padding-left: 1rem;
   padding-right: 1rem;
   padding-top: 1rem;
@@ -10,6 +12,27 @@
   border-color: var(--color-info-basicas-border);
   background-color: var(--color-info-basicas-background);
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+
+.info-basicas-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-md);
+  width: 100%;
+}
+
+.info-basicas-item {
+  flex: 1;
+  min-width: 200px;
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  .info-basicas-item {
+    width: 100%;
+    min-width: 100%;
+  }
 }
 
 .box-resultado {

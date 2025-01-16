@@ -1,0 +1,126 @@
+.sidebar {
+  position: fixed;
+  top: var(--pd-xlm);
+  left: 0;
+  width: 320px;
+  height: calc(100vh - var(--pd-xlm));
+  background-color: var(--color-background-dark);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 40;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--pd-lg);
+  overflow-y: auto;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md);
+  margin-bottom: var(--sp-lg);
+}
+
+.sidebar-link {
+  color: var(--color-text-gray-400);
+  padding: var(--pd-sm) var(--pd-md);
+  border-radius: var(--sp-sm);
+  transition: all 0.2s ease;
+  font-size: var(--font-size-base);
+}
+
+.sidebar-link:hover:not(.disabled) {
+  background-color: var(--color-background-hover);
+  color: var(--color-text-primary);
+}
+
+.sidebar-link.active {
+  background-color: var(--color-background-hover);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.sidebar-link.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: var(--color-text-gray-600);
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-lg);
+}
+
+.sidebar-model-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-sm);
+}
+
+.sidebar-icon {
+  color: var(--color-text-gray-400);
+  font-size: var(--font-size-xl);
+}
+
+.sidebar-label {
+  color: var(--color-text-gray-400);
+  font-size: var(--font-size-sm);
+}
+
+.sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md);
+  align-items: flex-start;
+}
+
+.sidebar-user-name {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: var(--pd-xlm);
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - var(--pd-xlm));
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 39;
+}
+
+/* Responsividade */
+@media (max-width: 720px) {
+  .sidebar {
+    width: 100%;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+}
+
+@media (min-width: 721px) {
+  body {
+    padding-left: 0;
+    transition: padding-left 0.3s ease-in-out;
+  }
+
+  body.sidebar-open {
+    padding-left: 320px;
+  }
+} 
