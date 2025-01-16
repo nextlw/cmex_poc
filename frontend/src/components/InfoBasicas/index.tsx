@@ -1,14 +1,14 @@
 import React from "react";
 import { InfoBasicasProps } from "./types";
 import "./styles.css";
-import { BsBoxes } from "react-icons/bs";
+import { BsMotherboard } from "react-icons/bs";
 
 const InfoBasicas: React.FC<InfoBasicasProps> = ({ ncm, descricao }) => {
   return (
     <div className="info-bas">
       <div className="flex w-full">
         <h3 className="text-xl font-semibold color-gray-100 gap-2 flex items-center">
-          <BsBoxes /> Informações Básicas
+        <BsMotherboard /> Informações Básicas
         </h3>
       </div>
       <hr className="border-gray-600 my-4" />

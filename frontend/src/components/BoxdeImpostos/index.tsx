@@ -1,14 +1,14 @@
 import React from "react";
 import { BoxdeImpostosProps } from "./types";
 import "./styles.css";
-import { TbReceiptTax } from "react-icons/tb";
+import { PiSealPercentBold } from "react-icons/pi";
 
 const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
   return (
     <div className="class-tributaria-title">
       <div className="flex items-center w-full">
         <h3 className="text-xl font-semibold color-gray-100 gap-2 flex items-center">
-          <TbReceiptTax /> Classificação Tributária
+        <PiSealPercentBold /> Classificação Tributária
         </h3>
       </div>
       <hr className="border-gray-600 my-4" />
