@@ -8,4 +8,5 @@ export interface InputFieldProps {
   readOnly?: boolean;
   label?: string;
   icon?: React.ReactNode;
+  showInnerLabel?: boolean;
 }

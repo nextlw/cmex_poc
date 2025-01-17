@@ -10,10 +10,11 @@ const InputField: React.FC<InputFieldProps> = ({
   readOnly = false,
   label,
   icon,
+  showInnerLabel = false,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const inputWrapperRef = useRef<HTMLDivElement>(null); // Adicionar novo ref
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleFocus = () => {
     inputWrapperRef.current?.classList.add("focused");
@@ -37,19 +38,24 @@ const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <div ref={containerRef} style={{ width }}>
-      {label && <label>{label}</label>}
+      {!showInnerLabel && label && <label>{label}</label>}
       <div className="envoltorio-campo-input" ref={inputWrapperRef}>
         {icon && <span className="icone-campo-input">{icon}</span>}
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          onFocus={handleFocus}
-          readOnly={readOnly}
-          className="campo-input"
-        />
+        <div className="campo-input-container">
+          {showInnerLabel && label && (
+            <span className="inner-label">{label}</span>
+          )}
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange}
+            onFocus={handleFocus}
+            readOnly={readOnly}
+            className="campo-input"
+          />
+        </div>
       </div>
     </div>
   );
