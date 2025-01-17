@@ -39,25 +39,32 @@ const Atributos: React.FC<AtributosProps> = ({
 
   if (!temAtributos && !temAtributosTipi) {
     return (
-      <div>
-        <h3 className="text-xl font-semibold text-white mb-2 gap-2 flex items-center">
-          <BsBoxes /> Atributos
-        </h3>
+      <div className="box-atributos-container h-full w-full">
+        <div className="flex items-center w-full">
+          <h3 className="text-xl font-semibold color-gray-100 gap-2 flex items-center">
+            <BsBoxes /> Atributos
+          </h3>
+        </div>
         <hr className="border-gray-600 my-3" />
-        Sem atributos disponíveis
+        <div className="flex w-full">
+          <span className="text-gray-300 font-mediumflex w-full gap-1">
+            Sem atributos disponíveis
+          </span>
+        </div>
+
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="box-atributos-container space-y-2 h-full w-full">
       {temAtributos && (
-        <div>
-          <h3 className="text-xl font-semibold text-white mb-2 gap-2 flex items-center">
+        <div className="space-y-4 w-full">
+          <h3 className="text-xl font-semibold color-gray-100 gap-2 flex items-center">
             <BsBoxes /> Atributos
           </h3>
           <hr className="border-[var(--color-border-gray)] my-3" />
-          <ul className="flex flex-wrap gap-2 text-[var(--color-text-gray-100)] text-sm items-start justify-start">
+          <ul className="atributos-item space-y-1 w-full flex flex-wrap gap-2 items-baseline justify-start">
             {listaAtributos.map((atributo, index) => (
               <TagAtributo
                 key={`attr-${index}`}
@@ -71,8 +78,8 @@ const Atributos: React.FC<AtributosProps> = ({
 
       {temAtributosTipi && (
         <div>
-          <h3 className="text-[var(--color-text-gray-400)] text-sm pb-2">Atributos TIPI</h3>
-          <ul className="flex flex-wrap gap-2 text-[var(--color-text-gray-100)] text-sm items-start justify-start">
+          <h3 className="text-[var(--color-atributos-text)] text-sm pb-2">Atributos TIPI</h3>
+          <ul className="atributos-item space-y-1 w-full flex flex-wrap gap-2 text-sm items-baseline justify-start">
             {listaAtributosTipi.map((atributo, index) => (
               <TagAtributo
                 key={`tipi-${index}`}

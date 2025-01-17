@@ -1,11 +1,10 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from .routes.openai import openai_router
-from .routes.gemini import gemini_router
-from .routes.claude import claude_router
 from .routes.historico import historico_router
+from .routes.queries import queries_router
 import os
 
+# Inicializa uma instância do FastAPI
 app = FastAPI()
 
 # Configuração CORS
@@ -33,10 +32,8 @@ async def root():
     return Response(content="API está funcionando", media_type="text/plain")
 
 # Inclui os roteadores com prefixo /api
-app.include_router(gemini_router, prefix="/api")
-app.include_router(openai_router, prefix="/api")
-app.include_router(claude_router, prefix="/api")
 app.include_router(historico_router, prefix="/api")
+app.include_router(queries_router, prefix="/api")
 
 if __name__ == "__main__":
     import uvicorn

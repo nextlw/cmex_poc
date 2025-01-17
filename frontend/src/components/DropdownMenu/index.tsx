@@ -11,13 +11,9 @@ import Select from "../Select";
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
   const [selectedState, setSelectedState] = useState<string | null>(null);
-  const [selectedOperation, setSelectedOperation] = useState<string | null>(
-    null
-  );
+  const [selectedOperation, setSelectedOperation] = useState<string | null>(null);
   const [selectedRegime, setSelectedRegime] = useState<string | null>(null);
-  const [selectedReduction, setSelectedReduction] = useState<string | null>(
-    null
-  );
+  const [selectedReduction, setSelectedReduction] = useState<string | null>(null);
 
   const handleChange = () => {
     onSelectionChange({
@@ -29,16 +25,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
   };
 
   return (
-    <>
-      <div>
-        <div className="w-full">
-          {/* <h2 className="text-md font-regular text-white">
-            Selecione as opções abaixo para uma resposta mais acertiva:
-          </h2> */}
-        </div>
-        <div className="grid grid-cols-4 gap-2 w-full">
+    <div className="dropdown-menu">
+      <div className="dropdown-menu-row">
+        <div className="dropdown-menu-item">
           <Select
-            label="Estado de origem do produto?"
+            label="Origem do produto"
             options={stateOptions}
             value={selectedState}
             onChange={(value) => {
@@ -48,8 +39,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             placeholder="Estado"
             handleParentChange={handleChange}
           />
+        </div>
+        
+        <div className="dropdown-menu-item">
           <Select
-            label="Qual a operação do produto?"
+            label="Operação do produto"
             options={operationOptions}
             value={selectedOperation}
             onChange={(value) => {
@@ -59,8 +53,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             placeholder="Operação"
             handleParentChange={handleChange}
           />
+        </div>
+        
+        <div className="dropdown-menu-item">
           <Select
-            label="Regime tributário da empresa?"
+            label="Regime tributário"
             options={regimeOptions}
             value={selectedRegime}
             onChange={(value) => {
@@ -70,8 +67,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
             placeholder="Regime"
             handleParentChange={handleChange}
           />
+        </div>
+        
+        <div className="dropdown-menu-item">
           <Select
-            label="Reduções ou isenções locais?"
+            label="Reduções ou isenções"
             options={reductionOptions}
             value={selectedReduction}
             onChange={(value) => {
@@ -83,7 +83,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

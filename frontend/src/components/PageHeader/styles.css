@@ -1,15 +1,16 @@
 .page-header-text {
-  padding: 24px 0;
+  padding: var(--pd-lg) 0;
   text-align: left;
+  color: var(--color-text-primary);
 }
 
 .page-header-text h1 {
   margin: 0;
-  font-size: 24px;
-  color: #ffffff;
+  font-size: var(--font-size-large);
+  color: var(--color-text-primary);
 }
 
 .page-header-icon {
   object-fit: cover;
-  color: #fff;
+  color: var(--color-icon);
 }

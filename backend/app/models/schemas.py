@@ -4,6 +4,7 @@ from typing import List, Dict, Union
 # MODELOS Pydantic
 class ConsultaProduto(BaseModel):
     consulta: str = Field(..., min_length=3, description="Texto de busca do produto")
+    modelo: str = Field(..., description="Modelo que será usado para gerar uma Sugestão de Produto.")
     estadoOrigem: Union[str, None] = None
     operacao: Union[str, None] = None
     regimeTributario: Union[str, None] = None

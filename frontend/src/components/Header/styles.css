@@ -49,3 +49,44 @@ header {
 .icon-light {
   color: var(--color-primary);
 }
+
+/* Responsividade */
+@media (max-width: 720px) {
+  header {
+    padding: var(--pd-ssm) var(--pd-md);
+  }
+
+  .section-header:last-child {
+    display: none;
+  }
+
+  .section-header:first-child {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-md);
+  }
+}
+
+/* Versão intermediária */
+@media (min-width: 721px) and (max-width: 1280px) {
+  header {
+    padding: var(--pd-ssm) var(--pd-lg);
+  }
+
+  .section-header:first-child {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-md);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1281px) {
+  header {
+    transition: left 0.3s ease-in-out;
+  }
+
+  body.sidebar-open header {
+    left: 320px;
+  }
+}

@@ -15,6 +15,18 @@ const Login = () => {
   const [localSession, setLocalSession] = useState<Session | null>(null); // Estado do componente de login
 
   useEffect(() => {
+    // Adiciona a classe quando o componente é montado
+    document.body.classList.add('login-page');
+    
+    // Remove a classe quando o componente é desmontado
+    return () => {
+      document.body.classList.remove('login-page');
+    };
+  }, []);
+
+  useEffect(() => {
+    
+    
     // Atualiza a sessão no contexto
     supabase.auth.getSession().then(({ data: { session } }) => {
       setLocalSession(session);

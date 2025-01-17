@@ -31,6 +31,7 @@ import { SelectionData } from "../../components/DropdownMenu/types";
 import Header from "../../components/Header";
 import PageHeader from "../../components/PageHeader";
 import { AiFillCodeSandboxCircle } from "react-icons/ai";
+import "../../styles/grid.css";
 
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
@@ -93,27 +94,12 @@ const HomePage: React.FC = () => {
       let response;
       let modeloUsado = selectedModel;
 
-      if (selectedModel === "Nexcode-0.1-BETA") {
-        response = await axiosInstance.post("/gemini", {
-          consulta: pesquisa,
-          ...dropdownSelection,
-        });
-      } else if (selectedModel === "Nex-0.1-Pro-2024") {
-        response = await axiosInstance.post("/gpt4", {
-          consulta: pesquisa,
-          ...dropdownSelection,
-        });
-      } else if (selectedModel === "Nex-0.3-Preview-2024") {
-        response = await axiosInstance.post("/claude", {
-          consulta: pesquisa,
-          ...dropdownSelection,
-        });
-      } else {
-        setErrorMessage("A API selecionada ainda não está funcionando.");
-        setSugerirNCM([]);
-        setIsLoading(false);
-        return;
-      }
+      // Envia os dados para a rota de queries
+      response = await axiosInstance.post("/queries", {
+        consulta: pesquisa,
+        modelo: modeloUsado,
+        ...dropdownSelection,
+      });
 
       console.log("Resposta do backend:", response.data);
       setSugerirNCM(response.data);
@@ -168,23 +154,26 @@ const HomePage: React.FC = () => {
 
   // Retorna a estrutura visual do componente
   return (
-    <div className="min-h-screen max-w-7xl mx-auto">
+    <div className="min-h-screen">
       <Header
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
         modeloSelecionado={selectedModel}
         aoMudarModelo={handleModelChange}
       />
-      <PageHeader
-        icon={<AiFillCodeSandboxCircle />}
-        title="Busca Inteligente de NCM"
-        icon_size="40px"
-      />
+      
+      <div className="grid-container">
+        <div className="col-span-12">
+          <PageHeader
+            icon={<AiFillCodeSandboxCircle />}
+            title="Busca Inteligente de NCM"
+            icon_size="40px"
+          />
+        </div>
 
-      <div>
-        <div className="max-w-7xl mx-auto">
+        <div className="col-span-12 -mt-4">
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-            <div className="box-conteiner-search shadow-md">
+            <div className="box-conteiner-search">
               <div className="shadow-input">
                 <InputAi
                   width="100%"
@@ -196,67 +185,79 @@ const HomePage: React.FC = () => {
                   onButtonClick={handleSearch}
                 />
               </div>
-              <div className="p-4 pb-2">
-                <DropdownMenu onSelectionChange={handleDropdownChange} />
+              
+              <div className="grid-container p-4 pb-2">
+                <div className="col-span-12">
+                  <DropdownMenu onSelectionChange={handleDropdownChange} />
+                </div>
               </div>
             </div>
+
             <div className="gap-4 space-y-4">
-              <div>
-                {sugerirNCM.map((item, index) => (
-                  <div key={index} className="grid grid-cols-2 gap-3">
-                    <div>
+              {sugerirNCM.map((item, index) => (
+                <div key={index} className="box-page">
+                  <div className="box-page grid-container-inner">
+                    <div className="page-item col-span-6 mobile-col-span-4 w-full">
                       <InfoBasicas ncm={item.ncm} descricao={item.descricao} />
                     </div>
-                    <div className="box-conteiner-dados grid-flow-row font-medium">
+                    <div className="page-item col-span-6 mobile-col-span-4 w-full">
                       <Atributos
                         atributos={item.atributos}
                         atributos_tipi={item.atributos_tipi}
                         isLoading={isLoading}
                       />
                     </div>
-
-                    <div className="col-span-2">
-                      <BoxdeImpostos
-                        classificacao={item.classificacao_tributaria}
-                      />
-                    </div>
                   </div>
-                ))}
-              </div>
-              <div className="box-conteiner-dados gap-4">
-                <div
-                  className="flex items-center cursor-pointer gap-2"
-                  onClick={() => setIsTabelaICMSOpen(!isTabelaICMSOpen)}
-                >
-                  <h3 className="text-xl font-semibold text-white mr-2">
-                    Tabela ICMS
-                  </h3>
-                  <span className="text-white">
-                    {isTabelaICMSOpen ? <BiChevronDown /> : <BiChevronRight />}
-                  </span>
-                  <span className="text-[var(--color-text-gray-500)] ml-2">
-                    Clique para expandir
-                  </span>
+                  <div className="col-span-12 box-page">
+                    <BoxdeImpostos classificacao={item.classificacao_tributaria} />
+                  </div>
                 </div>
-                {isTabelaICMSOpen && (
-                  <div>
-                    <hr className="border-[var(--color-border-hr)] my-4" />
-                    <TabelaICMS />
+              ))}
+
+              <div className="grid-container-inner">
+                <div className="col-span-12">
+                  <div className="box-conteiner-dados gap-4">
+                    <div
+                      className="flex items-center cursor-pointer gap-2"
+                      onClick={() => setIsTabelaICMSOpen(!isTabelaICMSOpen)}
+                    >
+                      <h3 className="text-xl font-semibold mr-2">
+                        Tabela ICMS
+                      </h3>
+                      <span>
+                        {isTabelaICMSOpen ? <BiChevronDown /> : <BiChevronRight />}
+                      </span>
+                      <span className="text-[var(--color-text-gray-500)] ml-2">
+                        Clique para expandir
+                      </span>
+                    </div>
+                    {isTabelaICMSOpen && (
+                      <div>
+                        <hr className="border-[var(--color-border-hr)] my-4" />
+                        <TabelaICMS />
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
-              <div className="box-conteiner-dados">
-                <InputField
-                  width="100%"
-                  placeholder="Nos conte como foi a sua pesquisa?"
-                  value={buscarValor}
-                  onChange={handleSearchChange}
-                  readOnly={false}
-                  icon={<BiUser />}
-                />
+
+              <div className="grid-container-inner">
+                <div className="col-span-12">
+                  <div className="box-conteiner-dados">
+                    <InputField
+                      width="100%"
+                      placeholder="Nos conte como foi a sua pesquisa?"
+                      value={buscarValor}
+                      onChange={handleSearchChange}
+                      readOnly={false}
+                      icon={<BiUser />}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </form>
+          
           {errorMessage && sugerirNCM.length === 0 && (
             <div className="mensagem-erro">{errorMessage}</div>
           )}
