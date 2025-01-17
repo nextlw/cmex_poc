@@ -184,12 +184,8 @@ async def obter_sugestoes_claude(consulta_produto: ConsultaProduto):
                             cofins_saida=item.get("classificacao_tributaria", {}).get(
                                 "cofins_saida"
                             ),
-                            cst_entrada=item.get("classificacao_tributaria", {}).get(
-                                "cst_entrada"
-                            ),
-                            cst_saida=item.get("classificacao_tributaria", {}).get(
-                                "cst_saida"
-                            ),
+                            cst_entrada="" if item.get("classificacao_tributaria", {}).get("cst_entrada") is None else item.get("classificacao_tributaria", {}).get("cst_entrada"),
+                            cst_saida="" if item.get("classificacao_tributaria", {}).get("cst_saida") is None else item.get("classificacao_tributaria", {}).get("cst_saida"),
                         ),
                     )
                 )

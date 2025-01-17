@@ -13,8 +13,8 @@ const InfoBasicas: React.FC<InfoBasicasProps> = ({ ncm, descricao }) => {
         </h3>
       </div>
       <hr className="border-gray-600 my-4" />
-      <div className="space-y-4">
-        <div className="info-basicas-item">
+      <div className="flex flex-col flex-grow space-y-4">
+        <div className="flex-none">
           <InputField 
             value={ncm} 
             onChange={() => {}} 
@@ -24,14 +24,16 @@ const InfoBasicas: React.FC<InfoBasicasProps> = ({ ncm, descricao }) => {
             placeholder=""
           />
         </div>
-        <div className="info-basicas-item">
-        <InputField 
+        <div className="flex-grow min-h-0">
+          <InputField 
             value={descricao} 
             onChange={() => {}} 
             readOnly={true}
-            label="DESCRIÇÃO:"
+            label="Descrição:"
             showInnerLabel={true}
             placeholder=""
+            className="multiline"
+            height="100%"
           />
         </div>
       </div>

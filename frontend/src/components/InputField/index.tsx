@@ -4,6 +4,7 @@ import "./styles.css";
 
 const InputField: React.FC<InputFieldProps> = ({
   width,
+  height,
   placeholder = "Digite aqui",
   value,
   onChange,
@@ -11,8 +12,10 @@ const InputField: React.FC<InputFieldProps> = ({
   label,
   icon,
   showInnerLabel = false,
+  className = "",
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -36,8 +39,10 @@ const InputField: React.FC<InputFieldProps> = ({
     };
   }, []);
 
+  const isMultiline = className?.includes("multiline");
+
   return (
-    <div ref={containerRef} style={{ width }}>
+    <div ref={containerRef} style={{ width: width || "100%", height }}>
       {!showInnerLabel && label && <label>{label}</label>}
       <div className="envoltorio-campo-input" ref={inputWrapperRef}>
         {icon && <span className="icone-campo-input">{icon}</span>}
@@ -45,16 +50,28 @@ const InputField: React.FC<InputFieldProps> = ({
           {showInnerLabel && label && (
             <span className="inner-label">{label}</span>
           )}
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder={placeholder}
-            value={value}
-            onChange={onChange}
-            onFocus={handleFocus}
-            readOnly={readOnly}
-            className="campo-input"
-          />
+          {isMultiline ? (
+            <textarea
+              ref={textareaRef}
+              placeholder={placeholder}
+              value={value}
+              onChange={onChange}
+              onFocus={handleFocus}
+              readOnly={readOnly}
+              className={`campo-input ${className}`}
+            />
+          ) : (
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder={placeholder}
+              value={value}
+              onChange={onChange}
+              onFocus={handleFocus}
+              readOnly={readOnly}
+              className={`campo-input ${className}`}
+            />
+          )}
         </div>
       </div>
     </div>
