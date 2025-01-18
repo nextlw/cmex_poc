@@ -20,16 +20,16 @@ body.login-page {
 
 @keyframes fadeBackground {
   0% {
-    background-image: url('frontend/src/assets/bg9.jpg');
+    background-image: url('frontend/public/bg9.jpg');
   }
   33% {
-    background-image: url('frontend/src/assets/bg3.jpg');
+    background-image: url('frontend/public/bg3.jpg');
   }
   66% {
-    background-image: url('frontend/src/assets/bg4.jpg');
+    background-image: url('frontend/public/bg4.jpg');
   }
   100% {
-    background-image: url('frontend/src/assets/bg9.jpg');
+    background-image: url('frontend/public/bg9.jpg');
   }
 }
 
