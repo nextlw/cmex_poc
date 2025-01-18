@@ -47,7 +47,7 @@
 
   /* Cores de Select */
   --color-select-background: #19222e;
-  --color-select-border: #374151;
+  --color-select-border: rgba(71, 131, 208, 0.5);
   --color-select-text: #fff;
   --color-select-hover-background: #374151;
   --color-select-hover-border: #007bff;
@@ -69,7 +69,7 @@
   --color-info-basicas-border: rgba(66, 87, 127, 0.5);
   --color-info-basicas-background: rgba(50, 57, 74, 0.5);
   --color-box-resultado-border: rgba(71, 131, 208, 0.5);
-  --color-box-resultado-background: rgb(55 65 81 / 0.5);
+  --color-box-resultado-background: #19222e;
   --color-text-green-500: rgb(34, 197, 94);
   --color-text-red-500: rgb(239, 68, 68);
 

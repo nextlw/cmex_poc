@@ -46,6 +46,7 @@
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
 
+
 .box-resultado {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -55,9 +56,7 @@
   border-radius: 0.5rem;
   border-width: 1px;
   border-color: var(--color-box-resultado-border);
-  background-color: var(--color-box-resultado-background);
-  display: flow-root;
-  gap: 16px;
+  background-color: var(--color-input-background);
 }
 
 .grid {

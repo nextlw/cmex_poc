@@ -141,7 +141,7 @@ const HomePage: React.FC = () => {
     debouncedHandleSearch();
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setBuscarValor(e.target.value);
   };
 

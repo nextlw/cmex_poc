@@ -3,12 +3,13 @@
   width: 100%;
   min-height: 40px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   border: 1px solid var(--color-input-field-border);
   border-radius: 4px;
   padding-left: 1rem;
   transition: border-color 0.3s;
   background-color: var(--color-input-background);
+  height: 100%;
 }
 
 .envoltorio-campo-input:focus {
@@ -22,26 +23,53 @@
 .icone-campo-input {
   margin-right: 0.5rem;
   color: var(--color-input-field-icon);
+  margin-top: 8px;
+}
+
+.campo-input-container {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
 }
 
 .campo-input {
-  height: 24px;
   flex: 1;
   border: none;
   outline: none;
-  padding: 2px;
+  padding: 8px 8px 8px 0;
   font-size: 1rem;
   color: var(--color-text-primary);
   border-radius: 4px;
   background-color: var(--color-input-background);
   font-family: "Roboto", sans-serif;
-  font-size: 0.875rem;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+textarea.campo-input {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-y: auto;
+  resize: none;
+  min-height: 40px;
+  height: 100%;
 }
 
 .campo-input::placeholder {
   color: var(--color-input-field-placeholder);
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 300;
+}
+
+.inner-label {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  padding: 8px 8px 8px 0;
 }
 
 /* --------------------------- */

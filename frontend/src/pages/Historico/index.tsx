@@ -43,7 +43,7 @@ const HistoricoPage: React.FC = () => {
   };
 
   return (
-    <div className="container-full">
+    <div className="flex flex-col container-full items-center">
       <Header
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}

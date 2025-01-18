@@ -1,0 +1,191 @@
+.box-table {
+  border-radius: 8px;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  color: rgb(255 255 255);
+  border-width: 1px;
+  border-color: rgba(71, 131, 208, 0.5);
+  background-color: rgb(55 65 81 / 0.5);
+  display: flow-root;
+  overflow: hidden;
+}
+
+/* Estilos para o cabeçalho da tabela */
+thead tr {
+  width: 100%;
+  background-color: #18212f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 400;
+  font-size: 14px;
+  color: #86abff;
+  border-bottom: 2px solid #476171;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Estilos para as células da tabela */
+td {
+  padding: 0.75rem 1rem;
+  color: #e0e0e0;
+  border-bottom: 1px solid #476171;
+  border-right: 1px solid #476171;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+/* Hover na linha da tabela */
+tbody tr:hover {
+  background-color: rgba(25, 26, 50, 0.5);
+  transition: background-color 0.2s ease;
+}
+
+/* Estilo para células com conteúdo longo */
+td.truncate {
+  max-width: 150px;
+  overflow: hidden;
+  white-space: normal;
+}
+
+/* Estilo para a última coluna (timestamp) */
+td:last-child {
+  white-space: normal;
+}
+
+/* Responsividade */
+@media (max-width: 300px) {
+  .max-w-7xl {
+    padding: 0 1rem;
+  }
+
+  .box-conteiner-dados {
+    margin: 1rem 0;
+  }
+
+  td,
+  th {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .truncate {
+    max-width: 400px;
+  }
+}
+
+/* Estilização do scroll */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #2d2d2d;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #273a46;
+}
+
+/* Animação de loading */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Estilo para células vazias */
+td:empty::before {
+  content: "—";
+  color: #384766;
+}
+
+/* Estilo para badges de modelo */
+.modelo-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.modelo-gemini {
+  background-color: #4285f4;
+}
+
+.modelo-gpt4 {
+  background-color: #10a37f;
+}
+
+.modelo-claude {
+  background-color: #7c3aed;
+}
+
+/* Tooltip para conteúdo truncado */
+.truncate-cell {
+  position: relative;
+}
+
+.truncate-cell:hover::after {
+  content: attr(data-full-text);
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background-color: #1f1f1f;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  white-space: normal;
+  max-width: 150px;
+  font-size: 0.875rem;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 1rem;
+  border: 3px solid #8196b526;
+  border-radius: 50%;
+  border-top-color: #8196b5;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estado vazio */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #8196b5;
+}
+
+/* Ajustes para garantir largura total */
+.container-full {
+  width: 100%;
+  /* Removidas as propriedades que centralizam o conteúdo */
+  margin: 0;
+  padding: 0;
+}
