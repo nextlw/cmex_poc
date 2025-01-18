@@ -14,6 +14,8 @@ const HeaderLinks: React.FC<HeaderLinksProps> = ({ links }) => {
         return "/historico";
       case "Configurações":
         return "/configuracoes";
+      case "Busca":
+        return "/busca";
       default:
         return "/";
     }
@@ -25,6 +27,8 @@ const HeaderLinks: React.FC<HeaderLinksProps> = ({ links }) => {
         return location.pathname === "/";
       case "Histórico":
         return location.pathname === "/historico";
+      case "Busca":
+        return location.pathname === "/busca";
       default:
         return false;
     }

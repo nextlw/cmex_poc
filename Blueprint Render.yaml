@@ -1,0 +1,21 @@
+# Exported from Render on 2025-01-18T23:00:15Z
+services:
+- type: web
+  name: nexcode.homolog
+  runtime: static
+  repo: https://github.com/nextlw/cmex_poc
+  envVars:
+  - key: VITE_APP_NODE_ENV
+    sync: false
+  - key: VITE_APP_SUPABASE_URL
+    sync: false
+  - key: VITE_API_BASE_URL
+    sync: false
+  - key: VITE_APP_SUPABASE_ANON_KEY
+    sync: false
+  buildCommand: npm run build
+  staticPublishPath: dist
+  rootDir: frontend
+  previews:
+    generation: automatic
+version: "1"

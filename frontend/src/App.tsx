@@ -13,6 +13,7 @@ import "./styles/tokens.css";
 import "./styles/globals.css";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./auth/AuthContext";
+import BuscaPage from "./pages/BuscaPage";
 
 function App() {
   return (
@@ -41,7 +42,16 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route
+              path="/busca"
+              element={
+                <PrivateRoute>
+                  <BuscaPage />
+                </PrivateRoute>
+              }
+            />
           </Routes>
+          
         </Router>
       </ThemeProvider>
     </AuthProvider>

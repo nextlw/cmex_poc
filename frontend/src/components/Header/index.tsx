@@ -68,18 +68,18 @@ const Header: React.FC<HeaderProps> = ({
 
           <Logo />
           {!screenSize.isMobile && !screenSize.isIntermediate && (
-            <HeaderLinks links={["Início", "Histórico", "Configurações"]} />
+            <HeaderLinks links={["Início", "Histórico", "Busca", "Configurações"]} />
           )}
         </div>
 
         {!screenSize.isMobile && (
           <div className="section-header">
             {!screenSize.isIntermediate && (
-              <>
+              <div className="flex items-center">
                 <RiAiGenerate2 className="icon-dark text-xl" />
-                <p className="text-gray-400 text-sm mr-2">
+                <div className="text-gray-400 text-sm mr-2">
                   Selecione modelo de IA:
-                </p>
+                </div>
                 <Select
                   style={{
                     width: "256px",
@@ -93,7 +93,7 @@ const Header: React.FC<HeaderProps> = ({
                   placeholder="Selecione o modelo"
                   handleParentChange={() => {}}
                 />
-              </>
+              </div>
             )}
             <Notifications className="icon-dark" />
             <ThemeToggle />

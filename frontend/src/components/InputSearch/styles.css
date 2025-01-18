@@ -1,0 +1,16 @@
+.input-search {
+    width: 100%;
+    min-height: --sp-xxs;
+    height: auto;
+    outline: none;
+    
+    padding: --pd-ssm;
+    border-radius: --radius-sm;
+    border: 1px solid var(--color-gray-300);
+    background-color: var(--color-select-background);
+    color: var(--color-select-text);
+    font-size: --font-size-sm;
+    font-weight: --font-weight-normal;
+    line-height: --line-height-sm;
+    margin: --sp-sm;
+}
