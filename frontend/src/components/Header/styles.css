@@ -42,9 +42,9 @@ header {
 }
 
 /* Classes para ícones no modo dark e light */
-.icon-dark {
-  color: var(--color-icon);
-  stroke-width: -5;
+.icon-ai {
+  color: var(--border-color-primary);
+  font-weight: 100;
 }
 
 .icon-light {

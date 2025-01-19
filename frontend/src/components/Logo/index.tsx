@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const Logo: React.FC<LogoProps> = ({ className }) => {
   return (
-    <Link to="/" className="text-xl font-bold text-white hover:text-gray-200 transition-colors">
+    <Link to="/" className="logo text-xl font-bold transition-colors">
       NextCode
     </Link>
   );

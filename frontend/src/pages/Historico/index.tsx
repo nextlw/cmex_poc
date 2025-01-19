@@ -51,7 +51,7 @@ const HistoricoPage: React.FC = () => {
         aoMudarModelo={(value) => setSelectedModel(value)}
       />
 
-      <main className="flex-1 w-full p-8">
+      <main className="flex-1 w-full body-color p-8">
         <div className="max-w-[1400px] mx-auto">
           <PageHeader
             icon={<PiListStarFill className="stroke-thin" />}
