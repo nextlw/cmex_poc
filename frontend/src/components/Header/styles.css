@@ -44,6 +44,7 @@ header {
 /* Classes para ícones no modo dark e light */
 .icon-dark {
   color: var(--color-icon);
+  stroke-width: -5;
 }
 
 .icon-light {

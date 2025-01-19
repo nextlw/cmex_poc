@@ -75,11 +75,8 @@ const Header: React.FC<HeaderProps> = ({
         {!screenSize.isMobile && (
           <div className="section-header">
             {!screenSize.isIntermediate && (
-              <div className="flex items-center">
-                <RiAiGenerate2 className="icon-dark text-xl" />
-                <div className="text-gray-400 text-sm mr-2">
-                  Selecione modelo de IA:
-                </div>
+              <div className="flex items-center gap-2">
+                <RiAiGenerate2 className="icon-dark text-xl m-2 size-10 font-thin stroke-0" />
                 <Select
                   style={{
                     width: "256px",
