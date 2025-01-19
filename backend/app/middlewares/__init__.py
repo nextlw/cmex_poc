@@ -1,0 +1,1 @@
+# Transforma o repositório em um módulo Python
