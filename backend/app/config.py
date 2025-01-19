@@ -1,9 +1,18 @@
+#  Bibliotecas
 import os
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 from dotenv import load_dotenv
+from supabase import create_client, Client
 
+# Carrega as variáveis de ambiente
 load_dotenv()
+
+# Configurações do cliente Supabase
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+
 
 class Settings(BaseSettings):
     # Configurações da API
