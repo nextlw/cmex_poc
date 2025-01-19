@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { InputFieldProps } from "./types";
 import "./styles.css";
+import { BiUser } from "react-icons/bi";
 
 const InputField: React.FC<InputFieldProps> = ({
   width,
@@ -43,12 +44,12 @@ const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <div ref={containerRef} style={{ width: width || "100%", height }}>
-      {!showInnerLabel && label && <label>{label}</label>}
+      {!showInnerLabel && label && <div className="label-text">{label}</div>}
       <div className="envoltorio-campo-input" ref={inputWrapperRef}>
-        {icon && <span className="icone-campo-input">{icon}</span>}
+        {icon && <div className="icone-campo-input">{icon}</div>}
         <div className="campo-input-container">
           {showInnerLabel && label && (
-            <span className="inner-label">{label}</span>
+            <div className="inner-label">{label}</div>
           )}
           {isMultiline ? (
             <textarea

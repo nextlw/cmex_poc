@@ -1,8 +1,9 @@
 .logo {
-  max-height: 32px;
+  max-height: var(--logo-height);
   width: auto;
   display: flex;
   align-items: center;
+  color: var(--color-text-tertiary);
 }
 
 .logo img {

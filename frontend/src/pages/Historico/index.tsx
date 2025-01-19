@@ -43,7 +43,7 @@ const HistoricoPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col container-full items-center">
+    <div className="flex flex-col min-h-screen w-full" style={{ backgroundColor: 'var(--background-color-primary)' }}>
       <Header
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
@@ -51,88 +51,89 @@ const HistoricoPage: React.FC = () => {
         aoMudarModelo={(value) => setSelectedModel(value)}
       />
 
-      <div className="container">
-      <PageHeader
-          icon={<PiListStarFill />}
-          title="Histórico de Consultas"
-          icon_size="26px"
-        />
+      <main className="flex-1 w-full body-color p-8">
+        <div className="max-w-[1400px] mx-auto">
+          <PageHeader
+            icon={<PiListStarFill className="stroke-thin" />}
+            title="Histórico de Consultas"
+            icon_size="26px"
+          />
 
-        <table className="box-table table-auto text-sm">
-          <thead>
-            <tr className="text-white">
-              <th>ID</th>
-              <th>Modelo</th>
-              <th>NCM</th>
-              <th>Descrição</th>
-              <th>Atributos</th>
-              <th>Atributos TIPI</th>
-              <th>IPI</th>
-              <th>ICMS</th>
-              <th>PIS</th>
-              <th>COFINS</th>
-              <th>Data/Hora</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <tr className="text-white border-b border-gray-700">
-                <td colSpan={11} className="px-4 py-8 text-center">
-                  <div className="loading-spinner"></div>
-                  Carregando histórico...
-                </td>
-              </tr>
-            ) : historico.length === 0 ? (
-              <tr className="text-white border-b border-gray-700">
-                <td colSpan={11} className="px-4 py-8 text-center">
-                  Nenhum registro encontrado
-                </td>
-              </tr>
-            ) : (
-              historico.map((item) => (
-                <tr
-                  key={item.id}
-                  className="text-white border-b border-gray-700"
-                >
-                  <td>{item.id}</td>
-                  <td>
-                    <span
-                      className={`modelo-badge modelo-${item.modelo.toLowerCase()}`}
-                    >
-                      {item.modelo}
-                    </span>
-                  </td>
-                  <td>{item.ncm}</td>
-                  <td className="truncate-cell" data-full-text={item.descricao}>
-                    {item.descricao}
-                  </td>
-                  <td
-                    className="truncate-cell"
-                    data-full-text={item.atributos.join(", ")}
-                  >
-                    {item.atributos.join(", ")}
-                  </td>
-                  <td
-                    className="truncate-cell"
-                    data-full-text={item.atributos_tipi.join(", ")}
-                  >
-                    {item.atributos_tipi.join(", ")}
-                  </td>
-                  <td>{item.valores_de_impostos.ipi}</td>
-                  <td>
-                    {Object.entries(item.valores_de_impostos.icms || {})
-                      .map(([estado, valor]) => `${estado}: ${valor}`)
-                      .join(", ")}
-                  </td>
-                  <td>{item.valores_de_impostos.pis}</td>
-                  <td>{item.valores_de_impostos.cofins}</td>
-                  <td>{new Date(item.timestamp).toLocaleString()}</td>
+          <div className="w-full overflow-x-auto mt-6">
+            <table className="box-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Modelo</th>
+                  <th>NCM</th>
+                  <th>Descrição</th>
+                  <th>Atributos</th>
+                  <th>Atributos TIPI</th>
+                  <th>IPI</th>
+                  <th>ICMS</th>
+                  <th>PIS</th>
+                  <th>COFINS</th>
+                  <th>Data/Hora</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={11} className="text-center">
+                      <div className="loading-spinner"></div>
+                      <span style={{ color: 'var(--text-color-primary)' }}>Carregando histórico...</span>
+                    </td>
+                  </tr>
+                ) : historico.length === 0 ? (
+                  <tr>
+                    <td colSpan={11} className="text-center">
+                      <span style={{ color: 'var(--text-color-muted)' }}>Nenhum registro encontrado</span>
+                    </td>
+                  </tr>
+                ) : (
+                  historico.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.id}</td>
+                      <td>
+                        <span
+                          className={`modelo-badge modelo-${item.modelo.toLowerCase()}`}
+                        >
+                          {item.modelo}
+                        </span>
+                      </td>
+                      <td>{item.ncm}</td>
+                      <td className="truncate-cell" data-full-text={item.descricao}>
+                        {item.descricao}
+                      </td>
+                      <td
+                        className="truncate-cell"
+                        data-full-text={item.atributos.join(", ")}
+                      >
+                        {item.atributos.join(", ")}
+                      </td>
+                      <td
+                        className="truncate-cell"
+                        data-full-text={item.atributos_tipi.join(", ")}
+                      >
+                        {item.atributos_tipi.join(", ")}
+                      </td>
+                      <td>{item.valores_de_impostos.ipi}</td>
+                      <td>
+                        {Object.entries(item.valores_de_impostos.icms || {})
+                          .map(([estado, valor]) => `${estado}: ${valor}`)
+                          .join(", ")}
+                      </td>
+                      <td>{item.valores_de_impostos.pis}</td>
+                      <td>{item.valores_de_impostos.cofins}</td>
+                      <td>{new Date(item.timestamp).toLocaleString()}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

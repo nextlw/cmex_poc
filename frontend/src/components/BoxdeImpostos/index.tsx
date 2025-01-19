@@ -9,7 +9,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
     <div className="class-tributaria-title">
       <div className="flex items-center w-full">
         <h3 className="text-xl font-semibold color-gray-100 gap-2 flex items-center">
-        <PiSealPercentBold /> Classificação Tributária
+          <PiSealPercentBold /> Classificação Tributária
         </h3>
       </div>
       <hr className="border-gray-600 my-4" />
@@ -31,56 +31,56 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
               <div className="box-tributaria-row">
                 <h4 className="text-sm mb-2">IPI</h4>
                 <div className="flex w-full gap-3">
-                  <p className="w-1/2 text-gray-300">
-                  <InputField
-                    value={String(classificacao.ipi_entrada)}
-                    onChange={() => {}}
-                    readOnly={true}
-                    label="Saída:"
-                    showInnerLabel={true}
-                    width="100%"
-                    placeholder=""
-                  />
-                  </p>
-                  <p className="w-1/2 text-gray-300">
-                  <InputField
-                    value={String(classificacao.ipi_saida)}
-                    onChange={() => {}}
-                    readOnly={true}
-                    label="Saída:"
-                    showInnerLabel={true}
-                    width="100%"
-                    placeholder=""
-                  />
-                  </p>
+                  <span className="w-1/2 text-gray-300">
+                    <InputField
+                      value={String(classificacao.ipi_entrada)}
+                      onChange={() => {}}
+                      readOnly={true}
+                      label="Saída:"
+                      showInnerLabel={true}
+                      width="100%"
+                      placeholder=""
+                    />
+                  </span>
+                  <span className="w-1/2 text-gray-300">
+                    <InputField
+                      value={String(classificacao.ipi_saida)}
+                      onChange={() => {}}
+                      readOnly={true}
+                      label="Saída:"
+                      showInnerLabel={true}
+                      width="100%"
+                      placeholder=""
+                    />
+                  </span>
                 </div>
               </div>
 
               <div className="box-tributaria-item">
                 <h4 className="text-sm mb-2">COFINS</h4>
                 <div className="flex w-full gap-3">
-                  <p className="w-1/2 text-gray-300">
-                  <InputField
-                    value={String(classificacao.cofins_entrada)}
-                    onChange={() => {}}
-                    readOnly={true}
-                    label="Saída:"
-                    showInnerLabel={true}
-                    width="100%"
-                    placeholder=""
-                  />
-                  </p>
-                  <p className="w-1/2 text-gray-300">
-                  <InputField
-                    value={String(classificacao.cofins_saida)}
-                    onChange={() => {}}
-                    readOnly={true}
-                    label="Saída:"
-                    showInnerLabel={true}
-                    width="100%"
-                    placeholder=""
-                  />
-                  </p>
+                  <span className="w-1/2 text-gray-300">
+                    <InputField
+                      value={String(classificacao.cofins_entrada)}
+                      onChange={() => {}}
+                      readOnly={true}
+                      label="Saída:"
+                      showInnerLabel={true}
+                      width="100%"
+                      placeholder=""
+                    />
+                  </span>
+                  <span className="w-1/2 text-gray-300">
+                    <InputField
+                      value={String(classificacao.cofins_saida)}
+                      onChange={() => {}}
+                      readOnly={true}
+                      label="Saída:"
+                      showInnerLabel={true}
+                      width="100%"
+                      placeholder=""
+                    />
+                  </span>
                 </div>
               </div>
             </div>
@@ -100,56 +100,56 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
               <div className="box-tributaria-row">
                 <h4 className="text-sm mb-2">PIS</h4>
                 <div className="flex w-full gap-3">
-                  <p className="w-1/2 text-gray-300">
-                  <InputField
-                    value={String(classificacao.pis_entrada)}
-                    onChange={() => {}}
-                    readOnly={true}
-                    label="Saída:"
-                    showInnerLabel={true}
-                    width="100%"
-                    placeholder=""
-                  />
-                  </p>
-                  <p className="w-1/2 text-gray-300">
-                  <InputField
-                    value={String(classificacao.pis_saida)}
-                    onChange={() => {}}
-                    readOnly={true}
-                    label="Saída:"
-                    showInnerLabel={true}
-                    width="100%"
-                    placeholder=""
-                  />
-                  </p>
+                  <span className="w-1/2 text-gray-300">
+                    <InputField
+                      value={String(classificacao.pis_entrada)}
+                      onChange={() => {}}
+                      readOnly={true}
+                      label="Saída:"
+                      showInnerLabel={true}
+                      width="100%"
+                      placeholder=""
+                    />
+                  </span>
+                  <span className="w-1/2 text-gray-300">
+                    <InputField
+                      value={String(classificacao.pis_saida)}
+                      onChange={() => {}}
+                      readOnly={true}
+                      label="Saída:"
+                      showInnerLabel={true}
+                      width="100%"
+                      placeholder=""
+                    />
+                  </span>
                 </div>
               </div>
 
               <div className="box-tributaria-item" >
                 <h4 className="text-sm mb-2">CST</h4>
                 <div className="flex w-full gap-3">
-                  <p className="w-1/2 text-gray-300">
-                  <InputField
-                    value={String(classificacao.cst_entrada)}
-                    onChange={() => {}}
-                    readOnly={true}
-                    label="Saída:"
-                    showInnerLabel={true}
-                    width="100%"
-                    placeholder=""
-                  />
-                  </p>
-                  <p className="w-1/2 text-gray-300">
+                  <span className="w-1/2 text-gray-300">
                     <InputField
-                    value={String(classificacao.cst_saida)}
-                    onChange={() => {}}
-                    readOnly={true}
-                    label="Saída:"
-                    showInnerLabel={true}
-                    width="100%"
-                    placeholder=""
-                  />
-                  </p>
+                      value={String(classificacao.cst_entrada)}
+                      onChange={() => {}}
+                      readOnly={true}
+                      label="Saída:"
+                      showInnerLabel={true}
+                      width="100%"
+                      placeholder=""
+                    />
+                  </span>
+                  <span className="w-1/2 text-gray-300">
+                    <InputField
+                      value={String(classificacao.cst_saida)}
+                      onChange={() => {}}
+                      readOnly={true}
+                      label="Saída:"
+                      showInnerLabel={true}
+                      width="100%"
+                      placeholder=""
+                    />
+                  </span>
                 </div>
               </div>
             </div>
