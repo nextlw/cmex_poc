@@ -4,7 +4,7 @@ import axios from "axios"
 const ENV = import.meta.env.VITE_APP_NODE_ENV!
 
 // Define a URL base para as requisições do Axios
-const baseURL = ENV === "development"
+const baseURL = ENV === "dev"
   ? "http://localhost:10000/api"  
   : "https://cmex-poc.onrender.com/api"  
 
