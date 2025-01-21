@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 import google.generativeai as genai
-from ...config import settings, MODEL_MAPPING, ERROR_MESSAGES
+from ...config import SETTINGS, MODEL_MAPPING, ERROR_MESSAGES
 from ...models.schemas import (
     ConsultaProduto,
     SugerirNCM,
@@ -36,7 +36,7 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
         start_time = time.time()
 
         # Verifique se a chave da API do Gemini foi configurada
-        if not settings.GOOGLE_API_KEY:
+        if not SETTINGS.GOOGLE_API_KEY:
             raise HTTPException(
                 status_code=500, detail=ERROR_MESSAGES["api_key_missing"]
             )
@@ -48,7 +48,7 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
         model_config = MODEL_MAPPING["Gemini-1.5-pro"]
 
         # Configurar a API key do Google
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
+        genai.configure(api_key=SETTINGS.GOOGLE_API_KEY)
 
         logging.info(f"Recebendo consulta Gemini: {consulta_produto.consulta}")
         texto = consulta_produto.consulta.strip()

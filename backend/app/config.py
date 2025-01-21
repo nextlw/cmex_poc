@@ -8,6 +8,9 @@ from supabase import create_client, Client
 # Carrega as variáveis de ambiente
 load_dotenv()
 
+# Recupera o ambiente correto
+ENV = os.getenv("ENV")
+
 # Configurações do cliente Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
@@ -36,14 +39,18 @@ class Settings(BaseSettings):
     PORT: int = 10000
 
     # Configurações de CORS
-    BACKEND_CORS_ORIGINS: list = [
-        "http://localhost:3000",
-        "http://localhost:8000",
-        "http://localhost:5173",
-        "http://localhost:10000",
-        "https://cmex-poc.onrender.com",
-        "https://cmex-poc.vercel.app",
-    ]
+    if ENV == "dev":
+        BACKEND_CORS_ORIGINS: list = [
+            "http://localhost:5173",  # Frontend React (Local)
+            "http://127.0.0.1:5173",  # Frontend React (Local)
+            "http://localhost:10000",  # Backend FastAPI (Local - Ele mesmo)
+            "http://127.0.0.1:10000",  # Backend FastAPI (Local - Ele mesmo)
+        ]
+    elif ENV == "prod":
+        BACKEND_CORS_ORIGINS: list = [
+            "https://cmex-poc.onrender.com",  # Frontend React (Prod)
+            "https://cmex-poc.vercel.app",  # Frontend React (Prod)
+        ]
 
     # Configurações de logging
     LOG_LEVEL: str = "INFO"
@@ -64,7 +71,7 @@ def get_settings() -> Settings:
 
 
 # Instância das configurações para uso em toda a aplicação
-settings = get_settings()
+SETTINGS = get_settings()
 
 # Constantes específicas da aplicação
 PROMPT_TEMPLATE = """
@@ -81,17 +88,17 @@ PROMPT_TEMPLATE = """
 # Mapeamento de modelos
 MODEL_MAPPING = {
     "GPT-4": {
-        "model_name": settings.OPENAI_MODEL,
+        "model_name": SETTINGS.OPENAI_MODEL,
         "max_tokens": 500,
         "temperature": 0.2,
     },
     "Gemini-1.5-pro": {
-        "model_name": settings.GOOGLE_MODEL,
+        "model_name": SETTINGS.GOOGLE_MODEL,
         "max_tokens": 500,
         "temperature": 0.2,
     },
     "CLAUDE-3": {
-        "model_name": settings.ANTHROPIC_MODEL,  # ou outro modelo Claude disponível
+        "model_name": SETTINGS.ANTHROPIC_MODEL,  # ou outro modelo Claude disponível
         "max_tokens": 4096,
         "temperature": 0.7,
     },
