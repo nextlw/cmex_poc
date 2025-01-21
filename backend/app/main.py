@@ -8,6 +8,7 @@ from .routes.historico import historico_router
 from .routes.queries import queries_router
 from app.middlewares.auth_middleware import AuthMiddleware
 from app.exceptions import *
+from .config import SETTINGS
 
 # Inicializa uma instância do FastAPI.
 # Todas as rotas com prefixo /api
@@ -25,27 +26,19 @@ async def root():
     )
 
 
-# Origens aceitas
-origins = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "http://localhost:5173",
-    "http://localhost:10000",
-    "https://cmex-poc.onrender.com",
-    "https://cmex-poc.vercel.app",
-]
-
 # Configurações de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=SETTINGS.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+
 # Middleware de autenticação
 app.add_middleware(AuthMiddleware)
+
 
 # Handlers globais de erro
 app.add_exception_handler(404, not_found_handler)
@@ -65,10 +58,12 @@ async def custom_validation_error_handler(
 app.include_router(historico_router)
 app.include_router(queries_router)
 
+
+# Roda o servidor
 if __name__ == "__main__":
+    
     import uvicorn
 
-    port = int(os.getenv("PORT", 10000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host="127.0.0.1", port=10000)
 
-    # uvicorn app.main:app --host 0.0.0.0 --port 10000
+    # python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 10000

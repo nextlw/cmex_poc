@@ -1,7 +1,7 @@
 # Bibliotecas
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import JSONResponse
-from app.config import supabase
+from starlette.responses import JSONResponse, Response
+from app.config import supabase, SETTINGS
 
 # Schemas
 from ..models.error import Erro, ErrorDetail
@@ -10,6 +10,17 @@ from ..models.error import Erro, ErrorDetail
 # Handler de autenticação
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
+
+        # Tratamento para requisições preflight (OPTIONS)
+        if request.method == "OPTIONS":
+            return Response(
+                status_code=204,
+                headers={
+                    "Access-Control-Allow-Origin": SETTINGS.BACKEND_CORS_ORIGINS,
+                    "Access-Control-Allow-Methods": "*",
+                    "Access-Control-Allow-Headers": "*",
+                },
+            )
 
         # Verifica se a rota é pública
         if request.url.path in ["/", "/login"]:  # Lista de rotas públicas
@@ -44,7 +55,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
             # Valida o token usando Supabase
             user = supabase.auth.get_user(token)
-            
+
             if user:
                 # Armazena o usuário no contexto da requisição
                 request.state.user = user.user
@@ -52,7 +63,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 return response
 
         except Exception as e:
-            
+
             # Monta a mensagem de erro
             error = Erro(
                 status_code=401,
