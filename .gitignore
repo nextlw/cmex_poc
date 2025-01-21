@@ -160,6 +160,7 @@ dist
 
 # Cache do Python
 *.pyc
+**/*.pyc
 
 # Ignorar arquivos de cache do Python
 __pycache__/

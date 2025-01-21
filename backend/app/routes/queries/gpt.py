@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from openai import OpenAI
-from ...config import settings, MODEL_MAPPING, ERROR_MESSAGES
+from ...config import SETTINGS, MODEL_MAPPING, ERROR_MESSAGES
 from ...models.schemas import (
     ConsultaProduto,
     SugerirNCM,
@@ -35,7 +35,7 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
         start_time = time.time()
 
         # Verifique se a chave de API da OpenAI foi configurada
-        if not settings.OPENAI_API_KEY:
+        if not SETTINGS.OPENAI_API_KEY:
             raise HTTPException(
                 status_code=500, detail=ERROR_MESSAGES["api_key_missing"]
             )
@@ -46,7 +46,7 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
 
         model_config = MODEL_MAPPING["GPT-4"]
         # Usando as configurações
-        client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        client = OpenAI(api_key=SETTINGS.OPENAI_API_KEY)
 
         logging.info(f"Recebendo consulta GPT-4: {consulta_produto.consulta}")
         texto = consulta_produto.consulta.strip()

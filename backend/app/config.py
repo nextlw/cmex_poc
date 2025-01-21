@@ -8,6 +8,9 @@ from supabase import create_client, Client
 # Carrega as variáveis de ambiente
 load_dotenv()
 
+# Recupera o ambiente correto
+ENV = os.getenv("ENV")
+
 # Configurações do cliente Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
@@ -36,14 +39,18 @@ class Settings(BaseSettings):
     PORT: int = 10000
 
     # Configurações de CORS
-    BACKEND_CORS_ORIGINS: list = [
-        "http://localhost:3000",
-        "http://localhost:8000",
-        "http://localhost:5173",
-        "http://localhost:10000",
-        "https://cmex-poc.onrender.com",
-        "https://cmex-poc.vercel.app",
-    ]
+    if ENV == "dev":
+        BACKEND_CORS_ORIGINS: list = [
+            "http://localhost:5173",  # Frontend React (Local)
+            "http://127.0.0.1:5173",  # Frontend React (Local)
+            "http://localhost:10000",  # Backend FastAPI (Local - Ele mesmo)
+            "http://127.0.0.1:10000",  # Backend FastAPI (Local - Ele mesmo)
+        ]
+    elif ENV == "prod":
+        BACKEND_CORS_ORIGINS: list = [
+            "https://cmex-poc.onrender.com",  # Frontend React (Prod)
+            "https://cmex-poc.vercel.app",  # Frontend React (Prod)
+        ]
 
     # Configurações de logging
     LOG_LEVEL: str = "INFO"
@@ -64,34 +71,60 @@ def get_settings() -> Settings:
 
 
 # Instância das configurações para uso em toda a aplicação
-settings = get_settings()
+SETTINGS = get_settings()
 
 # Constantes específicas da aplicação
 PROMPT_TEMPLATE = """
-    Você é um especialista em classificação NCM e tributação de produtos.
-    Analise o seguinte produto e procure na tabela TIPI.
-    Produto: {consulta}
-        Estado de origem: {estado_origem}
-        Operação: {operacao}
-        Regime tributário: {regime_tributario}
-        Tributação: {tributacao}
-        Reduções ou isenções locais: {reducao_isencao}
-"""
+            Você é um especialista em classificação NCM e tributação de produtos.
+            Analise o seguinte produto e procure na tabela TIPI.
+            Produto: {consulta_produto.consulta}
+                Estado de origem: {consulta_produto.estadoOrigem or 'Não informado'}
+                Operação: {consulta_produto.operacao or 'Não informado'}
+                Regime tributário: {consulta_produto.regimeTributario or 'Não informado'}
+                Tributação: {consulta_produto.tributacao or 'Não informado'}
+                Reduções ou isenções locais: {consulta_produto.reducaoOuIsencao or 'Não informado'}
+            
+            Retorne APENAS um JSON, **SEM** texto adicional, no seguinte formato:
+            {{
+                "ncm": "XX.XX.XX.XX",
+                "descricao": "Uma breve descrição do produto com base nas características da ncm encontrada",
+                "atributos": ["...cada atributo deve ter como foco o produto que será cadastrado na duimp no novo sistema do governo CISCOMEX"],
+                "atributos_tipi": ["...cada atributo deve der retirado do que tem daquela ncm na tabela tipi 2024"],
+                "valores_de_impostos": {{
+                    "ipi": "valor real do IPI",
+                    "icms": {{"estado": "valor real do ICMS"}},
+                    "pis": "valor real do PIS",
+                    "cofins": "valor real do COFINS"
+                }},
+                "classificacao_tributaria": {{
+                    "monofasico": valor real,
+                    "aliquota_zero": valor real,
+                    "ipi_entrada": "valor real do IPI na entrada",
+                    "ipi_saida": "valor real do IPI na saída",
+                    "pis_entrada": "valor real do PIS na entrada",
+                    "pis_saida": "valor real do PIS na saída",
+                    "cofins_entrada": "valor real do COFINS na entrada",
+                    "cofins_saida": "valor real do COFINS na saída",
+                    "cst_entrada": "valor real do CST de entrada",
+                    "cst_saida": "valor real do CST de saída"
+                }}
+            }}
+        """
 
 # Mapeamento de modelos
 MODEL_MAPPING = {
     "GPT-4": {
-        "model_name": settings.OPENAI_MODEL,
+        "model_name": SETTINGS.OPENAI_MODEL,
         "max_tokens": 500,
         "temperature": 0.2,
     },
     "Gemini-1.5-pro": {
-        "model_name": settings.GOOGLE_MODEL,
+        "model_name": SETTINGS.GOOGLE_MODEL,
         "max_tokens": 500,
         "temperature": 0.2,
     },
     "CLAUDE-3": {
-        "model_name": settings.ANTHROPIC_MODEL,  # ou outro modelo Claude disponível
+        "model_name": SETTINGS.ANTHROPIC_MODEL,  # ou outro modelo Claude disponível
         "max_tokens": 4096,
         "temperature": 0.7,
     },

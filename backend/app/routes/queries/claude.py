@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 import anthropic
-from ...config import settings, MODEL_MAPPING, ERROR_MESSAGES
+from ...config import SETTINGS, MODEL_MAPPING, ERROR_MESSAGES
 from ...models.schemas import (
     ConsultaProduto,
     SugerirNCM,
@@ -18,7 +18,7 @@ from datetime import datetime
 
 def count_tokens_and_log(prompt: str, response: str):
     """Conta tokens e salva em um arquivo de log"""
-    client = anthropic.Client(api_key=settings.ANTHROPIC_API_KEY)
+    client = anthropic.Client(api_key=SETTINGS.ANTHROPIC_API_KEY)
 
     # Contagem de tokens do prompt e resposta
     prompt_tokens = len(prompt.split())  # Simplificado, ajuste conforme necessário
@@ -50,7 +50,7 @@ async def obter_sugestoes_claude(consulta_produto: ConsultaProduto):
             f"Iniciando processamento para consulta: {consulta_produto.consulta}"
         )
 
-        if not settings.ANTHROPIC_API_KEY:
+        if not SETTINGS.ANTHROPIC_API_KEY:
             logging.error("API Key não configurada")
             raise HTTPException(
                 status_code=500, detail=ERROR_MESSAGES["api_key_missing"]
@@ -61,7 +61,7 @@ async def obter_sugestoes_claude(consulta_produto: ConsultaProduto):
         logging.info(f"Tempo para verificar API Key: {api_key_check_time:.2f} segundos")
 
         model_config = MODEL_MAPPING["CLAUDE-3"]
-        client = anthropic.Client(api_key=settings.ANTHROPIC_API_KEY)
+        client = anthropic.Client(api_key=SETTINGS.ANTHROPIC_API_KEY)
 
         logging.info(f"Recebendo consulta Claude: {consulta_produto.consulta}")
         texto = consulta_produto.consulta.strip()
