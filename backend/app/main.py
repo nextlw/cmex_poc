@@ -14,18 +14,6 @@ from .config import SETTINGS
 # Todas as rotas com prefixo /api
 app = FastAPI(root_path="/api")
 
-
-# Configurações do endpoint raiz /api
-@app.get("/")
-@app.head("/")
-async def root():
-    """Rota raiz para verificar se a API está disponível"""
-    return JSONResponse(
-        status_code=200,
-        content={"message": "A API está funcionando :)"},
-    )
-
-
 # Configurações de CORS
 app.add_middleware(
     CORSMiddleware,
@@ -38,6 +26,18 @@ app.add_middleware(
 
 # Middleware de autenticação
 app.add_middleware(AuthMiddleware)
+
+# Configurações do endpoint raiz /api
+@app.get("/")
+@app.head("/")
+async def root():
+    """Rota raiz para verificar se a API está disponível"""
+    return JSONResponse(
+        status_code=200,
+        content={"message": "A API está funcionando :)"},
+    )
+
+
 
 
 # Handlers globais de erro

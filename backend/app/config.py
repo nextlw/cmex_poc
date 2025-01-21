@@ -41,16 +41,37 @@ class Settings(BaseSettings):
     # Configurações de CORS
     if ENV == "dev":
         BACKEND_CORS_ORIGINS: list = [
-            "http://localhost:5173",  # Frontend React (Local)
-            "http://127.0.0.1:5173",  # Frontend React (Local)
-            "http://localhost:10000",  # Backend FastAPI (Local - Ele mesmo)
-            "http://127.0.0.1:10000",  # Backend FastAPI (Local - Ele mesmo)
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:10000",
+            "http://127.0.0.1:10000",
+            "https://localhost:5173",  # Adicionar HTTPS
+            "https://127.0.0.1:5173", # Adicionar HTTPS
+            "http://localhost:*",     # Permitir qualquer porta em desenvolvimento
+            "http://127.0.0.1:*"      # Permitir qualquer porta em desenvolvimento
         ]
     elif ENV == "prod":
         BACKEND_CORS_ORIGINS: list = [
-            "https://cmex-poc.onrender.com",  # Frontend React (Prod)
-            "https://cmex-poc.vercel.app",  # Frontend React (Prod)
+            "https://cmex-poc.onrender.com",
+            "https://cmex-poc.vercel.app",
+            "https://*.onrender.com",  # Permitir subdomínios
+            "https://*.vercel.app"     # Permitir subdomínios
         ]
+        
+        # Dentro da classe Settings
+    CORS_ALLOW_CREDENTIALS: bool = True
+    CORS_ALLOW_METHODS: list = ["*"]
+    CORS_ALLOW_HEADERS: list = [
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Origin",
+        "X-Requested-With"
+    ]
+    CORS_EXPOSE_HEADERS: list = ["*"]
+    CORS_MAX_AGE: int = 600  # 10 minutos em segundos
+
+
 
     # Configurações de logging
     LOG_LEVEL: str = "INFO"
@@ -145,4 +166,7 @@ ERROR_MESSAGES = {
     "invalid_input": "Entrada inválida",
     "model_not_available": "Modelo não disponível",
     "service_error": "Erro no serviço",
+    "cors_error": "Erro de CORS: Origem não permitida",
+    "preflight_error": "Erro na requisição preflight CORS",
+    "method_not_allowed": "Método HTTP não permitido para esta origem",
 }
