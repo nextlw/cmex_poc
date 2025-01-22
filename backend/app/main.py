@@ -22,8 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
 # Middleware de autenticação
 app.add_middleware(AuthMiddleware)
 
