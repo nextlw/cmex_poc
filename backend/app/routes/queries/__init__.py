@@ -10,7 +10,7 @@ from ...config import supabase
 
 # Schemas
 from ...models.error import Erro, ErrorDetail
-from ...models.schemas import ConsultaProduto, SugerirNCM
+from ...models.schemas import ConsultaProduto
 from ...schemas.pesquisas import RegistroPesquisas
 
 # Cria um router para o endpoint /queries

@@ -2,45 +2,39 @@ export interface ICMSByState {
   [state: string]: string;
 }
 
+export interface TipoTributario {
+  monofasico: boolean;
+  aliquota_zero: boolean;
+  isento: boolean;
+  suspenso: boolean;
+}
+
 export interface ValoresdeImpostos {
   ipi: string;
-  icms: ICMSByState;
+  icms: Record<string, string>;
   pis: string;
   cofins: string;
 }
 
+export interface ClassificacaoTributaria {
+  tipo_tributario?: TipoTributario;
+  ipi_entrada: string;
+  ipi_saida: string;
+  pis_entrada: string;
+  pis_saida: string;
+  cofins_entrada: string;
+  cofins_saida: string;
+  cst_entrada: string;
+  cst_saida: string;
+}
+
 export interface SugerirNCM {
   ncm: string;
-
-  description: string;
-
-  attributes: string[];
-
-  tipi_attributes: string[];
-
+  descricao: string;
+  atributos: string[];
+  atributos_tipi: string[];
   valores_de_impostos: ValoresdeImpostos;
-
-  classificacao_tributaria?: {
-    monofasico: boolean;
-
-    aliquota_zero: boolean;
-
-    ipi_entrada: string;
-
-    ipi_saida: string;
-
-    pis_entrada: string;
-
-    pis_saida: string;
-
-    cofins_entrada: string;
-
-    cofins_saida: string;
-
-    cst_entrada: string;
-
-    cst_saida: string;
-  };
+  classificacao_tributaria: ClassificacaoTributaria;
 }
 
 export interface ProdutodaPesquisa {
@@ -371,19 +365,6 @@ export interface RegiaoICMS {
   estados: EstadoICMS[];
 }
 
-export interface ClassificacaoTributaria {
-  monofasico: boolean;
-  aliquota_zero: boolean;
-  ipi_entrada: string;
-  ipi_saida: string;
-  pis_entrada: string;
-  pis_saida: string;
-  cofins_entrada: string;
-  cofins_saida: string;
-  cst_entrada: string;
-  cst_saida: string;
-}
-
 export interface Sugestao {
   ncm: string;
   descricao: string;
@@ -395,4 +376,26 @@ export interface Sugestao {
     cofins: string;
   };
   classificacao_tributaria: ClassificacaoTributaria;
+}
+
+export interface SearchState {
+  query: string;
+  isLoading: boolean;
+  error?: string;
+}
+
+export interface SearchHeaderProps {
+  onSearch: (query: string) => void;
+  isLoading: boolean;
+}
+
+export interface SearchResultCardProps {
+  title: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+export interface LoadingStateProps {
+  message?: string;
+  type?: "spinner" | "skeleton" | "progressive";
 }
