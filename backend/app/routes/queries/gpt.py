@@ -1,244 +1,198 @@
-from fastapi import APIRouter, HTTPException
-from openai import OpenAI
-from ...config import SETTINGS, MODEL_MAPPING, ERROR_MESSAGES
+# Bibliotecas padrão
+import io
+import json
+import time
+from datetime import datetime
+
+# Bibliotecas de terceiros
+from fastapi import HTTPException
+import openai
+import cProfile
+import pstats
+
+# Imports locais
+from ...config import (
+    ERROR_MESSAGES,
+    MODEL_MAPPING,
+    PROMPT_TEMPLATE,
+    SETTINGS,
+    format_metrics_log,
+    format_error_log,
+    ERROR_TYPES,
+    get_model_loggers,
+    log_api_metrics,
+    log_token_metrics,
+    log_final_metrics,
+)
 from ...models.schemas import (
     ConsultaProduto,
     SugerirNCM,
     ValoresdeImpostos,
     ClassificacaoTributaria,
 )
-import time
-import logging
-import json
-from line_profiler import LineProfiler, profile
-import sys
 
+# Inicialização dos loggers
+logger, metrics_logger = get_model_loggers('gpt')
 
-@profile
-def converter_para_booleano(valor):
+def converter_para_booleano(valor: str) -> bool:
+    """Converte um valor string para booleano."""
     return str(valor).lower() in ["sim", "true", "1", "verdadeiro"]
 
-
-@profile
-async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
-    # Crie o LineProfiler antes do processamento
-    profiler = LineProfiler()
-
+def count_tokens_and_log(prompt: str, response: str, response_obj: dict) -> tuple[int, int]:
+    """Conta tokens e retorna a contagem do prompt e da resposta usando a API OpenAI."""
     try:
-        # Adicione as funções que você quer perfilar
-        profiler.add_function(json.loads)
-        profiler.add_function(converter_para_booleano)
-        profiler.add_function(obter_sugestoes_gpt4)
-        # Ative o profiler
-        profiler.enable()
-
-        start_time = time.time()
-
-        # Verifique se a chave de API da OpenAI foi configurada
-        if not SETTINGS.OPENAI_API_KEY:
-            raise HTTPException(
-                status_code=500, detail=ERROR_MESSAGES["api_key_missing"]
-            )
-
-        # Tempo para verificar a chave da API
-        api_key_check_time = time.time() - start_time
-        logging.info(f"Tempo para verificar API Key: {api_key_check_time} segundos")
-
-        model_config = MODEL_MAPPING["GPT-4"]
-        # Usando as configurações
-        client = OpenAI(api_key=SETTINGS.OPENAI_API_KEY)
-
-        logging.info(f"Recebendo consulta GPT-4: {consulta_produto.consulta}")
-        texto = consulta_produto.consulta.strip()
-        if len(texto) < 3:
-            return []
-
-        # Monta o prompt para o modelo
-        prompt = f"""
-            Você é um especialista em classificação NCM e tributação de produtos.
-            Analise o seguinte produto e procure na tabela TIPI.
-            Produto: {consulta_produto.consulta}
-                Estado de origem: {consulta_produto.estadoOrigem or 'Não informado'}
-                Operação: {consulta_produto.operacao or 'Não informado'}
-                Regime tributário: {consulta_produto.regimeTributario or 'Não informado'}
-                Tributação: {consulta_produto.tributacao or 'Não informado'}
-                Reduções ou isenções locais: {consulta_produto.reducaoOuIsencao or 'Não informado'}
-            
-            Retorne APENAS um JSON, **SEM** texto adicional, no seguinte formato:
-
-            {{
-            "ncm": "XX.XX.XX.XX",
-            "descricao": "Uma breve descrição do produto com base nas características da ncm encontrada",
-            "atributos": ["...cada atributo deve ter como foco o produto que será cadastrado na duimp no novo sistema do governo CISCOMEX"],
-            "atributos_tipi": ["...cada atributo deve der retirado do que tem daquela ncm na tabela tipi 2024"],
-            "valores_de_impostos": {{
-            "ipi": "valor real do IPI",
-            "icms": {{"estado": "valor real do ICMS"}},
-            "pis": "valor real do PIS",
-            "cofins": "valor real do COFINS"
-            }},
-            "classificacao_tributaria": {{
-            "monofasico": valor real,
-            "aliquota_zero": valor real,
-            "ipi_entrada": "valor real do IPI na entrada",
-            "ipi_saida": "valor real do IPI na saída",
-            "pis_entrada": "valor real do PIS na entrada",
-            "pis_saida": "valor real do PIS na saída",
-            "cofins_entrada": "valor real do COFINS na entrada",
-            "cofins_saida": "valor real do COFINS na saída",
-            "cst_entrada": "valor real do CST de entrada",
-            "cst_saida": "valor real do CST de saída"
-            }}
-            }}
-        """
-
-        logging.info("Enviando prompt para GPT-4")
-        logging.debug(f"Prompt enviado para OpenAI: {prompt}")
-
-        # Chamada à API da OpenAI
-        # Tempo para chamada da API OpenAI
-        start_openai_call = time.time()
-        response = client.chat.completions.create(
-            model=model_config["model_name"],  # Usa o nome do modelo definido no config
-            messages=[
-                {
-                    "role": "system",
-                    "content": "Você é um especialista em classificação NCM e tributação de produtos.",
-                },
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens=model_config["max_tokens"],  # Usa max_tokens do config
-            temperature=model_config["temperature"],  # Usa temperature do config
-        )
-        openai_call_time = time.time() - start_openai_call
-        logging.info(f"Tempo para chamada OpenAI: {openai_call_time} segundos")
-
-        # Extrai o conteúdo da resposta
-        content = response.choices[0].message.content.strip()
-
-        # Verificação do comprimento da resposta
-        try:
-            data = json.loads(content)
-
-            # Se não vier lista, transformamos em lista
-            if not isinstance(data, list):
-                data = [data]
-
-            sugestoes = []
-            for item in data:
-                # Captura as chaves que vêm do modelo
-                atributos = item.get("atributos", [])
-                atributos_tipi = item.get("atributos_tipi", [])
-                descricao = item.get("descricao", "")
-
-                # Criar objeto SugerirNCM com nomes coerentes ao front-end
-                sugestoes.append(
-                    SugerirNCM(
-                        ncm=item.get("ncm", ""),
-                        descricao=descricao,
-                        atributos=atributos,
-                        valores_de_impostos=ValoresdeImpostos(
-                            ipi=item.get("valores_de_impostos", {}).get("ipi", "0%"),
-                            icms=item.get("valores_de_impostos", {}).get("icms", {}),
-                            pis=item.get("valores_de_impostos", {}).get("pis", "1.65%"),
-                            cofins=item.get("valores_de_impostos", {}).get(
-                                "cofins", "7.6%"
-                            ),
-                        ),
-                        atributos_tipi=atributos_tipi,
-                        classificacao_tributaria=ClassificacaoTributaria(
-                            monofasico=converter_para_booleano(
-                                item.get("classificacao_tributaria", {}).get(
-                                    "monofasico", False
-                                )
-                            ),
-                            aliquota_zero=converter_para_booleano(
-                                item.get("classificacao_tributaria", {}).get(
-                                    "aliquota_zero", False
-                                )
-                            ),
-                            ipi_entrada=item.get("classificacao_tributaria", {}).get(
-                                "ipi_entrada"
-                            ),
-                            ipi_saida=item.get("classificacao_tributaria", {}).get(
-                                "ipi_saida"
-                            ),
-                            pis_entrada=item.get("classificacao_tributaria", {}).get(
-                                "pis_entrada"
-                            ),
-                            pis_saida=item.get("classificacao_tributaria", {}).get(
-                                "pis_saida"
-                            ),
-                            cofins_entrada=item.get("classificacao_tributaria", {}).get(
-                                "cofins_entrada"
-                            ),
-                            cofins_saida=item.get("classificacao_tributaria", {}).get(
-                                "cofins_saida"
-                            ),
-                            cst_entrada=item.get("classificacao_tributaria", {}).get(
-                                "cst_entrada"
-                            ),
-                            cst_saida=item.get("classificacao_tributaria", {}).get(
-                                "cst_saida"
-                            ),
-                        ),
-                    )
-                )
-
-            logging.info(f"Lista parseada com sucesso: {sugestoes}")
-            print(f"Resposta recebida: {sugestoes}")
-
-            # Loga cada sugestão para debug
-            for sugestao in sugestoes:
-                logging.debug(f"Estrutura da sugestão: {sugestao.dict()}")
-
-            resultado = [sugestao.to_frontend_format() for sugestao in sugestoes]
-
-            # Desative o profiler
-            profiler.disable()
-
-            # Capturar saída do perfil
-            output = sys.stdout
-            profiler.print_stats(output)
-
-            return resultado
-
-        except json.JSONDecodeError as e:
-            logging.error(
-                f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content}"
-            )
-            return []
-
+        # OpenAI fornece contagem de tokens na resposta
+        prompt_tokens = response_obj["usage"]["prompt_tokens"]
+        response_tokens = response_obj["usage"]["completion_tokens"]
+        
+        # Log das métricas de tokens
+        log_token_metrics(metrics_logger, prompt, response, prompt_tokens, response_tokens)
+        
+        return prompt_tokens, response_tokens
     except Exception as e:
-        # Log de erro
-        logging.error(f"Erro no processamento: {str(e)}")
-
-        # Desative o profiler em caso de erro
-        profiler.disable()
+        logger.error(f"Erro ao contar tokens: {str(e)}")
         raise
 
-
-# Função: Executa perfil de desempenho separadamente
-def run_profile():
-    # Cria consulta de exemplo e roda perfil
-    consulta = ConsultaProduto(
-        consulta="Exemplo de produto para perfil",
-        estadoOrigem="SP",
-        operacao="Venda",
-        regimeTributario="Simples Nacional",
+def criar_sugestao_ncm(item: dict) -> SugerirNCM:
+    """Cria um objeto SugerirNCM a partir de um dicionário de dados."""
+    return SugerirNCM(
+        ncm=item.get("ncm", ""),
+        descricao=item.get("descricao", ""),
+        atributos=item.get("atributos", []),
+        atributos_tipi=item.get("atributos_tipi", []),
+        valores_de_impostos=ValoresdeImpostos(
+            ipi=item.get("valores_de_impostos", {}).get("ipi", "0%"),
+            icms=item.get("valores_de_impostos", {}).get("icms", {}),
+            pis=item.get("valores_de_impostos", {}).get("pis", "1.65%"),
+            cofins=item.get("valores_de_impostos", {}).get("cofins", "7.6%"),
+        ),
+        classificacao_tributaria=ClassificacaoTributaria(
+            monofasico=converter_para_booleano(
+                item.get("classificacao_tributaria", {}).get("monofasico", False)
+            ),
+            aliquota_zero=converter_para_booleano(
+                item.get("classificacao_tributaria", {}).get("aliquota_zero", False)
+            ),
+            ipi_entrada=item.get("classificacao_tributaria", {}).get("ipi_entrada"),
+            ipi_saida=item.get("classificacao_tributaria", {}).get("ipi_saida"),
+            pis_entrada=item.get("classificacao_tributaria", {}).get("pis_entrada"),
+            pis_saida=item.get("classificacao_tributaria", {}).get("pis_saida"),
+            cofins_entrada=item.get("classificacao_tributaria", {}).get("cofins_entrada"),
+            cofins_saida=item.get("classificacao_tributaria", {}).get("cofins_saida"),
+            cst_entrada=item.get("classificacao_tributaria", {}).get("cst_entrada") or "",
+            cst_saida=item.get("classificacao_tributaria", {}).get("cst_saida") or "",
+        ),
     )
 
-    # Crie o profiler
-    profiler = LineProfiler(obter_sugestoes_gpt4)
+async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
+    """Obtém sugestões de classificação NCM usando GPT-4."""
+    profiler = cProfile.Profile()
+    profiler.enable()
+    start_time = time.time()
 
-    # Execute a função com o profiler
-    with profiler:
-        resultado = obter_sugestoes_gpt4(consulta)
+    try:
+        # Validação da API key
+        if not SETTINGS.OPENAI_API_KEY:
+            logger.error("API Key não configurada")
+            raise HTTPException(status_code=500, detail=ERROR_MESSAGES["api_key_missing"])
 
-    # Imprima as estatísticas
-    profiler.print_stats()
+        # Validação da consulta
+        texto = consulta_produto.consulta.strip()
+        if len(texto) < 3:
+            logger.warning("Texto muito curto para processamento")
+            return []
 
+        # Configuração do cliente OpenAI
+        model_config = MODEL_MAPPING["GPT-4"]
+        openai.api_key = SETTINGS.OPENAI_API_KEY
 
-# Função: Ponto de entrada para execução do perfil
-if __name__ == "__main__":
-    run_profile()
+        # Preparação e envio do prompt
+        prompt = PROMPT_TEMPLATE.format(consulta_produto=consulta_produto)
+        logger.info("Enviando prompt para GPT-4")
+        logger.debug(f"Prompt enviado para GPT-4: {prompt}")
+
+        # Chamada à API
+        start_call = time.time()
+        response = openai.ChatCompletion.create(
+            model=model_config["model_name"],
+            messages=[{"role": "user", "content": prompt}],
+            temperature=model_config["temperature"],
+            max_tokens=model_config["max_tokens"],
+        )
+        api_time = time.time() - start_call
+        logger.info(f"Tempo de resposta GPT-4: {api_time:.2f} segundos")
+
+        # Processamento da resposta
+        content = response.choices[0].message.content.strip()
+        prompt_tokens, response_tokens = count_tokens_and_log(prompt, content, response)
+        
+        # Log das métricas formatadas
+        formatted_metrics = format_metrics_log(
+            prompt_tokens=prompt_tokens,
+            response_tokens=response_tokens,
+            processing_time=api_time,
+            model=model_config["model_name"]
+        )
+        metrics_logger.info(f"\n{formatted_metrics}")
+        
+        # Log das métricas da API
+        log_api_metrics(
+            metrics_logger,
+            api_time,
+            model_config["model_name"],
+            prompt_tokens,
+            response_tokens,
+            consulta_produto.consulta
+        )
+        
+        data = json.loads(content)
+
+        # Conversão para lista se necessário
+        if not isinstance(data, list):
+            data = [data]
+
+        # Criação das sugestões
+        sugestoes = [criar_sugestao_ncm(item) for item in data]
+        
+        # Log das sugestões
+        logger.info(f"Lista parseada com sucesso: {sugestoes}")
+
+        # Formatação final
+        resultado = [sugestao.to_frontend_format() for sugestao in sugestoes]
+        
+        total_time = time.time() - start_time
+        logger.info(f"Tempo total de processamento: {total_time:.2f} segundos")
+        
+        # Log final de métricas
+        log_final_metrics(metrics_logger, total_time, len(sugestoes))
+        
+        return resultado
+
+    except json.JSONDecodeError as e:
+        logger.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content}")
+        error_data = format_error_log(
+            error_type=ERROR_TYPES["json_decode"],
+            error_message=str(e),
+            extra_data={"content_received": content[:500]}  # Limita o tamanho do conteúdo no log
+        )
+        metrics_logger.error(json.dumps(error_data))
+        return []
+    except Exception as e:
+        logger.error(f"Erro no processamento: {str(e)}")
+        error_data = format_error_log(
+            error_type=ERROR_TYPES["processing"],
+            error_message=str(e),
+            extra_data={
+                "consulta": consulta_produto.consulta,
+                "model": model_config["model_name"]
+            }
+        )
+        metrics_logger.error(json.dumps(error_data))
+        raise
+    finally:
+        # Finalização do profiling
+        profiler.disable()
+        stats_stream = io.StringIO()
+        pstats.Stats(profiler, stream=stats_stream).sort_stats("cumulative").print_stats()
+        logger.debug(f"Profile stats:\n{stats_stream.getvalue()}")
+

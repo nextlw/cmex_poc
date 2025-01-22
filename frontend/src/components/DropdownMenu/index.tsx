@@ -5,7 +5,6 @@ import {
   stateOptions,
   operationOptions,
   regimeOptions,
-  reductionOptions,
 } from "./types";
 import Select from "../Select";
 
@@ -13,14 +12,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [selectedOperation, setSelectedOperation] = useState<string | null>(null);
   const [selectedRegime, setSelectedRegime] = useState<string | null>(null);
-  const [selectedReduction, setSelectedReduction] = useState<string | null>(null);
-
   const handleChange = () => {
     onSelectionChange({
       estadoOrigem: selectedState,
       operacao: selectedOperation,
       regimeTributario: selectedRegime,
-      reducaoOuIsencao: selectedReduction,
     });
   };
 
@@ -65,20 +61,6 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ onSelectionChange }) => {
               handleChange();
             }}
             placeholder="Regime"
-            handleParentChange={handleChange}
-          />
-        </div>
-        
-        <div className="dropdown-menu-item">
-          <Select
-            label="Reduções ou isenções"
-            options={reductionOptions}
-            value={selectedReduction}
-            onChange={(value) => {
-              setSelectedReduction(value);
-              handleChange();
-            }}
-            placeholder="Redução ou isenções"
             handleParentChange={handleChange}
           />
         </div>
