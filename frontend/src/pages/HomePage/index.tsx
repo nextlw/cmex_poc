@@ -1,7 +1,7 @@
 // Importa o React e os hooks necessários
 import React, { useState, useMemo, useEffect } from "react";
-// Importa o tipo SugerirNCM do arquivo types
-import { SugerirNCM } from "./types";
+// Importa o tipo SugerirNCM do arquivo types centralizado
+import { SugerirNCM } from "../../types";
 // Importa a instância do axios configurada
 import axiosInstance from "../../axiosConfig";
 // Importa o componente InputAi
@@ -48,8 +48,6 @@ const HomePage: React.FC = () => {
       atributos: [],
       atributos_tipi: [],
       classificacao_tributaria: {
-        monofasico: false,
-        aliquota_zero: false,
         ipi_entrada: "",
         ipi_saida: "",
         pis_entrada: "",

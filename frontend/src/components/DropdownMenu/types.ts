@@ -12,7 +12,6 @@ export interface SelectionData {
   operacao: string | null;
   regimeTributario: string | null;
   tributacao?: string | null;
-  reducaoOuIsencao: string | null;
 }
 
 export interface DropdownOption {
@@ -72,8 +71,4 @@ export const taxationOptions: DropdownOption[] = [
   { label: "Nenhuma", value: "Nenhuma" },
 ];
 
-export const reductionOptions: DropdownOption[] = [
-  { label: "Isenção parcial", value: "Isenção parcial" },
-  { label: "Isenção total", value: "Isenção total" },
-  { label: "Sem isenção", value: "Sem isenção" },
-];
+

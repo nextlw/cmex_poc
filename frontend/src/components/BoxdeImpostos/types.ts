@@ -1,7 +1,13 @@
+export interface TipoTributario {
+  monofasico: boolean;
+  aliquota_zero: boolean;
+  isento: boolean;
+  suspenso: boolean;
+}
+
 export interface BoxdeImpostosProps {
   classificacao: {
-    monofasico: boolean;
-    aliquota_zero: boolean;
+    tipo_tributario?: TipoTributario;
     ipi_entrada: string | number;
     ipi_saida: string | number;
     pis_entrada: string | number;
