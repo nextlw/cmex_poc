@@ -18,12 +18,16 @@ ENV = os.getenv("ENV")
 # Configurações do cliente Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 if not SUPABASE_URL:
-    raise ValueError("SUPABASE_URL não está definida nas variáveis de ambiente")
+    raise ValueError("SUPABASE_URL não está definida nas variáveis de ambiente. Verifique se a variável está configurada no Render.")
 
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 if not SUPABASE_ANON_KEY:
-    raise ValueError("SUPABASE_ANON_KEY não está definida nas variáveis de ambiente")
+    raise ValueError("SUPABASE_ANON_KEY não está definida nas variáveis de ambiente. Verifique se a variável está configurada no Render.")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+# Configurações do servidor
+HOST = os.getenv("HOST", "0.0.0.0")
+PORT = int(os.getenv("PORT", "10000"))  # Render exige que usemos a porta fornecida por eles
 
 # Configuração de logging centralizada
 def setup_logger(name: str, log_file: str, level=logging.INFO):
@@ -159,10 +163,6 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
 
-    # Configurações do servidor
-    HOST: str = "0.0.0.0"
-    PORT: int = 10000
-
     # Configurações de CORS
     if ENV == "dev":
         BACKEND_CORS_ORIGINS: list = [
@@ -178,6 +178,7 @@ class Settings(BaseSettings):
     elif ENV == "prod":
         BACKEND_CORS_ORIGINS: list = [
             "https://cmex-poc.onrender.com",
+            "https://nexcode-homolog-g7lk.onrender.com",
             "https://cmex-poc.vercel.app",
             "https://*.onrender.com",  # Permitir subdomínios
             "https://*.vercel.app"     # Permitir subdomínios

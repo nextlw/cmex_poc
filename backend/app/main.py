@@ -61,9 +61,8 @@ app.include_router(queries_router)
 
 # Roda o servidor
 if __name__ == "__main__":
-    
     import uvicorn
-
-    uvicorn.run(app, host="127.0.0.1", port=10000)
+    port = int(os.getenv("PORT", "10000"))
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True)
 
     # python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 10000
