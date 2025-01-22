@@ -173,3 +173,6 @@ backend/.env
 backend/.env
 force_replace_development.sh
 yarn.lock
+
+# NÃO ignore o requirements.txt
+!requirements.txt

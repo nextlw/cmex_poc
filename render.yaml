@@ -18,4 +18,12 @@ services:
   rootDir: frontend
   previews:
     generation: automatic
+- type: web
+  name: cmex-poc-backend
+  env: python
+  buildCommand: pip install -r requirements.txt
+  startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+  envVars:
+    - key: PYTHON_VERSION
+      value: 3.11.0
 version: "1"
