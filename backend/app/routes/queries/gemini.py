@@ -2,7 +2,6 @@
 import io
 import json
 import time
-from datetime import datetime
 
 # Bibliotecas de terceiros
 from fastapi import HTTPException
@@ -26,17 +25,10 @@ from ...config import (
 )
 from ...models.schemas import (
     ConsultaProduto,
-    SugerirNCM,
-    ValoresdeImpostos,
-    ClassificacaoTributaria,
 )
 
 # Inicialização dos loggers
 logger, metrics_logger = get_model_loggers('gemini')
-
-def converter_para_booleano(valor: str) -> bool:
-    """Converte um valor string para booleano."""
-    return str(valor).lower() in ["sim", "true", "1", "verdadeiro"]
 
 def count_tokens_and_log(prompt: str, response: str, response_obj: genai.types.GenerateContentResponse) -> tuple[int, int]:
     """Conta tokens e retorna a contagem do prompt e da resposta usando a API Gemini."""
@@ -53,74 +45,24 @@ def count_tokens_and_log(prompt: str, response: str, response_obj: genai.types.G
         logger.error(f"Erro ao contar tokens: {str(e)}")
         raise
 
-def criar_sugestao_ncm(item: dict) -> SugerirNCM:
-    """Cria um objeto SugerirNCM a partir de um dicionário de dados."""
-    return SugerirNCM(
-        ncm=item.get("ncm", ""),
-        descricao=item.get("descricao", ""),
-        atributos=item.get("atributos", []),
-        atributos_tipi=item.get("atributos_tipi", []),
-        valores_de_impostos=ValoresdeImpostos(
-            ipi=item.get("valores_de_impostos", {}).get("ipi", "0%"),
-            icms=item.get("valores_de_impostos", {}).get("icms", {}),
-            pis=item.get("valores_de_impostos", {}).get("pis", "1.65%"),
-            cofins=item.get("valores_de_impostos", {}).get("cofins", "7.6%"),
-        ),
-        classificacao_tributaria=ClassificacaoTributaria(
-            monofasico=converter_para_booleano(
-                item.get("classificacao_tributaria", {}).get("monofasico", False)
-            ),
-            aliquota_zero=converter_para_booleano(
-                item.get("classificacao_tributaria", {}).get("aliquota_zero", False)
-            ),
-            ipi_entrada=item.get("classificacao_tributaria", {}).get("ipi_entrada"),
-            ipi_saida=item.get("classificacao_tributaria", {}).get("ipi_saida"),
-            pis_entrada=item.get("classificacao_tributaria", {}).get("pis_entrada"),
-            pis_saida=item.get("classificacao_tributaria", {}).get("pis_saida"),
-            cofins_entrada=item.get("classificacao_tributaria", {}).get("cofins_entrada"),
-            cofins_saida=item.get("classificacao_tributaria", {}).get("cofins_saida"),
-            cst_entrada=item.get("classificacao_tributaria", {}).get("cst_entrada") or "",
-            cst_saida=item.get("classificacao_tributaria", {}).get("cst_saida") or "",
-        ),
-    )
-
 async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
-    """Obtém sugestões de classificação NCM usando Gemini."""
+    """Obtém sugestões de NCM usando o modelo Gemini."""
     profiler = cProfile.Profile()
     profiler.enable()
     start_time = time.time()
 
     try:
-        # Validação da API key
-        if not SETTINGS.GOOGLE_API_KEY:
-            logger.error("API Key não configurada")
-            raise HTTPException(status_code=500, detail=ERROR_MESSAGES["api_key_missing"])
-
-        # Validação da consulta
-        texto = consulta_produto.consulta.strip()
-        if len(texto) < 3:
-            logger.warning("Texto muito curto para processamento")
-            return []
-
-        # Configuração do cliente Gemini
+        # Configuração do modelo
         model_config = MODEL_MAPPING["Gemini-1.5-pro"]
         genai.configure(api_key=SETTINGS.GOOGLE_API_KEY)
         model = genai.GenerativeModel(model_config["model_name"])
 
-        # Preparação e envio do prompt
+        # Preparação do prompt
         prompt = PROMPT_TEMPLATE.format(consulta_produto=consulta_produto)
-        logger.info("Enviando prompt para Gemini")
-        logger.debug(f"Prompt enviado para Gemini: {prompt}")
-
-        # Chamada à API
+        
+        # Início da chamada à API
         start_call = time.time()
-        response = model.generate_content(
-            prompt,
-            generation_config={
-                "max_output_tokens": model_config["max_tokens"],
-                "temperature": model_config["temperature"],
-            }
-        )
+        response = model.generate_content(prompt)
         api_time = time.time() - start_call
         logger.info(f"Tempo de resposta Gemini: {api_time:.2f} segundos")
 
@@ -147,26 +89,15 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
             consulta_produto.consulta
         )
         
-        data = json.loads(content)
-
-        # Conversão para lista se necessário
-        if not isinstance(data, list):
-            data = [data]
-
-        # Criação das sugestões
-        sugestoes = [criar_sugestao_ncm(item) for item in data]
-        
-        # Log das sugestões
-        logger.info(f"Lista parseada com sucesso: {sugestoes}")
-
-        # Formatação final
-        resultado = [sugestao.to_frontend_format() for sugestao in sugestoes]
+        # Processamento centralizado da resposta
+        from ...utils.parsers import processar_resposta_modelo
+        resultado = processar_resposta_modelo(content)
         
         total_time = time.time() - start_time
         logger.info(f"Tempo total de processamento: {total_time:.2f} segundos")
         
         # Log final de métricas
-        log_final_metrics(metrics_logger, total_time, len(sugestoes))
+        log_final_metrics(metrics_logger, total_time, len(resultado))
         
         return resultado
 

@@ -223,7 +223,6 @@ PROMPT_TEMPLATE = """
                 Operação: {consulta_produto.operacao or 'Não informado'}
                 Regime tributário: {consulta_produto.regimeTributario or 'Não informado'}
                 Tributação: {consulta_produto.tributacao or 'Não informado'}
-                Reduções ou isenções locais: {consulta_produto.reducaoOuIsencao or 'Não informado'}
             
             Retorne APENAS um JSON, **SEM** texto adicional, no seguinte formato:
             {{
@@ -238,8 +237,12 @@ PROMPT_TEMPLATE = """
                     "cofins": "valor real do COFINS"
                 }},
                 "classificacao_tributaria": {{
-                    "monofasico": valor real,
-                    "aliquota_zero": valor real,
+                    "tipo_tributario": {{
+                        "monofasico": false,
+                        "aliquota_zero": false,
+                        "isento": false,
+                        "suspenso": false
+                    }},
                     "ipi_entrada": "valor real do IPI na entrada",
                     "ipi_saida": "valor real do IPI na saída",
                     "pis_entrada": "valor real do PIS na entrada",
@@ -250,7 +253,17 @@ PROMPT_TEMPLATE = """
                     "cst_saida": "valor real do CST de saída"
                 }}
             }}
-        """
+            
+            IMPORTANTE sobre o tipo_tributario:
+            - Analise cuidadosamente a tabela FD Contribuições da Receita Federal
+            - Verifique se o produto é:
+              * monofasico: Produtos sujeitos à tributação monofásica de PIS/COFINS
+              * aliquota_zero: Produtos com alíquota zero de PIS/COFINS
+              * isento: Produtos isentos de PIS/COFINS
+              * suspenso: Produtos com tributação suspensa de PIS/COFINS
+            - No objeto tipo_tributario, defina como true APENAS UM dos valores (monofasico, aliquota_zero, isento ou suspenso) baseado na análise da legislação, deixando os demais como false
+            - Os estados booleanos serão usados para destacar visualmente o status tributário do produto
+"""
 
 # Mapeamento de modelos
 MODEL_MAPPING = {
@@ -361,3 +374,8 @@ ERROR_TYPES = {
     "validation": "validation_error",
     "token_count": "token_count_error"
 }
+
+def converter_para_booleano(valor: str) -> bool:
+    """Converte um valor string para booleano."""
+    return str(valor).lower() in ["sim", "true", "1", "verdadeiro"]
+

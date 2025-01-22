@@ -48,8 +48,6 @@ const HomePage: React.FC = () => {
       atributos: [],
       atributos_tipi: [],
       classificacao_tributaria: {
-        monofasico: false,
-        aliquota_zero: false,
         ipi_entrada: "",
         ipi_saida: "",
         pis_entrada: "",

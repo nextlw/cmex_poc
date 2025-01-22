@@ -2,7 +2,6 @@
 import io
 import json
 import time
-from datetime import datetime
 
 # Bibliotecas de terceiros
 from fastapi import HTTPException
@@ -26,17 +25,10 @@ from ...config import (
 )
 from ...models.schemas import (
     ConsultaProduto,
-    SugerirNCM,
-    ValoresdeImpostos,
-    ClassificacaoTributaria,
 )
 
 # Inicialização dos loggers
 logger, metrics_logger = get_model_loggers('gpt')
-
-def converter_para_booleano(valor: str) -> bool:
-    """Converte um valor string para booleano."""
-    return str(valor).lower() in ["sim", "true", "1", "verdadeiro"]
 
 def count_tokens_and_log(prompt: str, response: str, response_obj: dict) -> tuple[int, int]:
     """Conta tokens e retorna a contagem do prompt e da resposta usando a API OpenAI."""
@@ -53,67 +45,23 @@ def count_tokens_and_log(prompt: str, response: str, response_obj: dict) -> tupl
         logger.error(f"Erro ao contar tokens: {str(e)}")
         raise
 
-def criar_sugestao_ncm(item: dict) -> SugerirNCM:
-    """Cria um objeto SugerirNCM a partir de um dicionário de dados."""
-    return SugerirNCM(
-        ncm=item.get("ncm", ""),
-        descricao=item.get("descricao", ""),
-        atributos=item.get("atributos", []),
-        atributos_tipi=item.get("atributos_tipi", []),
-        valores_de_impostos=ValoresdeImpostos(
-            ipi=item.get("valores_de_impostos", {}).get("ipi", "0%"),
-            icms=item.get("valores_de_impostos", {}).get("icms", {}),
-            pis=item.get("valores_de_impostos", {}).get("pis", "1.65%"),
-            cofins=item.get("valores_de_impostos", {}).get("cofins", "7.6%"),
-        ),
-        classificacao_tributaria=ClassificacaoTributaria(
-            monofasico=converter_para_booleano(
-                item.get("classificacao_tributaria", {}).get("monofasico", False)
-            ),
-            aliquota_zero=converter_para_booleano(
-                item.get("classificacao_tributaria", {}).get("aliquota_zero", False)
-            ),
-            ipi_entrada=item.get("classificacao_tributaria", {}).get("ipi_entrada"),
-            ipi_saida=item.get("classificacao_tributaria", {}).get("ipi_saida"),
-            pis_entrada=item.get("classificacao_tributaria", {}).get("pis_entrada"),
-            pis_saida=item.get("classificacao_tributaria", {}).get("pis_saida"),
-            cofins_entrada=item.get("classificacao_tributaria", {}).get("cofins_entrada"),
-            cofins_saida=item.get("classificacao_tributaria", {}).get("cofins_saida"),
-            cst_entrada=item.get("classificacao_tributaria", {}).get("cst_entrada") or "",
-            cst_saida=item.get("classificacao_tributaria", {}).get("cst_saida") or "",
-        ),
-    )
-
 async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
-    """Obtém sugestões de classificação NCM usando GPT-4."""
+    """Obtém sugestões de NCM usando o modelo GPT-4."""
     profiler = cProfile.Profile()
     profiler.enable()
     start_time = time.time()
 
     try:
-        # Validação da API key
-        if not SETTINGS.OPENAI_API_KEY:
-            logger.error("API Key não configurada")
-            raise HTTPException(status_code=500, detail=ERROR_MESSAGES["api_key_missing"])
-
-        # Validação da consulta
-        texto = consulta_produto.consulta.strip()
-        if len(texto) < 3:
-            logger.warning("Texto muito curto para processamento")
-            return []
-
-        # Configuração do cliente OpenAI
+        # Configuração do modelo
         model_config = MODEL_MAPPING["GPT-4"]
         openai.api_key = SETTINGS.OPENAI_API_KEY
 
-        # Preparação e envio do prompt
+        # Preparação do prompt
         prompt = PROMPT_TEMPLATE.format(consulta_produto=consulta_produto)
-        logger.info("Enviando prompt para GPT-4")
-        logger.debug(f"Prompt enviado para GPT-4: {prompt}")
-
-        # Chamada à API
+        
+        # Início da chamada à API
         start_call = time.time()
-        response = openai.ChatCompletion.create(
+        response = await openai.chat.completions.create(
             model=model_config["model_name"],
             messages=[{"role": "user", "content": prompt}],
             temperature=model_config["temperature"],
@@ -145,31 +93,20 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
             consulta_produto.consulta
         )
         
-        data = json.loads(content)
-
-        # Conversão para lista se necessário
-        if not isinstance(data, list):
-            data = [data]
-
-        # Criação das sugestões
-        sugestoes = [criar_sugestao_ncm(item) for item in data]
-        
-        # Log das sugestões
-        logger.info(f"Lista parseada com sucesso: {sugestoes}")
-
-        # Formatação final
-        resultado = [sugestao.to_frontend_format() for sugestao in sugestoes]
+        # Processamento centralizado da resposta
+        from ...utils.parsers import processar_resposta_modelo
+        resultado = processar_resposta_modelo(content)
         
         total_time = time.time() - start_time
         logger.info(f"Tempo total de processamento: {total_time:.2f} segundos")
         
         # Log final de métricas
-        log_final_metrics(metrics_logger, total_time, len(sugestoes))
+        log_final_metrics(metrics_logger, total_time, len(resultado))
         
         return resultado
 
     except json.JSONDecodeError as e:
-        logger.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content}")
+        logger.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content[:500]}")
         error_data = format_error_log(
             error_type=ERROR_TYPES["json_decode"],
             error_message=str(e),

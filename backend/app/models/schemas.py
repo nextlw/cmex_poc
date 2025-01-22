@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 
 # MODELOS Pydantic
 class ConsultaProduto(BaseModel):
@@ -12,80 +12,58 @@ class ConsultaProduto(BaseModel):
     reducaoOuIsencao: Union[str, None] = None
 
 
-class ClassificacaoTributaria(BaseModel):
-    monofasico: bool = Field(False, description="Indica se o produto é monofásico")
-    aliquota_zero: bool = Field(False, description="Indica se o produto possui alíquota zero")
-    ipi_entrada: Union[str, int, float] = Field("não tributado", description="Alíquota de IPI na entrada")
-    ipi_saida: Union[str, int, float] = Field("não tributado", description="Alíquota de IPI na saída")
-    pis_entrada: Union[str, int, float] = Field("não tributado", description="Alíquota de PIS na entrada")
-    pis_saida: Union[str, int, float] = Field("não tributado", description="Alíquota de PIS na saída")
-    cofins_entrada: Union[str, int, float] = Field("não tributado", description="Alíquota de COFINS na entrada")
-    cofins_saida: Union[str, int, float] = Field("não tributado", description="Alíquota de COFINS na saída")
-    cst_entrada: str = Field("sem CST", description="Código CST de entrada")
-    cst_saida: str = Field("sem CST", description="Código CST de saída")
+class TipoTributario(BaseModel):
+    monofasico: bool = False
+    aliquota_zero: bool = False
+    isento: bool = False
+    suspenso: bool = False
 
-    def __init__(self, **data):
-        # Converte valores numéricos para string com "não tributado" como padrão
-        for field in ['ipi_entrada', 'ipi_saida', 'pis_entrada', 'pis_saida', 'cofins_entrada', 'cofins_saida']:
-            if field in data:
-                if data[field] in [0, 0.0]:
-                    data[field] = "não tributado"
-                elif not isinstance(data[field], str):
-                    data[field] = str(data[field])
-        super().__init__(**data)
+
+class ClassificacaoTributaria(BaseModel):
+    tipo_tributario: TipoTributario
+    ipi_entrada: str = ""
+    ipi_saida: str = ""
+    pis_entrada: str = ""
+    pis_saida: str = ""
+    cofins_entrada: str = ""
+    cofins_saida: str = ""
+    cst_entrada: str = ""
+    cst_saida: str = ""
 
 
 class ValoresdeImpostos(BaseModel):
-    ipi: Union[str, float] = "0%"
-    icms: Dict[str, Union[str, float]] = {}
-    pis: Union[str, float] = "1.65%"
-    cofins: Union[str, float] = "7.6%"
+    ipi: str
+    icms: Dict[str, str]
+    pis: str
+    cofins: str
 
 
 class SugerirNCM(BaseModel):
-    ncm: str = Field(..., description="Código NCM do produto")
-    descricao: str = Field(..., description="Descrição do produto")
-    atributos: List[str] = Field(default=[], description="Lista de atributos do produto")
-    
-    # Aqui usamos Field com default para caso o JSON venha sem "valores_de_impostos"
+    ncm: str
+    descricao: str
+    atributos: List[str]
+    atributos_tipi: List[str]
     valores_de_impostos: ValoresdeImpostos
-    
-    # Aqui usamos Field com validation_alias para caso o JSON venha como "atributos_tipi"
-    atributos_tipi: List[str] = Field(default=[], validation_alias="atributos_tipi")
-    
     classificacao_tributaria: ClassificacaoTributaria
 
     def to_frontend_format(self):
-        """
-        Monta o dicionário final no formato que o FRONT-END espera.
-        Observe que, agora, mandamos "valores_de_impostos" ao invés de "aliquotas".
-        """
+        """Converte o modelo para o formato esperado pelo frontend."""
+        classificacao = self.classificacao_tributaria.model_dump()
+        tipo_tributario = classificacao.pop("tipo_tributario")
+        
         return {
             "ncm": self.ncm,
             "descricao": self.descricao,
             "atributos": self.atributos,
-            "valores_de_impostos": {
-                "ipi": self.valores_de_impostos.ipi,
-                "icms": self.valores_de_impostos.icms,
-                "pis": self.valores_de_impostos.pis,
-                "cofins": self.valores_de_impostos.cofins
-            },
             "atributos_tipi": self.atributos_tipi,
+            "valores_de_impostos": self.valores_de_impostos.model_dump(),
             "classificacao_tributaria": {
-                "monofasico": self.classificacao_tributaria.monofasico,
-                "aliquota_zero": self.classificacao_tributaria.aliquota_zero,
-                "ipi_entrada": self.classificacao_tributaria.ipi_entrada,
-                "ipi_saida": self.classificacao_tributaria.ipi_saida,
-                "pis_entrada": self.classificacao_tributaria.pis_entrada,
-                "pis_saida": self.classificacao_tributaria.pis_saida,
-                "cofins_entrada": self.classificacao_tributaria.cofins_entrada,
-                "cofins_saida": self.classificacao_tributaria.cofins_saida,
-                "cst_entrada": self.classificacao_tributaria.cst_entrada,
-                "cst_saida": self.classificacao_tributaria.cst_saida
+                **classificacao,
+                "tipo_tributario": tipo_tributario
             }
         }
 
-    # Configurações para o Pydantic v2 (seu código já estava OK aqui)
+    # Configurações para o Pydantic v2
     model_config = {
         "populate_by_name": True,
         "json_schema_extra": {
@@ -94,11 +72,28 @@ class SugerirNCM(BaseModel):
                     "ncm": "12345678",
                     "descricao": "Descrição do produto de acordo com a ncm encontrada",
                     "atributos": [],
+                    "atributos_tipi": [],
                     "valores_de_impostos": {
                         "ipi": "0%",
                         "icms": {},
                         "pis": "1.65%",
                         "cofins": "7.6%"
+                    },
+                    "classificacao_tributaria": {
+                        "tipo_tributario": {
+                            "monofasico": True,
+                            "aliquota_zero": False,
+                            "isento": False,
+                            "suspenso": False
+                        },
+                        "ipi_entrada": "0%",
+                        "ipi_saida": "0%",
+                        "pis_entrada": "1.65%",
+                        "pis_saida": "1.65%",
+                        "cofins_entrada": "7.6%",
+                        "cofins_saida": "7.6%",
+                        "cst_entrada": "01",
+                        "cst_saida": "01"
                     }
                 }
             ]
