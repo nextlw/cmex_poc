@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-dotenv
+pydantic
+pydantic-settings
+supabase
+anthropic
+google-generativeai
+openai
+python-jose 
