@@ -1,0 +1,11 @@
+Análise de Padrões dos Arquivos JSON
+===================================
+
+Arquivo: Tabela NCM Vigente Jan 2025.json
+Tipo: dict
+Padrão: object
+Total de chaves: 3
+Chaves: Data_Ultima_Atualizacao_NCM, Ato, Nomenclaturas
+
+-----------------------------------
+

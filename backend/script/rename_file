@@ -1,0 +1,30 @@
+import os
+import chardet
+
+def primeira_linha(file_path):
+    with open(file_path, 'rb') as file:
+        raw_data = file.read()
+        result = chardet.detect(raw_data)
+        encoding = result['encoding']
+        return raw_data.decode(encoding).split('\n')[0].strip()
+
+def rename_file(old_path, new_name, directory_path):
+    # Garante que o novo nome não tenha caracteres inválidos para um nome de arquivo
+    valid_name = "".join(c for c in new_name if c.isalnum() or c in (' ', '.', '_')).rstrip()
+    new_path = os.path.join(directory_path, valid_name + ".txt")
+    
+    # Verifica se o novo nome já existe para evitar sobrescrever
+    if not os.path.exists(new_path):
+        os.rename(old_path, new_path)
+    else:
+        print(f"Arquivo {new_path} já existe. Renomeação ignorada.")
+        
+
+if __name__ == "__main__":
+    directory_path = "/Users/williamduarte/Documents/Empresa/Projeto/nexcode/cmex_poc/backend/data/db_contribuicaoes"
+    for filename in os.listdir(directory_path):
+        if filename.endswith(".txt"):
+            file_path = os.path.join(directory_path, filename)
+            new_name = primeira_linha(file_path)
+            print(f"Renomeado {filename} para {new_name}.txt")
+            rename_file(file_path, new_name, directory_path)

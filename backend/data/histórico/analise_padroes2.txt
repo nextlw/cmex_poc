@@ -1,0 +1,10 @@
+Análise de Padrões dos Arquivos CSV
+===================================
+
+Arquivo: historico_consultas.csv
+Total de linhas: 61
+Padrão: sem_separador
+Erro: Primeira linha não contém o separador |
+
+-----------------------------------
+

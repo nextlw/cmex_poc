@@ -1,0 +1,78 @@
+import os
+import chardet
+import json
+
+def analyze_json_file(file_path):
+    """
+    Analisa a estrutura de um arquivo JSON.
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            
+        # Analisa a estrutura do JSON
+        result = {
+            'file_name': os.path.basename(file_path),
+            'type': type(data).__name__,
+            'pattern': None,
+            'error': None
+        }
+        
+        if isinstance(data, list):
+            result.update({
+                'total_items': len(data),
+                'sample_keys': list(data[0].keys()) if data and isinstance(data[0], dict) else [],
+                'pattern': 'array_of_objects' if data and isinstance(data[0], dict) else 'array'
+            })
+        elif isinstance(data, dict):
+            result.update({
+                'total_keys': len(data.keys()),
+                'keys': list(data.keys()),
+                'pattern': 'object'
+            })
+            
+        return result
+            
+    except Exception as e:
+        return {
+            'file_name': os.path.basename(file_path),
+            'type': None,
+            'pattern': None,
+            'error': str(e)
+        }
+
+def save_analysis_results(results, output_file):
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write("Análise de Padrões dos Arquivos JSON\n")
+        f.write("===================================\n\n")
+        
+        for result in results:
+            f.write(f"Arquivo: {result['file_name']}\n")
+            f.write(f"Tipo: {result['type']}\n")
+            f.write(f"Padrão: {result['pattern']}\n")
+            
+            if result['error']:
+                f.write(f"Erro: {result['error']}\n")
+            else:
+                if result['pattern'] == 'array_of_objects':
+                    f.write(f"Total de itens: {result['total_items']}\n")
+                    f.write(f"Campos: {', '.join(result['sample_keys'])}\n")
+                elif result['pattern'] == 'object':
+                    f.write(f"Total de chaves: {result['total_keys']}\n")
+                    f.write(f"Chaves: {', '.join(result['keys'])}\n")
+            
+            f.write("\n-----------------------------------\n\n")
+
+if __name__ == "__main__":
+    directory_path = "/Users/williamduarte/Documents/Empresa/Projeto/nexcode/cmex_poc/backend/script"
+    output_file = os.path.join(directory_path, "analise_json.txt")
+    
+    results = []
+    for filename in os.listdir(directory_path):
+        if filename.endswith(".json"):
+            file_path = os.path.join(directory_path, filename)
+            analysis = analyze_json_file(file_path)
+            results.append(analysis)
+    
+    save_analysis_results(results, output_file)
+    print(f"Análise salva em: {output_file}")

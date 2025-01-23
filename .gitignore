@@ -21,6 +21,14 @@ terraform.tfstate
 terraform.tfstate.backup
 Terraform Configuração/
 .DS_Store
+.textos/
+db_contribuicaoes/
+db_contribuicoes_jsonl/
+db_contribuicoes_vectors/
+db_ncm_vector/
+historico_jsonl/
+historico_vectors/
+
 
 
 

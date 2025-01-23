@@ -1,0 +1,84 @@
+import os
+import chardet
+import json
+
+def analyze_file_patterns(file_path):
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            
+        # Adiciona o nome do arquivo ao resultado
+        result = {
+            'file_name': os.path.basename(file_path),
+            'total_lines': len(lines),
+            'pattern': None,
+            'error': None
+        }
+            
+        if not lines:
+            result.update({
+                'columns': [],
+                'pattern': None,
+                'error': 'Arquivo vazio'
+            })
+            return result
+            
+        # Verifica se a primeira linha contém o separador esperado
+        first_line = lines[0].strip()
+        if '|' not in first_line:
+            result.update({
+                'columns': [first_line],
+                'pattern': 'sem_separador',
+                'error': 'Primeira linha não contém o separador |'
+            })
+            return result
+            
+        # Processamento normal
+        result.update({
+            'columns': lines[0].split('|')[1].strip().split(','),
+            'pattern': 'normal',
+            'sample_line': lines[1] if len(lines) > 1 else ''
+        })
+        return result
+            
+    except Exception as e:
+        return {
+            'file_name': os.path.basename(file_path),
+            'total_lines': 0,
+            'columns': [],
+            'pattern': None,
+            'error': str(e)
+        }
+
+def save_analysis_results(results, output_file):
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write("Análise de Padrões dos Arquivos CSV\n")
+        f.write("===================================\n\n")
+        
+        for result in results:
+            f.write(f"Arquivo: {result['file_name']}\n")
+            f.write(f"Total de linhas: {result['total_lines']}\n")
+            f.write(f"Padrão: {result['pattern']}\n")
+            
+            if result['error']:
+                f.write(f"Erro: {result['error']}\n")
+            else:
+                f.write(f"Colunas identificadas: {', '.join(result['columns'])}\n")
+                if 'sample_line' in result:
+                    f.write(f"Exemplo de linha: {result['sample_line']}\n")
+            
+            f.write("\n-----------------------------------\n\n")
+
+if __name__ == "__main__":
+    directory_path = "/Users/williamduarte/Documents/Empresa/Projeto/nexcode/cmex_poc/backend/data/script"
+    output_file = os.path.join(directory_path, "analise_padroes3.txt")
+    
+    results = []
+    for filename in os.listdir(directory_path):
+        if filename.endswith(".csv"):
+            file_path = os.path.join(directory_path, filename)
+            analysis = analyze_file_patterns(file_path)
+            results.append(analysis)
+    
+    save_analysis_results(results, output_file)
+    print(f"Análise salva em: {output_file}")
