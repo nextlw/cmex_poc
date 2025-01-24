@@ -172,6 +172,15 @@ class Settings(BaseSettings):
         ]
     elif ENV == "prod":
         BACKEND_CORS_ORIGINS: list = [
+            "http://localhost:5173 ",
+            "https://localhost:5173",
+            "http://localhost:10000",
+            "https://localhost:10000",
+            "http://127.0.0.1:5173",
+            "https://127.0.0.1:5173",
+            "http://127.0.0.1:10000",
+            "https://127.0.0.1:10000",
+            "https://nexcode-homolog.onrender.com",
             "https://cmex-poc.onrender.com",
             "https://cmex-poc.vercel.app",
             "https://*.onrender.com",  # Permitir subdomínios
