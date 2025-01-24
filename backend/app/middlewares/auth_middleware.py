@@ -16,7 +16,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             return Response(
                 status_code=204,
                 headers={
-                    "Access-Control-Allow-Origin": SETTINGS.BACKEND_CORS_ORIGINS,
+                    "Access-Control-Allow-Origin": request.headers["origin"],
                     "Access-Control-Allow-Methods": "*",
                     "Access-Control-Allow-Headers": "*",
                 },
@@ -63,6 +63,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 return response
 
         except Exception as e:
+            
+            print("Exception::::", e)
 
             # Monta a mensagem de erro
             error = Erro(

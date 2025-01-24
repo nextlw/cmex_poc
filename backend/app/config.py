@@ -15,6 +15,8 @@ load_dotenv()
 # Ambiente
 ENV = os.getenv("ENV", "dev")
 
+print("ENV:::::",ENV)
+
 # Configurações do cliente Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
