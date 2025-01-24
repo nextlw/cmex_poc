@@ -12,8 +12,8 @@ import json
 # Carrega as variáveis de ambiente
 load_dotenv()
 
-# Recupera o ambiente correto
-ENV = os.getenv("ENV")
+# Ambiente
+ENV = os.getenv("ENV", "dev")
 
 # Configurações do cliente Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -159,54 +159,34 @@ class Settings(BaseSettings):
     PORT: int = 10000
 
     # Configurações de CORS
-    if ENV == "dev":
-        BACKEND_CORS_ORIGINS: list = [
-            "https://nexcode-homolog-g7lk.onrender.com",
-            "http://localhost:5173",
-            "https://nexcode-homolog.onrender.com",
-            "https://cmex-poc-1.onrender.com",
-            "https://cmex-poc.onrender.com",
-            "http://127.0.0.1:5173",
-            "http://localhost:10000",
-            "http://127.0.0.1:10000",
-            "https://localhost:5173",  # Adicionar HTTPS
-            "https://127.0.0.1:5173", # Adicionar HTTPS
-            "http://localhost:*",     # Permitir qualquer porta em desenvolvimento
-            "http://127.0.0.1:*"      # Permitir qualquer porta em desenvolvimento
-        ]
-    elif ENV == "prod":
-        BACKEND_CORS_ORIGINS: list = [
-            "https://nexcode-homolog-g7lk.onrender.com",
-            "http://localhost:5173 ",
-            "https://localhost:5173",
-            "http://localhost:10000",
-            "https://localhost:10000",
-            "http://127.0.0.1:5173",
-            "https://127.0.0.1:5173",
-            "http://127.0.0.1:10000",
-            "https://127.0.0.1:10000",
-            "https://nexcode-homolog.onrender.com",
-            "https://cmex-poc-1.onrender.com",
-            "https://cmex-poc.onrender.com",
-            "https://cmex-poc.vercel.app",
-            "https://*.onrender.com",  # Permitir subdomínios
-            "https://*.vercel.app"     # Permitir subdomínios
-        ]
-        
-        # Dentro da classe Settings
+    BACKEND_CORS_ORIGINS: list[str] = [
+        "https://nexcode-homolog-g7lk.onrender.com",
+        "http://localhost:5173",
+        "https://nexcode-homolog.onrender.com",
+        "https://cmex-poc-1.onrender.com",
+        "https://cmex-poc.onrender.com",
+        "http://127.0.0.1:5173",
+        "http://localhost:10000",
+        "http://127.0.0.1:10000",
+        "https://localhost:5173",
+        "https://127.0.0.1:5173",
+        "https://cmex-poc.vercel.app",
+        "http://localhost:*",
+        "http://127.0.0.1:*",
+        "https://*.onrender.com",
+        "https://*.vercel.app"
+    ]
     CORS_ALLOW_CREDENTIALS: bool = True
-    CORS_ALLOW_METHODS: list = ["*"]
-    CORS_ALLOW_HEADERS: list = [
+    CORS_ALLOW_METHODS: list[str] = ["*"]
+    CORS_ALLOW_HEADERS: list[str] = [
         "Content-Type",
         "Authorization",
         "Accept",
         "Origin",
         "X-Requested-With"
     ]
-    CORS_EXPOSE_HEADERS: list = ["*"]
+    CORS_EXPOSE_HEADERS: list[str] = ["*"]
     CORS_MAX_AGE: int = 600  # 10 minutos em segundos
-
-
 
     # Configurações de logging
     LOG_LEVEL: str = "INFO"
