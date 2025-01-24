@@ -27,8 +27,6 @@ app.add_middleware(
     expose_headers=SETTINGS.CORS_EXPOSE_HEADERS,
     max_age=SETTINGS.CORS_MAX_AGE
 )
-
-
 # Middleware de autenticação
 app.add_middleware(AuthMiddleware)
 
