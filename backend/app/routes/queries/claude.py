@@ -47,88 +47,38 @@ def count_tokens_and_log(prompt: str, response: str, response_obj: dict) -> tupl
 
 async def obter_sugestoes_claude(consulta_produto: ConsultaProduto):
     """Obtém sugestões de NCM usando o modelo Claude."""
-    profiler = cProfile.Profile()
-    profiler.enable()
-    start_time = time.time()
-
     try:
         # Configuração do modelo
         model_config = MODEL_MAPPING["CLAUDE-3"]
         client = anthropic.Client(api_key=SETTINGS.ANTHROPIC_API_KEY)
-        print("PROMPT::::", PROMPT_TEMPLATE(consulta_produto))
-        # Preparação do prompt
+        
+        # Preparação do prompt usando o mesmo template do Gemini
         prompt = PROMPT_TEMPLATE(consulta_produto)
         
-        # Início da chamada à API
-        start_call = time.time()
+        # Chamada à API do Claude com parâmetros equivalentes
         response = client.messages.create(
             model=model_config["model_name"],
+            messages=[{
+                "role": "user",
+                "content": prompt
+            }],
             max_tokens=model_config["max_tokens"],
             temperature=model_config["temperature"],
-            messages=[{"role": "user", "content": prompt}]
-        )
-        api_time = time.time() - start_call
-        logger.info(f"Tempo de resposta Claude: {api_time:.2f} segundos")
-
-        # Processamento da resposta
-        content = response.content[0].text.strip()
-        prompt_tokens, response_tokens = count_tokens_and_log(prompt, content, response)
-        
-        # Log das métricas formatadas
-        formatted_metrics = format_metrics_log(
-            prompt_tokens=prompt_tokens,
-            response_tokens=response_tokens,
-            processing_time=api_time,
-            model=model_config["model_name"]
-        )
-        metrics_logger.info(f"\n{formatted_metrics}")
-        
-        # Log das métricas da API
-        log_api_metrics(
-            metrics_logger,
-            api_time,
-            model_config["model_name"],
-            prompt_tokens,
-            response_tokens,
-            consulta_produto.consulta
+            system="Você é um assistente especializado em classificação fiscal. Responda sempre em JSON válido seguindo exatamente a estrutura solicitada."
         )
         
-        # Processamento centralizado da resposta
+        # Extrai o conteúdo da resposta
+        content = response.content[0].text
+        
+        # Processa a resposta usando o mesmo parser
         from ...utils.parsers import processar_resposta_modelo
         resultado = processar_resposta_modelo(content)
         
-        total_time = time.time() - start_time
-        logger.info(f"Tempo total de processamento: {total_time:.2f} segundos")
-        
-        # Log final de métricas
-        log_final_metrics(metrics_logger, total_time, len(resultado))
-        
         return resultado
 
-    except json.JSONDecodeError as e:
-        logger.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content}")
-        error_data = format_error_log(
-            error_type=ERROR_TYPES["json_decode"],
-            error_message=str(e),
-            extra_data={"content_received": content[:500]}  # Limita o tamanho do conteúdo no log
-        )
-        metrics_logger.error(json.dumps(error_data))
-        return []
     except Exception as e:
-        logger.error(f"Erro no processamento: {str(e)}")
-        error_data = format_error_log(
-            error_type=ERROR_TYPES["processing"],
-            error_message=str(e),
-            extra_data={
-                "consulta": consulta_produto.consulta,
-                "model": model_config["model_name"]
-            }
+        logger.error(f"Erro no processamento Claude: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=ERROR_MESSAGES["model_error"]
         )
-        metrics_logger.error(json.dumps(error_data))
-        raise
-    finally:
-        # Finalização do profiling
-        profiler.disable()
-        stats_stream = io.StringIO()
-        pstats.Stats(profiler, stream=stats_stream).sort_stats("cumulative").print_stats()
-        logger.debug(f"Profile stats:\n{stats_stream.getvalue()}")
