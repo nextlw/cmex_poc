@@ -1,8 +1,23 @@
-export interface ClassificacaoTributaria {
+export enum EstadoTributario {
+  DEFAULT = 'default',
+  VERDADEIRO = 'verdadeiro',
+  POSITIVO = 'positivo',    // Verde - para operações favoráveis
+  ATENCAO = 'atencao',      // Amarelo - para operações que precisam de atenção
+  NEGATIVO = 'negativo',    // Vermelho - para operações desfavoráveis
+  NEUTRO = 'neutro'         // Azul - para operações neutras
+}
+
+export interface DadosTributarios {
   codigo: string;
   valor: boolean;
   descricao?: string;
-  justificativa?: string;
+  estado?: EstadoTributario;
+}
+
+export interface ClassificacaoTributaria {
+  [key: string]: {
+    [key: string]: DadosTributarios;
+  };
 }
 
 export interface TipoOperacao {
@@ -14,12 +29,6 @@ export interface GrupoOperacoes {
 }
 
 export interface TiposTributariosProps {
-  classificacao: GrupoOperacoes | undefined;
-  temResposta: boolean;
-}
-
-export enum EstadoTributario {
-  DEFAULT = 'tipo-tributario-empty',
-  VERDADEIRO = 'tipo-tributario-true',
-  FALSO = 'tipo-tributario-false'
+  classificacao?: GrupoOperacoes;
+  temResposta?: boolean;
 } 
