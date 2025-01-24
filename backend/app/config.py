@@ -162,6 +162,7 @@ class Settings(BaseSettings):
     if ENV == "dev":
         BACKEND_CORS_ORIGINS: list = [
             "http://localhost:5173",
+            "https://nexcode-homolog.onrender.com",
             "http://127.0.0.1:5173",
             "http://localhost:10000",
             "http://127.0.0.1:10000",
