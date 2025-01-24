@@ -10,13 +10,16 @@ from ..models.error import Erro, ErrorDetail
 # Handler de autenticação
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
+        
+        # Pega a origem do request
+        origin = request.headers["origin"]
 
         # Tratamento para requisições preflight (OPTIONS)
-        if request.method == "OPTIONS":
+        if request.method == "OPTIONS" and origin in SETTINGS.BACKEND_CORS_ORIGINS:
             return Response(
                 status_code=204,
                 headers={
-                    "Access-Control-Allow-Origin": request.headers["origin"],
+                    "Access-Control-Allow-Origin": origin,
                     "Access-Control-Allow-Methods": "*",
                     "Access-Control-Allow-Headers": "*",
                 },
