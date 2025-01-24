@@ -12,7 +12,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         
         # Pega a origem do request
-        origin = request.headers["origin"]
+        origin = request.headers.get("origin")
 
         # Tratamento para requisições preflight (OPTIONS)
         if request.method == "OPTIONS" and origin in SETTINGS.BACKEND_CORS_ORIGINS:
