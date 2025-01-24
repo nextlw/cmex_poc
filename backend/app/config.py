@@ -164,6 +164,8 @@ class Settings(BaseSettings):
             "https://nexcode-homolog-g7lk.onrender.com",
             "http://localhost:5173",
             "https://nexcode-homolog.onrender.com",
+            "https://cmex-poc-1.onrender.com",
+            "https://cmex-poc.onrender.com",
             "http://127.0.0.1:5173",
             "http://localhost:10000",
             "http://127.0.0.1:10000",
@@ -184,6 +186,7 @@ class Settings(BaseSettings):
             "http://127.0.0.1:10000",
             "https://127.0.0.1:10000",
             "https://nexcode-homolog.onrender.com",
+            "https://cmex-poc-1.onrender.com",
             "https://cmex-poc.onrender.com",
             "https://cmex-poc.vercel.app",
             "https://*.onrender.com",  # Permitir subdomínios
