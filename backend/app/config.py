@@ -166,7 +166,7 @@ class Settings(BaseSettings):
         ]
     elif ENV == "prod":
         BACKEND_CORS_ORIGINS: list[str] = [
-            "http://app.nexcode.live"
+            "https://app.nexcode.live"
         ]
         
     CORS_ALLOW_CREDENTIALS: bool = True
