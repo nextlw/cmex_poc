@@ -56,6 +56,7 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
         model_config = MODEL_MAPPING["GPT-4"]
         openai.api_key = SETTINGS.OPENAI_API_KEY
         print("PROMPT::::", PROMPT_TEMPLATE(consulta_produto))
+        
         # Preparação do prompt
         prompt = PROMPT_TEMPLATE(consulta_produto)
         
@@ -63,7 +64,10 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
         start_call = time.time()
         response = await openai.chat.completions.create(
             model=model_config["model_name"],
-            messages=[{"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": "Você é um assistente especializado em classificação fiscal. Responda sempre em JSON válido seguindo exatamente a estrutura solicitada."},
+                {"role": "user", "content": prompt}
+            ],
             temperature=model_config["temperature"],
             max_tokens=model_config["max_tokens"],
         )
@@ -110,7 +114,7 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
         error_data = format_error_log(
             error_type=ERROR_TYPES["json_decode"],
             error_message=str(e),
-            extra_data={"content_received": content[:500]}  # Limita o tamanho do conteúdo no log
+            extra_data={"content_received": content[:500]}
         )
         metrics_logger.error(json.dumps(error_data))
         return []
