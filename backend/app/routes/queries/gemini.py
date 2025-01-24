@@ -50,15 +50,15 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
     profiler = cProfile.Profile()
     profiler.enable()
     start_time = time.time()
-
     try:
         # Configuração do modelo
         model_config = MODEL_MAPPING["Gemini-1.5-pro"]
         genai.configure(api_key=SETTINGS.GOOGLE_API_KEY)
         model = genai.GenerativeModel(model_config["model_name"])
+        print("PROMPT::::", PROMPT_TEMPLATE(consulta_produto))
 
         # Preparação do prompt
-        prompt = PROMPT_TEMPLATE.format(consulta_produto=consulta_produto)
+        prompt = PROMPT_TEMPLATE(consulta_produto)
         
         # Início da chamada à API
         start_call = time.time()
@@ -102,7 +102,7 @@ async def obter_sugestoes_gemini(consulta_produto: ConsultaProduto):
         return resultado
 
     except json.JSONDecodeError as e:
-        logger.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content}")
+        logger.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content[:500]}")
         error_data = format_error_log(
             error_type=ERROR_TYPES["json_decode"],
             error_message=str(e),

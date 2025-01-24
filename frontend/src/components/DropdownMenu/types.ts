@@ -8,9 +8,9 @@ export interface Option {
 }
 
 export interface SelectionData {
-  estadoOrigem: string | null;
-  operacao: string | null;
-  regimeTributario: string | null;
+  estadoOrigem?: string | null;
+  operacao?: string | null;
+  regimeTributario?: string | null;
   tributacao?: string | null;
 }
 

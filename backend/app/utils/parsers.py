@@ -55,33 +55,66 @@ def formatar_resposta(item: dict) -> Dict[str, Any]:
         "classificacao_tributaria": classificacao
     }
 
-def processar_resposta_modelo(content: str) -> List[Dict[str, Any]]:
-    """
-    Processa a resposta do modelo, garantindo um formato consistente para o frontend.
-    
-    Args:
-        content: String contendo o JSON retornado pelo modelo
-    
-    Returns:
-        Lista de dicionários no formato esperado pelo frontend
-    """
+def processar_resposta_modelo(content: str) -> list:
+    """Processa a resposta do modelo, garantindo um formato consistente."""
     try:
-        # Parse do JSON
+        # Remove delimitadores de código markdown se presentes
+        content = content.replace('```json', '').replace('```', '').strip()
+        
+        # Tenta fazer o parse do JSON
         data = json.loads(content)
         
-        # Garante que é uma lista
-        if not isinstance(data, list):
+        # Se a resposta for um dicionário, converte para lista
+        if isinstance(data, dict):
             data = [data]
             
-        # Formata cada item da resposta
-        resultado = [formatar_resposta(item) for item in data]
+        # Garante que cada item tem todos os campos necessários
+        for item in data:
+            # Garante que classificacao_tributaria existe
+            if 'classificacao_tributaria' not in item:
+                item['classificacao_tributaria'] = {}
+            
+            # Garante que valores_de_impostos existe
+            if 'valores_de_impostos' not in item:
+                item['valores_de_impostos'] = {}
+            
+            # Garante que icms existe em valores_de_impostos
+            if 'icms' not in item['valores_de_impostos']:
+                item['valores_de_impostos']['icms'] = {}
+            
+            # Garante que atributos e atributos_tipi são listas
+            if 'atributos' not in item:
+                item['atributos'] = []
+            if 'atributos_tipi' not in item:
+                item['atributos_tipi'] = []
+            
+            # Garante que os campos de texto existem
+            campos_texto = ['ncm', 'descricao']
+            for campo in campos_texto:
+                if campo not in item:
+                    item[campo] = ''
+            
+            # Garante que os campos de classificação tributária existem
+            campos_classificacao = [
+                'ipi_entrada', 'ipi_saida',
+                'pis_entrada', 'pis_saida',
+                'cofins_entrada', 'cofins_saida',
+                'cst_entrada', 'cst_saida'
+            ]
+            for campo in campos_classificacao:
+                if campo not in item['classificacao_tributaria']:
+                    item['classificacao_tributaria'][campo] = ''
+            
+            # Garante que os campos de valores de impostos existem
+            campos_impostos = ['ipi', 'pis', 'cofins']
+            for campo in campos_impostos:
+                if campo not in item['valores_de_impostos']:
+                    item['valores_de_impostos'][campo] = ''
         
-        logger.info(f"Resposta processada com sucesso: {resultado}")
-        return resultado
-        
+        return data
     except json.JSONDecodeError as e:
-        logger.error(f"Erro ao decodificar JSON: {str(e)}")
+        logger.error(f"Erro ao decodificar JSON: {e}\nConteúdo recebido: {content[:500]}")
         raise
     except Exception as e:
-        logger.error(f"Erro ao processar resposta: {str(e)}")
+        logger.error(f"Erro ao processar resposta: {e}")
         raise 

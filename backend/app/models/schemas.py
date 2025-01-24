@@ -5,7 +5,7 @@ from typing import Union
 class ConsultaProduto(BaseModel):
     consulta: str = Field(..., min_length=3, description="Texto de busca do produto")
     modelo: str = Field(..., description="Modelo que será usado para gerar uma Sugestão de Produto.")
-    estadoOrigem: Union[str, None] = None
+    estadoOrigem: Union[str, None] = "Não informado"
     operacao: Union[str, None] = None
     regimeTributario: Union[str, None] = None
     tributacao: Union[str, None] = None

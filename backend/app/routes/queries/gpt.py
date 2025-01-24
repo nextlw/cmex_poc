@@ -55,9 +55,9 @@ async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
         # Configuração do modelo
         model_config = MODEL_MAPPING["GPT-4"]
         openai.api_key = SETTINGS.OPENAI_API_KEY
-
+        print("PROMPT::::", PROMPT_TEMPLATE(consulta_produto))
         # Preparação do prompt
-        prompt = PROMPT_TEMPLATE.format(consulta_produto=consulta_produto)
+        prompt = PROMPT_TEMPLATE(consulta_produto)
         
         # Início da chamada à API
         start_call = time.time()

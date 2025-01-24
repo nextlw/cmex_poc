@@ -209,15 +209,15 @@ def get_settings() -> Settings:
 # Instância das configurações para uso em toda a aplicação
 SETTINGS = get_settings()
 
-# Constantes específicas da aplicação
-PROMPT_TEMPLATE = """
+def format_prompt(consulta_produto):
+    return f"""
             Você é um especialista em classificação NCM e tributação de produtos.
             Analise o seguinte produto e procure na tabela TIPI.
             Produto: {consulta_produto.consulta}
-                Estado de origem: {consulta_produto.estadoOrigem or 'Não informado'}
-                Operação: {consulta_produto.operacao or 'Não informado'}
-                Regime tributário: {consulta_produto.regimeTributario or 'Não informado'}
-                Tributação: {consulta_produto.tributacao or 'Não informado'}
+                Estado de origem: {consulta_produto.estadoOrigem}
+                Operação: {consulta_produto.operacao if consulta_produto.operacao else "Não informado"}
+                Regime tributário: {consulta_produto.regimeTributario if consulta_produto.regimeTributario else "Não informado"}
+                Tributação: {consulta_produto.tributacao if consulta_produto.tributacao else "Não informado"}
             
             Retorne APENAS um JSON, **SEM** texto adicional, no seguinte formato:
             {{
@@ -232,11 +232,54 @@ PROMPT_TEMPLATE = """
                     "cofins": "valor real do COFINS"
                 }},
                 "classificacao_tributaria": {{
-                    "tipo_tributario": {{
-                        "monofasico": false,
-                        "aliquota_zero": false,
-                        "isento": false,
-                        "suspenso": false
+                    "tipo_classificacao_tributario": {{
+                        "operacao_tributavel": {{
+                            "aliquota_basica": {{"codigo": "01", "valor": false}},
+                            "aliquota_diferenciada": {{"codigo": "02", "valor": false}},
+                            "aliquota_unidade_medida": {{"codigo": "03", "valor": false}},
+                            "substituicao_tributaria": {{"codigo": "05", "valor": false}}
+                        }},
+                        "operacao_monofasica_aliquota_zero": {{
+                            "monofasica_revenda": {{"codigo": "04", "valor": false}},
+                            "aliquota_zero": {{"codigo": "06", "valor": false}}
+                        }},
+                        "operacao_nao_tributavel": {{
+                            "isenta": {{"codigo": "07", "valor": false}},
+                            "sem_incidencia": {{"codigo": "08", "valor": false}},
+                            "suspensa": {{"codigo": "09", "valor": false}}
+                        }},
+                        "operacao_outros": {{
+                            "outras_saidas": {{"codigo": "49", "valor": false}},
+                            "credito_mercado_interno": {{"codigo": "50", "valor": false}},
+                            "credito_nao_tributado": {{"codigo": "51", "valor": false}},
+                            "credito_exportacao": {{"codigo": "52", "valor": false}},
+                            "credito_tributado_nao_tributado": {{"codigo": "53", "valor": false}},
+                            "credito_tributado_exportacao": {{"codigo": "54", "valor": false}},
+                            "credito_nao_tributado_exportacao": {{"codigo": "55", "valor": false}},
+                            "credito_tributado_nao_tributado_exportacao": {{"codigo": "56", "valor": false}}
+                        }},
+                        "operacao_credito_presumido": {{
+                            "mercado_interno": {{"codigo": "60", "valor": false}},
+                            "nao_tributado": {{"codigo": "61", "valor": false}},
+                            "exportacao": {{"codigo": "62", "valor": false}},
+                            "tributado_nao_tributado": {{"codigo": "63", "valor": false}},
+                            "tributado_exportacao": {{"codigo": "64", "valor": false}},
+                            "nao_tributado_exportacao": {{"codigo": "65", "valor": false}},
+                            "tributado_nao_tributado_exportacao": {{"codigo": "66", "valor": false}},
+                            "outras_operacoes": {{"codigo": "67", "valor": false}}
+                        }},
+                        "operacao_aquisicao": {{
+                            "sem_credito": {{"codigo": "70", "valor": false}},
+                            "isenta": {{"codigo": "71", "valor": false}},
+                            "suspensa": {{"codigo": "72", "valor": false}},
+                            "aliquota_zero": {{"codigo": "73", "valor": false}},
+                            "sem_incidencia": {{"codigo": "74", "valor": false}},
+                            "substituicao_tributaria": {{"codigo": "75", "valor": false}}
+                        }},
+                        "operacao_outras": {{
+                            "outras_entradas": {{"codigo": "98", "valor": false}},
+                            "outras_operacoes": {{"codigo": "99", "valor": false}}
+                        }}
                     }},
                     "ipi_entrada": "valor real do IPI na entrada",
                     "ipi_saida": "valor real do IPI na saída",
@@ -250,15 +293,11 @@ PROMPT_TEMPLATE = """
             }}
             
             IMPORTANTE sobre o tipo_tributario:
-            - Analise cuidadosamente a tabela FD Contribuições da Receita Federal
-            - Verifique se o produto é:
-              * monofasico: Produtos sujeitos à tributação monofásica de PIS/COFINS
-              * aliquota_zero: Produtos com alíquota zero de PIS/COFINS
-              * isento: Produtos isentos de PIS/COFINS
-              * suspenso: Produtos com tributação suspensa de PIS/COFINS
-            - No objeto tipo_tributario, defina como true APENAS UM dos valores (monofasico, aliquota_zero, isento ou suspenso) baseado na análise da legislação, deixando os demais como false
-            - Os estados booleanos serão usados para destacar visualmente o status tributário do produto
-"""
+            - Analise cuidadosamente as tabelas EFD Contribuições da Receita Federal
+    """
+
+# Constantes específicas da aplicação
+PROMPT_TEMPLATE = format_prompt
 
 # Mapeamento de modelos
 MODEL_MAPPING = {

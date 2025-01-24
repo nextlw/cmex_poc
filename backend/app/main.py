@@ -60,7 +60,7 @@ async def custom_validation_error_handler(
 
 
 # Inclui os roteadores no app
-app.include_router(historico_router)
+app.include_router(historico_router, prefix=SETTINGS.API_V1_STR)
 app.include_router(queries_router, prefix=SETTINGS.API_V1_STR)
 
 

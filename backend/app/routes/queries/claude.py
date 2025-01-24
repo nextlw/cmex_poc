@@ -55,9 +55,9 @@ async def obter_sugestoes_claude(consulta_produto: ConsultaProduto):
         # Configuração do modelo
         model_config = MODEL_MAPPING["CLAUDE-3"]
         client = anthropic.Client(api_key=SETTINGS.ANTHROPIC_API_KEY)
-
+        print("PROMPT::::", PROMPT_TEMPLATE(consulta_produto))
         # Preparação do prompt
-        prompt = PROMPT_TEMPLATE.format(consulta_produto=consulta_produto)
+        prompt = PROMPT_TEMPLATE(consulta_produto)
         
         # Início da chamada à API
         start_call = time.time()

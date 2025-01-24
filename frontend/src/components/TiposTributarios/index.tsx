@@ -1,41 +1,45 @@
 import React from 'react';
-import { TiposTributariosProps, EstadoTributario, TipoTributario } from './types';
+import { TiposTributariosProps, EstadoTributario } from './types';
 import './styles.css';
 
-const TIPOS = [
-  { id: 'monofasico', label: 'Monofásico' },
-  { id: 'aliquota_zero', label: 'Alíquota Zero' },
-  { id: 'isento', label: 'Isento' },
-  { id: 'suspenso', label: 'Suspenso' }
-] as const;
-
 const TiposTributarios: React.FC<TiposTributariosProps> = ({ 
-  estados, 
+  classificacao,
   temResposta 
 }) => {
-  // Função para determinar o estado do tipo tributário
-  const getEstadoTributario = (id: TipoTributario): EstadoTributario => {
-    // Se não temos resposta da API ou estados é null, mostra estado default (cinza)
-    if (!temResposta || !estados) {
-      return EstadoTributario.DEFAULT;
-    }
+  // Função para encontrar a classificação ativa
+  const getClassificacaoAtiva = () => {
+    if (!temResposta || !classificacao) return null;
 
-    // Se temos resposta, verifica se o estado é true (verde) ou false (vermelho)
-    return estados[id] ? EstadoTributario.VERDADEIRO : EstadoTributario.FALSO;
+    for (const grupo of Object.values(classificacao)) {
+      for (const [operacao, dados] of Object.entries(grupo)) {
+        if (dados.valor) {
+          return {
+            operacao,
+            ...dados
+          };
+        }
+      }
+    }
+    return null;
   };
+
+  const classificacaoAtiva = getClassificacaoAtiva();
 
   return (
     <div className="tipos-tributarios">
-      {TIPOS.map(({ id, label }) => (
-        <div
-          key={id}
-          className={`tipo-tributario-card ${getEstadoTributario(id as TipoTributario)}`}
-          title={`${label} - ${estados?.[id as TipoTributario] ? 'Aplicável' : 'Não aplicável'}`}
-        >
-          <span className="tipo-tributario-label">{label}</span>
-          <span className="tipo-tributario-badge" />
-        </div>
-      ))}
+      <div
+        className={`tipo-tributario-card ${
+          classificacaoAtiva ? EstadoTributario.VERDADEIRO : EstadoTributario.DEFAULT
+        }`}
+        title={classificacaoAtiva?.descricao || 'Nenhuma classificação aplicável'}
+      >
+        <span className="tipo-tributario-label">
+          {classificacaoAtiva?.operacao?.replace(/_/g, ' ') || 'Não classificado'}
+        </span>
+        <span className="tipo-tributario-badge">
+          {classificacaoAtiva?.codigo}
+        </span>
+      </div>
     </div>
   );
 };

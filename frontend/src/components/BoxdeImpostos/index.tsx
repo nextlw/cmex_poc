@@ -4,22 +4,8 @@ import "./styles.css";
 import { PiSealPercentBold } from "react-icons/pi";
 import InputField from "../InputField";
 import TiposTributarios from "../TiposTributarios";
-import { EstadosTributarios } from "../TiposTributarios/types";
 
 const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
-  // Transforma o tipo_tributario em um objeto de estados booleanos
-  const getEstadosTributarios = (): EstadosTributarios => {
-    return classificacao.tipo_tributario || {
-      monofasico: false,
-      aliquota_zero: false,
-      isento: false,
-      suspenso: false
-    };
-  };
-
-  // Verifica se temos uma resposta válida da API
-  const temResposta = Boolean(classificacao.tipo_tributario);
-
   return (
     <div className="class-tributaria-title">
       <div className="flex items-center w-full">
@@ -31,8 +17,8 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
       <div className="grid-container-inner">
         <div className="box-tributaria col-span-12 tablet-col-span-12 mobile-col-span-4">
           <TiposTributarios 
-            estados={getEstadosTributarios()} 
-            temResposta={temResposta} 
+            classificacao={classificacao.tipo_classificacao_tributario} 
+            temResposta={Boolean(classificacao.tipo_classificacao_tributario)}
           />
           <div className="box-tributaria-row flex flex-row gap-4 md:flex-row mobile:flex-col">
             <div className="box-tributaria-item flex flex-col w-1/2 mobile:w-full gap-4">
@@ -93,8 +79,6 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
             </div>
 
             <div className="box-tributaria-item flex flex-col w-1/2 mobile:w-full gap-4">
-
-
               <div className="box-tributaria-row">
                 <h4 className="text-sm mb-2">PIS</h4>
                 <div className="flex w-full gap-3">

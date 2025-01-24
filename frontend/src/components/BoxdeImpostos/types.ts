@@ -1,3 +1,5 @@
+import { GrupoOperacoes } from '../TiposTributarios/types';
+
 export interface TipoTributario {
   monofasico: boolean;
   aliquota_zero: boolean;
@@ -7,6 +9,7 @@ export interface TipoTributario {
 
 export interface BoxdeImpostosProps {
   classificacao: {
+    tipo_classificacao_tributario?: GrupoOperacoes;
     tipo_tributario?: TipoTributario;
     ipi_entrada: string | number;
     ipi_saida: string | number;
