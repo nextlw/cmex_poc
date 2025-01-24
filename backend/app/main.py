@@ -12,15 +12,20 @@ from .config import SETTINGS
 
 # Inicializa uma instância do FastAPI.
 # Todas as rotas com prefixo /api
-app = FastAPI(root_path="/api")
+app = FastAPI(
+    title=SETTINGS.PROJECT_NAME,
+    openapi_url=f"{SETTINGS.API_V1_STR}/openapi.json"
+)
 
 # Configurações de CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=SETTINGS.BACKEND_CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=SETTINGS.CORS_ALLOW_CREDENTIALS,
+    allow_methods=SETTINGS.CORS_ALLOW_METHODS,
+    allow_headers=SETTINGS.CORS_ALLOW_HEADERS,
+    expose_headers=SETTINGS.CORS_EXPOSE_HEADERS,
+    max_age=SETTINGS.CORS_MAX_AGE
 )
 
 
@@ -56,7 +61,7 @@ async def custom_validation_error_handler(
 
 # Inclui os roteadores no app
 app.include_router(historico_router)
-app.include_router(queries_router)
+app.include_router(queries_router, prefix=SETTINGS.API_V1_STR)
 
 
 # Roda o servidor

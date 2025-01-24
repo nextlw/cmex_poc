@@ -161,29 +161,27 @@ class Settings(BaseSettings):
     # Configurações de CORS
     BACKEND_CORS_ORIGINS: list[str] = [
         "https://nexcode-homolog-g7lk.onrender.com",
-        "http://localhost:5173",
         "https://nexcode-homolog.onrender.com",
         "https://cmex-poc-1.onrender.com",
         "https://cmex-poc.onrender.com",
+        "https://cmex-poc.vercel.app",
+        "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:10000",
         "http://127.0.0.1:10000",
         "https://localhost:5173",
-        "https://127.0.0.1:5173",
-        "https://cmex-poc.vercel.app",
-        "http://localhost:*",
-        "http://127.0.0.1:*",
-        "https://*.onrender.com",
-        "https://*.vercel.app"
+        "https://127.0.0.1:5173"
     ]
     CORS_ALLOW_CREDENTIALS: bool = True
-    CORS_ALLOW_METHODS: list[str] = ["*"]
+    CORS_ALLOW_METHODS: list[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     CORS_ALLOW_HEADERS: list[str] = [
         "Content-Type",
         "Authorization",
         "Accept",
         "Origin",
-        "X-Requested-With"
+        "X-Requested-With",
+        "Access-Control-Request-Method",
+        "Access-Control-Request-Headers"
     ]
     CORS_EXPOSE_HEADERS: list[str] = ["*"]
     CORS_MAX_AGE: int = 600  # 10 minutos em segundos
