@@ -11,25 +11,50 @@ const TiposTributarios: React.FC<TiposTributariosProps> = ({
     // Operações positivas (favoráveis ao contribuinte)
     if (operacao.includes('isenta') || 
         operacao.includes('aliquota_zero') || 
-        operacao.includes('credito')) {
+        operacao.includes('credito') ||
+        operacao.includes('credito_mercado_interno') ||
+        operacao.includes('credito_nao_tributado') ||
+        operacao.includes('credito_exportacao') ||
+        operacao.includes('credito_tributado_nao_tributado') ||
+        operacao.includes('credito_tributado_exportacao') ||
+        operacao.includes('credito_nao_tributado_exportacao') ||
+        operacao.includes('credito_tributado_nao_tributado_exportacao')) {
       return EstadoTributario.POSITIVO;
     }
     
     // Operações que requerem atenção
     if (operacao.includes('suspensa') || 
         operacao.includes('diferenciada') ||
-        operacao.includes('substituicao')) {
+        operacao.includes('substituicao') ||
+        operacao.includes('substituicao_tributaria') ||
+        operacao.includes('monofasica_revenda')) {
       return EstadoTributario.ATENCAO;
     }
     
     // Operações negativas
     if (operacao.includes('sem_credito') || 
-        operacao.includes('sem_incidencia')) {
+        operacao.includes('sem_incidencia') ||
+        operacao.includes('outras_operacoes') ||
+        operacao.includes('outras_entradas')) {
       return EstadoTributario.NEGATIVO;
     }
     
     // Operações neutras
-    return EstadoTributario.NEUTRO;
+    if (operacao.includes('aliquota_basica') ||
+        operacao.includes('aliquota_diferenciada') ||
+        operacao.includes('aliquota_unidade_medida') ||
+        operacao.includes('mercado_interno') ||
+        operacao.includes('nao_tributado') ||
+        operacao.includes('exportacao') ||
+        operacao.includes('tributado_nao_tributado') ||
+        operacao.includes('tributado_exportacao') ||
+        operacao.includes('nao_tributado_exportacao') ||
+        operacao.includes('tributado_nao_tributado_exportacao')) {
+      return EstadoTributario.NEUTRO;
+    }
+
+    // Caso padrão
+    return EstadoTributario.DEFAULT;
   };
 
   // Função para encontrar a classificação ativa
