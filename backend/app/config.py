@@ -161,6 +161,7 @@ class Settings(BaseSettings):
     # Configurações de CORS
     if ENV == "dev":
         BACKEND_CORS_ORIGINS: list = [
+            "https://nexcode-homolog-g7lk.onrender.com",
             "http://localhost:5173",
             "https://nexcode-homolog.onrender.com",
             "http://127.0.0.1:5173",
@@ -173,6 +174,7 @@ class Settings(BaseSettings):
         ]
     elif ENV == "prod":
         BACKEND_CORS_ORIGINS: list = [
+            "https://nexcode-homolog-g7lk.onrender.com",
             "http://localhost:5173 ",
             "https://localhost:5173",
             "http://localhost:10000",
