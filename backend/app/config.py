@@ -168,6 +168,14 @@ class Settings(BaseSettings):
         BACKEND_CORS_ORIGINS: list[str] = [
             "https://app.nexcode.live"
         ]
+    elif ENV == "staging":
+        BACKEND_CORS_ORIGINS: list[str] = [
+            "https://dev.app.nexcode.live"
+        ]
+    elif ENV == "homolog":
+        BACKEND_CORS_ORIGINS: list[str] = [
+            "https://beta.app.nexcode.live"
+        ]
         
     CORS_ALLOW_CREDENTIALS: bool = True
     CORS_ALLOW_METHODS: list[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
