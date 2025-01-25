@@ -18,21 +18,6 @@ body.login-page {
 
 }
 
-@keyframes fadeBackground {
-  0% {
-    background-image: url('/bg9.jpg');
-  }
-  33% {
-    background-image: url('/bg3.jpg');
-  }
-  66% {
-    background-image: url('/bg4.jpg');
-  }
-  100% {
-    background-image: url('/bg9.jpg');
-  }
-}
-
 .login-container::before {
   content: '';
   position: absolute;
@@ -40,11 +25,10 @@ body.login-page {
   left: 0;
   width: 100%;
   height: 100%;
-  animation: fadeBackground 10s infinite;
+  background-image: url('/bg4.jpg');
   background-color: rgba(0, 0, 255, 0.5); /* Azul com opacidade */
   opacity: 0.6; /* Ajuste a opacidade conforme necessário */
   z-index: 1;
-  filter: blur(2px);
   background-blend-mode: overlay;
   background-size: cover;
   background-position: center;

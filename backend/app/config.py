@@ -13,9 +13,7 @@ import json
 load_dotenv()
 
 # Ambiente
-ENV = os.getenv("ENV", "dev")
-
-print("ENV:::::",ENV)
+ENV = os.getenv("ENV")
 
 # Configurações do cliente Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -161,19 +159,16 @@ class Settings(BaseSettings):
     PORT: int = 10000
 
     # Configurações de CORS
-    BACKEND_CORS_ORIGINS: list[str] = [
-        "https://nexcode-homolog-g7lk.onrender.com",
-        "https://nexcode-homolog.onrender.com",
-        "https://cmex-poc-1.onrender.com",
-        "https://cmex-poc.onrender.com",
-        "https://cmex-poc.vercel.app",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:10000",
-        "http://127.0.0.1:10000",
-        "https://localhost:5173",
-        "https://127.0.0.1:5173"
-    ]
+    if ENV == "dev":
+        BACKEND_CORS_ORIGINS: list[str] = [
+            "http://localhost:5173",
+            "http://localhost:10000"
+        ]
+    elif ENV == "prod":
+        BACKEND_CORS_ORIGINS: list[str] = [
+            "https://app.nexcode.live"
+        ]
+        
     CORS_ALLOW_CREDENTIALS: bool = True
     CORS_ALLOW_METHODS: list[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     CORS_ALLOW_HEADERS: list[str] = [
