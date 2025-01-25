@@ -1,18 +1,66 @@
 .tipos-tributarios {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  background-color: rgba(17, 24, 39, 0.5);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(71, 131, 208, 0.5);
+}
+
+.tipo-tributario-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  padding-left: 24px;
+}
+
+.tipo-tributario-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* Estados dos indicadores LED */
+.estado-default::before {
+  background-color: #9e9e9e;
+  box-shadow: 0 0 8px #9e9e9e;
+}
+
+.estado-positivo::before {
+  background-color: #4caf50;
+  box-shadow: 0 0 8px #4caf50;
+}
+
+.estado-atencao::before {
+  background-color: #ffc107;
+  box-shadow: 0 0 8px #ffc107;
+}
+
+.estado-negativo::before {
+  background-color: #f44336;
+  box-shadow: 0 0 8px #f44336;
+}
+
+.estado-neutro::before {
+  background-color: #2196f3;
+  box-shadow: 0 0 8px #2196f3;
 }
 
 .tipo-tributario-card {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  background-color: #f5f5f5;
-  position: relative;
-  min-width: 200px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
 }
 
 .tipo-tributario-card::before {
@@ -26,44 +74,41 @@
 }
 
 .tipo-tributario-label {
-  font-size: 0.875rem;
-  color: #333;
   text-transform: capitalize;
-  margin-left: 1rem;
 }
 
 .tipo-tributario-badge {
+  background-color: rgba(255, 255, 255, 0.2);
   padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   font-size: 0.75rem;
   font-weight: 600;
-  background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Estados dos tipos tributários */
-.estado-default::before {
-  background-color: #9e9e9e;
-  box-shadow: 0 0 4px #9e9e9e;
+/* Estados */
+.estado-default {
+  background-color: #374151; /* Cinza neutro */
+  color: #fff;
 }
 
-.estado-positivo::before {
-  background-color: #4caf50;
-  box-shadow: 0 0 4px #4caf50;
+.estado-positivo {
+  background-color: #059669; /* Verde */
+  color: #fff;
 }
 
-.estado-atencao::before {
-  background-color: #ffc107;
-  box-shadow: 0 0 4px #ffc107;
+.estado-atencao {
+  background-color: #D97706; /* Amarelo */
+  color: #fff;
 }
 
-.estado-negativo::before {
-  background-color: #f44336;
-  box-shadow: 0 0 4px #f44336;
+.estado-negativo {
+  background-color: #DC2626; /* Vermelho */
+  color: #fff;
 }
 
-.estado-neutro::before {
-  background-color: #2196f3;
-  box-shadow: 0 0 4px #2196f3;
+.estado-neutro {
+  background-color: #2563EB; /* Azul */
+  color: #fff;
 }
 
 @media (max-width: 640px) {

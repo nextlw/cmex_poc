@@ -7,28 +7,14 @@ export enum EstadoTributario {
   NEUTRO = 'neutro'         // Azul - para operações neutras
 }
 
-export interface DadosTributarios {
+export interface TipoTributarioAtivo {
+  operacao: string;
   codigo: string;
-  valor: boolean;
   descricao?: string;
-  estado?: EstadoTributario;
-}
-
-export interface ClassificacaoTributaria {
-  [key: string]: {
-    [key: string]: DadosTributarios;
-  };
-}
-
-export interface TipoOperacao {
-  [key: string]: ClassificacaoTributaria;
-}
-
-export interface GrupoOperacoes {
-  [key: string]: TipoOperacao;
+  texto_completo?: string;  // Campo para armazenar o texto completo do tipo tributário
 }
 
 export interface TiposTributariosProps {
-  classificacao?: GrupoOperacoes;
+  tipoAtivo?: TipoTributarioAtivo;
   temResposta?: boolean;
 } 

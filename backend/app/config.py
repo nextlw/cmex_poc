@@ -228,53 +228,7 @@ def format_prompt(consulta_produto):
                 }},
                 "classificacao_tributaria": {{
                     "tipo_classificacao_tributario": {{
-                        "operacao_tributavel": {{
-                            "aliquota_basica": {{"codigo": "01", "valor": false}},
-                            "aliquota_diferenciada": {{"codigo": "02", "valor": false}},
-                            "aliquota_unidade_medida": {{"codigo": "03", "valor": false}},
-                            "substituicao_tributaria": {{"codigo": "05", "valor": false}}
-                        }},
-                        "operacao_monofasica_aliquota_zero": {{
-                            "monofasica_revenda": {{"codigo": "04", "valor": false}},
-                            "aliquota_zero": {{"codigo": "06", "valor": false}}
-                        }},
-                        "operacao_nao_tributavel": {{
-                            "isenta": {{"codigo": "07", "valor": false}},
-                            "sem_incidencia": {{"codigo": "08", "valor": false}},
-                            "suspensa": {{"codigo": "09", "valor": false}}
-                        }},
-                        "operacao_outros": {{
-                            "outras_saidas": {{"codigo": "49", "valor": false}},
-                            "credito_mercado_interno": {{"codigo": "50", "valor": false}},
-                            "credito_nao_tributado": {{"codigo": "51", "valor": false}},
-                            "credito_exportacao": {{"codigo": "52", "valor": false}},
-                            "credito_tributado_nao_tributado": {{"codigo": "53", "valor": false}},
-                            "credito_tributado_exportacao": {{"codigo": "54", "valor": false}},
-                            "credito_nao_tributado_exportacao": {{"codigo": "55", "valor": false}},
-                            "credito_tributado_nao_tributado_exportacao": {{"codigo": "56", "valor": false}}
-                        }},
-                        "operacao_credito_presumido": {{
-                            "mercado_interno": {{"codigo": "60", "valor": false}},
-                            "nao_tributado": {{"codigo": "61", "valor": false}},
-                            "exportacao": {{"codigo": "62", "valor": false}},
-                            "tributado_nao_tributado": {{"codigo": "63", "valor": false}},
-                            "tributado_exportacao": {{"codigo": "64", "valor": false}},
-                            "nao_tributado_exportacao": {{"codigo": "65", "valor": false}},
-                            "tributado_nao_tributado_exportacao": {{"codigo": "66", "valor": false}},
-                            "outras_operacoes": {{"codigo": "67", "valor": false}}
-                        }},
-                        "operacao_aquisicao": {{
-                            "sem_credito": {{"codigo": "70", "valor": false}},
-                            "isenta": {{"codigo": "71", "valor": false}},
-                            "suspensa": {{"codigo": "72", "valor": false}},
-                            "aliquota_zero": {{"codigo": "73", "valor": false}},
-                            "sem_incidencia": {{"codigo": "74", "valor": false}},
-                            "substituicao_tributaria": {{"codigo": "75", "valor": false}}
-                        }},
-                        "operacao_outras": {{
-                            "outras_entradas": {{"codigo": "98", "valor": false}},
-                            "outras_operacoes": {{"codigo": "99", "valor": false}}
-                        }}
+                        "tipo_tributario_ativo": "tipo tributário ativo para o produto"
                     }},
                     "ipi_entrada": "valor real do IPI na entrada",
                     "ipi_saida": "valor real do IPI na saída",
@@ -288,7 +242,19 @@ def format_prompt(consulta_produto):
             }}
             
             IMPORTANTE sobre o tipo_tributario:
-            - Analise cuidadosamente as tabelas EFD Contribuições da Receita Federal
+            - Como especialista tributário, analise cuidadosamente as tabelas EFD Contribuições da Receita Federal
+            - Utilize as tabelas 4.3.1 a 4.3.6 do Manual EFD Contribuições para determinar o tipo tributário correto
+            - Considere:
+                * Tabela 4.3.1: Tabela Código de Situação Tributária – CST PIS/PASEP
+                * Tabela 4.3.2: Tabela Código de Situação Tributária – CST COFINS
+                * Tabela 4.3.3: Tabela Código de Contribuição Social Apurada
+                * Tabela 4.3.4: Tabela Código de Tipo de Crédito
+                * Tabela 4.3.5: Tabela Código de Base de Cálculo do Crédito
+                * Tabela 4.3.6: Tabela Código de Ajuste de Contribuição ou Crédito
+            - O tipo_tributario_ativo deve ser determinado com base nas características do produto, operação e enquadramento nas tabelas acima
+            - O tipo_tributario_ativo deve ser retornado no formato "XX - Descrição Completa da Operação", onde XX é o código da operação
+            - Retorne apenas um tipo tributário que for true, baseado na análise das tabelas EFD Contribuições e nas características do produto
+
     """
 
 # Constantes específicas da aplicação
