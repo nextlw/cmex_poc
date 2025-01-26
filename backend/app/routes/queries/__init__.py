@@ -107,7 +107,11 @@ async def get_queries(request: Request):
 
     # Importa o histórico de pesquisa do usuário
     res_sb_pesquisas = (
-        supabase.table("pesquisas").select("*").eq("id_usuario", id_usuario).execute()
+        supabase.table("pesquisas")
+        .select("*")
+        .eq("id_usuario", id_usuario)
+        .order("criado_em", desc=True)
+        .execute()
     )
 
     return res_sb_pesquisas
