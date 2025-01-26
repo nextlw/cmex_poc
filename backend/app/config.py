@@ -107,7 +107,16 @@ def format_prompt(consulta_produto):
                 }},
                 "classificacao_tributaria": {{
                     "tipo_classificacao_tributario": {{
-                        "tipo_tributario_ativo": "tipo tributário ativo para o produto"
+                        "tipo_tributario_ativo": "Como especialista tributário, analise cuidadosamente as tabelas EFD Contribuições da Receita Federal utilizando o ncm que você encontrou e as características do produto, operação e enquadramento nas tabelas acima.
+                    Utilize as tabelas 4.3.1 a 4.3.6 do Manual EFD Contribuições para determinar o tipo tributário.
+                    - Considere:
+                        * Tabela 4.3.1: Tabela Código de Situação Tributária – CST PIS/PAS
+                        * Tabela 4.3.2: Tabela Código de Situação Tributária – CST COFINS
+                        * Tabela 4.3.3: Tabela Código de Contribuição Social Apurada
+                        * Tabela 4.3.4: Tabela Código de Tipo de Crédito
+                        * Tabela 4.3.5: Tabela Código de Base de Cálculo do Crédito
+                        * Tabela 4.3.6: Tabela Código de Ajuste de Contribuição ou Crédito"
+
                     }},
                     "ipi_entrada": "valor real do IPI na entrada",
                     "ipi_saida": "valor real do IPI na saída",

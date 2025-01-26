@@ -59,9 +59,9 @@ const TiposTributarios: React.FC<TiposTributariosProps> = ({
   const estado = tipoAtivo ? determinarEstadoTributario(tipoAtivo.texto_completo || tipoAtivo.operacao) : EstadoTributario.DEFAULT;
 
   return (
-    <div className="tipos-tributarios">
+    <div className="tipos-tributarios flex justify-center items-center">
       <div
-        className={`tipo-tributario-card estado-${estado}`}
+        className={`tipo-tributario-card gap-2 estado-${estado}`}
         title={tipoAtivo?.descricao || 'Classificação Tributária'}
       >
         <span className="tipo-tributario-label">
