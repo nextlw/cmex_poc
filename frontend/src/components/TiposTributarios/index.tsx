@@ -56,10 +56,10 @@ const TiposTributarios: React.FC<TiposTributariosProps> = ({
     return EstadoTributario.DEFAULT;
   };
 
-  const estado = tipoAtivo ? determinarEstadoTributario(tipoAtivo.texto_completo || tipoAtivo.operacao) : EstadoTributario.DEFAULT;
+  const estado = tipoAtivo ? determinarEstadoTributario(tipoAtivo.texto_completo || tipoAtivo.operacao || '') : EstadoTributario.DEFAULT;
 
   return (
-    <div className="tipos-tributarios flex justify-center items-center">
+    <div className="tipos-tributarios flex flex-col md:flex-row gap-4">
       <div
         className={`tipo-tributario-card gap-2 estado-${estado}`}
         title={tipoAtivo?.descricao || 'Classificação Tributária'}
@@ -71,6 +71,15 @@ const TiposTributarios: React.FC<TiposTributariosProps> = ({
           {tipoAtivo?.codigo || '--'}
         </span>
       </div>
+
+      {tipoAtivo?.justificativa && (
+        <div className="tipo-tributario-justificativa">
+          <span className="justificativa-label">Justificativa:</span>
+          <p className="justificativa-texto">
+            {tipoAtivo.justificativa}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

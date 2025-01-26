@@ -1,6 +1,6 @@
 .tipos-tributarios {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   padding: 1rem;
   background-color: rgba(17, 24, 39, 0.5);
@@ -60,6 +60,7 @@
   border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
+  min-width: 300px;
 }
 
 .tipo-tributario-card::before {
@@ -83,6 +84,27 @@
   border-radius: 0.25rem;
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+/* Card de Justificativa */
+.tipo-tributario-justificativa {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.justificativa-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #94a3b8;
+}
+
+.justificativa-texto {
+  color: #e2e8f0;
+  line-height: 1.5;
 }
 
 /* Estados */
@@ -113,6 +135,15 @@
 
 @media (max-width: 640px) {
   .tipos-tributarios {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .tipo-tributario-card {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .tipo-tributario-justificativa {
+    width: 100%;
   }
 } 

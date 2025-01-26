@@ -115,8 +115,8 @@ def format_prompt(consulta_produto):
                         * Tabela 4.3.3: Tabela Código de Contribuição Social Apurada
                         * Tabela 4.3.4: Tabela Código de Tipo de Crédito
                         * Tabela 4.3.5: Tabela Código de Base de Cálculo do Crédito
-                        * Tabela 4.3.6: Tabela Código de Ajuste de Contribuição ou Crédito"
-
+                        * Tabela 4.3.6: Tabela Código de Ajuste de Contribuição ou Crédito",
+                        "justificativa": "Explique detalhadamente o motivo da escolha deste tipo tributário, citando as características do produto, legislação aplicável e tabelas consultadas."
                     }},
                     "ipi_entrada": "valor real do IPI na entrada",
                     "ipi_saida": "valor real do IPI na saída",
@@ -142,6 +142,7 @@ def format_prompt(consulta_produto):
             - O tipo_tributario_ativo deve ser determinado com base nas características do produto, operação e enquadramento nas tabelas acima
             - O tipo_tributario_ativo deve ser retornado no formato "XX - Descrição Completa da Operação", onde XX é o código da operação
             - Retorne apenas um tipo tributário que for true, baseado na análise das tabelas EFD Contribuições e nas características do produto
+            - Forneça uma justificativa detalhada explicando o motivo da escolha do tipo tributário
 
     """
 
