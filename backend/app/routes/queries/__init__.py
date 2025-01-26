@@ -83,6 +83,7 @@ async def post_queries(consulta_produto: ConsultaProduto, request: Request):
     novo_registro_pesquisas = RegistroPesquisas(
         id_usuario=request.state.user.id,
         id_produto=None,  # TODO:
+        modelo=consulta_produto.modelo,
         consulta=consulta_produto.consulta,
         resultado=sugestao_ncm,  # TODO:
         duracao_da_query=None,
