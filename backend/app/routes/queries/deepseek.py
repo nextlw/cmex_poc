@@ -19,7 +19,7 @@ async def obter_sugestoes_deepseek(consulta_produto: ConsultaProduto):
         # Configuração do modelo
         model_config = MODEL_MAPPING["DeepSeek"]
         openai.api_key = SETTINGS.DEEPSEEK_API_KEY
-        openai.api_base = SETTINGS.DEEPSEEK_API_BASE
+        # openai.api_base = SETTINGS.DEEPSEEK_API_BASE
         
         # Preparação do prompt
         prompt = PROMPT_TEMPLATE(consulta_produto)
