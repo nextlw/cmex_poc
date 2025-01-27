@@ -37,7 +37,7 @@ import "../../styles/grid.css";
 const HomePage: React.FC = () => {
   const [pesquisa, setPesquisa] = useState("");
   const [selectedModel, setSelectedModel] = useState<string | null>(
-    "Nex-0.3-Preview-2024"
+    "Nex-0.5-Preview-2025"
   );
   const [dropdownSelection, setDropdownSelection] =
     useState<SelectionData | null>(null);
@@ -124,7 +124,7 @@ const HomePage: React.FC = () => {
   };
 
   const debouncedHandleSearch = useMemo(
-    () => debounce(handleSearch, 3000),
+    () => debounce(handleSearch, 1000),
     [pesquisa, dropdownSelection]
   );
 

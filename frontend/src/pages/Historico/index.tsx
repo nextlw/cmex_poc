@@ -5,6 +5,7 @@ import { PiListStarFill } from "react-icons/pi";
 import "./styles.css";
 import { HistoricoItem } from "./types";
 import axiosInstance from "../../axiosConfig";
+import { AxiosResponse, AxiosError } from 'axios'
 
 const HistoricoPage: React.FC = () => {
   const [historico, setHistorico] = useState<HistoricoItem[]>([]);
@@ -18,28 +19,54 @@ const HistoricoPage: React.FC = () => {
   }, []);
 
   const fetchHistorico = async () => {
-    try {
-      console.log("Buscando histórico..."); // Debug
-      const response = await axiosInstance.get("/historico");
-      console.log("Resposta do histórico:", response.data); // Debug
 
-      if (Array.isArray(response.data)) {
-        setHistorico(
-          response.data.sort(
-            (a: HistoricoItem, b: HistoricoItem) =>
-              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-          )
-        );
-      } else {
-        console.error("Dados do histórico não são um array:", response.data);
+    // Chama o endpoint de pesquisas
+    axiosInstance.get("/queries")
+      .then((response: AxiosResponse) => {
+
+        console.log("GET /queries :: response ::", response);
+
+        // Pega os dados
+        if (response?.data?.data) {
+
+          // Recupera o histórico
+          const historicoBruto = response.data.data
+
+          // Trata os dados
+          let historicoTratado = historicoBruto.map((item) => {
+
+            // Monta o item
+            const novoItem = {
+              id: item.id,
+              modelo: String(item.modelo),
+              criado_em: item.criado_em,
+              ncm: item.resultado[0].ncm,
+              descricao: item.resultado[0].descricao,
+              atributos: item.resultado[0].atributos,
+              atributos_tipi: item.resultado[0].atributos_tipi,
+              valores_de_impostos: item.resultado[0].valores_de_impostos
+            }
+
+            // Adiciona o item no historicoTratado
+            return novoItem
+          })
+
+          console.log("HISTÓRICO TRATADO -->", historicoTratado);
+
+          setHistorico(historicoTratado)
+
+        } else {
+          setHistorico([]);
+        }
+      })
+      .catch((reason: AxiosError) => {
+        console.error("GET /queries :: Erro ::", reason);
         setHistorico([]);
-      }
-    } catch (error) {
-      console.error("Erro ao buscar histórico:", error);
-      setHistorico([]);
-    } finally {
-      setIsLoading(false);
-    }
+      })
+      .finally(() => {
+        setIsLoading(false)
+      });
+
   };
 
   return (
@@ -63,17 +90,22 @@ const HistoricoPage: React.FC = () => {
             <table className="box-table">
               <thead>
                 <tr>
+                  {/* Colunas da tabela */}
                   <th>ID</th>
                   <th>Modelo</th>
-                  <th>NCM</th>
+                  <th>Criado em</th>
+
+                  {/* Coluna "resultados" */}
                   <th>Descrição</th>
+                  <th>NCM</th>
                   <th>Atributos</th>
                   <th>Atributos TIPI</th>
+
+                  {/* Coluna "valores de impostos" */}
                   <th>IPI</th>
                   <th>ICMS</th>
                   <th>PIS</th>
                   <th>COFINS</th>
-                  <th>Data/Hora</th>
                 </tr>
               </thead>
               <tbody>
@@ -101,10 +133,11 @@ const HistoricoPage: React.FC = () => {
                           {item.modelo}
                         </span>
                       </td>
-                      <td>{item.ncm}</td>
+                      <td>{new Date(item.criado_em).toLocaleString()}</td>
                       <td className="truncate-cell" data-full-text={item.descricao}>
                         {item.descricao}
                       </td>
+                      <td>{item.ncm}</td>
                       <td
                         className="truncate-cell"
                         data-full-text={item.atributos.join(", ")}
@@ -125,7 +158,6 @@ const HistoricoPage: React.FC = () => {
                       </td>
                       <td>{item.valores_de_impostos.pis}</td>
                       <td>{item.valores_de_impostos.cofins}</td>
-                      <td>{new Date(item.timestamp).toLocaleString()}</td>
                     </tr>
                   ))
                 )}
