@@ -124,7 +124,7 @@ const HomePage: React.FC = () => {
   };
 
   const debouncedHandleSearch = useMemo(
-    () => debounce(handleSearch, 3000),
+    () => debounce(handleSearch, 1000),
     [pesquisa, dropdownSelection]
   );
 

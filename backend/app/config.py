@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     # Configurações do OpenAI
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     OPENAI_MODEL: str = "gpt-4"
+    
+    DEEPSEEK_API_KEY: str = os.getenv("DEEPSEEK_API_KEY", "")
+    DEEPSEEK_API_BASE: str = "https://api.deepseek.com/v1"
+    DEEPSEEK_MODEL: str = "deepseek-chat"
 
     # Configurações do Gemini
     GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
@@ -173,6 +177,11 @@ MODEL_MAPPING = {
         "model_name": SETTINGS.ANTHROPIC_MODEL,  # ou outro modelo Claude disponível
         "max_tokens": 4096,
         "temperature": 0.7,
+    },
+    "DeepSeek": {
+        "model_name": SETTINGS.DEEPSEEK_MODEL,
+        "max_tokens": 700,
+        "temperature": 1.3,
     },
 }
 
