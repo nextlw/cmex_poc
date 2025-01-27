@@ -1,4 +1,3 @@
-import { SugerirNCM } from '../../types';
 
 export interface HomePageProps {
   // Se necessário, adicione props específicas do LoginForm aqui
