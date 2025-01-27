@@ -73,3 +73,40 @@ textarea.campo-input {
 }
 
 /* --------------------------- */
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.input-field label {
+  font-size: 14px;
+  color: var(--color-text-gray-300);
+}
+
+.input-field input,
+.input-field textarea {
+  background-color: var(--color-input-background);
+  border: 1px solid var(--color-input-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--color-text-primary);
+  width: 100%;
+  min-height: 38px;
+  transition: all 0.2s ease;
+}
+
+.input-field input:focus,
+.input-field textarea:focus {
+  outline: none;
+  border-color: var(--color-input-border-focus);
+  box-shadow: 0 0 0 2px var(--color-input-shadow-focus);
+}
+
+.input-field.multiline textarea {
+  resize: none;
+  height: 100%;
+  min-height: 76px;
+}

@@ -1,8 +1,8 @@
-
 export interface BoxdeImpostosProps {
   classificacao: {
     tipo_classificacao_tributario?: {
       tipo_tributario_ativo: string;
+      justificativa?: string;
     };
     ipi_entrada: string | number;
     ipi_saida: string | number;

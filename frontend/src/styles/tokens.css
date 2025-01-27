@@ -78,6 +78,30 @@
   --color-input-field-border-focus: #007bff;
   --color-input-field-icon: #007bff;
   --color-input-field-placeholder: #aaaaaa;
+
+  /* Tons de Verde */
+  --color-success-light: #4caf50;
+  --color-success: #2e7d32;
+  --color-success-dark: #1b5e20;
+  --color-success-darker: #0d3f11;
+
+  /* Tons de Amarelo */
+  --color-warning-light: #ffd54f;
+  --color-warning: #ffc107;
+  --color-warning-dark: #ffa000;
+  --color-warning-darker: #ff6f00;
+
+  /* Tons de Vermelho */
+  --color-error-light: #ef5350;
+  --color-error: #d32f2f;
+  --color-error-dark: #c62828;
+  --color-error-darker: #b71c1c;
+
+  /* Tons de Azul */
+  --color-info-light: #29b6f6;
+  --color-info: #0288d1;
+  --color-info-dark: #0277bd;
+  --color-info-darker: #01579b;
 }
 
 /* Tema Light */

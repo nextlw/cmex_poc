@@ -1,0 +1,32 @@
+.skeleton-pulse {
+  background: linear-gradient(
+    90deg,
+    rgba(55, 65, 81, 0.5) 25%,
+    rgba(75, 85, 99, 0.5) 37%,
+    rgba(55, 65, 81, 0.5) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+  border-radius: 4px;
+  min-height: 20px;
+  width: 100%;
+  display: block;
+}
+
+.skeleton-input {
+  background-color: rgba(17, 24, 39, 0.3);
+  border: 1px solid rgba(71, 131, 208, 0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-height: 38px;
+  width: 100%;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+} 

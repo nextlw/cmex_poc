@@ -32,6 +32,9 @@ import Header from "../../components/Header";
 import PageHeader from "../../components/PageHeader";
 import { AiFillCodeSandboxCircle } from "react-icons/ai";
 import "../../styles/grid.css";
+import InfoBasicasSkeleton from "../../components/InfoBasicas/InfoBasicasSkeleton";
+import BoxdeImpostosSkeleton from "../../components/BoxdeImpostos/BoxdeImpostosSkeleton";
+import AtributosSkeleton from "../../components/Atributos/AtributosSkeleton";
 
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
@@ -196,18 +199,35 @@ const HomePage: React.FC = () => {
                 <div key={index} className="box-page">
                   <div className="box-page grid-container-inner">
                     <div className="page-item col-span-6 mobile-col-span-4 w-full">
-                      <InfoBasicas ncm={item.ncm} descricao={item.descricao} />
+                      {isLoading ? (
+                        <InfoBasicasSkeleton />
+                      ) : (
+                        <InfoBasicas 
+                          ncm={item.ncm} 
+                          descricao={item.descricao} 
+                        />
+                      )}
                     </div>
                     <div className="page-item col-span-6 mobile-col-span-4 w-full">
-                      <Atributos
-                        atributos={item.atributos}
-                        atributos_tipi={item.atributos_tipi}
-                        isLoading={isLoading}
-                      />
+                      {isLoading ? (
+                        <AtributosSkeleton />
+                      ) : (
+                        <Atributos
+                          atributos={item.atributos}
+                          atributos_tipi={item.atributos_tipi}
+                          isLoading={isLoading}
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="col-span-12 box-page">
-                    <BoxdeImpostos classificacao={item.classificacao_tributaria} />
+                    {isLoading ? (
+                      <BoxdeImpostosSkeleton />
+                    ) : (
+                      <BoxdeImpostos 
+                        classificacao={item.classificacao_tributaria} 
+                      />
+                    )}
                   </div>
                 </div>
               ))}

@@ -14,7 +14,8 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
     return {
       operacao: descricao.join(" - "),
       codigo: codigo,
-      texto_completo: tipoString
+      texto_completo: tipoString,
+      justificativa: classificacao.tipo_classificacao_tributario?.justificativa
     };
   };
 
@@ -34,7 +35,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
         <div className="box-tributaria col-span-12 tablet-col-span-12 mobile-col-span-4">
           <TiposTributarios 
             tipoAtivo={tipoTributarioFormatado}
-            temResposta={Boolean(tipoTributarioFormatado)}
+            justificativa={classificacao.tipo_classificacao_tributario?.justificativa}
           />
           <div className="box-tributaria-row flex flex-row gap-4 md:flex-row mobile:flex-col">
             <div className="box-tributaria-item flex flex-col w-1/2 mobile:w-full gap-4">

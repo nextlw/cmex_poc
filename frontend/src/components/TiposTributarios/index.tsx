@@ -1,78 +1,109 @@
 import React from 'react';
-import { TiposTributariosProps, EstadoTributario } from './types';
+import { TiposTributariosProps } from './types';
 import './styles.css';
 
 const TiposTributarios: React.FC<TiposTributariosProps> = ({ 
   tipoAtivo,
+  justificativa,
 }) => {
-  // Função para determinar o estado do tipo tributário
-  const determinarEstadoTributario = (operacao: string): EstadoTributario => {
-    // Operações positivas (favoráveis ao contribuinte)
-    if (operacao.includes('isenta') || 
-        operacao.includes('aliquota_zero') || 
-        operacao.includes('credito') ||
-        operacao.includes('credito_mercado_interno') ||
-        operacao.includes('credito_nao_tributado') ||
-        operacao.includes('credito_exportacao') ||
-        operacao.includes('credito_tributado_nao_tributado') ||
-        operacao.includes('credito_tributado_exportacao') ||
-        operacao.includes('credito_nao_tributado_exportacao') ||
-        operacao.includes('credito_tributado_nao_tributado_exportacao')) {
-      return EstadoTributario.POSITIVO;
-    }
-    
-    // Operações que requerem atenção
-    if (operacao.includes('suspensa') || 
-        operacao.includes('diferenciada') ||
-        operacao.includes('substituicao') ||
-        operacao.includes('substituicao_tributaria') ||
-        operacao.includes('monofasica_revenda') ||
-        operacao.includes('Monofásica')) {
-      return EstadoTributario.ATENCAO;
-    }
-    
-    // Operações negativas
-    if (operacao.includes('sem_credito') || 
-        operacao.includes('sem_incidencia') ||
-        operacao.includes('outras_operacoes') ||
-        operacao.includes('outras_entradas')) {
-      return EstadoTributario.NEGATIVO;
-    }
-    
-    // Operações neutras
-    if (operacao.includes('aliquota_basica') ||
-        operacao.includes('aliquota_diferenciada') ||
-        operacao.includes('aliquota_unidade_medida') ||
-        operacao.includes('mercado_interno') ||
-        operacao.includes('nao_tributado') ||
-        operacao.includes('exportacao') ||
-        operacao.includes('tributado_nao_tributado') ||
-        operacao.includes('tributado_exportacao') ||
-        operacao.includes('nao_tributado_exportacao') ||
-        operacao.includes('tributado_nao_tributado_exportacao')) {
-      return EstadoTributario.NEUTRO;
-    }
-
-    return EstadoTributario.DEFAULT;
+  const justificativaDaOperacao = (justificativa: string | undefined): string => {
+    return justificativa?.toLowerCase() || 'sem_justificativa';
   };
 
-  const estado = tipoAtivo ? determinarEstadoTributario(tipoAtivo.texto_completo || tipoAtivo.operacao) : EstadoTributario.DEFAULT;
+  // Função para determinar a classe CSS baseada no código tributário
+  const determinarClasseTributaria = (operacao: string, codigo: string): string => {
+    const operacaoLower = operacao.toLowerCase();
+    const cod = codigo.padStart(2, '0'); // Garante que o código tenha 2 dígitos
+
+    // Mapeamento de códigos para classes
+    switch (cod) {
+      // Operações Tributadas (01, 02, 03)
+      case '01':
+        return 'tributada_aliquota_basica';
+      case '02':
+        return 'tributada_aliquota_diferenciada';
+      case '03':
+        return 'tributada_aliquota_por_unidade';
+      
+      // Tributada Monofásica (04, 05, 06)
+      case '04':
+      case '05':
+      case '06':
+        return 'monofasica';
+      
+      // Isentas/Não Tributadas (07, 08)
+      case '07':
+        return 'isenta';
+      case '08':
+        return 'nao_tributada';
+      
+      // Suspensão (09, 50)
+      case '09':
+      case '50':
+        return 'suspensa';
+      
+      // Outras Operações (49)
+      case '49':
+        return 'outras_operacoes';
+      
+      // Operações com Direito a Crédito (70, 71, 72)
+      case '70':
+        return 'credito_mercado_interno';
+      case '71':
+        return 'credito_exportacao';
+      case '72':
+        return 'credito_basico';
+      
+      // ST e Substituído (73, 74)
+      case '73':
+        return 'substituicao_tributaria';
+      case '74':
+        return 'substituido';
+      
+      // Exportação (75)
+      case '75':
+        return 'exportacao';
+      
+      default:
+        // Tenta determinar pelo texto da operação
+        if (operacaoLower.includes('isenta')) return 'isenta';
+        if (operacaoLower.includes('nao_tributada')) return 'nao_tributada';
+        if (operacaoLower.includes('suspensa')) return 'suspensa';
+        if (operacaoLower.includes('credito')) return 'credito_basico';
+        if (operacaoLower.includes('substituicao')) return 'substituicao_tributaria';
+        if (operacaoLower.includes('exportacao')) return 'exportacao';
+        if (operacaoLower.includes('monofasica')) return 'monofasica';
+        return 'default';
+    }
+  };
+
+  const classeEstado = tipoAtivo 
+    ? determinarClasseTributaria(tipoAtivo.texto_completo || tipoAtivo.operacao, tipoAtivo.codigo)
+    : 'default';
+  
+  const descricaoEstado = justificativaDaOperacao(justificativa);
 
   return (
-    <div className="tipos-tributarios flex justify-center items-center">
-      <div
-        className={`tipo-tributario-card gap-2 estado-${estado}`}
-        title={tipoAtivo?.descricao || 'Classificação Tributária'}
-      >
-        <span className="tipo-tributario-label">
-          {tipoAtivo?.texto_completo || 'Classificação Tributária'}
-        </span>
-        <span className="tipo-tributario-badge">
-          {tipoAtivo?.codigo || '--'}
-        </span>
+    <div className="tipos-tributarios">
+      <div className={`tipo-tributario-item estado-${classeEstado}`}>
+        <div className="tipo-tributario-card">
+          <span className="tipo-tributario-badge">
+            {tipoAtivo?.codigo || '--'}
+          </span>
+          <span className="tipo-tributario-label">
+            {tipoAtivo?.texto_completo || 'Classificação Tributária'}
+          </span>
+        </div>
+        <div className={`tipo-tributario-card-discussao estado-${descricaoEstado}`}>
+          <span className="tipo-tributario-badge-discussao">
+            {justificativa || 'Descrição da Operação'}
+          </span>
+        </div>
       </div>
     </div>
   );
 };
 
 export default TiposTributarios; 
+
+

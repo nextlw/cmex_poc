@@ -1,4 +1,3 @@
-import React from "react";
 import HomePage from "./pages/HomePage";
 import HistoricoPage from "./pages/Historico";
 import PrivateRoute from "../src/auth/PrivateRoute";
