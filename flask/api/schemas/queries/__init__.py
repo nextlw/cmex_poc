@@ -1,1 +1,0 @@
-# Transforma a pasta scqueries em um módulo do Python

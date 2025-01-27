@@ -23,13 +23,17 @@ export interface ClassificacaoTributaria {
 }
 
 export interface HistoricoItem {
+
+  // Colunas da tabela
   id: string;
   modelo: string;
-  timestamp: string;
-  ncm: string;
+  criado_em: string;
+  
+  // Coluna de resultados
   descricao: string;
+  ncm: string;
   atributos: string[];
   atributos_tipi: string[];
-  valores_de_impostos: ValoresImpostos;
   classificacao_tributaria: ClassificacaoTributaria;
+  valores_de_impostos: ValoresImpostos;
 }

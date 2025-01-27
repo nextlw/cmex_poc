@@ -6,6 +6,22 @@ import InputField from "../InputField";
 import TiposTributarios from "../TiposTributarios";
 
 const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
+  // Função para converter a string do tipo tributário em objeto
+  const formatarTipoTributario = (tipoString?: string) => {
+    if (!tipoString) return undefined;
+    
+    const [codigo, ...descricao] = tipoString.split(" - ");
+    return {
+      operacao: descricao.join(" - "),
+      codigo: codigo,
+      texto_completo: tipoString
+    };
+  };
+
+  const tipoTributarioFormatado = formatarTipoTributario(
+    classificacao.tipo_classificacao_tributario?.tipo_tributario_ativo
+  );
+
   return (
     <div className="class-tributaria-title">
       <div className="flex items-center w-full">
@@ -17,8 +33,8 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
       <div className="grid-container-inner">
         <div className="box-tributaria col-span-12 tablet-col-span-12 mobile-col-span-4">
           <TiposTributarios 
-            classificacao={classificacao.tipo_classificacao_tributario} 
-            temResposta={Boolean(classificacao.tipo_classificacao_tributario)}
+            tipoAtivo={tipoTributarioFormatado}
+            temResposta={Boolean(tipoTributarioFormatado)}
           />
           <div className="box-tributaria-row flex flex-row gap-4 md:flex-row mobile:flex-col">
             <div className="box-tributaria-item flex flex-col w-1/2 mobile:w-full gap-4">

@@ -9,10 +9,39 @@ def validar_tipo_tributario(tipo_tributario: dict) -> dict:
     Valida e formata o tipo_tributario, garantindo que apenas um valor seja true.
     """
     valores = {
-        "monofasico": False,
-        "aliquota_zero": False,
-        "isento": False,
-        "suspenso": False
+        "01_operacao_tributavel_base_calculo_positiva": False,
+        "02_operacao_tributavel_base_calculo_negativa": False,
+        "03_operacao_tributavel_base_calculo_zero": False,
+        "04_operacao_tributavel_monofasica": False,
+        "05_operacao_tributavel_st": False,
+        "06_operacao_tributavel_aliquota_zero": False,
+        "07_operacao_isenta": False,
+        "08_operacao_sem_incidencia": False,
+        "09_operacao_com_suspensao": False,
+        "49_outras_operacoes_saida": False,
+        "50_operacao_direito_credito_vinculada": False,
+        "51_operacao_direito_credito_nao_vinculada": False,
+        "52_operacao_direito_credito_vinculada_zero": False,
+        "53_operacao_direito_credito_vinculada_outros": False,
+        "54_operacao_direito_credito_nao_vinculada_zero": False,
+        "55_operacao_direito_credito_nao_vinculada_outros": False,
+        "56_credito_presumido": False,
+        "60_credito_vinculado_importacao": False,
+        "61_credito_vinculado_importacao_zero": False,
+        "62_credito_vinculado_importacao_aliquota_diferenciada": False,
+        "63_credito_vinculado_importacao_uso_capacidade": False,
+        "64_credito_vinculado_importacao_zero_uso_capacidade": False,
+        "65_credito_vinculado_importacao_aliquota_diferenciada_uso_capacidade": False,
+        "66_credito_vinculado_importacao_recursos": False,
+        "67_credito_vinculado_importacao_zero_recursos": False,
+        "70_operacao_aquisicao_sem_direito_credito": False,
+        "71_operacao_aquisicao_sem_direito_credito_zero": False,
+        "72_operacao_aquisicao_sem_direito_credito_aliquota_diferenciada": False,
+        "73_operacao_aquisicao_sem_direito_credito_st": False,
+        "74_operacao_aquisicao_sem_direito_credito_aliquota_zero": False,
+        "75_operacao_aquisicao_sem_direito_credito_isencao": False,
+        "98_outras_operacoes_entrada": False,
+        "99_outras_operacoes": False,
     }
     
     if isinstance(tipo_tributario, str):

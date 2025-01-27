@@ -8,6 +8,7 @@ from datetime import datetime
 class RegistroPesquisas(BaseModel):
     id_usuario: str
     id_produto: Optional[str] = None
+    modelo: str
     consulta: str
     resultado: Optional[List[Dict]] = None
     duracao_da_query: Optional[float] = None

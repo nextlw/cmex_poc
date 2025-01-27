@@ -13,12 +13,13 @@ from ...models.schemas import (
     ConsultaProduto,
 )
 
-async def obter_sugestoes_gpt4(consulta_produto: ConsultaProduto):
-    """Obtém sugestões de NCM usando o modelo GPT-4."""
+async def obter_sugestoes_deepseek(consulta_produto: ConsultaProduto):
+    """Obtém sugestões de NCM usando o modelo DeepSeek."""
     try:
         # Configuração do modelo
-        model_config = MODEL_MAPPING["GPT-4"]
-        openai.api_key = SETTINGS.OPENAI_API_KEY
+        model_config = MODEL_MAPPING["DeepSeek"]
+        openai.api_key = SETTINGS.DEEPSEEK_API_KEY
+        # openai.api_base = SETTINGS.DEEPSEEK_API_BASE
         
         # Preparação do prompt
         prompt = PROMPT_TEMPLATE(consulta_produto)

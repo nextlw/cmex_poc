@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from .claude import obter_sugestoes_claude
 from .gemini import obter_sugestoes_gemini
 from .gpt import obter_sugestoes_gpt4
+from .deepseek import obter_sugestoes_deepseek
 from ...config import supabase
 
 # Schemas
@@ -21,6 +22,7 @@ funcoes_modelos = {
     "Nexcode-0.1-BETA": obter_sugestoes_gemini,
     "Nex-0.1-Pro-2024": obter_sugestoes_gpt4,
     "Nex-0.3-Preview-2024": obter_sugestoes_claude,
+    "DeepSeek": obter_sugestoes_deepseek,
 }
 
 
@@ -83,6 +85,7 @@ async def post_queries(consulta_produto: ConsultaProduto, request: Request):
     novo_registro_pesquisas = RegistroPesquisas(
         id_usuario=request.state.user.id,
         id_produto=None,  # TODO:
+        modelo=consulta_produto.modelo,
         consulta=consulta_produto.consulta,
         resultado=sugestao_ncm,  # TODO:
         duracao_da_query=None,
@@ -106,7 +109,11 @@ async def get_queries(request: Request):
 
     # Importa o histórico de pesquisa do usuário
     res_sb_pesquisas = (
-        supabase.table("pesquisas").select("*").eq("id_usuario", id_usuario).execute()
+        supabase.table("pesquisas")
+        .select("*")
+        .eq("id_usuario", id_usuario)
+        .order("criado_em", desc=True)
+        .execute()
     )
 
     return res_sb_pesquisas
