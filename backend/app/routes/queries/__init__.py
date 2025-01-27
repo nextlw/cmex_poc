@@ -22,7 +22,7 @@ funcoes_modelos = {
     "Nexcode-0.1-BETA": obter_sugestoes_gemini,
     "Nex-0.1-Pro-2024": obter_sugestoes_gpt4,
     "Nex-0.3-Preview-2024": obter_sugestoes_claude,
-    "DeepSeek": obter_sugestoes_deepseek,
+    "Nex-0.5-Preview-2025": obter_sugestoes_deepseek,
 }
 
 
