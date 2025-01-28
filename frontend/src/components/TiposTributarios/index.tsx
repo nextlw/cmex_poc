@@ -95,7 +95,7 @@ const TiposTributarios: React.FC<TiposTributariosProps> = ({
           </span>
         </div>
         <div className={`tipo-tributario-card-discussao estado-${descricaoEstado}`}>
-          <span className="tipo-tributario-badge-discussao">
+          <span className="tipo-tributario-label">
             {justificativa || 'Descrição da Operação'}
           </span>
         </div>

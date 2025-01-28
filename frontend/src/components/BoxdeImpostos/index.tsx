@@ -25,8 +25,8 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
 
   return (
     <div className="class-tributaria-title">
-      <div className="flex items-center w-full">
-        <h3 className="text-xl font-semibold color-gray-100 gap-2 flex items-center">
+      <div className="col-span-12 w-full tablet-col-span-12 mobile-col-span-4 items-center">
+        <h3 className="text-xl font-semibold color-gray-100 gap-2 flex items-center style-root">
           <PiSealPercentBold /> Classificação Tributária
         </h3>
       </div>
@@ -47,7 +47,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
                       value={String(classificacao.ipi_entrada)}
                       onChange={() => {}}
                       readOnly={true}
-                      label="Saída:"
+                      label="Entrada:"
                       showInnerLabel={true}
                       width="100%"
                       placeholder=""
@@ -74,7 +74,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
                       value={String(classificacao.cofins_entrada)}
                       onChange={() => {}}
                       readOnly={true}
-                      label="Saída:"
+                      label="Entrada:"
                       showInnerLabel={true}
                       width="100%"
                       placeholder=""
@@ -95,7 +95,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
               </div>
             </div>
 
-            <div className="box-tributaria-item flex flex-col w-1/2 mobile:w-full gap-4">
+            <div className="box-tributaria-item flex flex-col w-1/2 mobile:w-full mobile:flex-col gap-4">
               <div className="box-tributaria-row">
                 <h4 className="text-sm mb-2">PIS</h4>
                 <div className="flex w-full gap-3">
@@ -104,7 +104,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
                       value={String(classificacao.pis_entrada)}
                       onChange={() => {}}
                       readOnly={true}
-                      label="Saída:"
+                      label="Entrada:"
                       showInnerLabel={true}
                       width="100%"
                       placeholder=""
@@ -132,7 +132,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
                       value={String(classificacao.cst_entrada)}
                       onChange={() => {}}
                       readOnly={true}
-                      label="Saída:"
+                      label="Entrada:"
                       showInnerLabel={true}
                       width="100%"
                       placeholder=""

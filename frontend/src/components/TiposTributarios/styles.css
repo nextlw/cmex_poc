@@ -1,23 +1,21 @@
 .tipos-tributarios {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 100%;
   padding: 16px;
   gap: 16px;
   background-color: var(--color-select-background);
   border-radius: 8px;
-  /* border: 1px solid var(--color-select-border); */
+  border: 1px solid var(--color-select-border);
 }
 
 .tipo-tributario-item {
   display: flex;
-  align-items: center;
-  position: relative;
-  padding-left: 24px;
+  flex-direction: column;
+  gap: 1rem;
   width: 100%;
-  height: 100%;
-  gap: 16px;
 }
 
 .tipo-tributario-item::before {
@@ -30,16 +28,20 @@
   box-shadow: 0 0 8px currentColor;
 }
 
+.tipo-tributario-card,
+.tipo-tributario-card-discussao {
+  width: 100%;
+  flex: 1;
+}
+
 .tipo-tributario-card {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 16px;
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  width:auto;
   height: 100%;
   min-width: 300px;
   background-color: rgba(26, 32, 44, 0.2);
@@ -49,14 +51,11 @@
 
 .tipo-tributario-card-discussao {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
+  flex-direction: column;
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  width:auto;
   height: 100%;
   min-width: 300px;
   background-color: var(--color-select-background);
@@ -197,5 +196,23 @@
   .tipo-tributario-card {
     width: 100%;
     min-width: unset;
+  }
+}
+
+/* Para telas maiores que 768px (desktop) */
+@media (min-width: 768px) {
+  .tipo-tributario-item {
+    flex-direction: row;
+  }
+  
+  .tipo-tributario-card,
+  .tipo-tributario-card-discussao {
+    flex: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .tipo-tributario-card-discussao {
+    flex-direction: row;
   }
 }
