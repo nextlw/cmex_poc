@@ -46,6 +46,7 @@ async def root():
 app.add_exception_handler(404, not_found_handler)
 app.add_exception_handler(405, method_not_allowed_handler)
 app.add_exception_handler(422, validation_exception_handler)
+app.add_exception_handler(500, internal_server_error_handler)
 
 
 # Adicionando especificamente o handler para RequestValidationError
