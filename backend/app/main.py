@@ -4,7 +4,6 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from .routes.historico import historico_router
 from .routes.queries import queries_router
 from app.middlewares.auth_middleware import AuthMiddleware
 from app.exceptions import *
@@ -13,8 +12,7 @@ from .config import SETTINGS
 # Inicializa uma instância do FastAPI.
 # Todas as rotas com prefixo /api
 app = FastAPI(
-    title=SETTINGS.PROJECT_NAME,
-    openapi_url=f"{SETTINGS.API_V1_STR}/openapi.json"
+    title=SETTINGS.PROJECT_NAME, openapi_url=f"{SETTINGS.API_V1_STR}/openapi.json"
 )
 
 # Configurações de CORS
@@ -25,12 +23,13 @@ app.add_middleware(
     allow_methods=SETTINGS.CORS_ALLOW_METHODS,
     allow_headers=SETTINGS.CORS_ALLOW_HEADERS,
     expose_headers=SETTINGS.CORS_EXPOSE_HEADERS,
-    max_age=SETTINGS.CORS_MAX_AGE
+    max_age=SETTINGS.CORS_MAX_AGE,
 )
 
 
 # Middleware de autenticação
 app.add_middleware(AuthMiddleware)
+
 
 # Configurações do endpoint raiz /api
 @app.get("/")
@@ -41,8 +40,6 @@ async def root():
         status_code=200,
         content={"message": "A API está funcionando :)"},
     )
-
-
 
 
 # Handlers globais de erro
@@ -60,13 +57,12 @@ async def custom_validation_error_handler(
 
 
 # Inclui os roteadores no app
-app.include_router(historico_router, prefix=SETTINGS.API_V1_STR)
 app.include_router(queries_router, prefix=SETTINGS.API_V1_STR)
 
 
 # Roda o servidor
 if __name__ == "__main__":
-    
+
     import uvicorn
 
     uvicorn.run(app, host="127.0.0.1", port=10000)
