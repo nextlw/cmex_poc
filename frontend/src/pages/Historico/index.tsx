@@ -40,11 +40,11 @@ const HistoricoPage: React.FC = () => {
               id: item.id,
               modelo: String(item.modelo),
               criado_em: item.criado_em,
-              ncm: item.resultado[0].ncm,
-              descricao: item.resultado[0].descricao,
-              atributos: item.resultado[0].atributos,
-              atributos_tipi: item.resultado[0].atributos_tipi,
-              valores_de_impostos: item.resultado[0].valores_de_impostos
+              ncm: item.resultado[0]?.ncm,
+              descricao: item.resultado[0]?.descricao,
+              atributos: item.resultado[0]?.atributos,
+              atributos_tipi: item.resultado[0]?.atributos_tipi,
+              valores_de_impostos: item.resultado[0]?.valores_de_impostos
             }
 
             // Adiciona o item no historicoTratado
@@ -140,24 +140,24 @@ const HistoricoPage: React.FC = () => {
                       <td>{item.ncm}</td>
                       <td
                         className="truncate-cell"
-                        data-full-text={item.atributos.join(", ")}
+                        data-full-text={item.atributos?.join(", ")}
                       >
-                        {item.atributos.join(", ")}
+                        {item.atributos?.join(", ")}
                       </td>
                       <td
                         className="truncate-cell"
-                        data-full-text={item.atributos_tipi.join(", ")}
+                        data-full-text={item.atributos_tipi?.join(", ")}
                       >
-                        {item.atributos_tipi.join(", ")}
+                        {item.atributos_tipi?.join(", ")}
                       </td>
-                      <td>{item.valores_de_impostos.ipi}</td>
+                      <td>{item.valores_de_impostos?.ipi}</td>
                       <td>
-                        {Object.entries(item.valores_de_impostos.icms || {})
+                        {Object.entries(item.valores_de_impostos?.icms || {})
                           .map(([estado, valor]) => `${estado}: ${valor}`)
-                          .join(", ")}
+                          ?.join(", ")}
                       </td>
-                      <td>{item.valores_de_impostos.pis}</td>
-                      <td>{item.valores_de_impostos.cofins}</td>
+                      <td>{item.valores_de_impostos?.pis}</td>
+                      <td>{item.valores_de_impostos?.cofins}</td>
                     </tr>
                   ))
                 )}
