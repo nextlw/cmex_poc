@@ -97,6 +97,7 @@ async def post_queries(consulta_produto: ConsultaProduto, request: Request):
         consulta=consulta_produto.consulta,
         resultado=sugestao_ncm,  # TODO:
         duracao_da_query=elapsed_time,
+        autocomplete=False
     ).model_dump()
 
     # Salva a consulta na DB de pesquisas
