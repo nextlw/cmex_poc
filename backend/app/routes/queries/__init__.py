@@ -1,6 +1,7 @@
 # Bibliotecas
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
+import time
 
 # Utils
 from .claude import obter_sugestoes_claude
@@ -29,6 +30,9 @@ funcoes_modelos = {
 # POST /api/queries
 @queries_router.post("/queries")
 async def post_queries(consulta_produto: ConsultaProduto, request: Request):
+    
+    # Inicia o timer
+    start_time = time.perf_counter()
 
     # TODO: GET /products
     # Verifica se o produto já existe no banco de dados
@@ -80,6 +84,10 @@ async def post_queries(consulta_produto: ConsultaProduto, request: Request):
 
     # TODO: validar com o William o formato de output das funções. Elas estão
     # retornando listas, mas acredito que deveria ser um SugerirNCM só
+    
+    # Finaliza o timer
+    end_time = time.perf_counter()
+    elapsed_time = end_time - start_time
 
     # Monta o registro que será adicionado na tabela do Supabase
     novo_registro_pesquisas = RegistroPesquisas(
@@ -88,7 +96,7 @@ async def post_queries(consulta_produto: ConsultaProduto, request: Request):
         modelo=consulta_produto.modelo,
         consulta=consulta_produto.consulta,
         resultado=sugestao_ncm,  # TODO:
-        duracao_da_query=None,
+        duracao_da_query=elapsed_time,
     ).model_dump()
 
     # Salva a consulta na DB de pesquisas
