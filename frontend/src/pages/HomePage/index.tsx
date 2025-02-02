@@ -105,19 +105,6 @@ const HomePage: React.FC = () => {
       console.log("Resposta do backend:", response.data);
       setSugerirNCM(response.data);
 
-      // Salva no histórico
-      try {
-        await axiosInstance.post("/historico", {
-          ...response.data[0], // Pega o primeiro resultado
-          modelo: modeloUsado,
-          timestamp: new Date().toISOString(),
-          consulta: pesquisa,
-          ...dropdownSelection,
-        });
-      } catch (historyError) {
-        console.error("Erro ao salvar no histórico:", historyError);
-        // Não exibimos erro ao usuário pois a consulta principal funcionou
-      }
     } catch (error) {
       console.error("Erro ao buscar sugestões:", error);
       setErrorMessage("Erro ao buscar informações. Tente novamente.");
