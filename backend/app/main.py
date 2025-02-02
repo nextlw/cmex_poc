@@ -1,13 +1,19 @@
 # Bibliotecas
-import os
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from .routes.queries import queries_router
+
+# Configurações do projeto
+from .config import SETTINGS
+
+# Middlewares e handlers de erros
 from app.middlewares.auth_middleware import AuthMiddleware
 from app.exceptions import *
-from .config import SETTINGS
+
+# Routers
+from .routes.queries import queries_router
+from .routes.autocomplete import autocomplete_router
 
 # Inicializa uma instância do FastAPI.
 # Todas as rotas com prefixo /api
@@ -59,7 +65,7 @@ async def custom_validation_error_handler(
 
 # Inclui os roteadores no app
 app.include_router(queries_router, prefix=SETTINGS.API_V1_STR)
-
+app.include_router(autocomplete_router, prefix=SETTINGS.API_V1_STR)
 
 # Roda o servidor
 if __name__ == "__main__":
