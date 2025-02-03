@@ -181,3 +181,4 @@ backend/.env
 backend/.env
 force_replace_development.sh
 yarn.lock
+start-dev.sh
