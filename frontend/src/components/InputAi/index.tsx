@@ -86,11 +86,11 @@ const InputAi: React.FC<InputAiProps> = ({
       if (!ref.current) return;
 
       if (isLoading) {
-        removeClasses.forEach(cls => ref.current.classList.remove(cls));
-        loadingClasses.forEach(cls => ref.current.classList.add(cls));
+        removeClasses.forEach((cls: string) => ref.current.classList.remove(cls));
+        loadingClasses.forEach((cls: string) => ref.current.classList.add(cls));
         if (animation) ref.current.style.animation = animation;
       } else {
-        loadingClasses.forEach(cls => ref.current.classList.remove(cls));
+        loadingClasses.forEach((cls: string) => ref.current.classList.remove(cls));
         if (animation) ref.current.style.animation = 'none';
       }
     };
@@ -148,10 +148,6 @@ const InputAi: React.FC<InputAiProps> = ({
     }
   };
 
-  function handleSearch(): void {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <>
       {/* Container principal - div externa que controla o tamanho e efeitos de borda
@@ -162,7 +158,7 @@ const InputAi: React.FC<InputAiProps> = ({
       <div
         className="container-gradiente"
         ref={containerRef}
-        style={{ width: width || "100%" }}
+        style={{ ...style, width: width || "100%" }}
       >
         {/* Wrapper do input - agrupa o input, ícone e botão
             - Classe envoltorio-input controla padding e posicionamento
