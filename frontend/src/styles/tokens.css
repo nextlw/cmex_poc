@@ -1,5 +1,38 @@
 :root {
   /* Cores padrão (tema dark) */
+  --text-color-primary: rgb(255 255 255);
+  --text-color-accent: #86abff;
+  --text-color-muted: #384766;
+  
+  --background-color-primary: rgb(17 24 39);
+  --background-color-secondary: rgb(55 65 81 / 0.5);
+  --background-color-tertiary: #18212f;
+  --background-color-hover: rgba(25, 26, 50, 0.5);
+  --background-color-tooltip: #1f1f1f;
+  
+  --border-color-primary: rgba(71, 131, 208, 0.5);
+  --border-color-secondary: #476171;
+  --border-color-loading: #8196b526;
+  --border-color-loading-accent: #8196b5;
+  
+  /* Cores dos modelos */
+  --color-gemini: #4285f4;
+  --color-gpt4: #10a37f;
+  --color-claude: #7c3aed;
+  
+  /* Cores do scrollbar */
+  --scrollbar-track-color: #2d2d2d;
+  --scrollbar-thumb-color: #4a4a4a;
+  --scrollbar-thumb-hover-color: #273a46;
+  
+  /* Tamanhos de fonte */
+  --font-size-sm: 0.875rem;
+  
+  /* Border radius */
+  --border-radius-sm: 0.25rem;
+  
+  /* Box shadow */
+  --box-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.2);
 
   --color-gray-300: rgb(209, 213, 219);
   --color-gray-400: rgb(156, 163, 175);

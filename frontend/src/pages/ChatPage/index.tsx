@@ -5,56 +5,48 @@ import InputAi from '../../components/InputAi';
 import './styles.css';
 import { PiListStarFill } from "react-icons/pi";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import QueryHistory from '../../components/QueryHistory';
+import { QueryHistoryItem, Message, AgentState, Reference } from '../../components/QueryHistory/types';
 
-interface Message {
-  type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'log';
-  content: string;
-  isTyping?: boolean;
-}
 
-interface Reference {
-  exactQuote: string;
-  url: string;
-}
-
-interface AgentState {
-  question?: string;
-  messages: Message[];
-  finalResult?: any;
-}
 
 const formatMessageContent = (content: string): React.ReactNode => {
-  // Regex para identificar URLs nas referências
-  const urlRegex = /Fonte: (https?:\/\/[^\s\n]+)/g;
-  
-  if (!content.includes('Fonte:')) {
-    return content;
-  }
-
-  const parts = [];
+  // Regex para identificar URLs no formato markdown
+  const markdownUrlRegex = /\[([^\]]+)\]\((https?:\/\/[\w\-\.]+\.[a-z]{2,}(?:\/[^\s]*)?)\)/gi;
+  const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let match;
+  const seenUrls = new Set<string>();
 
-  while ((match = urlRegex.exec(content)) !== null) {
-    // Adiciona o texto antes do link
-    parts.push(content.slice(lastIndex, match.index + 7)); // +7 para incluir "Fonte: "
-    
-    // Adiciona o link
-    parts.push(
-      <a
-        key={match.index}
-        href={match[1]}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="message-link"
-      >
-        {match[1]}
-      </a>
-    );
-    
+  while ((match = markdownUrlRegex.exec(content)) !== null) {
+    // Adiciona o texto que vem antes do link
+    parts.push(content.slice(lastIndex, match.index));
+
+    // Captura o texto e o link
+    const linkText = match[1];
+    const cleanUrl = match[2];
+
+    // Verifica se o link já foi processado
+    if (!seenUrls.has(cleanUrl)) {
+      seenUrls.add(cleanUrl);
+      // Envolve o link no mesmo tipo de tag (e classe) utilizada nos títulos das mensagens
+      parts.push(
+        <div key={match.index} className="message-link-title">
+          <a
+            href={cleanUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {linkText}
+          </a>
+        </div>
+      );
+    }
+
+    // Atualiza o índice para continuar com o restante do texto
     lastIndex = match.index + match[0].length;
   }
-  
+
   // Adiciona o restante do texto
   parts.push(content.slice(lastIndex));
 
@@ -108,6 +100,30 @@ const ChatPage: React.FC = () => {
   });
   const [showWelcome, setShowWelcome] = useState(true);
 
+  // Sobrescrever console.log para capturar eventos
+  const originalConsoleLog = console.log;
+  console.log = (...args) => {
+    originalConsoleLog(...args);
+    const [firstArg] = args;
+    if (typeof firstArg === 'string' && firstArg.includes('Evento recebido:')) {
+      try {
+        const eventData = JSON.parse(firstArg.split('Evento recebido: ')[1]);
+        if (eventData.type === 'progress') {
+          setAgentState(prev => ({
+            ...prev,
+            messages: [...prev.messages, {
+              type: 'step',
+              content: `🔄 Progresso: ${eventData.trackers.actionState.think || 'Atualizando...'}`,
+              isTyping: false
+            }]
+          }));
+        }
+      } catch (error) {
+        console.error('Erro ao processar evento do console:', error);
+      }
+    }
+  };
+
   const handleClear = () => {
     // Fecha qualquer conexão EventSource existente
     if (eventSourceRef.current) {
@@ -139,7 +155,7 @@ const ChatPage: React.FC = () => {
         },
         body: JSON.stringify({
           q: question,
-          model: selectedModel
+          modelo: selectedModel
         })
       });
 
@@ -384,110 +400,101 @@ const ChatPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-    
-    // Conexão SSE para logs
-    // const logEventSource = new EventSource(`${API_URL}/api/v1/logs/stream`);
-    
-    // Conexão WebSocket para atualizações do agente
-    const ws = new WebSocket(`${API_URL.replace('http', 'ws')}/api/v1/stream`);
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        // Mantenha o tratamento existente das mensagens (linhas 182-298)
-        setAgentState(prevState => {
-          const newState = { ...prevState };
-          let messages = [...prevState.messages];
-          
-          // Processamento das mensagens do WebSocket (mantenha a lógica existente)
-          switch (data.type) {
-            case 'progress':
-            case 'connected':
-            case 'error':
-            case 'answer':
-              // ... tratamento existente das mensagens ...
-          }
-          
-          newState.messages = messages;
-          return newState;
-        });
-      } catch (error) {
-        console.error('Erro ao processar mensagem WebSocket:', error);
-      }
-    };
-
+    // Limpar a sobrescrita do console.log ao desmontar o componente
     return () => {
-      // logEventSource.close();
-      ws.close();
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
+      console.log = originalConsoleLog;
     };
   }, []);
 
   return (
-    <div className="flex flex-col container-full items-center">
-      <Header
-        selectedModel={selectedModel}
-        onModelChange={(value: string | null) => value && setSelectedModel(value)}
-        modeloSelecionado={selectedModel}
-        aoMudarModelo={(value: string | null) => value && setSelectedModel(value)}
+    <div className="flex h-screen">
+      <QueryHistory 
+        onSelectQuery={(query: QueryHistoryItem) => {
+          setAgentState(prev => ({
+            ...prev,
+            messages: [
+              {
+                type: 'query' as const,
+                content: query.question || query.title,
+                isTyping: false
+              },
+              {
+                type: 'step' as const,
+                content: `💭 Status: ${query.status}`,
+                isTyping: false
+              },
+              {
+                type: 'response' as const,
+                content: `✅ ${query.summary || 'Sem resumo disponível'}`,
+                isTyping: false
+              }
+            ]
+          }));
+          setShowWelcome(false);
+        }} 
       />
-      <div className="container max-w-7xl">
-        <div className="page-header-container">
-          <PageHeader
-            icon={<PiListStarFill />}
-            title="Chat com IA"
-            icon_size="26px"
-          />
-          <button
-            onClick={handleClear}
-            style={{ 
-              color: '#ff4444',
-              marginLeft: '10px',
-              padding: '5px 10px',
-              border: '1px solid #ff4444',
-              borderRadius: '4px'
-            }}
-          >
-            Limpar Chat
-          </button>
-        </div>
-        <div className="pb-8 shadow-lg shadow-inherit rounded-lg">
-            <InputAi
-              value={inputValue}
-              onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
-              isLoading={loading}
-              placeholder="Digite sua pergunta..."
+      <div className="flex flex-col container-full items-center flex-1">
+        <Header
+          selectedModel={selectedModel}
+          onModelChange={(value: string | null) => value && setSelectedModel(value)}
+          modeloSelecionado={selectedModel}
+          aoMudarModelo={(value: string | null) => value && setSelectedModel(value)}
+        />
+        <div className="container max-w-7xl">
+          <div className="page-header-container">
+            <PageHeader
+              icon={<PiListStarFill />}
+              title="Chat com IA"
+              icon_size="26px"
             />
+            <button
+              onClick={handleClear}
+              style={{ 
+                color: '#ff4444',
+                marginLeft: '10px',
+                padding: '5px 10px',
+                border: '1px solid #ff4444',
+                borderRadius: '4px'
+              }}
+            >
+              Limpar Chat
+            </button>
           </div>
-        <div className="chat-content">
-          <div className="chat-messages">
-            {showWelcome && agentState.messages.length === 0 && (
-              <div className="welcome-message">
-                Bem-vindo! Como posso ajudar você hoje?
-                <div className="blinking-cursor"></div>
-              </div>
-            )}
-            {agentState.messages.map((message, index) => (
-              <ChatMessage key={index} {...message} />
-            ))}
-          </div>
-          {waitingResponse ? (
-            <div className="loading-overlay animate-fadeIn">
-              <div className="loading-container">
-                <DotLottieReact
-                  src="https://lottie.host/28852c3d-fe13-41ae-81fa-fa3fd2261002/i5R35o9aOB.lottie"
-                  loop
-                  autoplay
-                  speed={2}
-                  className="animate-fadeIn"
-                />
-              </div>
+          <div className="pb-8 shadow-lg shadow-inherit rounded-lg">
+              <InputAi
+                value={inputValue}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
+                isLoading={loading}
+                placeholder="Digite sua pergunta..."
+                onButtonClick={handleSend}
+              />
             </div>
-          ) : null}
+          <div className="chat-content">
+            <div className="chat-messages">
+              {showWelcome && agentState.messages.length === 0 && (
+                <div className="welcome-message">
+                  Bem-vindo! Como posso ajudar você hoje?
+                </div>
+              )}
+              {agentState.messages.map((message, index) => (
+                <ChatMessage key={index} {...message} />
+              ))}
+            </div>
+            {waitingResponse ? (
+              <div className="loading-overlay animate-fadeIn">
+                <div className="loading-container">
+                  <DotLottieReact
+                    src="https://lottie.host/28852c3d-fe13-41ae-81fa-fa3fd2261002/i5R35o9aOB.lottie"
+                    loop
+                    autoplay
+                    speed={2}
+                    className="animate-fadeIn"
+                  />
+                </div>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>

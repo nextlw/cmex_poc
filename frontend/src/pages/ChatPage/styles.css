@@ -241,7 +241,6 @@
 .chat-message.query {
   background-color: #1e1e1e;
   border: 1px solid #2a2a2a;
-  position: sticky;
   top: 0;
   z-index: 10;
   align-self: flex-end;
@@ -355,7 +354,7 @@
 
 .chat-message:last-child.typing .message-content::before {
   content: '';
-  position: absolute;
+  position: relative;
   display: block;
   left: 0;
   top: 0;
@@ -427,4 +426,38 @@
   animation: blink 1s infinite;
   color: #32CD32;
   font-weight: bold;
+}
+
+.message-link-title {
+  background-color: #66666620;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  margin: 4px 4px 16px 4px;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease-in-out;
+}
+
+.message-link-title a {
+  color: #7CCD7C;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.message-link-title:hover {
+  background-color: #66666630;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.message-link-title a:hover {
+  color: #90EE90;
+  text-decoration: underline;
+}
+
+.message-link-title + .message-link-title {
+  margin-top: 8px;
 } 
