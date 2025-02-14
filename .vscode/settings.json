@@ -86,5 +86,6 @@
         "Você"
     ],
     "cursor.aipreview.enabled": true,
-    "workbench.activityBar.orientation": "vertical"
+    "workbench.activityBar.orientation": "vertical",
+    "postman.settings.dotenv-detection-notification-visibility": false
 }
