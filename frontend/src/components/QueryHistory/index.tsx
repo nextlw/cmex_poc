@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './styles.css';
 import { QueryHistoryItem, QueryHistoryProps } from './types';
+import ConfirmationModal from '../ConfirmationModal';
 
 const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery }) => {
   const [queries, setQueries] = useState<QueryHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedQuery, setSelectedQuery] = useState<QueryHistoryItem | null>(null);
+  const [queryToDelete, setQueryToDelete] = useState<QueryHistoryItem | null>(null);
+  const [deletingIds, setDeletingIds] = useState<(string | number)[]>([]);
 
   useEffect(() => {
     const fetchQueries = async () => {
       try {
         setLoading(true);
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        const API_URL = import.meta.env.VITE_API_LOCAL_URL || 'http://localhost:3000';
         const response = await fetch(`${API_URL}/api/v1/queries`);
         
         if (!response.ok) {
@@ -48,6 +51,33 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery }) => {
     onSelectQuery(query);
   };
 
+  const handleConfirmDelete = async () => {
+    if (queryToDelete) {
+      // Adiciona query id à lista de exclusão para aplicar animação puft
+      setDeletingIds(prev => [...prev, queryToDelete.id]);
+      try {
+        const API_URL = import.meta.env.VITE_API_LOCAL_URL || 'http://localhost:3000';
+        const response = await fetch(`${API_URL}/api/v1/trash-query`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: queryToDelete.id })
+        });
+        if (!response.ok) {
+          throw new Error('Falha ao excluir a pesquisa');
+        }
+      } catch (error) {
+        console.error(error);
+        // Aqui você pode tratar o erro conforme necessário
+      }
+      // Aguarda duração da animação e remove a query da lista
+      setTimeout(() => {
+        setQueries(prev => prev.filter(q => q.id !== queryToDelete.id));
+        setDeletingIds(prev => prev.filter(id => id !== queryToDelete.id));
+      }, 500);
+
+      setQueryToDelete(null);
+    }
+  };
   if (loading) {
     return (
       <div className="query-history-sidebar">
@@ -76,10 +106,19 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery }) => {
           queries.map((query) => (
             <div
               key={query.id}
-              className={`query-item ${selectedQuery?.id === query.id ? 'selected' : ''}`}
+              className={`query-item ${selectedQuery?.id === query.id ? 'selected' : ''} ${deletingIds.includes(query.id) ? 'deleting' : ''}`}
               onClick={() => handleSelectQuery(query)}
             >
-              <p className="query-text">{query.title}</p>
+              <div className="query-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <p className="query-text" style={{ flex: 1 }}>{query.title}</p>
+                <button
+                  className="delete-button"
+                  onClick={(e) => { e.stopPropagation(); setQueryToDelete(query); }}
+                  style={{ marginLeft: '8px', padding: '0 6px' }}
+                >
+                  ×
+                </button>
+              </div>
               <div className="query-details">
                 <span className="query-status">{query.status}</span>
                 <span className="query-timestamp">
@@ -90,6 +129,16 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery }) => {
           ))
         )}
       </div>
+      {queryToDelete && (
+        <ConfirmationModal
+          isOpen={true}
+          title="Confirmar Exclusão"
+          queryName={queryToDelete.title}
+          queryId={queryToDelete.id}
+          onCancel={() => setQueryToDelete(null)}
+          onConfirm={handleConfirmDelete}
+        />
+      )}
     </div>
   );
 };

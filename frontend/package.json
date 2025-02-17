@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "version": "1.0.0",
+  "packageManager": "pnpm@10.4.1",
   "private": true,
   "license": "MIT",
   "dependencies": {
@@ -17,6 +18,7 @@
     "axios": "^1.7.8",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "date-fns": "^4.1.0",
     "gh-pages": "^6.2.0",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
@@ -55,7 +57,8 @@
     "eject": "react-scripts eject",
     "build:development": "env-cmd -f .env.development vite build",
     "build:homolog": "env-cmd -f .env.homolog vite build",
-    "build:production": "env-cmd -f .env.production vite build"
+    "build:production": "env-cmd -f .env.production vite build",
+    "preinstall": "npx only-allow pnpm"
   },
   "eslintConfig": {
     "extends": [
@@ -73,6 +76,14 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "esbuild"
+    ],
+    "onlyBuiltDependencies": [
+      "esbuild"
     ]
   }
 }

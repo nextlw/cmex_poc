@@ -86,10 +86,23 @@
 
 .query-status {
   font-size: 11px;
-  color: var(--text-color-primary);
-  background-color: #66666620;
   padding: 2px 6px;
   border-radius: 4px;
+}
+
+.query-status[data-status="error"] {
+  color: #ff4444;
+  background-color: #ff444420;
+}
+
+.query-status[data-status="completed"] {
+  color: #00c853;
+  background-color: #00c85320;
+}
+
+.query-status[data-status="processing"] {
+  color: #ffa726;
+  background-color: #ffa72620;
 }
 
 .query-timestamp {

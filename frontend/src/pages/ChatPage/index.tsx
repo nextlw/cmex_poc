@@ -146,7 +146,7 @@ const ChatPage: React.FC = () => {
   const sendQuestion = async (question: string) => {
     try {
       setWaitingResponse(true);
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const API_URL = import.meta.env.VITE_API_LOCAL_URL || 'http://localhost:3000';
       const response = await fetch(`${API_URL}/api/v1/query`, {
         method: 'POST',
         headers: {
@@ -187,8 +187,20 @@ const ChatPage: React.FC = () => {
     }, 500);
   };
 
+  const fetchKnowledge = async (requestId: string) => {
+    try {
+      const API_URL = import.meta.env.VITE_API_LOCAL_URL || 'http://localhost:3000';
+      const response = await fetch(`${API_URL}/api/v1/knowledge/${requestId}`);
+      if (!response.ok) throw new Error('Erro ao buscar conhecimento');
+      return await response.json();
+    } catch (error) {
+      console.error('Erro ao buscar conhecimento:', error);
+      return null;
+    }
+  };
+
   const startEventStream = async (requestId: string) => {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const API_URL = import.meta.env.VITE_API_LOCAL_URL || 'http://localhost:3000';
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
     }
@@ -197,25 +209,16 @@ const ChatPage: React.FC = () => {
     eventSourceRef.current = eventSource;
 
     eventSource.onmessage = async (event) => {
-      try {
-        if (!event.data) {
-          console.warn('Dados vazios recebidos do evento');
-          return;
-        }
-
+      if (event.data) {
         const data = JSON.parse(event.data);
-        console.log('Evento recebido:', data);
-
-        if (!data) {
-          console.warn('Dados inválidos após parse');
-          return;
+        if (data.type === 'answer' && data.data?.references?.length) {
+          const knowledge = await fetchKnowledge(data.requestId);
+          data.data.references = knowledge.references;
         }
-
-        setWaitingResponse(false);
-
-        setAgentState((prevState: AgentState) => {
-          const newState = { ...prevState };
-          let messages = [...prevState.messages];
+        // Processar dados recebidos
+        setAgentState(prev => {
+          const newState = { ...prev };
+          let messages = [...prev.messages];
 
           switch (data.type) {
             case 'connected':
@@ -242,7 +245,6 @@ const ChatPage: React.FC = () => {
                   });
                 }
                 
-                // Mantém mensagens anteriores sem animação
                 messages = messages.map(msg => ({...msg, isTyping: false}));
                 messages.push(newMessage);
               } else if (data.data?.action === 'answer') {
@@ -270,23 +272,6 @@ const ChatPage: React.FC = () => {
                     isTyping: true
                   });
                 }
-              } else if (data.data?.action === 'reflect') {
-                if (data.data.think) {
-                  messages.push({
-                    type: 'step',
-                    content: `💭 Reflexão: ${data.data.think}`,
-                    isTyping: true
-                  });
-                }
-                if (data.data.questionsToAnswer?.length) {
-                  messages.push({
-                    type: 'reflect',
-                    content: '❓ Questões a serem respondidas:\n' + data.data.questionsToAnswer.map((q: string) => 
-                      `- ${q}`
-                    ).join('\n'),
-                    isTyping: true
-                  });
-                }
               }
               break;
 
@@ -309,18 +294,6 @@ const ChatPage: React.FC = () => {
           setLoading(false);
           handleLoadingEnd();
         }
-
-      } catch (error) {
-        console.error('Erro ao processar evento:', error, '\nDados recebidos:', event.data);
-        setAgentState(prev => ({
-          ...prev,
-          messages: [...prev.messages, {
-            type: 'error',
-            content: `Erro ao processar resposta: ${error}`,
-            isTyping: true
-          }]
-        }));
-        setLoading(false);
       }
     };
 
@@ -334,7 +307,7 @@ const ChatPage: React.FC = () => {
 
   const getTaskResult = async (requestId: string) => {
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const API_URL = import.meta.env.VITE_API_LOCAL_URL || 'http://localhost:3000';
       const response = await fetch(`${API_URL}/api/v1/task/${requestId}`);
       if (!response.ok) {
         throw new Error('Erro ao obter resultado');
@@ -465,7 +438,9 @@ const ChatPage: React.FC = () => {
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
-                isLoading={loading}
+                isLoading={loading && !agentState.messages.some(msg => 
+                  msg.type === 'response' && msg.content.includes('definitive: true')
+                )}
                 placeholder="Digite sua pergunta..."
                 onButtonClick={handleSend}
               />
@@ -481,7 +456,7 @@ const ChatPage: React.FC = () => {
                 <ChatMessage key={index} {...message} />
               ))}
             </div>
-            {waitingResponse ? (
+            {waitingResponse && !agentState.messages.some(msg => msg.type === 'response') ? (
               <div className="loading-overlay animate-fadeIn">
                 <div className="loading-container">
                   <DotLottieReact

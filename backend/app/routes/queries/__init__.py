@@ -8,6 +8,7 @@ from .claude import obter_sugestoes_claude
 from .gemini import obter_sugestoes_gemini
 from .gpt import obter_sugestoes_gpt4
 from .deepseek import obter_sugestoes_deepseek
+from .qwen import obter_sugestoes_qwen
 from ...config import supabase
 
 # Schemas
@@ -24,6 +25,7 @@ funcoes_modelos = {
     "Nex-0.1-Pro-2024": obter_sugestoes_gpt4,
     "Nex-0.3-Preview-2024": obter_sugestoes_claude,
     "Nex-0.5-Preview-2025": obter_sugestoes_deepseek,
+    "Qwen2.5-7b-instruct-1m": obter_sugestoes_qwen,
 }
 
 

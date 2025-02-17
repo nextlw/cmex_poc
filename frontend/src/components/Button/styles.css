@@ -10,6 +10,7 @@
   cursor: pointer;
   border: none;
   outline: none;
+  padding: var(--pd-sm) var(--pd-md);
 }
 
 .button.primary {

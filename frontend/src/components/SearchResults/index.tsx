@@ -1,4 +1,5 @@
 import React from 'react';
+import './styles.css';
 
 interface SearchResult {
   noNCM: string;
@@ -6,12 +7,30 @@ interface SearchResult {
   nbm: string;
   coNbm: string;
   coNcm: string;
+  url?: string; // URL opcional para referência
 }
 
 interface SearchResultsProps {
   results: SearchResult[];
   isLoading: boolean;
 }
+
+const formatLink = (text: string, url?: string): React.ReactNode => {
+  if (!url) return text;
+  
+  return (
+    <div className="message-link-title">
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-400 hover:text-blue-300"
+      >
+        {text}
+      </a>
+    </div>
+  );
+};
 
 const SearchResults: React.FC<SearchResultsProps> = ({ results, isLoading }) => {
   if (isLoading) {
@@ -37,7 +56,9 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, isLoading }) => 
         <tbody className="divide-y divide-gray-700">
           {results.map((result, index) => (
             <tr key={index} className="hover:bg-gray-700">
-              <td className="px-6 py-4 whitespace-normal text-gray-300">{result.noNCM || '-'}</td>
+              <td className="px-6 py-4 whitespace-normal text-gray-300">
+                {formatLink(result.noNCM || '-', result.url)}
+              </td>
               <td className="px-6 py-4 whitespace-nowrap text-gray-300">{result.unit || '-'}</td>
               <td className="px-6 py-4 whitespace-normal text-gray-300">{result.nbm || '-'}</td>
               <td className="px-6 py-4 whitespace-nowrap text-gray-300">{result.coNbm || '-'}</td>

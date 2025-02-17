@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     OPENAI_MODEL: str = "gpt-4"
     
+    # Configurações do DeepSeek
     DEEPSEEK_API_KEY: str = os.getenv("DEEPSEEK_API_KEY", "")
     DEEPSEEK_API_BASE: str = "https://api.deepseek.com/v1"
     DEEPSEEK_MODEL: str = "deepseek-chat"
@@ -36,6 +37,10 @@ class Settings(BaseSettings):
     # Configurações do Anthropic
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
+    
+    # Configurações do vite
+    VITE_API_LOCAL_URL: str = os.getenv("VITE_API_LOCAL_URL", "")
+    LOCAL_MODEL: str = "qwen2.5-7b-instruct-1m"
 
     # Configurações do servidor
     HOST: str = "0.0.0.0"
@@ -45,7 +50,8 @@ class Settings(BaseSettings):
     if ENV == "dev":
         BACKEND_CORS_ORIGINS: list[str] = [
             "http://localhost:5173",
-            "http://localhost:10000"
+            "http://localhost:10000",
+            "http://localhost:3000"
         ]
     elif ENV == "prod":
         BACKEND_CORS_ORIGINS: list[str] = [
@@ -79,6 +85,9 @@ class Settings(BaseSettings):
 
     # Configurações de cache
     CACHE_TTL: int = 60 * 60  # 1 hora em segundos
+
+    # Configurações do modelo Qwen
+    LOCAL_MODEL_URL: str = "http://localhost:1234"  # URL do servidor local do modelo Qwen
 
     class Config:
         case_sensitive = True
@@ -183,6 +192,17 @@ MODEL_MAPPING = {
         "max_tokens": 700,
         "temperature": 1.3,
     },
+    
+    "Qwen2.5-7b-instruct-1m": {
+        "model_name": SETTINGS.LOCAL_MODEL,
+        "max_tokens": 10000,
+        "temperature": 0.7,
+    },
+    "Qwen": {
+        "model_name": "qwen2.5-7b-instruct-1m",
+        "temperature": 0.7,
+        "max_tokens": 2000
+    }
 }
 
 # Configurações de resposta padrão
