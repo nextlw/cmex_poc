@@ -20,7 +20,7 @@ export interface QueryHistoryProps {
 }
 
 export interface Message {
-  type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'log';
+  type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'log' | 'search';
   content: string;
   isTyping?: boolean;
 }

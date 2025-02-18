@@ -41,20 +41,22 @@ export interface Reference {
   }
   
   export interface StreamMessage {
-    type: string;
-    data: {
-      message?: string;
-      action?: string;
+    type: 'progress' | 'answer' | 'error' | 'connected';
+    data?: {
+      action?: 'search' | 'answer' | 'reflect';
       think?: string;
       answer?: string;
       searchQuery?: string;
       references?: Reference[];
-      questionsToAnswer?: string[];
       error?: string;
     };
     trackers?: {
-      tokenUsage: number;
-      actionState: {
+      tokenTracker: {
+        usage: Array<{tool: string; tokens: number}>;
+        totalTokens: number;
+      };
+      actionTracker: {
+        think: string;
         action: string;
         totalStep: number;
         badAttempts: number;

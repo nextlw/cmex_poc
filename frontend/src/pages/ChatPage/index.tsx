@@ -4,11 +4,9 @@ import React, { useState, ChangeEvent, KeyboardEvent, useEffect, useRef } from '
 import InputAi from '../../components/InputAi';
 import './styles.css';
 import { PiListStarFill } from "react-icons/pi";
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+// import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import QueryHistory from '../../components/QueryHistory';
 import { QueryHistoryItem, Message, AgentState, Reference } from '../../components/QueryHistory/types';
-
-
 
 const formatMessageContent = (content: string): React.ReactNode => {
   // Regex para identificar URLs no formato markdown
@@ -92,8 +90,7 @@ const ChatMessage: React.FC<Message> = ({ type, content, isTyping }) => {
 const ChatPage: React.FC = () => {
   const eventSourceRef = useRef<EventSource | null>(null);
   const [selectedModel, setSelectedModel] = useState<string>("qwen2.5-7b-instruct-1m");
-  const [loading, setLoading] = useState(false);
-  const [waitingResponse, setWaitingResponse] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [agentState, setAgentState] = useState<AgentState>({
     messages: []
@@ -132,8 +129,7 @@ const ChatPage: React.FC = () => {
     }
     
     // Reseta todos os estados
-    setLoading(false);
-    setWaitingResponse(false);
+    setIsLoading(false);
     setInputValue('');
     setAgentState({
       question: undefined,
@@ -145,8 +141,9 @@ const ChatPage: React.FC = () => {
 
   const sendQuestion = async (question: string) => {
     try {
-      setWaitingResponse(true);
       const API_URL = import.meta.env.VITE_API_LOCAL_URL || 'http://localhost:3000';
+      console.log('Enviando pergunta para:', `${API_URL}/api/v1/query`);
+      
       const response = await fetch(`${API_URL}/api/v1/query`, {
         method: 'POST',
         headers: {
@@ -159,13 +156,17 @@ const ChatPage: React.FC = () => {
         })
       });
 
+      const data = await response.json();
+      console.log('Resposta completa do servidor:', data);
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Erro ao enviar pergunta: ${errorData.error || response.statusText}`);
+        throw new Error(`Erro ao enviar pergunta: ${data.error || response.statusText}`);
       }
 
-      const data = await response.json();
-      console.log('Resposta do servidor:', data);
+      if (!data.requestId) {
+        throw new Error('RequestId não recebido do servidor');
+      }
+
       return data.requestId;
     } catch (error) {
       console.error('Erro detalhado:', error);
@@ -173,18 +174,12 @@ const ChatPage: React.FC = () => {
         ...prev,
         messages: [...prev.messages, {
           type: 'error',
-          content: `Erro ao enviar pergunta: ${error}`,
-          isTyping: true
+          content: `Erro ao enviar pergunta: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+          isTyping: false
         }]
       }));
       return null;
     }
-  };
-
-  const handleLoadingEnd = () => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
   };
 
   const fetchKnowledge = async (requestId: string) => {
@@ -201,6 +196,8 @@ const ChatPage: React.FC = () => {
 
   const startEventStream = async (requestId: string) => {
     const API_URL = import.meta.env.VITE_API_LOCAL_URL || 'http://localhost:3000';
+    console.log('Iniciando stream de eventos para requestId:', requestId);
+    
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
     }
@@ -208,100 +205,181 @@ const ChatPage: React.FC = () => {
     const eventSource = new EventSource(`${API_URL}/api/v1/stream/${requestId}`);
     eventSourceRef.current = eventSource;
 
+    eventSource.onopen = () => {
+      console.log('Conexão SSE estabelecida');
+    };
+
     eventSource.onmessage = async (event) => {
+      console.log('Evento SSE recebido:', event.data);
+      
       if (event.data) {
-        const data = JSON.parse(event.data);
-        if (data.type === 'answer' && data.data?.references?.length) {
-          const knowledge = await fetchKnowledge(data.requestId);
-          data.data.references = knowledge.references;
-        }
-        // Processar dados recebidos
-        setAgentState(prev => {
-          const newState = { ...prev };
-          let messages = [...prev.messages];
+        try {
+          const data = JSON.parse(event.data);
+          console.log('Dados do evento processados:', data);
 
-          switch (data.type) {
-            case 'connected':
+          const processAnswer = async (data: any, requestId: string): Promise<Message[]> => {
+            const messages: Message[] = [];
+            
+            if (data.data?.think) {
               messages.push({
-                type: 'step',
-                content: '🔌 Conectado ao servidor',
-                isTyping: true
+                type: 'step' as const,
+                content: `💭 ${data.data.think}`,
+                isTyping: false
               });
-              break;
+            }
+            
+            messages.push({
+              type: 'response' as const,
+              content: `✅ ${data.data.answer}`,
+              isTyping: false
+            });
 
-            case 'progress':
-              if (data.data?.actionState?.action === 'search') {
-                const newMessage = {
-                  type: 'step' as const,
-                  content: `🔍 Buscando: "${data.data.actionState.searchQuery}"`,
-                  isTyping: true
-                };
-                
-                if (data.data.actionState.think) {
+            // Buscar conhecimento acumulado
+            const knowledge = await fetchKnowledge(requestId);
+            if (knowledge?.references?.length) {
+              messages.push({
+                type: 'step' as const,
+                content: '🧠 Conhecimento Acumulado:',
+                isTyping: false
+              });
+
+              knowledge.references.forEach((ref: any) => {
+                if (ref.exactQuote && ref.url) {
                   messages.push({
-                    type: 'step' as const,
-                    content: `💭 Pensando: ${data.data.actionState.think}`,
-                    isTyping: true
+                    type: 'response' as const,
+                    content: `📚 ${ref.exactQuote}\n[Fonte](${ref.url})`,
+                    isTyping: false
                   });
                 }
-                
-                messages = messages.map(msg => ({...msg, isTyping: false}));
-                messages.push(newMessage);
-              } else if (data.data?.action === 'answer') {
-                if (data.data.think) {
-                  messages.push({
-                    type: 'step',
-                    content: `💭 Pensamento: ${data.data.think}`,
-                    isTyping: true
-                  });
-                }
-                messages = [
-                  ...messages.map(msg => ({...msg, isTyping: false})),
-                  {
-                    type: 'response',
-                    content: `✅ ${data.data.answer}`,
-                    isTyping: true
+              });
+            }
+
+            if (data.data.references?.length) {
+              messages.push({
+                type: 'response' as const,
+                content: '📚 Referências:\n' + data.data.references.map((ref: Reference) => 
+                  `[${ref.exactQuote}](${ref.url})`
+                ).join('\n'),
+                isTyping: false
+              });
+            }
+
+            return messages;
+          };
+
+          setAgentState(prev => {
+            const newState = { ...prev };
+            let messages = [...prev.messages];
+
+            switch (data.type) {
+              case 'connected':
+                messages.push({
+                  type: 'connected',
+                  content: '🔌 Conectado ao servidor',
+                  isTyping: false
+                });
+                break;
+
+              case 'progress':
+                if (data.trackers?.actionState) {
+                  const { action, think, searchQuery } = data.trackers.actionState;
+                  
+                  if (think) {
+                    messages.push({
+                      type: 'step',
+                      content: `💭 ${think}`,
+                      isTyping: false
+                    });
                   }
-                ];
-                if (data.data.references?.length) {
+                  
+                  if (action === 'search' && searchQuery) {
+                    messages.push({
+                      type: 'search',
+                      content: `🔍 Buscando: "${searchQuery}"`,
+                      isTyping: false
+                    });
+                  }
+                }
+                break;
+
+              case 'answer':
+                if (data.data) {
+                  (async () => {
+                    const answerMessages = await processAnswer(data, requestId);
+                    setAgentState(prev => ({
+                      ...prev,
+                      messages: [...prev.messages, ...answerMessages]
+                    }));
+                    setIsLoading(false);
+                  })();
+                }
+                break;
+
+              case 'error':
+                console.error('Erro recebido do servidor:', data.data);
+                messages.push({
+                  type: 'error',
+                  content: `❌ Erro: ${data.data || 'Erro desconhecido'}`,
+                  isTyping: false
+                });
+                setIsLoading(false);
+                break;
+
+              case 'status':
+                if (data.data?.status === 'error') {
                   messages.push({
-                    type: 'response',
-                    content: '📚 Referências:\n' + data.data.references.map((ref: Reference) => 
-                      `- ${ref.exactQuote}\n  Fonte: ${ref.url}`
-                    ).join('\n'),
-                    isTyping: true
+                    type: 'error',
+                    content: `❌ Status: ${data.data.status}`,
+                    isTyping: false
                   });
                 }
-              }
-              break;
+                break;
 
-            case 'error':
-              messages.push({
-                type: 'error',
-                content: `❌ Erro: ${data.data.error}`,
-                isTyping: true
-              });
-              break;
+              default:
+                console.log('Tipo de evento não tratado:', data.type);
+                break;
+            }
+
+            console.log('Novo estado de mensagens:', messages);
+            newState.messages = messages;
+            return newState;
+          });
+
+          if (data.type === 'answer' || data.type === 'error') {
+            console.log('Fechando conexão após receber resposta/erro');
+            eventSource.close();
+            eventSourceRef.current = null;
           }
-
-          newState.messages = messages;
-          return newState;
-        });
-
-        if (data.type === 'answer') {
-          eventSource.close();
-          eventSourceRef.current = null;
-          setLoading(false);
-          handleLoadingEnd();
+        } catch (error) {
+          console.error('Erro ao processar evento:', error);
+          setAgentState(prev => ({
+            ...prev,
+            messages: [...prev.messages, {
+              type: 'error',
+              content: `❌ Erro ao processar evento: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+              isTyping: false
+            }]
+          }));
+          setIsLoading(false);
         }
       }
     };
 
-    eventSource.onerror = () => {
+    eventSource.onerror = (error) => {
+      console.error('Erro na conexão SSE:', error);
       eventSource.close();
       eventSourceRef.current = null;
       getTaskResult(requestId);
-      setLoading(false);
+      setIsLoading(false);
+      
+      setAgentState(prev => ({
+        ...prev,
+        messages: [...prev.messages, {
+          type: 'error',
+          content: '❌ Erro na conexão com o servidor',
+          isTyping: false
+        }]
+      }));
     };
   };
 
@@ -321,8 +399,7 @@ const ChatPage: React.FC = () => {
         };
         return newState;
       });
-      setLoading(false);
-      handleLoadingEnd();
+      setIsLoading(false);
     } catch (error) {
       console.error('Erro:', error);
       setAgentState(prev => ({
@@ -333,7 +410,7 @@ const ChatPage: React.FC = () => {
           isTyping: true
         }]
       }));
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -344,7 +421,8 @@ const ChatPage: React.FC = () => {
   const handleSend = async () => {
     if (!inputValue.trim()) return;
     
-    setLoading(true);
+    setIsLoading(true);
+    
     setAgentState(prev => ({
       ...prev,
       question: inputValue,
@@ -361,7 +439,7 @@ const ChatPage: React.FC = () => {
       setInputValue('');
       setShowWelcome(false);
     } else {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -438,9 +516,7 @@ const ChatPage: React.FC = () => {
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
-                isLoading={loading && !agentState.messages.some(msg => 
-                  msg.type === 'response' && msg.content.includes('definitive: true')
-                )}
+                isLoading={isLoading}
                 placeholder="Digite sua pergunta..."
                 onButtonClick={handleSend}
               />
@@ -456,7 +532,7 @@ const ChatPage: React.FC = () => {
                 <ChatMessage key={index} {...message} />
               ))}
             </div>
-            {waitingResponse && !agentState.messages.some(msg => msg.type === 'response') ? (
+            {/* {isLoading && (
               <div className="loading-overlay animate-fadeIn">
                 <div className="loading-container">
                   <DotLottieReact
@@ -468,7 +544,7 @@ const ChatPage: React.FC = () => {
                   />
                 </div>
               </div>
-            ) : null}
+            )} */}
           </div>
         </div>
       </div>
