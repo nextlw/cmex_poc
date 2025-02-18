@@ -28,9 +28,9 @@ db_contribuicoes_vectors/
 db_ncm_vector/
 historico_jsonl/
 historico_vectors/
-nexcode-pesquisa-profunda/
-
-
+buscador_inteligente/queries/
+buscador_inteligente/prompt/
+buscador_inteligente/tasks/
 
 
 
