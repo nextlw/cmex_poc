@@ -1,0 +1,116 @@
+Current date: Tue, 18 Feb 2025 04:32:47 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    Procure por hembert william duarte teixeira e me traga um resumo profissional sobre ele
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "Procure por hembert william duarte teixeira e me traga um resumo profissional sobre ele".
+                    In particular, you tried to search for the following keywords: ""Hembert William Duarte Teixeira" currículo profissional".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about Hembert William Duarte Teixeira currículo profissional?
+    </question>
+    <answer>
+    Encontre aqui as oportunidades de emprego disponíveis na Teixeira Duarte - Engenharia e Construções, S.A. ou submeta a sua candidatura espontânea.; Working for the Teixeira Duarte Group is &quot;Execute, contributing towards the construction of a better world.&quot;; A equipe Teixeira Duarte está sempre preparada para te atender da melhor maneira possível e tem prazer em solucionar suas dúvidas. Escolha abaixo a opção desejada · Se você está à procura de desafios e de um ambiente de trabalho inspirador, aproveite essa oportunidade.; Com uma estrutura full-service, temos equipes que reúnem advogados em mais de 40 áreas do Direito; Um Grupo português fundado numa Casa de Engenharia Tendo iniciado a sua atividade em 1921, a Teixeira Duarte é hoje líder de um dos maiores Grupos Económicos Portugueses. Teixeira Duarte é a identidade de um Grupo empresarial que se apresenta através daquela que é a sua imagem de marca: ...; Veja empregos na Teixeira Duarte, conheça a empresa e se candidate às vagas abertas! Deixe seu Currículo!; Teixeira Duarte, S.A. é a empresa líder de um grande Grupo Económico com mais de 11.000 colaboradores, que trabalham em 22 países, em 6 setores de atividade, tendo alcançado em 2019 um volume de negócios de 877 milhões de Euros. A Teixeira Duarte, S.A. está cotada na Euronext Lisboa ...; Quer trabalhar no(a) Teixeira Duarte? O que ela faz? Como faço para trabalhar lá? Veja mais vagas disponíveis e envie seu Currículo!; Teixeira Duarte Engenharia e Construções - Brasil | 49,138 followers on LinkedIn. 100 Years of Pioneering and Engineering Expertise | Buinding a Better World | Teixeira Duarte – Engenharia e Construções, S.A., Teixeira Duarte Group’s main company in the construction sector, is an ...; Um Grupo português fundado numa Casa de Engenharia Tendo iniciado a sua atividade em 1921, a Teixeira Duarte é hoje líder de um dos maiores Grupos Económicos Portugueses. Teixeira Duarte é a identidade de um Grupo empresarial que se apresenta através daquela que é a sua imagem de marca: ...; Vagas de emprego para Teixeira Duarte e oportunidades de trabalho hoje. Cadastre grátis seu currículo agora no maior site de empregos do Brasil! Vagas de Técnico(a) de Planejamento, Técnico(a) de Engenharia e Analista Administrativo (Viagens Corporativas); Teixeira Duarte conseguiu um constante e sustentado crescimento, sobretudo nas últimas décadas, que a habilitaram com uma capacidade empresarial forte, com meios e recursos, nomeadamente humanos, que lhe permitiram múltiplos processos de internacionalização e a diversificação da sua ...; Teixeira Duarte has built up a long history and vast experience in highly complex engineering projects and services, always committed to high quality.; Teixeira Duarte has built up a long history and vast experience in highly complex engineering projects and services. It is always committed to high quality, continuous customer satisfaction, improving employee quality of life, environmental friendliness and ensuring respect for society · Almost ...; 100 years of history with origins in the activity of Ricardo Esquível Teixeira Duarte.; A portuguese Group founded in an engineering Company Having started its activity in 1921, Teixeira Duarte is now leading one of the largest Portuguese Economic Groups. Teixeira Duarte is the identity of a business Group that presents itself through its brand image: a Portuguese Group originally ...; Página oficial do profissional Filipe Teixeira Duarte no Médicos Brasil; Teixeira Duarte, Porto Salvo, Lisboa, Portugal. 8,831 likes · 24 talking about this · 154 were here. Tendo iniciado a sua atividade em 1921, a Teixeira Duarte é hoje líder de um dos maiores Grupos Ec; Having started its activity in 1921, Teixeira Duarte is now leading one of the largest Portuguese Economic Groups.
+    </answer>
+    
+    <references>
+    ["https://www.teixeiraduarteconstrucao.com.br/en/careers/","https://www.teixeiraduarte.pt/en/careers/","https://teixeiraduarte.com.br/fale-conosco/?form=0","https://www.mattosfilho.com.br/profissional/william-duarte/991","https://jobpage.cvwarehouse.com/?companyGuid=216ca378-f3f3-45d4-952b-cdc3addde17a&lang=pt-PT&section=200ffc68-73e5-c957-8bcc-f8642ec1465c","https://trabalheconosco.vagas.com.br/teixeira-duarte","https://pt.m.wikipedia.org/wiki/Teixeira_Duarte","https://www.empregos.com.br/empresa/teixeira-duarte/e-180714","https://www.linkedin.com/company/teixeiraduarte-construcao-br","https://jobpage.cvwarehouse.com/?companyGuid=216ca378-f3f3-45d4-952b-cdc3addde17a&lang=pt-PT","https://www.vagas.com.br/empregos/teixeira-duarte","https://merecrute.com/vagas/teixeira-duarte-angola-o-guia-de-recrutamento/","https://teixeiraduarteconstrucao.com/en/","https://www.teixeiraduarteconstrucao.com.br/en/","https://www.teixeiraduarte.pt/en/group/history/","https://jobpage.cvwarehouse.com/?companyGuid=216ca378-f3f3-45d4-952b-cdc3addde17a&lang=en-US&section=ce33b5cd-2d08-e808-7419-5efe7e2ca874","https://www.medicosbrasil.com/profissional/filipe-teixeira-duarte","https://www.facebook.com/teixeiraduartegroup/?locale=pt_BR","https://www.teixeiraduarte.pt/en/"]
+    </references>
+    
+    </knowledge-1>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://www.teixeiraduarteconstrucao.com.br/en/careers/": "Careers – Teixeira Duarte Construção"
+  + "https://www.teixeiraduarte.pt/en/careers/": "Careers - Teixeira Duarte"
+  + "https://teixeiraduarte.com.br/fale-conosco/?form=0": "Fale Conosco - Teixeira Duarte"
+  + "https://www.mattosfilho.com.br/profissional/william-duarte/991": "William Duarte - Mattos Filho"
+  + "https://jobpage.cvwarehouse.com/?companyGuid=216ca378-f3f3-45d4-952b-cdc3addde17a&lang=pt-PT&section=200ffc68-73e5-c957-8bcc-f8642ec1465c": "Teixeira Duarte - Engenharia e Construções Jobs"
+  + "https://trabalheconosco.vagas.com.br/teixeira-duarte": "Vagas de emprego - Trabalhe conosco - Teixeira Duarte"
+  + "https://pt.m.wikipedia.org/wiki/Teixeira_Duarte": "Teixeira Duarte – Wikipédia, a enciclopédia livre"
+  + "https://www.empregos.com.br/empresa/teixeira-duarte/e-180714": "Teixeira Duarte - O que fazemos e vagas de emprego | Empregos.com.br"
+  + "https://www.linkedin.com/company/teixeiraduarte-construcao-br": "Teixeira Duarte Engenharia e Construções - Brasil | LinkedIn"
+  + "https://jobpage.cvwarehouse.com/?companyGuid=216ca378-f3f3-45d4-952b-cdc3addde17a&lang=pt-PT": "Empregos | Grupo Teixeira Duarte"
+  + "https://www.vagas.com.br/empregos/teixeira-duarte": "Vagas de emprego - Teixeira Duarte | Vagas.com"
+  + "https://merecrute.com/vagas/teixeira-duarte-angola-o-guia-de-recrutamento/": "Teixeira Duarte Angola - O Guia de Recrutamento - Me Recrute"
+  + "https://teixeiraduarteconstrucao.com/en/": "Teixeira Duarte Construction - Pioneering and Innovation"
+  + "https://www.teixeiraduarteconstrucao.com.br/en/": "Home – Teixeira Duarte Construção"
+  + "https://www.teixeiraduarte.pt/en/group/history/": "History - Teixeira Duarte"
+  + "https://jobpage.cvwarehouse.com/?companyGuid=216ca378-f3f3-45d4-952b-cdc3addde17a&lang=en-US&section=ce33b5cd-2d08-e808-7419-5efe7e2ca874": "Grupo Teixeira Duarte Jobs"
+  + "https://www.medicosbrasil.com/profissional/filipe-teixeira-duarte": "Filipe Teixeira Duarte - Ginecologista | Médicos Brasil"
+  + "https://www.facebook.com/teixeiraduartegroup/?locale=pt_BR": "Teixeira Duarte | Oeiras"
+  + "https://www.teixeiraduarte.pt/en/": "Teixeira Duarte | Building a better world"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

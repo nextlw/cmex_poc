@@ -1,0 +1,36 @@
+[
+  {
+    "totalStep": 1,
+    "question": "quem é eduardo josé da totvs, pegue as informações no linkedIn, quero as informações e um resumo sobre quem ele é",
+    "action": "search",
+    "think": "Preciso pesquisar no LinkedIn para encontrar o perfil de Eduardo José da TOTVS e coletar informações sobre sua experiência e cargo.",
+    "searchQuery": "Eduardo José TOTVS LinkedIn",
+    "result": [
+      {
+        "query": "\"Eduardo José\" TOTVS site:linkedin.com",
+        "results": [
+          {
+            "title": "Eduardo José S. - Olinda, Pernambuco, Brazil | Professional Profile | LinkedIn",
+            "url": "https://www.linkedin.com/in/eduarddojose/",
+            "description": "Software Engineer at Compasso UOL · Software Developer with experience working on large projects for multinational companies. I started in the area in 2020, focusing on development with Java, Kotlin, Spring, Quarkus, among other technologies that I use to create scalable and high-level projects."
+          },
+          {
+            "title": "Eduardo José B. - Madrid, Community of Madrid, Spain | Professional Profile | LinkedIn",
+            "url": "https://www.linkedin.com/in/eduardo-jos%C3%A9-b-919747220/",
+            "description": "CyberSecurity Analyst | Threat Hunter · Me encanta aprender nuevas tecnologías, solucionar problemas y entender como funcionan las cosas. Al comenzar la carrera comprendí que mi pasión era la ciberseguridad. Con experiencia en el departamento de respuesta ante incidentes y actualmente enfocado ..."
+          },
+          {
+            "title": "Eduardo José de Paula Costa - Líder de projetos - Topaz | LinkedIn",
+            "url": "https://www.linkedin.com/in/eduardojpcosta/",
+            "description": "Product Owner | Project Leader | Business Analysis | Software Engineer · Olá, seja bem vinda(o) ao meu perfil! Sou <strong>Eduardo</strong>, graduado em Engenharia de Software <strong>e</strong> Engenharia Elétrica, profissional <strong>com</strong> carreira sólida <strong>e</strong> ampla experiência de 11 anos na área de Produtos Digitais, Desenvolvimento ..."
+          },
+          {
+            "title": "Eduardo José de Oliveira Júnior - Advogado - Autônomo | LinkedIn",
+            "url": "https://www.linkedin.com/in/eduardo-jos%C3%A9-de-oliveira-j%C3%BAnior-335b07250/",
+            "description": "Advogado · Experience: Autônomo · Location: Paraíba do Sul. View <strong>Eduardo</strong> <strong>José</strong> de Oliveira Júnior’s profile on <strong>LinkedIn</strong>, a professional community of 1 billion members."
+          }
+        ]
+      }
+    ]
+  }
+]

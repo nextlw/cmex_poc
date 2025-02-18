@@ -1,0 +1,15 @@
+{
+  "action": "answer",
+  "think": "Com base nas informações coletadas, a Fiat Strada tem se destacado como um dos modelos mais vendidos nos anos anteriores (2021, 2022, 2023 e 2024). Em janeiro de 2025, também liderou as vendas. Embora as preferências dos consumidores possam mudar ao longo do ano, a Fiat Strada demonstra uma forte tendência de ser um dos modelos mais procurados pelos brasileiros em 2025.",
+  "answer": "Com base nos dados de vendas dos anos anteriores e no início de 2025, a Fiat Strada demonstra ser um dos modelos de carro mais procurados pelos brasileiros.",
+  "references": [
+    {
+      "exactQuote": "A Fiat Strada foi o carro mais vendido do Brasil em janeiro de 2025. Repetindo o feito do ano passado, quando fechou em primeiro lugar no ranking geral, a picape pequena emplacou 8.777 unidades no primeiro mês do ano.",
+      "url": "https://autoesporte.globo.com/setor-automotivo/mercado-automotivo/noticia/2025/02/carros-mais-vendidos-brasil-janeiro-2025.ghtml"
+    },
+    {
+      "exactQuote": "A Fiat Strada repetiu o excelente desempenho de 2021, 2022 e 2023 e fechou o quarto ano como o carro mais vendido no país.",
+      "url": "https://exame.com/negocios/veja-os-50-modelos-de-carros-mais-vendidos-no-brasil-em-2023/"
+    }
+  ]
+}

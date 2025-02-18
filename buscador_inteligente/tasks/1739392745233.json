@@ -1,0 +1,11 @@
+{
+  "action": "answer",
+  "think": "Com base nas informações coletadas, posso fornecer uma resposta sobre bibliotecas React que possuem integração com Storybook para animações.",
+  "answer": "Existem várias bibliotecas React que podem ser usadas com Storybook para criar e gerenciar animações. Algumas das mais populares incluem Framer Motion, React Spring e React Transition Group. Além disso, o GitHub possui o projeto deanrad/storybook-animate que permite animar as props diretamente no Storybook, facilitando a visualização e o ajuste das animações.",
+  "references": [
+    {
+      "exactQuote": "Bring your React Storybook projects to life by animating their props 🌡 - deanrad/storybook-animate",
+      "url": "https://github.com/deanrad/storybook-animate"
+    }
+  ]
+}

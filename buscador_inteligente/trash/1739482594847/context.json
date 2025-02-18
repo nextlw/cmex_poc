@@ -1,0 +1,61 @@
+[
+  {
+    "totalStep": 1,
+    "question": "Quero que você encontre profissionais no LinkedIn para meu time comercial de Inside Sales. Estou buscando SDRs (Sales Development Representatives) e Closers que atendam aos seguintes critérios:  Localização: Fortaleza, Ceará. Experiência: Pelo menos 2 anos no mercado. Setor: Experiência com software, preferencialmente SaaS. Habilidades: Conhecimento em metodologias de vendas, como SPIN Selling, BANT, contorno de objeções e outras estratégias de qualificação e fechamento. Diferenciais: Experiência com CRM (ex.: HubSpot, Salesforce, Pipedrive). Histórico de superação de metas ou prêmios de desempenho. Experiência vendendo soluções B2B. Segmentação:  Identifique dois grupos distintos: Profissionais que estão abertos a novas oportunidades. Todos os perfis qualificados, independentemente do status de interesse. Seu objetivo é me ajudar a identificar e segmentar esses profissionais da melhor forma possível para recrutamento.",
+    "action": "search",
+    "think": "Para identificar os profissionais no LinkedIn com os critérios especificados, preciso realizar uma busca focada em palavras-chave relevantes para cada requisito (localização, experiência, setor, habilidades, diferenciais e segmentação). A busca inicial focará em encontrar perfis que correspondam às características desejadas e, em seguida, refinar a busca para segmentar entre profissionais abertos a novas oportunidades e todos os perfis qualificados.",
+    "searchQuery": "LinkedIn \"SDR\" OR \"Sales Development Representative\" OR \"Closer\" Fortaleza Ceará SaaS CRM \"HubSpot\" OR \"Salesforce\" OR \"Pipedrive\" \"metas\" \"B2B\" \"SPIN Selling\" \"BANT\" \"contorno de objeções\" \"aberto a novas oportunidades\"",
+    "result": [
+      {
+        "query": "linkedin \"SDR\" OR \"Sales Development Representative\" OR \"Closer\" Fortaleza Ceará SaaS CRM \"HubSpot\" OR \"Salesforce\" OR \"Pipedrive\" \"metas\" \"B2B\" \"SPIN Selling\" \"BANT\" \"contorno de objeções\" \"aberto a novas oportunidades\"",
+        "results": [
+          {
+            "title": "O que é SDR e Closer?",
+            "url": "https://www.portalinsights.com.br/perguntas-frequentes/o-que-e-sdr-e-closer",
+            "description": "<strong>SDR</strong> ou Representante <strong>de</strong> Desenvolvimento <strong>de</strong> Vendas é um agente <strong>de</strong> inside <strong>sales</strong> que se concentra exclusivamente na prospecção pré-vendas. Ao contrário dos executivos"
+          },
+          {
+            "title": "O que é um SDR e um Closer?",
+            "url": "https://www.portalinsights.com.br/perguntas-frequentes/o-que-e-um-sdr-e-um-closer",
+            "description": "<strong>SDR</strong> ou Representante <strong>de</strong> Desenvolvimento <strong>de</strong> Vendas é um agente <strong>de</strong> inside <strong>sales</strong> que se concentra exclusivamente na prospecção pré-vendas. Ao contrário dos executivos"
+          },
+          {
+            "title": "O que faz o Closer?",
+            "url": "https://www.portalinsights.com.br/perguntas-frequentes/o-que-faz-o-closer",
+            "description": "<strong>O</strong> <strong>closer</strong> é um perfil <strong>de</strong> vendas que se refere ao vendedor responsável por conduzir <strong>o</strong> lead na etapa final do processo <strong>de</strong> vendas. <strong>O</strong> <strong>closer</strong> <strong>de</strong> vendas é <strong>o</strong> profissional"
+          },
+          {
+            "title": "O que é vendedor SDR?",
+            "url": "https://www.portalinsights.com.br/perguntas-frequentes/o-que-e-vendedor-sdr",
+            "description": "<strong>O</strong> <strong>Sales</strong> <strong>Development</strong> <strong>Representative</strong> (<strong>SDR</strong>) é um profissional <strong>de</strong> vendas responsável por identificar e qualificar leads, entrar em contato, gerar <strong>oportunidades</strong>"
+          },
+          {
+            "title": "Qual é o principal papel do Inside sales?",
+            "url": "https://www.portalinsights.com.br/perguntas-frequentes/qual-e-o-principal-papel-do-inside-sales",
+            "description": "Ele é responsável por investigar e qualificar leads, conectando os vendedores com as melhores <strong>oportunidades</strong> <strong>de</strong> negócio. <strong>A</strong> maior diferença entre inside <strong>sales</strong>"
+          },
+          {
+            "title": "A importância do SDR no processo comercial da sua startup",
+            "url": "https://distrito.me/blog/sdr-startup/",
+            "description": "Neste texto, <strong>a</strong> Paula Olaf, fundadora da Pink Sua Venda, explica quais são os impactos <strong>de</strong> um processo comercial bem estrutura para startups."
+          }
+        ]
+      },
+      {
+        "query": "linkedin \"SDR\" OR \"Sales Development Representative\" OR \"Closer\" Fortaleza Ceará SaaS CRM \"HubSpot\" OR \"Salesforce\" OR \"Pipedrive\" \"metas\" \"B2B\" \"SPIN Selling\" \"BANT\" \"contorno de objeções\"",
+        "results": [
+          {
+            "title": "r/VendasB2BBrasil on Reddit: O Processo de Vendas Moderno: Entendendo SDR, BDR e Closer",
+            "url": "https://www.reddit.com/r/VendasB2BBrasil/comments/1c0k6vd/o_processo_de_vendas_moderno_entendendo_sdr_bdr_e/",
+            "description": "<strong>O</strong> cenário <strong>de</strong> vendas tem evoluído significativamente com <strong>o</strong> advento da tecnologia, e entender <strong>o</strong> papel <strong>de</strong> <strong>SDR</strong> (<strong>Sales</strong> <strong>Development</strong> <strong>Representative</strong>), BDR…"
+          },
+          {
+            "title": "O que é um SDR e um Closer?",
+            "url": "https://www.portalinsights.com.br/perguntas-frequentes/o-que-e-um-sdr-e-um-closer",
+            "description": "<strong>SDR</strong> ou Representante <strong>de</strong> Desenvolvimento <strong>de</strong> Vendas é um agente <strong>de</strong> inside <strong>sales</strong> que se concentra exclusivamente na prospecção pré-vendas. Ao contrário dos executivos"
+          }
+        ]
+      }
+    ]
+  }
+]

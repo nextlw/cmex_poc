@@ -1,0 +1,15 @@
+{
+  "action": "answer",
+  "think": "Com base nas informações encontradas, posso fornecer uma estimativa do menor preço para o teclado Xiaomi MK71 Pro. É importante notar que o preço pode variar dependendo da loja e da disponibilidade.",
+  "answer": "O menor preço encontrado para o teclado Xiaomi MK71 Pro é de aproximadamente 449 yuanes (cerca de 61 euros ou R$ 340 em conversão direta), que foi o preço inicial de crowdfunding. No entanto, o preço de varejo é de 499 yuanes (cerca de 68 dólares ou R$ 415). Os preços podem variar dependendo do varejista e da disponibilidade.",
+  "references": [
+    {
+      "exactQuote": "The Xiaomi MK 71 Pro Mechanical Keyboard kicks off its crowdfunding campaign today at 10:00 a.m., available at an initial price of CNY 449 ($62) and a retail price set at CNY 499 ($68).",
+      "url": "https://www.topcpu.net/en/news/62-xiaomi-mechanical-keyboard-mk-71-pro-crowdfunding-today-71-keys-with-screen-and-knob"
+    },
+    {
+      "exactQuote": "Xiaomi ha presentado recientemente el teclado mecánico Xiaomi MK 71 Pro, que ya está disponible en Xiaomi Mall desde el 30 de diciembre. Su precio es de 499 yuanes (aproximadamente 64 €), aunque se ofrece una tarifa promocional de crowdfunding a 449 yuanes (unos 57 €).",
+      "url": "https://gizchina.es/2025/01/01/xiaomi-mk-71-pro-teclado-mecanico-personalizable-conectividad-bateria-precio/"
+    }
+  ]
+}

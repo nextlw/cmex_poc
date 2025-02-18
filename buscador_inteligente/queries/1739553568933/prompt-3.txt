@@ -1,0 +1,141 @@
+Current date: Fri, 14 Feb 2025 17:20:35 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    na cachaça na revenda qual o percentual de pis e cofins. pesquise em fontes reais, preciso de referencias
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "na cachaça na revenda qual o percentual de pis e cofins. pesquise em fontes reais, preciso de referencias".
+                    In particular, you tried to search for the following keywords: "PIS COFINS 'revenda cachaça' alíquota".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+                    At step 2, you took the **search** action and look for external information for the question: "na cachaça na revenda qual o percentual de pis e cofins. pesquise em fontes reais, preciso de referencias".
+                    In particular, you tried to search for the following keywords: "alíquota PIS COFINS revenda cachaça".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about PIS COFINS revenda cachaça alíquota?
+    </question>
+    <answer>
+    II - juntamente com as contribuições ... revender o bem antes da conversão da alíquota a 0 (zero), na forma do § 8º deste artigo, ou desatender as demais condições do art. 13 desta Lei. § 7º Nas notas fiscais relativas à venda de que trata o caput deste artigo deverá constar a expressão &quot;Venda efetuada com suspensão da exigência da Contribuição para o PIS/Pasep e da Cofins&quot;, com a ...; VEJA MAIS VEJA MAIS DESTAQUES CRC-CE TV VEJA MAIS VEJA MAIS Facebook Instagram Twitter Tweets by CRC_Ceara; Dos valores dos Débitos de Contribuição para o Pis/Pasep e Cofins apurados, a pessoa jurídica submetida à incidência Não-Cumulativa poderá descontar Créditos, calculados mediante a aplicação dos percentuais de 7,6% (Cofins) e 1,65% (PIS/Pasep), sobre os valores: A) das aquisições ...; II - 9,9% para a COFINS-Importação. 2 - Importação de Produtos de Perfumaria, de Toucador ou de Higiene Pessoal (§ 2º art. 8º Lei 10.865/2004) quando destinados à revenda; Cálculo do Débito - As alíquotas, no caso de importação de produtos de perfumaria, de toucador ou de higiene ...; Como uma forma de tentar equilibrar a concorrência entre produtos nacionais e produtos importados, a Lei nº 10.865/2004 criou a incidência de PIS/Cofins sobre as importações, tanto de produtos quanto de serviços. A alíquota incidente, como regra, é a mesma de 9,25% de maneira conjunta.; Conforme prevê o artigo 3º, inciso ... Além das limitações gerais aplicáveis aos demais créditos, como no caso da aquisição de bens com alíquota zero, também são previstas algumas limitações específicas, tratadas a seguir....; Reforma tributária e as perspectivas de mudança frente a estes emblemáticos tributos; Descubra as alíquotas do PIS/COFINS dos principais regimes tributários. Saiba c dicas para otimizar sua apuração com a Tributei.; Cumulativo, em que as contribuições ... as compras de bens e serviços. Como regra geral, no regime cumulativo, as alíquotas são de 0,65% de PIS e 3% de Cofins; no regime não-cumulativo, 1,65% e 7,6% respectivamente....; No regime do lucro real, apura-se o PIS e a COFINS, em regra, pela sistemática da não cumulatividade. Neste regime, ambas as contribuições somam uma alíquota de 9,25%, sendo 1,65% para o PIS e 7,60% para a COFINS.; FEDERAL | ESTADUAL | MUNICIPAL · Visualização Geral; O Supremo Tribunal Federal (STF) decidiu manter os percentuais de 0,65% para o PIS e 4% para o Cofins aplicados desde o ano de 2015 sobre as receitas financeiras. Todos os ministros acompanharam o relator, o ministro Cristiano Zanin, que afastou a aplicação do princípio constitucional da ...; PIS/PASEP cobrança não-cumulativa : 1,65% - Código 6912 ·  COFINS cobrança não-cumulativa : 7,6% - Código 5856 ...  Não dará direito a crédito o valor da mão-de-obra paga a pessoa física e a aquisição de bens ou serviços não sujeitos ao pagamento da contribuição, inclusive no caso de isenção, esse último quando revendidos ou utilizados como insumo em produtos ou serviços sujeitos à alíquota ...; Não deixe que calcular PIS e COFINS seja um mistério! Explore nosso artigo completo e domine as técnicas para ser mais eficiente.; Entenda o que são o PIS e o COFINS, saiba como calcular e conheça as alíquotas vigentes.; A seguir destacam-se, em linhas ... do PIS e da COFINS. Alertamos, no entanto, que devido à complexidade e dinâmica legislativa, é imperativo que o leitor aprofunde os detalhes de cada caso para possibilitar sua aplicação prática. ... A base de cálculo é a receita operacional bruta da pessoa jurídica, sem deduções em relação a custos, despesas e encargos. Nesse regime, as alíquotas da Contribuição ...; É constitucional o § 9º do artigo 8º da Lei nº 10.865/2004, a estabelecer alíquotas maiores, quanto à Contribuição ao PIS e à COFINS, consideradas empresas importadoras de autopeças não fabricantes de máquinas e veículos. (Tese do Tema 744 de Repercussão Geral) · A Procuradoria ...; Aprenda tudo sobre Cofins e PIS. Descubra como calcular e cumprir suas obrigações fiscais. Acesse nosso guia completo agora mesmo!; Contribuição social para financiamento da Seguridade Social, instituída pela lei Complementar n° 70, de 30 de dezembro de 1991. É devida pelas pessoas jurídicas inclusive as a elas equiparadas pela legislação do imposto de renda, destinadas exclusivamente às despesas com atividades-fins ...; Abordamos a tributação das bebidas frias pelo varejista, especificamente para o Simples Nacional, esclarecendo dúvidas sobre o assunto.
+    </answer>
+    
+    <references>
+    ["https://www.lefisc.com.br/materias/2008/282008piscofins.asp","https://www.crc-ce.org.br/crcnovo/files/Apostila_PIS_COFINS.pdf","https://www.lefisc.com.br/materias/2011/252011ir.htm","https://www.lefisc.com.br/materias/2009/11009ir.asp","https://valor.globo.com/legislacao/artigo/pis-cofins-o-que-e-como-funciona-e-como-calcular.ghtml","https://busca.legal/como-aproveitar-creditos-de-pis-e-cofins-bens-para-revenda/","https://www.jota.info/tributos/pis-cofins","https://tributei.net/blog/aliquotas-pis-cofins/","https://apet.org.br/artigos/pis-cofins-o-que-e-quem-deve-pagar-quais-as-aliquotas-como-calcular-qual-o-prazo-para-que-serve/","https://qive.com.br/blog/pis-cofins/","https://www.cenofisco.com.br/Composicao/IR/PISCofins","https://valor.globo.com/legislacao/noticia/2024/10/14/stf-mantem-aliquotas-de-pis-cofins-sobre-receitas-financeiras.ghtml","https://www.lefisc.com.br/materias/3102006ir2.htm","https://blog.esimplesauditoria.com.br/calcular-pis-cofins/","https://meutudo.com.br/blog/pis-e-confins/","https://www.portaltributario.com.br/artigos/pis-cofins-regimes.htm","https://www.gov.br/pgfn/pt-br/cidadania-tributaria/por-assunto/indice-assuntos-portal/comercio-exterior-aduaneiro/comercio-exterior-aduaneiro/pis-cofins-importacao-2","https://www.oitchau.com.br/blog/cofins-e-pis-como-devem-ser-calculados/","https://www.contabeis.com.br/tributario/cofins","https://blog.econeteditora.com.br/como-tributar-bebidas-frias-pelo-varejista-do-simples-nacional/"]
+    </references>
+    
+    </knowledge-1>
+    
+
+
+    <knowledge-2>
+    <question>
+    What do Internet say about alíquota PIS COFINS revenda cachaça?
+    </question>
+    <answer>
+    VEJA MAIS VEJA MAIS DESTAQUES CRC-CE TV VEJA MAIS VEJA MAIS Facebook Instagram Twitter Tweets by CRC_Ceara; º deste artigo constitui antecipação ... a pagar, do percentual de 0,1% (um décimo por cento) para a Contribuição para o PIS/Pasep e 0,5% (cinco décimos por cento) para a Cofins....; Reforma tributária e as perspectivas de mudança frente a estes emblemáticos tributos; Descubra as alíquotas do PIS/COFINS dos principais regimes tributários. Saiba c dicas para otimizar sua apuração com a Tributei.; Dos valores dos Débitos de Contribuição para o Pis/Pasep e Cofins apurados, a pessoa jurídica submetida à incidência Não-Cumulativa poderá descontar Créditos, calculados mediante a aplicação dos percentuais de 7,6% (Cofins) e 1,65% (PIS/Pasep), sobre os valores: A) das aquisições ...; II - 9,9% para a COFINS-Importação. 2 - Importação de Produtos de Perfumaria, de Toucador ou de Higiene Pessoal (§ 2º art. 8º Lei 10.865/2004) quando destinados à revenda; Cálculo do Débito - As alíquotas, no caso de importação de produtos de perfumaria, de toucador ou de higiene ...; O montante desses créditos será determinado mediante aplicação, sobre o valor dos mencionados pagamentos, de alíquota correspondente a 75% (setenta e cinco por cento) sobre 1,65% (referente ao PIS/PASEP) e 7,6% (referente a COFINS). ... c)aos encargos de depreciação e amortização de ...; FEDERAL | ESTADUAL | MUNICIPAL · Visualização Geral; Sobre as receitas financeiras, a alíquota atualmente é de 4,65%, conjuntamente. A apuração de PIS/Cofins é bastante complexa e específica para diversos setores da economia e até por produto ou serviço.; Cumulativo, em que as contribuições ... as compras de bens e serviços. Como regra geral, no regime cumulativo, as alíquotas são de 0,65% de PIS e 3% de Cofins; no regime não-cumulativo, 1,65% e 7,6% respectivamente....; No regime do lucro real, apura-se o PIS e a COFINS, em regra, pela sistemática da não cumulatividade. Neste regime, ambas as contribuições somam uma alíquota de 9,25%, sendo 1,65% para o PIS e 7,60% para a COFINS.; O diploma legal da Contribuição ... jurídica. Nesse regime, as alíquotas da Contribuição para o PIS/PASEP e da COFINS são, respectivamente, de 1,65% e de 7,6%....; Não deixe que calcular PIS e COFINS seja um mistério! Explore nosso artigo completo e domine as técnicas para ser mais eficiente.; Aprenda tudo sobre Cofins e PIS. Descubra como calcular e cumprir suas obrigações fiscais. Acesse nosso guia completo agora mesmo!; Tecnologia Watson na plataforma Busca.Legal para a área tributária Uso de computação cognitiva para revolucionar a área fiscal Você já conhece o Watson.; Para tributaristas, o resultado do julgamento relativiza a aplicação do princípio constitucional da anterioridade; Confira a tabela CST PIS/COFINS e mantenha sua empresa em dia com as obrigações fiscais. Somos especialista em soluções contábeis.; Exsam é um sistema ERP solução para bloco K do SPED, completo, integrado, multiplataforma, customizável e 100% atualizado às novas exigências fiscais. Tudo isto há um custo surpreendente!; No regime de incidência cumulativa, o PIS e a COFINS incidem sobre toda a receita bruta da empresa. As alíquotas são de 0,65% para o PIS e de 3% para a COFINS.; Abordamos a tributação das bebidas frias pelo varejista, especificamente para o Simples Nacional, esclarecendo dúvidas sobre o assunto.
+    </answer>
+    
+    <references>
+    ["https://www.crc-ce.org.br/crcnovo/files/Apostila_PIS_COFINS.pdf","https://www.lefisc.com.br/materias/2008/282008piscofins.asp","https://www.jota.info/tributos/pis-cofins","https://tributei.net/blog/aliquotas-pis-cofins/","https://www.lefisc.com.br/materias/2011/252011ir.htm","https://www.lefisc.com.br/materias/2009/11009ir.asp","https://www.lefisc.com.br/materias/3102006ir2.htm","https://www.cenofisco.com.br/Composicao/IR/PISCofins","https://valor.globo.com/legislacao/artigo/pis-cofins-o-que-e-como-funciona-e-como-calcular.ghtml","https://apet.org.br/artigos/pis-cofins-o-que-e-quem-deve-pagar-quais-as-aliquotas-como-calcular-qual-o-prazo-para-que-serve/","https://qive.com.br/blog/pis-cofins/","https://www.portaltributario.com.br/artigos/pis-cofins-regimes.htm","https://blog.esimplesauditoria.com.br/calcular-pis-cofins/","https://www.oitchau.com.br/blog/cofins-e-pis-como-devem-ser-calculados/","https://busca.legal/como-aproveitar-creditos-de-pis-e-cofins-bens-para-revenda/","https://valor.globo.com/legislacao/noticia/2024/10/14/stf-mantem-aliquotas-de-pis-cofins-sobre-receitas-financeiras.ghtml","https://cdmcontabilidade.com.br/tabela-cst-pis-cofins/","https://exsam.com.br/ajuda/sistema-erp/pis-cofins","https://www.normaslegais.com.br/tributario/calculo_pis_cofins.htm","https://blog.econeteditora.com.br/como-tributar-bebidas-frias-pelo-varejista-do-simples-nacional/"]
+    </references>
+    
+    </knowledge-2>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://www.lefisc.com.br/materias/2008/282008piscofins.asp": "PIS/PASEP e COFINS – Regime Não-cumulativo (Lucro Real)"
+  + "https://www.crc-ce.org.br/crcnovo/files/Apostila_PIS_COFINS.pdf": "Apostila_PIS_COFINS.pdf"
+  + "https://www.lefisc.com.br/materias/2011/252011ir.htm": "Créditos de PIS e COFINS a Descontar (Regime Não-Cumulativo)"
+  + "https://www.lefisc.com.br/materias/2009/11009ir.asp": "PIS/PASEP e COFINS na importação"
+  + "https://valor.globo.com/legislacao/artigo/pis-cofins-o-que-e-como-funciona-e-como-calcular.ghtml": "PIS/Cofins: O que é, como funciona e como calcular | Legislação | Valor Econômico"
+  + "https://busca.legal/como-aproveitar-creditos-de-pis-e-cofins-bens-para-revenda/": "Como aproveitar créditos de PIS e Cofins? Bens para revenda - Busca.Legal"
+  + "https://www.jota.info/tributos/pis-cofins": "PIS/Cofins: Quando poderemos dizer adeus a estes tributos no Brasil?"
+  + "https://tributei.net/blog/aliquotas-pis-cofins/": "Quais São as Alíquotas do PIS e COFINS no Lucro Presumido, Lucro Real e Simples Nacional?"
+  + "https://apet.org.br/artigos/pis-cofins-o-que-e-quem-deve-pagar-quais-as-aliquotas-como-calcular-qual-o-prazo-para-que-serve/": "PIS/Cofins: O que é, quem deve pagar, quais as alíquotas, como calcular, qual o prazo, para que serve – APET"
+  + "https://qive.com.br/blog/pis-cofins/": "PIS e COFINS 2025: Obrigações, mudanças e novidades | Qive"
+  + "https://www.cenofisco.com.br/Composicao/IR/PISCofins": "PIS/Cofins"
+  + "https://valor.globo.com/legislacao/noticia/2024/10/14/stf-mantem-aliquotas-de-pis-cofins-sobre-receitas-financeiras.ghtml": "STF mantém alíquotas de PIS/Cofins sobre receitas financeiras | Legislação | Valor Econômico"
+  + "https://www.lefisc.com.br/materias/3102006ir2.htm": "PIS/ PASEP E COFINS INCIDÊNCIA NÃO-CUMULATIVA - CONSIDERAÇÕES GERAIS"
+  + "https://blog.esimplesauditoria.com.br/calcular-pis-cofins/": "Calcular PIS e COFINS: tudo que você precisa saber!"
+  + "https://meutudo.com.br/blog/pis-e-confins/": "O que são PIS e Cofins? Alíquotas e como calcular em 2025"
+  + "https://www.portaltributario.com.br/artigos/pis-cofins-regimes.htm": "PIS E COFINS  SÍNTESE DOS REGIMES DE INCIDÊNCIA"
+  + "https://www.gov.br/pgfn/pt-br/cidadania-tributaria/por-assunto/indice-assuntos-portal/comercio-exterior-aduaneiro/comercio-exterior-aduaneiro/pis-cofins-importacao-2": "PIS/COFINS-importação — Procuradoria-Geral da Fazenda Nacional"
+  + "https://www.oitchau.com.br/blog/cofins-e-pis-como-devem-ser-calculados/": "Cofins e PIS: O que são? Como calcular? - Oitchau"
+  + "https://www.contabeis.com.br/tributario/cofins": "COFINS"
+  + "https://blog.econeteditora.com.br/como-tributar-bebidas-frias-pelo-varejista-do-simples-nacional/": "Como tributar bebidas frias pelo varejista do Simples Nacional - Blog da Econet"
+  + "https://cdmcontabilidade.com.br/tabela-cst-pis-cofins/": "Tabela CST – PIS / COFINS - CDM Contabilidade"
+  + "https://exsam.com.br/ajuda/sistema-erp/pis-cofins": "PIS/Cofins"
+  + "https://www.normaslegais.com.br/tributario/calculo_pis_cofins.htm": "CÁLCULO DO PIS E DA COFINS"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

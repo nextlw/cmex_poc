@@ -1,0 +1,6 @@
+{
+  "action": "answer",
+  "think": "Com base nas informações coletadas, posso fornecer uma resposta concisa sobre as principais diferenças entre TypeScript e JavaScript.",
+  "answer": "As principais diferenças entre TypeScript e JavaScript são: TypeScript é uma linguagem de programação orientada a objetos tipada, enquanto JavaScript é uma linguagem de script. TypeScript oferece tipagem estática, o que permite detectar erros em tempo de compilação, enquanto JavaScript tem tipagem dinâmica, detectando erros em tempo de execução. TypeScript suporta interfaces e classes, facilitando a organização e escalabilidade do código, enquanto JavaScript, em sua forma pura (ES5 e anteriores), não possui esses recursos nativamente. TypeScript precisa ser compilado para JavaScript para ser executado, enquanto JavaScript pode ser executado diretamente pelos navegadores.",
+  "references": []
+}

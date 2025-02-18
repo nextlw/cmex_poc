@@ -1,0 +1,179 @@
+Current date: Thu, 13 Feb 2025 16:03:29 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    traga uma lista de comentários negativos da empresa O boticário, de todos os cantos da internet, liste eles aqui
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "traga uma lista de comentários negativos da empresa O boticário, de todos os cantos da internet, liste eles aqui".
+                    In particular, you tried to search for the following keywords: "O Boticário reclamações, O Boticário comentários negativos".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+                    At step 2, you took the **search** action and look for external information for the question: "traga uma lista de comentários negativos da empresa O boticário, de todos os cantos da internet, liste eles aqui".
+                    In particular, you tried to search for the following keywords: "O Boticário "reclamações", O Boticário "clientes insatisfeitos", O Boticário "opiniões negativas"".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about O Boticário reclamações comentários negativos?
+    </question>
+    <answer>
+    You need to enable JavaScript to run this app; &gt; Para compras através do WhatsApp, com a loja O Boticário mais próxima da sua casa: 0800 744 0010; Caso queira nos enviar uma sugestão ou uma crítica: - Você pode entrar em contato com a nossa Central de Relacionamento ao Cliente, através dos canais disponíve; Esta empresa recebeu 3012 reclamações.; No Grupo Boticário, ouvir a opinião dos nossos clientes é fundamental. Envie a sua mensagem ou entre em contato com a Central de Relacionamento com o Cliente.; É necessário possuir uma conta nível PRATA ou OURO para registrar e acompanhar suas reclamações no Consumidor.gov.br.; Ficou com alguma dúvida? Acesse as principais dúvidas sobre a nossa loja e os nossos produtos.; Somos líder global em soluções de RH com foco em recrutamento e seleção em todos os níveis e segmentos. Apoiamos candidatos e empresas a atingir seus objetivos; Partilha a tua reclamação sobre a marca O Boticário, consulta as reclamações e opiniões de outros consumidores e compara-a com outras da categoria Produtos de Beleza e Cosmética.; Temos canais exclusivos para falar de revenda: &gt; WhatsApp 41 98735-7095; &gt; Telefone 0800 729 9050. Atendimento: - Segunda à sexta: 09h às 20h; - Sábados: 09h às; Você pode entrar em contato com O Boticário via telefone ou WhatsApp: Fale com O Boticário:; Você pode entrar em contato com a O Boticário sempre que desejar. Um canal aberto 24 horas para atender você com carinho e atenção.; Ficou com alguma dúvida? Acesse as principais dúvidas sobre a nossa loja e os nossos produtos.; O feedback, as opiniões e comentários dos nossos clientes são importantes para nós. Se tens uma dúvida, fala connosco!; O Grupo Boticário está comprometido em garantir a segurança e proteção dos seus clientes. Acesse nossa página &quot;Proteja-se contra fraudes&quot; e saiba como se proteger de tentativas de fraude. Proteja-se agora mesmo com as dicas e informações que disponibilizamos para você.; Ficou com alguma dúvida? Acesse as principais dúvidas sobre a nossa loja e os nossos produtos.; dia 28/11/16 comprei no BOTICÁRIO e a entrega era para ser dia 14/12/16. hoje são 21/12/16 e nada recebi. ligo no BOTICÁRIO e NINGUÉM ATENDE. imprimi o rastreamento que também não funciona. estou prejudicadíssimo, pois são presente de Natal; Essa avaliação se baseia no comportamento das próprias empresas, bem como nas avaliações de seus consumidores, que têm um prazo de 20 dias para avaliar sua reclamação como “Resolvida” ou “Não resolvida” e atribuir uma nota de satisfação ao atendimento da empresa.; Prezado O Boticário, Peço que veja o número do meu CPF dispon��vel no documento que juntei nessa plataforma do Proteste Já. Assunto: Reclamação de possível fraude como Revendedor O Boticário, conforme print&#x27;s de SMS que juntei nessa plataforma. 1) Venho por dessa reclamação requerer ...; Ficou com alguma dúvida? Acesse as principais dúvidas sobre a nossa loja e os nossos produtos.; O vídeo no YouTube recebeu uma onda de “deslikes” e comentários negativos questionando a proposta de “diversidade da empresa”. A situação acabou obrigando a companhia a postar uma mensagem nasredes sociais em defesa da campanha, mas o que realmente chamou a atenção foi a defesa espontânea do público da marca que logo ofuscou os trolls com inúmeros elogios e reações positivas. Um dos pontos mais importantes para o crescimento exponencial d’O Boticário ...; 4.675 avaliações da empresa Grupo Boticário. Uma visão interna gratuita das avaliações da empresa e dos salários publicados de forma sigilosa pelos funcionários.; Segundo um estudo conduzido pela ... O Boticário é a marca que mais tem gerado comentários positivos entre os consumidores brasileiros, sendo a mais bem avaliada pelo público. ... A pesquisa realizou entrevistas on-line com cerca de quatro mil pessoas de todo o país ao longo do ano passado. Os participantes foram questionados se haviam ouvido falar de determinada marca nas últimas duas semanas anteriores à pesquisa e se a menção era positiva ou negativa...; Caso queira nos enviar uma sugestão ou uma crítica: - Você pode entrar em contato com a nossa Central de Relacionamento ao Cliente, através dos canais disponíve; A campanha do Boticário com uma família 100% negra causou alvoroço em pleno 2018. Eu que nasci em uma família negra de classe média e hoje e formei uma nos moldes parecidos com o da campanha, senti um misto de tristeza, raiva , mas confesso que tive que conter o riso ao ler alguns comentários negativos ...; You need to enable JavaScript to run this app; Segundo internautas, O Boticário está cometendo “racismo reverso” em suas produções. Nos comentários é possível encontrar diversas pessoas questionando a diversidade e a falta de pessoas brancas nos vídeos. Veja alguns dos comentários: Poucas horas depois da divulgação, a repercussão negativa ...; A propaganda, veiculada no último dia 26 de julho, tem 18 mil likes contra 12 mil dislikes no Youtube, o que significa que 40% das reações do vídeo são negativas. Além disso, a campanha também recebeu comentários negativos pelo fato de o elenco ser exclusivamente negro.; ... Sendo 90% dos funcionário homens e 10% mulheres. Pontos Positivos: Oportunidade de crescimento, qualidade de vida, pacote de benefícios e o principal, investimento em educação. Ponto Negativo: Algumas áreas são insalubres e requerem mais espaços para assim aumentar a produção.; Products and commitments that change the world through beauty, expanding well-being and preserving the environment.; Aqui no Botic��rio você encontra os melhores itens de perfumaria, maquiagem, cosméticos, presentes e mais! Acesse e confira!; Opiniões dos clientes deOboticario | Média de 9.0/10calculada a partir 2278 Opiniões para oboticario.pt; Comentários criticaram a imagem de casais gays se presenteando, pediram boicote à marca e &quot;dislikes&quot; (indicação de reprovação) em vídeo. Propaganda da empresa de cosméticos &quot;O Boticário&quot; em que várias pessoas - incluindo casais homoafetivos - aparecem presenteando seus respectivos ...; We cannot provide a description for this page right now; Este artigo fala sobre a campanha polêmica lançada pelo Boticário, que tem dividido opiniões; O vídeo no YouTube recebeu uma onda de “deslikes” e comentários negativos questionando a proposta de “diversidade da empresa”. ... Um dos pontos mais importantes para o crescimento exponencial d’O Boticário foi a diversificação dos seus canais de venda.; Find amazing gifts and treat yourself with our fragrances, bath &amp; body and hair care products. Shop Nativa SPA, Lily, Malbec and more.; Descobre os nossos Perfumes, Maquilhagem, Cosméticos, Presentes e mais. Celebra o amor com presentes que emocionam. Venha para O Boticario.
+    </answer>
+    
+    <references>
+    ["https://www.reclameaqui.com.br/empresa/boticario/","https://www.boticario.com.br/atendimento-online/outros-assuntos/sac-boticario","https://www.boticario.com.br/atendimento-online/outros-assuntos/como-eu-posso-enviar-uma-sugestao-ou-uma-critica","https://www.reclameaqui.com.br/empresa/o-boticario-loja-online/lista-reclamacoes/?problema=0000000000000001","https://www.grupoboticario.com.br/en/talk-to-us/","https://www.consumidor.gov.br/pages/indicador/relatos/abrir","https://www.boticario.com.br/atendimento-online","https://www.randstad.com.br/","https://portaldaqueixa.com/brands/o-boticario/complaints","https://www.boticario.com.br/atendimento-online/revendedora/quais-sao-os-canais-de-contato-para-falar-de-revenda","https://revenda.boticario.com.br/faq/cadastro/quais-sao-os-telefones-de-contato-de-o-boticario","https://www.boticario.com.br/atendimento/email/","https://www.belezanaweb.com.br/atendimento-online","https://www.oboticario.pt/pages/contactos","https://privacidade.grupoboticario.com.br/portal-de-privacidade/","https://www.boticario.com.br/atendimento-online/trocas-devolucoes-e-cancelamento","https://www.proteste.org.br/reclame/lista-de-reclamacoes-publicas/reclamacoes-publicas?referenceid=CPTBR00103407-05","https://www.consumidor.gov.br/pages/empresa/20140825000021587/perfil","https://www.proteste.org.br/reclame/lista-de-reclamacoes-publicas/reclamacoes-publicas?referenceid=CPTBR01769090-04","https://www.boticario.com.br/atendimento-online/estorno-e-reembolso","https://rockcontent.com/br/blog/boticario/","https://www.glassdoor.com.br/Avalia%C3%A7%C3%B5es/Grupo-Botic%C3%A1rio-pontos-negativos-Avalia%C3%A7%C3%B5es-EI_IE2195061.0,15_KH16,32.htm","https://br.fashionnetwork.com/news/Estudo-aponta-o-boticario-como-marca-mais-bem-avaliada-pelos-brasileiros,783276.html","https://mundonegro.inf.br/familia-negra-o-odio-a-campanha-do-boticario-tambem-e-culpa-da-globo/","https://bhaz.com.br/noticias/variedades/boticario-racismo-reverso/","https://catracalivre.com.br/cidadania/campanha-de-o-boticario-com-negros-e-alvo-de-campanha-de-odio/","https://www.trabalhosfeitos.com/categoria/pontos-positivos-e-negativos-do-boticario/0","https://www.grupoboticario.com.br/en/home-en/","https://www.boticario.com.br/","https://www.opinioes-verificadas.com/avis-clients/oboticario.pt","https://sindivestuario.org.br/propaganda-de-o-boticario-gera-reacao-homofobica-na-web/","https://www.livelo.com.br/ganhe-pontos-compre-pontue-partner/oboticario/BOT","https://administradores.com.br/artigos/o-boticario-e-suas-polemicas","https://www.blogmatrizgroup.com.br/venha-descobrir-como-a-empresa-o-boticario-expandiu-tanto-durante-os-anos/","https://www.boticario.com/","https://www.oboticario.pt/"]
+    </references>
+    
+    </knowledge-1>
+    
+
+
+    <knowledge-2>
+    <question>
+    What do Internet say about O Boticário reclamações clientes insatisfeitos?
+    </question>
+    <answer>
+    Quer saber os principais motivos de reclamações recebidas pela empresa O Boticário? Veja a lista completa no Reclame AQUI!; Quer saber os principais motivos de reclamações recebidas pela empresa O Boticário - Loja Online? Veja a lista completa no Reclame AQUI!; Quer saber os principais motivos de reclamações recebidas pela empresa O Boticário Revendedores ? Veja a lista completa no Reclame AQUI!; Veja todas as reclamações na categoria Atendimento para Consultor da empresa O Boticário no ReclameAQUI.; Essa avaliação se baseia no comportamento das próprias empresas, bem como nas avaliações de seus consumidores, que têm um prazo de 20 dias para avaliar sua reclamação como “Resolvida” ou “Não resolvida” e atribuir uma nota de satisfação ao atendimento da empresa.; Partilha a tua reclamação sobre a marca O Boticário, consulta as reclamações e opiniões de outros consumidores e compara-a com outras da categoria Produtos de Beleza e Cosmética.; Saiba se a empresa O Boticário Revendedores é confiável, segundo os consumidores. Se tiver problemas, reclame, resolva, avalie. Reclame Aqui; Partilha a tua reclamação sobre a marca O Boticário, consulta as reclamações e opiniões de outros consumidores e compara-a com outras da categoria Produtos de Beleza e Cosmética.; Pesquise reputação de empresas antes de comprar. Se tiver problema, reclame e resolva rápido. Toda empresa tem problema, boa é aquela que resolve.; Pesquise reputação de empresas antes de comprar. Se tiver problema, reclame e resolva rápido. Toda empresa tem problema, boa é aquela que resolve.; Pesquise reputação de empresas antes de comprar. Se tiver problema, reclame e resolva rápido. Toda empresa tem problema, boa é aquela que resolve.; Pesquise reputação de empresas antes de comprar. Se tiver problema, reclame e resolva rápido. Toda empresa tem problema, boa é aquela que resolve.; Tem problema com a empresa O Boticário? Como Reclamar da O Boticário no PROCON Online. Passo-a-passo com fotos para você conseguir resolver sua queixa rapidamente; Pesquise reputação de empresas antes de comprar. Se tiver problema, reclame e resolva rápido. Toda empresa tem problema, boa é aquela que resolve.; Descubra estratégias eficazes para lidar com clientes insatisfeitos e transformar situações desafiadoras em oportunidades de fidelização.; No Reclame Aqui, os especialistas da central de atendimento da Boticário respondem grande parte das solicitações dos clientes insatisfeitos tanto no perfil voltado às lojas físicas quanto no destinado ao e-commerce, e consegue solucionar mais de 73% dos problemas relatados em ambos.; Enquanto um cliente satisfeito pode falar do seu produto com 3 pessoas, um cliente insatisfeito falar√° do mesmo com 10.; Aprenda como resolver problemas com clientes insatisfeitos e torná-los leais a você. Acesse o blog e veja nossas dicas!; Você sabe como lidar com clientes? Conheça os diferentes perfis e dicas para melhorar o relacionamento!; Aprenda a identificar um cliente insatisfeito e como fazer para convertê-lo em um verdadeiro amante da marca.; Um cliente insatisfeito em meio a um público extenso pode parecer algo não tão preocupante em um primeiro momento...; Respire fundo e aprenda a lidar com um cliente insatisfeito.; Lidar com a insatisfação de um cliente é uma situação quase inevitável em qualquer empresa. E quando falamos de um posto de combustível, onde a movimentação na pista é constante, é quase impossível reduzir esse tipo de casos em sua totalidade – independentemente da competência ...; Entender o problema do cliente e propor soluções são algumas formas de lidar com a insatisfação dos consumidores. Leia o artigo e confira outras dicas!; Como tratar com clientes insatisfeitos em serviços técnicos? A resposta está aqui! Aprenda como evitar esse tipo de problema.; Entenda como os clientes insatisfeitos podem ser uma fonte de informações valiosa para a melhoria da sua empresa.; A internet e as redes sociais aproximaram ainda mais os consumidores de suas marcas preferidas. Para as companhias, essa “intimidade” permite conhecer melhor a clientela e ensina lições de como lidar com clientes insatisfeitos. No entanto, há o outro lado da moeda.; Temos aqui algumas dicas para quem recebe frases de insatisfa��ão de clientes. Por pior que seja, isso pode ser uma forma de você dar a volta por cima.; Os clientes insatisfeitos podem ser um grande problema para sua empresa. Quer saber como cativá-los e reverter a situação? Leia o nosso artigo!; A insatisfação se espalha muito mais rápido que a satisfação através das redes sociais e poderá prejudicar bastante a sua imagem. Como sair dessa?; Aprenda como usar as críticas de clientes insatisfeitos para aprimorar o comércio eletrônico. Descubra como alcançar a satisfação do cliente e o sucesso nos negócios on-line.; Descubra estratégias eficazes para lidar com clientes insatisfeitos no posto de combustíveis e melhorar a satisfação e fidelização dos seus consumidores.; Sete boas práticas de como lidar com cliente insatisfeito e oferecer uma boa experiência + dicas para evitar que um consumidor insatisfeito.; A relação empresa x cliente sempre foi a maior preocupação de quem vende e também de quem compra. Estar em um ambiente agradável, que você se sinta bem, que; Comecei a ler as opiniões na internet ... só opiniões negativas R$50,00 jogados no lixo :( ... Olá, Anna. Boa tarde. Lamentamos pelo ocorrido. Saiba que nossa intenção é sempre proporcionar a melhor experiência aos nossos Consumidores. Acabamos de enviar uma mensagem privada, com informações do seu caso, pedimos por favor, que verifique. Estamos à disposição, caso surja outras dúvidas. Abraços, Equipe O Boticário Loja ...
+    </answer>
+    
+    <references>
+    ["https://www.reclameaqui.com.br/empresa/boticario/lista-reclamacoes/","https://www.reclameaqui.com.br/empresa/o-boticario-loja-online/lista-reclamacoes/","https://www.reclameaqui.com.br/empresa/o-boticario-revendedores/lista-reclamacoes/","https://www.reclameaqui.com.br/empresa/boticario/lista-reclamacoes/?categoria=0000000000000276","https://www.consumidor.gov.br/pages/empresa/20140825000021587/perfil","https://portaldaqueixa.com/brands/o-boticario/complaints","https://www.reclameaqui.com.br/empresa/o-boticario-revendedores/","https://portaldaqueixa.com/brands/o-boticario","https://www.reclameaqui.com.br/boticario/revendedora-o-boticario_xJCPyYOjvdQCS906/","https://www.reclameaqui.com.br/boticario/constrangimento-e-decepcao-como-revendedora-o-boticario_vzMQE-Yd55bRIrvn/","https://www.reclameaqui.com.br/boticario/reclamacao_zdW5i44PgRoaMj13/","https://www.reclameaqui.com.br/boticario/grupo-boticario_pZxK4IOQ5z3ktET4/","https://reclamacoesprocon.com.br/historico/empresa/o-boticario/como-reclamar","https://www.reclameaqui.com.br/boticario/atendimento-pessimo_qLKV7ntyNb4_0eMc/","https://blog.bling.com.br/clientes-insatisfeitos-loja-virtual/","https://veja.abri.com.br/telefone-o-boticario/","https://skeepers.io/pt/blog/clientes-insatisfeitos-como-gerir/","https://www.agendor.com.br/blog/clientes-insatisfeitos/","https://www.moskitcrm.com/blog/clientes-insatisfeitos","https://alloyal.com.br/blog/cliente-insatisfeito","https://www.fortbrasil.com.br/post/cliente-insatisfeito-confira-as-nossas-5-dicas-para-lidar-com-ele","https://sebrae.com.br/sites/PortalSebrae/artigos/como-lidar-com-um-cliente-insatisfeito,575d002e76136810VgnVCM1000001b00320aRCRD","https://www.webposto.com.br/blog/dicas/4-dicas-para-voce-conseguir-lidar-com-clientes-insatisfeitos-no-teu-posto/","https://sejaefi.com.br/blog/clientes-insatisfeitos","https://fieldcontrol.com.br/blog/clientes-insatisfeitos/","https://atendare.com/br/blog/o-que-aprender-com-clientes-insatisfeitos/","https://blog.wedologos.com.br/como-lidar-com-clientes-insatisfeitos/","https://pt.nomadan.net/frases-de-insatisfacao-de-clientes/","https://blog.qualylife.com.br/clientes-insatisfeitos/","https://exame.com/pme/como-lidar-com-um-cliente-insatisfeito/","https://www.cresta.com.br/cliente-insatisfeito-e-fonte-de-aprendizado/","https://blog.clubpetro.com/clientes-insatisfeitos/","https://www.zendesk.com.br/blog/cliente-insatisfeito/","https://sucessoemvendas.com.br/5-problemas-gerados-por-clientes-insatisfeitos/","https://www.reclameaqui.com.br/o-boticario-loja-online/linha-buballoo-propaganda-enganosa_kxx3jiz3hADvVV5a/"]
+    </references>
+    
+    </knowledge-2>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://www.reclameaqui.com.br/empresa/boticario/": "O Boticário"
+  + "https://www.boticario.com.br/atendimento-online/outros-assuntos/sac-boticario": "Fale Conosco, Canais de Atendimento e SAC | O Boticário"
+  + "https://www.boticario.com.br/atendimento-online/outros-assuntos/como-eu-posso-enviar-uma-sugestao-ou-uma-critica": "Como eu posso enviar uma sugestão ou uma crítica? | O Boticário"
+  + "https://www.reclameaqui.com.br/empresa/o-boticario-loja-online/lista-reclamacoes/?problema=0000000000000001": "Lista de reclamações: O Boticário - Loja Online - Reclame AQUI"
+  + "https://www.grupoboticario.com.br/en/talk-to-us/": "talk to us - Grupo Boticário"
+  + "https://www.consumidor.gov.br/pages/indicador/relatos/abrir": "Consumidor"
+  + "https://www.boticario.com.br/atendimento-online": "Perguntas Frequentes | O Boticário"
+  + "https://www.randstad.com.br/": "Randstad - Soluções em Recursos Humanos | Randstad Brasil"
+  + "https://portaldaqueixa.com/brands/o-boticario/complaints": "O Boticário - Reclamações | Portal da Queixa"
+  + "https://www.boticario.com.br/atendimento-online/revendedora/quais-sao-os-canais-de-contato-para-falar-de-revenda": "Quais são os canais de contato para falar de Revenda? | O Boticário"
+  + "https://revenda.boticario.com.br/faq/cadastro/quais-sao-os-telefones-de-contato-de-o-boticario": "Quais são os telefones de contato de O Boticário?"
+  + "https://www.boticario.com.br/atendimento/email/": "Contato | O Boticário"
+  + "https://www.belezanaweb.com.br/atendimento-online": "Perguntas Frequentes | Beleza na Web"
+  + "https://www.oboticario.pt/pages/contactos": "Fala Connosco | O Boticário"
+  + "https://privacidade.grupoboticario.com.br/portal-de-privacidade/": "Grupo Boticário – Portal de Privacidade"
+  + "https://www.boticario.com.br/atendimento-online/trocas-devolucoes-e-cancelamento": "Trocas, Devoluções e Cancelamento - Perguntas Frequentes | O Boticário"
+  + "https://www.proteste.org.br/reclame/lista-de-reclamacoes-publicas/reclamacoes-publicas?referenceid=CPTBR00103407-05": "NÃO RECEBI PRODUTOS - Reclamação para O BOTICÁRIO – Enviada através da PROTESTE"
+  + "https://www.consumidor.gov.br/pages/empresa/20140825000021587/perfil": "O Boticário (Interbelle)"
+  + "https://www.proteste.org.br/reclame/lista-de-reclamacoes-publicas/reclamacoes-publicas?referenceid=CPTBR01769090-04": "Reclamação de possível fraude como Revendedor O Boticário, conforme print's de SMS que juntei aqui. - Reclamação para Boticário – Enviada através da PROTESTE"
+  + "https://www.boticario.com.br/atendimento-online/estorno-e-reembolso": "Estorno e Reembolso - Perguntas Frequentes | O Boticário"
+  + "https://rockcontent.com/br/blog/boticario/": "Análise da estratégia d'O Boticário e o que aprender com ela"
+  + "https://www.glassdoor.com.br/Avalia%C3%A7%C3%B5es/Grupo-Botic%C3%A1rio-pontos-negativos-Avalia%C3%A7%C3%B5es-EI_IE2195061.0,15_KH16,32.htm": "Avaliações – Grupo Boticário sobre "pontos negativos""
+  + "https://br.fashionnetwork.com/news/Estudo-aponta-o-boticario-como-marca-mais-bem-avaliada-pelos-brasileiros,783276.html": "Estudo aponta O Boticário como marca mais bem avaliada pelos brasileiros"
+  + "https://mundonegro.inf.br/familia-negra-o-odio-a-campanha-do-boticario-tambem-e-culpa-da-globo/": "Família negra: O ódio a campanha do Boticário também é culpa da Globo - Mundo Negro"
+  + "https://bhaz.com.br/noticias/variedades/boticario-racismo-reverso/": "O Boticário é acusado de fazer 'racismo reverso' em campanha do Dia dos Pais; veja"
+  + "https://catracalivre.com.br/cidadania/campanha-de-o-boticario-com-negros-e-alvo-de-campanha-de-odio/": "Campanha de ‘O Boticário’ com famosa negra é alvo de campanha de ódio na web"
+  + "https://www.trabalhosfeitos.com/categoria/pontos-positivos-e-negativos-do-boticario/0": "Pontos Positivos E Negativos Do Boticario | Trabalhosfeitos"
+  + "https://www.grupoboticario.com.br/en/home-en/": "Home - English | Grupo Boticário"
+  + "https://www.boticario.com.br/": "O Boticário - Presentes, Perfumaria, Cosméticos e mais!"
+  + "https://www.opinioes-verificadas.com/avis-clients/oboticario.pt": "Opinião Oboticario | Todas as opiniões de clientes para O Boticário – Tudo Azul SA"
+  + "https://sindivestuario.org.br/propaganda-de-o-boticario-gera-reacao-homofobica-na-web/": "Propaganda de “O Boticário” gera reação homofóbica na web. | Sindivestuário"
+  + "https://www.livelo.com.br/ganhe-pontos-compre-pontue-partner/oboticario/BOT": "Viva a sua beleza com a Boticário ganhando pontos ..."
+  + "https://administradores.com.br/artigos/o-boticario-e-suas-polemicas": "O boticário e suas polêmicas..."
+  + "https://www.blogmatrizgroup.com.br/venha-descobrir-como-a-empresa-o-boticario-expandiu-tanto-durante-os-anos/": "O Boticário: O segredo do sucesso - Blog Matriz Group"
+  + "https://www.boticario.com/": "O Boticário US – O Boticário US"
+  + "https://www.oboticario.pt/": "O Boticário | Perfumes, Maquilhagem, Cosméticos e Presentes"
+  + "https://www.reclameaqui.com.br/empresa/boticario/lista-reclamacoes/": "Lista de reclamações: O Boticário - Reclame AQUI"
+  + "https://www.reclameaqui.com.br/empresa/o-boticario-loja-online/lista-reclamacoes/": "Lista de reclamações: O Boticário - Loja Online - Reclame AQUI"
+  + "https://www.reclameaqui.com.br/empresa/o-boticario-revendedores/lista-reclamacoes/": "Lista de reclamações: O Boticário Revendedores - Reclame AQUI"
+  + "https://www.reclameaqui.com.br/empresa/boticario/lista-reclamacoes/?categoria=0000000000000276": "Todas as reclamações na categoria Atendimento para Consultor - O Boticário - Reclame Aqui"
+  + "https://www.reclameaqui.com.br/empresa/o-boticario-revendedores/": "O Boticário Revendedores - Reclame Aqui"
+  + "https://portaldaqueixa.com/brands/o-boticario": "O Boticário | Portal da Queixa"
+  + "https://www.reclameaqui.com.br/boticario/revendedora-o-boticario_xJCPyYOjvdQCS906/": "Revendedora O Boticário - O Boticário - Reclame Aqui"
+  + "https://www.reclameaqui.com.br/boticario/constrangimento-e-decepcao-como-revendedora-o-boticario_vzMQE-Yd55bRIrvn/": "Constrangimento e decepção como Revendedora O Boticário - O Boticário - Reclame Aqui"
+  + "https://www.reclameaqui.com.br/boticario/reclamacao_zdW5i44PgRoaMj13/": "reclamação - O Boticário - Reclame Aqui"
+  + "https://www.reclameaqui.com.br/boticario/grupo-boticario_pZxK4IOQ5z3ktET4/": "grupo boticario - O Boticário - Reclame Aqui"
+  + "https://reclamacoesprocon.com.br/historico/empresa/o-boticario/como-reclamar": "O Boticário - Como fazer uma reclamação da empresa no PROCON"
+  + "https://www.reclameaqui.com.br/boticario/atendimento-pessimo_qLKV7ntyNb4_0eMc/": "Atendimento péssimo - O Boticário - Reclame Aqui"
+  + "https://blog.bling.com.br/clientes-insatisfeitos-loja-virtual/": "Como lidar com clientes insatisfeitos na sua loja virtual"
+  + "https://veja.abri.com.br/telefone-o-boticario/": "SAC Boticário, Telefone, 0800, Central Revendedora | Abri"
+  + "https://skeepers.io/pt/blog/clientes-insatisfeitos-como-gerir/": "Clientes insatisfeitos, como gerir? - Skeepers"
+  + "https://www.agendor.com.br/blog/clientes-insatisfeitos/": "Clientes insatisfeitos: reverta essa situação com essas dicas! | Blog Agendor"
+  + "https://www.moskitcrm.com/blog/clientes-insatisfeitos": "Clientes insatisfeitos: 7 dicas para melhorar o atendimento!"
+  + "https://alloyal.com.br/blog/cliente-insatisfeito": "Entenda como converter um cliente insatisfeito em verdadeiro fã da marca • Alloyal"
+  + "https://www.fortbrasil.com.br/post/cliente-insatisfeito-confira-as-nossas-5-dicas-para-lidar-com-ele": "Cliente insatisfeito: confira as nossas 5 dicas para lidar com ele | FortBrasil"
+  + "https://sebrae.com.br/sites/PortalSebrae/artigos/como-lidar-com-um-cliente-insatisfeito,575d002e76136810VgnVCM1000001b00320aRCRD": "Como lidar com um cliente insatisfeito - Sebrae"
+  + "https://www.webposto.com.br/blog/dicas/4-dicas-para-voce-conseguir-lidar-com-clientes-insatisfeitos-no-teu-posto/": "4 dicas para você conseguir lidar com clientes insatisfeitos no teu posto"
+  + "https://sejaefi.com.br/blog/clientes-insatisfeitos": "5 cuidados para lidar com clientes insatisfeitos"
+  + "https://fieldcontrol.com.br/blog/clientes-insatisfeitos/": "Clientes insatisfeitos: Como lidar com essa situação"
+  + "https://atendare.com/br/blog/o-que-aprender-com-clientes-insatisfeitos/": "O que aprender com clientes insatisfeitos?"
+  + "https://blog.wedologos.com.br/como-lidar-com-clientes-insatisfeitos/": "Dez marcas que sabem como lidar com clientes insatisfeitos – We Do Logos"
+  + "https://pt.nomadan.net/frases-de-insatisfacao-de-clientes/": "Se você já recebeu uma das frases de insatisfação de clientes... - Nomadan.net em Português"
+  + "https://blog.qualylife.com.br/clientes-insatisfeitos/": "Clientes insatisfeitos: como cativá-los? Qualylife Consultoria"
+  + "https://exame.com/pme/como-lidar-com-um-cliente-insatisfeito/": "Como lidar com um cliente insatisfeito? | Exame"
+  + "https://www.cresta.com.br/cliente-insatisfeito-e-fonte-de-aprendizado/": "Seu cliente mais insatisfeito é sua maior fonte de aprendizado"
+  + "https://blog.clubpetro.com/clientes-insatisfeitos/": "Como lidar com clientes insatisfeitos no posto de combustível?"
+  + "https://www.zendesk.com.br/blog/cliente-insatisfeito/": "Cliente insatisfeito: como evitar e como lidar com um? [GUIA]"
+  + "https://sucessoemvendas.com.br/5-problemas-gerados-por-clientes-insatisfeitos/": "5 problemas gerados por clientes insatisfeitos - Sucesso em Vendas"
+  + "https://www.reclameaqui.com.br/o-boticario-loja-online/linha-buballoo-propaganda-enganosa_kxx3jiz3hADvVV5a/": "Linha buballoo - propaganda enganosa - O Boticário - Loja Online - Reclame Aqui"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

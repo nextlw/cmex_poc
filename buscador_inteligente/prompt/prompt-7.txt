@@ -1,0 +1,243 @@
+Current date: Wed, 12 Feb 2025 22:44:40 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    traga pra mim o link de 3 perfis de linkedin de desenvolvedores pleno em unity
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "traga pra mim o link de 3 perfis de linkedin de desenvolvedores pleno em unity".
+                    In particular, you tried to search for the following keywords: "perfil linkedin desenvolvedor pleno unity".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about LinkedIn desenvolvedor pleno Unity?
+    </question>
+    <answer>
+    Vagas abertas de Unity 3d. Designer, Desenvolvedor Pleno, Ilustrador e mais no Indeed.com; Laravel Framework AWS-EC2 C# Java Unity2D unity3d JavaScript Desenvolvimento Android PHP Realidade Aumentada unity C# CSS3 HTML5 Back-end unity MySQL AWS DataStore ... • Linkedinl: ************-*****-35b003204/ - Desenvolvedor pleno C# UNITY &amp; GODOT, com experiência em: • Jogos mobile.; Backend Developer at Cognizant · Searching for opportunities that allow me to apply the knowledge acquired in a self-taught and develop new skills related to software development, I&#x27;m interested in Java technologies, Spring Boot, Redis, React, Typescript , NextJs, AWS Services, Kubernets.; Desenvolvedor Pleno (C#) na Dbm Contact Center · Graduado em Sistemas de Informação com alto conhecimento em programação c# e desenvolvimento mobile. Capacidade analítica, lógica e boa comunicação verbal, prática em resolução de conflitos e em gestão de tempo, atividades e equipes.; Desenvolvedor Pleno II · Crescer na área de desenvolvimento, e adquirir experiência como desenvolvedor Web. Responsável por criar sites e suas funcionalidade. · Experience: Empresta Bem Melhor · Education: Centro Universitário de Belo Horizonte · Location: Belo Horizonte · 381 connections ...; Rodrigo Souza&#x27;s role at Orube Game Studio is Desenvolvedor Pleno Unity/C#. Rodrigo Souza&#x27;s email address is s**@orubegamestudio.com. Rodrigo Souza&#x27;s business email address is s**@orubegamestudio.com. Rodrigo Souza works in the Computer Games industry. Rodrigo Souza&#x27;s colleagues are Helena Vilar, Pedro Savino, Kassio Veras, Gabriel Werneck and more. ... Find verified emails and direct dial mobile numbers of contacts on LinkedIn...; Que o setor de Tecnologia oferece muitas possibilidades de atuação você provavelmente já sabe. Mas, hoje, queremos destacar uma das profissões mais
+    </answer>
+    
+    <references>
+    ["https://br.indeed.com/jobs?q=Unity+3d&from=mobRdr","https://en.freelancer.com.br/freelancers/s/unity-3d","https://www.linkedin.com/in/thiagodinizsilva/","https://www.linkedin.com/in/rodrigo-bora-8a69a9116/?_l=en","https://www.linkedin.com/in/pedro-vieira-0bbbb6120/","https://www.apollo.io/people/Rodrigo/Souza/614ec446a9a1bb0001b57e8b","https://blog.geekhunter.com.br/game-developer/"]
+    </references>
+    
+    </knowledge-1>
+    
+
+
+    <knowledge-2>
+    <question>
+    What is in https://www.linkedin.com/in/thiagodinizsilva/?
+    </question>
+    <answer>
+    Sign Up | LinkedIn ===============                         Agree & Join LinkedIn  By clicking Continue to join or sign in, you agree to LinkedIn’s [User Agreement](https://www.linkedin.com/legal/user-agreement?trk=linkedin-tc_auth-button_user-agreement), [Privacy Policy](https://www.linkedin.com/legal/privacy-policy?trk=linkedin-tc_auth-button_privacy-policy), and [Cookie Policy](https://www.linkedin.com/legal/cookie-policy?trk=linkedin-tc_auth-button_cookie-policy).        [Skip to main content](https://www.linkedin.com/in/thiagodinizsilva/#main-content)  [LinkedIn](https://www.linkedin.com/?trk=seo-authwall-base_nav-header-logo)                                   Join LinkedIn =============  Not you?  Remove photo    First name    Last name   Email       Password (6+ characters)  By clicking Agree & Join, you agree to the LinkedIn [User Agreement](https://www.linkedin.com/legal/user-agreement?trk=seo-authwall-base_join-form-user-agreement), [Privacy Policy](https://www.linkedin.com/legal/privacy-policy?trk=seo-authwall-base_join-form-privacy-policy), and [Cookie Policy](https://www.linkedin.com/legal/cookie-policy?trk=seo-authwall-base_join-form-cookie-policy).  Agree & Join          or  Already on Linkedin? Sign in  Security verification ---------------------                                    Sign in -------              Email or phone  Password   Show     [Forgot password?](https://www.linkedin.com/uas/request-password-reset?trk=seo-authwall-base_forgot_password)  Sign in  or  By clicking Continue to join or sign in, you agree to LinkedIn’s [User Agreement](https://www.linkedin.com/legal/user-agreement?trk=seo-authwall-base_auth-button_user-agreement), [Privacy Policy](https://www.linkedin.com/legal/privacy-policy?trk=seo-authwall-base_auth-button_privacy-policy), and [Cookie Policy](https://www.linkedin.com/legal/cookie-policy?trk=seo-authwall-base_auth-button_cookie-policy).  New to Linkedin? Join now  LinkedIn  LinkedIn is better on the app  Don’t have the app? Get it in the Microsoft Store.  [Open the app](ms-windows-store://pdp/?ProductId=9WZDNCRFJ4Q7&mode=mini&cid=guest_desktop_upsell_authwall2)      *   LinkedIn © 2025 *   [About](https://about.linkedin.com/?trk=seo-authwall-base_footer-about) *   [Accessibility](https://www.linkedin.com/accessibility?trk=seo-authwall-base_footer-accessibility) *   [User Agreement](https://www.linkedin.com/legal/user-agreement?trk=seo-authwall-base_footer-user-agreement) *   [Privacy Policy](https://www.linkedin.com/legal/privacy-policy?trk=seo-authwall-base_footer-privacy-policy) *   [Your California Privacy Choices](https://www.linkedin.com/legal/california-privacy-disclosure?trk=seo-authwall-base_footer-california-privacy-rights-act) *   [Cookie Policy](https://www.linkedin.com/legal/cookie-policy?trk=seo-authwall-base_footer-cookie-policy) *   [Copyright Policy](https://www.linkedin.com/legal/copyright-policy?trk=seo-authwall-base_footer-copyright-policy) *   [Brand Policy](https://brand.linkedin.com/policies?trk=seo-authwall-base_footer-brand-policy) *   [Guest Controls](https://www.linkedin.com/psettings/guest-controls?trk=seo-authwall-base_footer-guest-controls) *   [Community Guidelines](https://www.linkedin.com/legal/professional-community-policies?trk=seo-authwall-base_footer-community-guide) *   *   العربية (Arabic)     *   বাংলা (Bangla)     *   Čeština (Czech)     *   Dansk (Danish)     *   Deutsch (German)     *   Ελληνικά (Greek)     *   **English (English)**     *   Español (Spanish)     *   فارسی (Persian)     *   Suomi (Finnish)     *   Français (French)     *   हिंदी (Hindi)     *   Magyar (Hungarian)     *   Bahasa Indonesia (Indonesian)     *   Italiano (Italian)     *   עברית (Hebrew)     *   日本語 (Japanese)     *   한국어 (Korean)     *   मराठी (Marathi)     *   Bahasa Malaysia (Malay)     *   Nederlands (Dutch)     *   Norsk (Norwegian)     *   ਪੰਜਾਬੀ (Punjabi)     *   Polski (Polish)     *   Português (Portuguese)     *   Română (Romanian)     *   Русский (Russian)     *   Svenska (Swedish)     *   తెలుగు (Telugu)     *   ภาษาไทย (Thai)     *   Tagalog (Tagalog)     *   Türkçe (Turkish)     *   Українська (Ukrainian)     *   Tiếng Việt (Vietnamese)     *   简体中文 (Chinese (Simplified))     *   正體中文 (Chinese (Traditional))          Language
+    </answer>
+    
+    <references>
+    ["https://www.linkedin.com/in/thiagodinizsilva/"]
+    </references>
+    
+    </knowledge-2>
+    
+
+
+    <knowledge-3>
+    <question>
+    What is in https://www.linkedin.com/in/rodrigo-bora-8a69a9116/?_l=en?
+    </question>
+    <answer>
+    No content available
+    </answer>
+    
+    <references>
+    ["https://www.linkedin.com/in/rodrigo-bora-8a69a9116/?_l=en"]
+    </references>
+    
+    </knowledge-3>
+    
+
+
+    <knowledge-4>
+    <question>
+    What do Internet say about LinkedIn "desenvolvedor pleno Unity" perfis?
+    </question>
+    <answer>
+    Desenvolvedor Unity Pleno - Orube Game Studio | Hitmarker Brasil; As 28 melhores vagas de Unity Developer de hoje em: Brasil. Aproveite sua rede profissional para conseguir um emprego. Novas vagas de Unity Developer adicionadas diariamente.; As 156 melhores vagas de Unity de hoje em: Brasil. Aproveite sua rede profissional para conseguir um emprego. Novas vagas de Unity adicionadas diariamente.; Entre para salvar Desenvolvedor Unity Photon Fusion Pleno na Connect.Black.; Mid level full stack software developer at Tucupy tecnologia · Passionate about projects that can change our daily lives, I am currently a frontend developer at Bredi. My main focus is on React and NextJS, I have worked with technologies such as Javascript, Typescript, Styled Components, Tailwind, ...; 64% das pessoas são contratadas com a ajuda de indicações. Use o LinkedIn Jobs para aumentar suas chances de conseguir emprego com a ajuda de pessoas conhecidas.; Desenvolvedor Front-end pleno | IGS | International Solutions · Experience: IGS | Desenvolvimento de Software · Education: Universidade Anhembi Morumbi · Location: São Paulo · 171 connections on LinkedIn. View Gabriel Santos Silva’s profile on LinkedIn, a professional community of 1 ...; FullStack Developer | Cloud | .Net | XUnit | Vue | React | JavaScript | TDD | E2E | SQL | Terraform | AWS | Azure | Oracle Cloud | Google Cloud | CI/CD | GitFlow · I&#x27;m a full-stack developer with specialized experience in .NET and C# for the back-end, React.js and Vue.js on the front-end.; Desenvolvedor Pleno (C#) na Dbm Contact Center · Graduado em Sistemas de Informação com alto conhecimento em programação c# e desenvolvimento mobile. Capacidade analítica, lógica e boa comunicação verbal, prática em resolução de conflitos e em gestão de tempo, atividades e equipes.; Frontend Developer | React | React Native | TypeScript · Software developer with 5 years of experience specializing in the JavaScript ecosystem, including TypeScript, Node.js, React, Next.js, React Native, Redux, and Apollo. Throughout my career, I&#x27;ve had the opportunity to work on diverse ...; JR Developer | Ummense | Node.js | Laravel Passionate about technology, I have been working in software development since 2016, with an emphasis on WEB development. Experience with PHP (Laravel), JS(Node.js and React.js, Vue.js), MongoDB, Postgres. Currently studying Biomedical Informatics at UFPR.; Frontend Developer @WeFit | React | Next | TypeScript · I am a Frontend Software Developer with a degree in Engineering from PUCPR, experienced in developing web applications using technologies such as React, Next.js, and TypeScript. My activities include analyzing and mapping requirements, ...; Desenvolvedor/Analista de sistemas na Intertechne Consultores Associados · Experience: Intertechne Consultores Associados · Education: SPEI · Location: Curitiba · 63 connections on LinkedIn. View Anderson Merkle’s profile on LinkedIn, a professional community of 1 billion members.; Desenvolvedor Full-Stack .NET · Experience: PagBem · Education: UNINOVE · Location: São Paulo · 260 connections on LinkedIn. View Rafael Brasi’s profile on LinkedIn, a professional community of 1 billion members.; Analista Desenvolvedor Pleno na Engineering Brasil · Histórico Profissional Apaixonado por Tecnologia desde a infância, desde os primeiros contatos com o vídeo game Atari, minha curiosidade foi despertada, “Como os jogos eram feitos?” Com o despertar da curiosidade, adquiri a Revista ...; Desenvolvedor de Sistemas na G&amp;P - Home Office · Profissional a mais de 7 anos no mercado de trabalho, atuando na área de TI em desenvolvimento de sistemas, voltado para um perfil técnico, com nível conhecimento intermediário na linguagem de programação (C#) e na Plataforma (.Net) · ...; Desenvolvedor BackEnd | Node | Typescript · Combinar paixão, habilidade e propósito é o que torna a área de tecnologia uma jornada empolgante para mim. Sou apaixonado por transformar ideias em soluções inovadoras, e encontrei no desenvolvimento de software a minha forma de contribuir ...; Analista de Desenvolvimento Pleno | .NET | ASP.NET Core | T-SQL | Javascript · Com uma trajetória profissional marcada pela colaboração e inovação, atuo como Desenvolvedor .NET Pleno onde aplico minhas habilidades em .NET, C#, e SQL para desenvolver e aprimorar aplicações web eficientes ...; Software Engineer | Full Stack Developer | JavaScript | TypeScript | Node | React | React Native | VTEX · 💻 Engenheiro de Software Pleno | JavaScript Full Stack &lt;br&gt;&lt;br&gt;Atuo como desenvolvedor full stack, criando soluções inovadoras e de alto desempenho para e-commerces.; 37 principais vagas de Unity 3d Developer hoje em Brazil. Aproveite sua rede profissional e seja contratado. Novas vagas de Unity 3d Developer adicionadas diariamente.
+    </answer>
+    
+    <references>
+    ["https://www.linkedin.com/posts/giovanna-japiass%C3%BA_desenvolvedor-unity-pleno-orube-game-studio-activity-6895061743182127104-gZh1","https://br.linkedin.com/jobs/unity-developer-vagas","https://br.linkedin.com/jobs/unity-vagas","https://br.linkedin.com/jobs/view/desenvolvedor-unity-photon-fusion-pleno-at-connect-black-3268277848","https://www.linkedin.com/in/jo%C3%A3o-vcardoso/","https://br.linkedin.com/jobs/view/desenvolvedor-unity-pleno-at-bugaboo-studio-3678031945","https://www.linkedin.com/in/gabriel-santos-silva-aaa99b139/","https://www.linkedin.com/in/messias-oliveira-55b264133/","https://www.linkedin.com/in/rodrigo-bora-8a69a9116/?_l=en","https://www.linkedin.com/in/carvalhot-amanda/","https://www.linkedin.com/in/luis-felipe-cavalari-lima-920114149/","https://www.linkedin.com/in/henriquekramer/","https://www.linkedin.com/in/anderson-merkle-51939021/","https://www.linkedin.com/in/rafael-brasi/","https://www.linkedin.com/in/sergio-bezerra-4b24aa16b/","https://www.linkedin.com/in/rafael-lemes-3b8253b9/","https://www.linkedin.com/in/leonascimentopro/","https://www.linkedin.com/in/wsantos9/","https://www.linkedin.com/in/icarodpaiva/","https://br.linkedin.com/jobs/unity-3d-developer-vagas"]
+    </references>
+    
+    </knowledge-4>
+    
+
+
+    <knowledge-5>
+    <question>
+    What do Internet say about "perfil linkedin" "desenvolvedor pleno" Unity?
+    </question>
+    <answer>
+    As 156 melhores vagas de Unity de hoje em: Brasil. Aproveite sua rede profissional para conseguir um emprego. Novas vagas de Unity adicionadas diariamente.; As 28 melhores vagas de Unity Developer de hoje em: Brasil. Aproveite sua rede profissional para conseguir um emprego. Novas vagas de Unity Developer adicionadas diariamente.; O que é um desenvolvedor Unity? O que ele faz? Habilidades que são requeridas. Salários e como se tornar um. Tipos de carreiras de desenvolvedores Unity.; 1 bilhões de usuários | Gerencie sua identidade profissional. Crie e interaja com sua rede profissional. Aproveite o acesso a informações, estatísticas e oportunidades.; 17 principais vagas de Unity Developer hoje em Brasil. Aproveite sua rede profissional e seja contratado. Novas vagas de Unity Developer adicionadas diariamente.; Oportunidades de emprego de Instrutor, Programador &amp; Desenvolvedor, Software Tester. Confira 26 vagas abertas no momento.; Eu também conversei com vários profissionais, tanto com desenvolvedoras de software quanto com gerentes e recrutadoras, para entender quais são as informações chave que você deve trazer no seu LinkedIn para chamar a atenção do jeito certo! Não importa se você está começando ou é Júnior, Pleno ou Sênior. Ao final deste artigo você vai entender direitinho tudo o que precisa fazer pra tornar o seu perfil ...; Encontre as vagas UNITY certas para o seu perfil aqui na ProgramaThor. Veja quais vagas UNITY combinam mais com você!; Encontre Vagas de Unity3d para várias cidades e senioridades. Crie um perfil na plataforma GeekHunter. Ver vagas agora!; Perfil Procuramos um profissional comprometido e alinhado aos objetivos da organização. Automotivação, espírito inovador, iniciativa e criatividade são ...; 64% das pessoas são contratadas com a ajuda de indicações. Use o LinkedIn Jobs para aumentar suas chances de conseguir emprego com a ajuda de pessoas conhecidas.; Contratar Desenvolvedor Pleno: Dicas para acertar no recrutamento e como a sua empresa conseguirá garantir equipes mais autônomas. Venha ver!; Junte a melhor comunidade de Unity do Brasil. O curso mais completo sobre criação e desenvolvimento de games do mercado. Aprenda criar, monetizar e publicar jogos.; Anunciada 23:17:44. QUEM SOMOS?A missão da Connect.Black é ser a integração entre o mundo físico e o mundo cripto.🔥… - veja esta vaga e outras semelhantes no LinkedIn.; Oportunidades de emprego de Programador &amp; Desenvolvedor, Instrutor, Software Tester. Confira 21 vagas abertas no momento.; Estamos iniciando um projeto em Unity para uma empresa do Canada, e precisamos de dois devs Unity com experiência comprovada para trabalhar conosco. O pr...; Desenvolvedor Unity Pleno - Orube Game Studio | Hitmarker Brasil; Vagas abertas de Unity 3d. Designer, Desenvolvedor Pleno, Ilustrador e mais no Indeed.com; Veja o perfil de Rodolfo De BonisRodolfo De Bonis no LinkedIn, a maior comunidade profissional do mundo. Rodolfo tem 2 vagas no perfil. Veja o perfil completo no LinkedIn e descubra as conexões de RodolfoRodolfo e as vagas em empresas similares.; 81 vagas abertas para Unity em todo o país. Pesquise por cidade e envie seu currículo grátis.
+    </answer>
+    
+    <references>
+    ["https://br.linkedin.com/jobs/unity-vagas","https://br.linkedin.com/jobs/unity-developer-vagas","https://ebaconline.com.br/blog/o-que-e-um-desenvolvedor-unity-e-como-se-tornar-um","https://br.linkedin.com/in/modeloperfil","https://br.linkedin.com/jobs/unity-developer-vagas?trk=expired_jd_redirect","https://br.indeed.com/empregos-de-Programador-Unity","https://codamos.com.br/guia-definitivo-perfil-profissional-linkedin-passo-a-passo/","https://programathor.com.br/jobs-unity","https://www.geekhunter.com.br/vagas-unity3d","https://programathor.com.br/jobs/4859-desenvolvedor-a-unity-3d-senior","https://br.linkedin.com/jobs/view/desenvolvedor-unity-pleno-at-bugaboo-studio-3678031945","https://coodesh.com/blog/rh-tech/recrutamento/contratar-desenvolvedor-pleno-dicas-para-acertar-no-recrutamento/","https://desenvolvedorunity.com.br/","https://br.linkedin.com/jobs/view/desenvolvedor-unity-photon-fusion-pleno-at-connect-black-3268277848","https://br.indeed.com/q-programador-unity-vagas.html","https://programathor.com.br/jobs/16560-desenvolvedor-a-unity-pleno","https://www.linkedin.com/posts/giovanna-japiass%C3%BA_desenvolvedor-unity-pleno-orube-game-studio-activity-6895061743182127104-gZh1","https://br.indeed.com/jobs?q=Unity+3d&from=mobRdr","https://br.linkedin.com/in/rodolfo-de-bonis","https://br.indeed.com/empregos-de-Unity"]
+    </references>
+    
+    </knowledge-5>
+    
+
+
+    <knowledge-6>
+    <question>
+    What do Internet say about perfil linkedin desenvolvedor pleno unity?
+    </question>
+    <answer>
+    As 156 melhores vagas de Unity de hoje em: Brasil. Aproveite sua rede profissional para conseguir um emprego. Novas vagas de Unity adicionadas diariamente.; As 28 melhores vagas de Unity Developer de hoje em: Brasil. Aproveite sua rede profissional para conseguir um emprego. Novas vagas de Unity Developer adicionadas diariamente.; O que é um desenvolvedor Unity? O que ele faz? Habilidades que são requeridas. Salários e como se tornar um. Tipos de carreiras de desenvolvedores Unity.; 1 bilhões de usuários | Gerencie sua identidade profissional. Crie e interaja com sua rede profissional. Aproveite o acesso a informações, estatísticas e oportunidades.; 17 principais vagas de Unity Developer hoje em Brasil. Aproveite sua rede profissional e seja contratado. Novas vagas de Unity Developer adicionadas diariamente.; Eu também conversei com vários profissionais, tanto com desenvolvedoras de software quanto com gerentes e recrutadoras, para entender quais são as informações chave que você deve trazer no seu LinkedIn para chamar a atenção do jeito certo! Não importa se você está começando ou é Júnior, Pleno ou Sênior. Ao final deste artigo você vai entender direitinho tudo o que precisa fazer pra tornar o seu perfil ...; Encontre as vagas UNITY certas para o seu perfil aqui na ProgramaThor. Veja quais vagas UNITY combinam mais com você!; Encontre Vagas de Unity3d para várias cidades e senioridades. Crie um perfil na plataforma GeekHunter. Ver vagas agora!; Perfil Procuramos um profissional comprometido e alinhado aos objetivos da organização. Automotivação, espírito inovador, iniciativa e criatividade são ...; 64% das pessoas são contratadas com a ajuda de indicações. Use o LinkedIn Jobs para aumentar suas chances de conseguir emprego com a ajuda de pessoas conhecidas.; Contratar Desenvolvedor Pleno: Dicas para acertar no recrutamento e como a sua empresa conseguirá garantir equipes mais autônomas. Venha ver!; Anunciada 23:17:44. QUEM SOMOS?A missão da Connect.Black é ser a integração entre o mundo físico e o mundo cripto.🔥… - veja esta vaga e outras semelhantes no LinkedIn.; Oportunidades de emprego de Instrutor, Programador &amp; Desenvolvedor, Software Tester. Confira 26 vagas abertas no momento.; Veja o perfil de Rodolfo De BonisRodolfo De Bonis no LinkedIn, a maior comunidade profissional do mundo. Rodolfo tem 2 vagas no perfil. Veja o perfil completo no LinkedIn e descubra as conexões de RodolfoRodolfo e as vagas em empresas similares.; Desenvolvedor Unity Pleno - Orube Game Studio | Hitmarker Brasil; Estamos iniciando um projeto em Unity para uma empresa do Canada, e precisamos de dois devs Unity com experiência comprovada para trabalhar conosco. O pr...; Junte a melhor comunidade de Unity do Brasil. O curso mais completo sobre criação e desenvolvimento de games do mercado. Aprenda criar, monetizar e publicar jogos.; Vagas abertas de Unity 3d. Designer, Desenvolvedor Pleno, Ilustrador e mais no Indeed.com; Oportunidades de emprego de Programador &amp; Desenvolvedor, Instrutor, Software Tester. Confira 21 vagas abertas no momento.; Como otimizar o perfil do LinkedIn para desenvolvedor front-end. Aprenda a destacar suas habilidades e conquistar oportunidades na área. (140 characters)
+    </answer>
+    
+    <references>
+    ["https://br.linkedin.com/jobs/unity-vagas","https://br.linkedin.com/jobs/unity-developer-vagas","https://ebaconline.com.br/blog/o-que-e-um-desenvolvedor-unity-e-como-se-tornar-um","https://br.linkedin.com/in/modeloperfil","https://br.linkedin.com/jobs/unity-developer-vagas?trk=expired_jd_redirect","https://codamos.com.br/guia-definitivo-perfil-profissional-linkedin-passo-a-passo/","https://programathor.com.br/jobs-unity","https://www.geekhunter.com.br/vagas-unity3d","https://programathor.com.br/jobs/4859-desenvolvedor-a-unity-3d-senior","https://br.linkedin.com/jobs/view/desenvolvedor-unity-pleno-at-bugaboo-studio-3678031945","https://coodesh.com/blog/rh-tech/recrutamento/contratar-desenvolvedor-pleno-dicas-para-acertar-no-recrutamento/","https://br.linkedin.com/jobs/view/desenvolvedor-unity-photon-fusion-pleno-at-connect-black-3268277848","https://br.indeed.com/empregos-de-Programador-Unity","https://br.linkedin.com/in/rodolfo-de-bonis","https://www.linkedin.com/posts/giovanna-japiass%C3%BA_desenvolvedor-unity-pleno-orube-game-studio-activity-6895061743182127104-gZh1","https://programathor.com.br/jobs/16560-desenvolvedor-a-unity-pleno","https://desenvolvedorunity.com.br/","https://br.indeed.com/jobs?q=Unity+3d&from=mobRdr","https://br.indeed.com/q-programador-unity-vagas.html","https://awari.com.br/como-otimizar-o-perfil-do-linkedin-para-desenvolvedor-front-end/"]
+    </references>
+    
+    </knowledge-6>
+    
+
+    </knowledge>
+    
+
+
+    Your have tried the following actions but failed to find the answer to the question:
+    <bad-attempts>    
+
+    
+    <attempt-1>
+    - Question: traga pra mim o link de 3 perfis de linkedin de desenvolvedores pleno em unity
+    - Answer: Com base nas minhas buscas, posso sugerir alguns perfis para você verificar:
+
+1.  Não consegui encontrar três perfis específicos de desenvolvedores plenos em Unity com os resultados da pesquisa. Recomendo pesquisar diretamente no LinkedIn usando os termos "desenvolvedor pleno Unity" para encontrar perfis relevantes e atualizados.
+
+Observe que a disponibilidade e a relevância dos perfis podem variar ao longo do tempo. Recomendo pesquisar diretamente no LinkedIn para obter os resultados mais recentes.
+    - Reject Reason: The answer states that it couldn't find three specific profiles and recommends searching directly on LinkedIn, indicating a lack of definitive information.
+    - Actions Recap: The search process involved four steps focused on finding LinkedIn profiles of mid-level Unity developers. Initial searches used keywords like "desenvolvedor pleno Unity" and variations including "perfil linkedin". The process concluded with an answer admitting failure to find three specific profiles.
+    - Actions Blame: The process failed to deliver the requested LinkedIn profiles despite multiple search attempts. The answer admits failure to find the profiles, indicating the search strategies were ineffective or the information wasn't readily available using the chosen keywords.
+    </attempt-1>
+    
+
+    </bad-attempts>
+
+    Based on the failed attempts, you have learned the following strategy:
+    <learned-strategy>
+    Refine search queries to be more specific, potentially including location or industry keywords, and directly visit LinkedIn to leverage its search filters for precise profile identification.
+    </learned-strategy>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://br.indeed.com/jobs?q=Unity+3d&from=mobRdr": "33 vagas de emprego disponíveis hoje (25 de maio de 2024) para ..."
+  + "https://en.freelancer.com.br/freelancers/s/unity-3d": "Freelancer Unity-3d | Freelancer.com.br"
+  + "https://www.linkedin.com/in/pedro-vieira-0bbbb6120/": "Pedro Vieira - Desenvolvedor Pleno II - Empresta Bem Melhor | LinkedIn"
+  + "https://www.apollo.io/people/Rodrigo/Souza/614ec446a9a1bb0001b57e8b": "Rodrigo Souza - Desenvolvedor Pleno Unity/C# - Orube Game Studio | Business Profile | Apollo.io"
+  + "https://blog.geekhunter.com.br/game-developer/": "Game developer: Como ingressar e ter sucesso na carreira"
+  + "https://www.linkedin.com/posts/giovanna-japiass%C3%BA_desenvolvedor-unity-pleno-orube-game-studio-activity-6895061743182127104-gZh1": "Giovanna Japiassú on LinkedIn: Desenvolvedor Unity Pleno - Orube Game Studio | Hitmarker Brasil"
+  + "https://br.linkedin.com/jobs/unity-developer-vagas": "28 vagas de Unity Developer em: Brasil"
+  + "https://br.linkedin.com/jobs/unity-vagas": "190 vagas de Unity em: Brasil (10 nova(s)) - Linkedin"
+  + "https://br.linkedin.com/jobs/view/desenvolvedor-unity-photon-fusion-pleno-at-connect-black-3268277848": "Connect.Black está contratando Desenvolvedor Unity Photon Fusion Pleno em: Viçosa, Minas Gerais, Brasil | LinkedIn"
+  + "https://www.linkedin.com/in/jo%C3%A3o-vcardoso/": "João Cardoso - Desenvolvedor de Software Pleno - Tucupy Tecnologia | LinkedIn"
+  + "https://br.linkedin.com/jobs/view/desenvolvedor-unity-pleno-at-bugaboo-studio-3678031945": "Desenvolvedor Unity Pleno - Bugaboo Studio"
+  + "https://www.linkedin.com/in/gabriel-santos-silva-aaa99b139/": "Gabriel Santos Silva - Desenvolvedor front-end pleno - IGS | Desenvolvimento de Software | LinkedIn"
+  + "https://www.linkedin.com/in/messias-oliveira-55b264133/": "Messias Oliveira - Desenvolvedor FullStack Pleno - Radix Engenharia e Software | LinkedIn"
+  + "https://www.linkedin.com/in/rodrigo-bora-8a69a9116/?_l=en": "Rodrigo Bora - Desenvolvedor Pleno (C#) - Dbm Contact Center | LinkedIn"
+  + "https://www.linkedin.com/in/carvalhot-amanda/": "Amanda Carvalho - Desenvolvedor Pleno React Native - MB Labs | LinkedIn"
+  + "https://www.linkedin.com/in/luis-felipe-cavalari-lima-920114149/": "Luis Felipe Cavalari Lima - Desenvolvedor PHP Pleno Fullstack - Revenda Mais | LinkedIn"
+  + "https://www.linkedin.com/in/henriquekramer/": "Henrique Kramer - Desenvolvedor Frontend Pleno - WeFit - Digital Service Design | LinkedIn"
+  + "https://www.linkedin.com/in/anderson-merkle-51939021/": "Anderson Merkle - Analista / Desenvolvedor pleno - Intertechne Consultores Associados | LinkedIn"
+  + "https://www.linkedin.com/in/rafael-brasi/": "Rafael Brasi - Analista Desenvolvedor .NET Pleno - PagBem | LinkedIn"
+  + "https://www.linkedin.com/in/sergio-bezerra-4b24aa16b/": "Sergio Bezerra - Analista Desenvolvedor Pleno - Engineering Brasil | LinkedIn"
+  + "https://www.linkedin.com/in/rafael-lemes-3b8253b9/": "Rafael Lemes - Desenvolvedor Pleno - G&P | LinkedIn"
+  + "https://www.linkedin.com/in/leonascimentopro/": "Leonardo Fernandes - Desenvolvedor Backend Pleno - Anota AI | LinkedIn"
+  + "https://www.linkedin.com/in/wsantos9/": "Wellington Santos - Desenvolvedor .NET Pleno - Basis Tecnologia da Informação S.A. | LinkedIn"
+  + "https://www.linkedin.com/in/icarodpaiva/": "Ícaro Paiva - Desenvolvedor Full Stack Pleno - Plurix | LinkedIn"
+  + "https://br.linkedin.com/jobs/unity-3d-developer-vagas": "37 vagas de Unity 3d Developer em: Brazil (2 nova(s))"
+  + "https://ebaconline.com.br/blog/o-que-e-um-desenvolvedor-unity-e-como-se-tornar-um": "Desenvolvedor Unity: o que é e o que ele faz, habilidades, salário, responsabilidades e como se tornar um"
+  + "https://br.linkedin.com/in/modeloperfil": "Modelo Perfil - Analista Programador Pleno - FIAP | LinkedIn"
+  + "https://br.linkedin.com/jobs/unity-developer-vagas?trk=expired_jd_redirect": "17 vagas de Unity Developer em: Brasil (2 nova(s))"
+  + "https://br.indeed.com/empregos-de-Programador-Unity": "+ de 25 vagas para Programador Unity, com empregos para 15 de dezembro de 2024| Indeed.com"
+  + "https://codamos.com.br/guia-definitivo-perfil-profissional-linkedin-passo-a-passo/": "Guia: LinkedIn para pessoas desenvolvedoras - 12 passos para um perfil chamativo! - codamos.com.br"
+  + "https://programathor.com.br/jobs-unity": "Vagas UNITY para Desenvolvedor e Programador"
+  + "https://www.geekhunter.com.br/vagas-unity3d": "Vagas Unity3d | +300 Vagas para DEVs"
+  + "https://programathor.com.br/jobs/4859-desenvolvedor-a-unity-3d-senior": "VAGA Mobile - Desenvolvedor(a) Unity 3D Sênior"
+  + "https://coodesh.com/blog/rh-tech/recrutamento/contratar-desenvolvedor-pleno-dicas-para-acertar-no-recrutamento/": "Contratar desenvolvedor pleno: dicas para acertar no recrutamento"
+  + "https://desenvolvedorunity.com.br/": "Comunidade Desenvolvedor Unity - Aprenda Criar Jogos Profissionais"
+  + "https://br.indeed.com/q-programador-unity-vagas.html": "21 vagas de emprego disponíveis hoje (12 de janeiro de 2025) para Programador Unity | Indeed"
+  + "https://programathor.com.br/jobs/16560-desenvolvedor-a-unity-pleno": "VAGA Back-End - Desenvolvedor(a) Unity Pleno"
+  + "https://br.linkedin.com/in/rodolfo-de-bonis": "Rodolfo De Bonis - Dev. Mobile Pleno - Vista Software | LinkedIn"
+  + "https://br.indeed.com/empregos-de-Unity": "+ de 75 vagas para Unity, com empregos para 31 de julho de 2024| Indeed.com"
+  + "https://awari.com.br/como-otimizar-o-perfil-do-linkedin-para-desenvolvedor-front-end/": "Como Otimizar O Perfil Do Linkedin Para Desenvolvedor Front-End"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

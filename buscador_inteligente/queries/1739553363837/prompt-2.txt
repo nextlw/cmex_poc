@@ -1,0 +1,132 @@
+Current date: Fri, 14 Feb 2025 17:16:44 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    verifique na internet em sites e portais do governo e especialista o percentual do pis e confins do shampoo na revenda, considerando a empresa no lucro real
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "verifique na internet em sites e portais do governo e especialista o percentual do pis e confins do shampoo na revenda, considerando a empresa no lucro real".
+                    In particular, you tried to search for the following keywords: "PIS COFINS shampoo revenda "lucro real" alíquotas site:gov.br, PIS COFINS shampoo revenda "lucro real" alíquotas".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about PIS COFINS shampoo revenda lucro real alíquotas?
+    </question>
+    <answer>
+    A Secretaria de Gestão orienta ... de lucro real (com direito à incidência não cumulativa de contribuições ao PIS e COFINS). Na elaboração dos termos de referência e editais, os órgãos e entidades deverão exigir que os licitantes, quando tributados pelo regime de incidência não-cumulativa de PIS e COFINS, cotem na planilha de custos e formação de preços (que detalham os componentes dos seus custos) as alíquotas médias ...; O Supremo Tribunal Federal (STF) julgou que: · 5. É inviável ao Judiciário infirmar a relativa liberdade de conformação da ordem tributária pelo Poder Legislativo, quando não há parâmetro constitucional flagrantemente violado. Precedente: RE-RG 598.572, de minha relatoria, Tribunal ...; Estão sujeitas ao pagamento da CSLL as pessoas jurídicas e as pessoas físicas a elas equiparadas, domiciliadas no País. A alíquota da CSLL é de 9% (nove por cento) para as pessoas jurídicas em geral, e de 15% (quinze por cento), no caso das pessoas jurídicas consideradas instituições ...; Assunto: Contribuição para o Financiamento da Seguridade Social - Cofins MUDANÇA DE REGIME DE APURAÇÃO. IMOBILIZADO. MÁQUINAS E EQUIPAMENTOS. EDIFICAÇÕES. CRÉDITOS. DEPRECIAÇÃO. AUSÊNCIA DE PREVISÃO LEGAL. A pessoa jurídica que, tributada com base no lucro presumido e, portanto, ...; II - não se aplica aos estoques de produtos adquiridos à alíquota de 0% (zero por cento), isentos ou não alcançados pela incidência das contribuições. § 8º O valor do estoque de que trata este artigo é aquele constante dos registros contábeis, sem adições ou exclusões. Art. 49. Até 30 de julho de 2004, para a pessoa jurídica tributada pelo imposto de renda com base no lucro real que adotou o regime de não-cumulatividade da Contribuição para o PIS/Pasep e da Cofins ...; 6º A pessoa jurídica, tributada com base no lucro real, poderá descontar da Contribuição para o PIS/Pasep e da Cofins, devidas em cada período de apuração, o crédito presumido calculado sobre o valor das mercadorias classificadas nos códigos 02.01, 02.02, 0206.10.00, 0206.20, 0206.21, 0206.29, 0506.90.00, 0510.00.10, 1502.00.1, 4101.20.10, 4104.11.24 e 4104.41.30 da NCM, utilizadas como insumos em industrialização ou destinadas à revenda...; A importação de bens para a revenda ou para uso como insumo não gera direito a crédito presumido sobre estoque de abertura para ser utilizado na determinação da Cofins quando da mudança do regime de tributação do lucro presumido para o lucro real, por ausência de previsão legal. DISPOSITIVOS LEGAIS: Lei n ... º 594, de 2005, art. 48. ASSUNTO: CONTRIBUIÇÃO PARA O PIS...; Boa tarde Uma empresa do lucro real adquire mercadoria com icms-ST interestadual, onde o fornecedor é uma empresa do simples nacional. Na entrada de...; Dispõe sobre a determinação e o pagamento do imposto sobre a renda e da contribuição social sobre o lucro líquido das pessoas jurídicas e disciplina o tratamento tributário da Contribuição para o PIS/Pasep e da Cofins no que se refere às alterações introduzidas pela Lei nº 12.973, ...; A conclusão quanto ao panorama ... do lucro bruto, nas contas de resultado de cada período de apuração, proporcionalmente à receita da venda recebida (no caso das vendas a prazo ou em prestações, com pagamento após o término do período-base da venda). Estando claro também que o valor do imóvel recebido em permuta compõe a receita bruta e, por conseguinte, a apuração da base de cálculo do IRPJ, da CSLL, do PIS e do COFINS...; Também é necessário que a empresa esteja submetida ao regime de apuração de lucro real, presumido ou arbitrado. O benefício não se aplica às empresas optantes do Simples Nacional. ... O Perse reduz a 0% as alíquotas de PIS/Pasep, Cofins, CSLL e IRPJ, pelo prazo de 60 (sessenta) meses ...; § 3º O valor da receita omitida ... contribuição social sobre o lucro, da contribuição para a seguridade social - COFINS e da contribuição para os Programas de Integração Social e de Formação do Patrimônio do Servidor Público - PIS/PASEP....; Assunto: Imposto sobre a Renda de Pessoa Jurídica - IRPJ LUCRO REAL. CRÉDITOS DECORRENTES DE DECISÃO JUDICIAL. INDÉBITO TRIBUTÁRIO. UTILIZAÇÃO NA COMPENSAÇÃO DE DÉBITOS. RECONHECIMENTO DA RECEITA . O indébito tributário de Contribuição para o PIS/Pasep e de Cofins e os juros de ...; Art. 42. Opcionalmente, as pessoas jurdicas tributadas pelo lucro real que aufiram receitas de venda dos produtos de que tratam os 1 a 3 e 5 a 9 do art. 8 desta Lei podero adotar, antecipadamente, o regime de incidncia no-cumulativa da contribuio para o PIS/PASEP e da COFINS.; Art. 14. As pessoas jurdicas optantes pelo regime de tributao do Imposto de Renda com base no lucro presumido podero adotar o regime de caixa para fins da incidncia do PIS/Pasep e da Cofins (Medida Provisria n; As distribuidoras de remédios e as farmácias, quando revendem os medicamentos com tributação monofásica, não pagam PIS e COFINS. No entanto, devem recolher as duas contribuições calculadas sobre as demais receitas não tributadas no modelo monofásico, aplicando as alíquotas de 0,65% e 3% (se estiver no lucro ...; Estou com dúvida no seguinte produto ... CST 03 Alíquotas de Pis: 0,0183 e Cofins: 0,0871. Quando consulto esse NCM me traz que tem a incidência Monofásica. Qual a tributação desse produto? A empresa é optante pelo lucro Real- Não cumulativo e Atacadista. ... Gostaria de saber se um bar,paga pis e cofins,na revenda de cervejas,a ...; Não dará direito a crédito o ... para revenda que não estiverem sujeitos ao pagamento da COFINS, o que é o caso dos cereais que tiveram as alíquotas dessa contribuição reduzidas a zero, como o arroz e o trigo. SOLUÇÃO DE CONSULTA Nº 231 de 30 de Junho de 2010 · ASSUNTO: Contribuição para o Financiamento da Seguridade Social - Cofins EMENTA: CRÉDITO PRESUMIDO. MUDANÇA DE REGIME APURAÇÃO DA CONTRIBUIÇÃO EM FUNÇÃO DA PASSAGEM PARA O LUCRO ...; As contribuições federais do PIS e COFINS no Lucro Real possuem o cálculo diferenciado. Confira como é feito e como beneficiar sua empresa.; II - juntamente com as contribuições ... revender o bem antes da conversão da alíquota a 0 (zero), na forma do § 8º deste artigo, ou desatender as demais condições do art. 13 desta Lei. § 7º Nas notas fiscais relativas à venda de que trata o caput deste artigo deverá constar a expressão &quot;Venda efetuada com suspensão da exigência da Contribuição para o PIS/Pasep e da Cofins&quot;, com a ...; Descubra as alíquotas do PIS/COFINS dos principais regimes tributários. Saiba c dicas para otimizar sua apuração com a Tributei.; Nesse regime, as alíquotas da Contribuição para o PIS/PASEP e da COFINS são, respectivamente, de 0,65% e de 3%. As pessoas jurídicas de direito privado, e as que lhe são equiparadas pela legislação do imposto de renda, que apuram o IRPJ com base no Lucro Presumido ou arbitrado estão ...; Aprenda tudo sobre Cofins e PIS. Descubra como calcular e cumprir suas obrigações fiscais. Acesse nosso guia completo agora mesmo!; Não deixe que calcular PIS e COFINS seja um mistério! Explore nosso artigo completo e domine as técnicas para ser mais eficiente.; PIS/PASEP cobrança não-cumulativa : 1,65% - Código 6912 ·  COFINS cobrança não-cumulativa : 7,6% - Código 5856 ...  Não dará direito a crédito o valor da mão-de-obra paga a pessoa física e a aquisição de bens ou serviços não sujeitos ao pagamento da contribuição, inclusive no caso de isenção, esse último quando revendidos ou utilizados como insumo em produtos ou serviços sujeitos à alíquota ...; Neste artigo, vamos tratar sobre os créditos básicos do regime não cumulativo de PIS/Pasep e COFINS sobre a aquisição de bens e serviços.; As distribuidoras de remédios e as farmácias, quando revendem os medicamentos com tributação monofásica, não pagam PIS e COFINS. No entanto, devem recolher as duas contribuições calculadas sobre as demais receitas não tributadas no modelo monofásico, aplicando as alíquotas de 0,65% e 3% (se estiver no lucro ...; Setores Específicos: Pode não ... de lucro estreitas ou que operam em setores com altos custos operacionais. A lei determina também que não há geração de créditos de PIS e COFINS relativamente ao valor sobre estas transações: ... Aquisição de bens ou serviços não sujeitos ao pagamento da contribuição, inclusive no caso de isenção, esse último quando revendidos ou utilizados como insumo em produtos ou serviços sujeitos à alíquota zero (isentos ...; Fique por dentro de todas as atualizações sobre o PIS/COFINS em 2025 e deixe a compliance do seu negócio em dia!; Confira tudo o que você precisa saber sobre a apuração do PIS e COFINS.; No Brasil temos diferentes regimes de tributação para o recolhimento dos impostos das empresas em todos os segmentos, entre eles o Lucro Real e o Lucro Presumido; Descubra o que é Lucro Presumido, confira a tabela completa, como calcular as alíquotas e quais são os prós e contras. Saiba mais!; Para configurar as empresas do Lucro Real que possuem produtos com tributação de PIS e COFINS cumulativo, siga os passos abaixo: Parâmetros 1 - Acesse o menu Controle &gt; Parâmetros; 2 - Caso necessário, crie uma [Nova Vigência]; 3 - Na guia Geral &gt; Impostos, inclua os impostos &#x27;4 - PIS&#x27; ...; Você sabe como calcular o PIS e COFINS no Lucro Real? Leia este artigo e entenda como calcular o PIS e COFINS no Lucro Real.; Você sabe quais são as alíquotas PIS e COFINS Lucro Real? Veja neste artigo como calculá-las e quais vantagens apresentam.
+    </answer>
+    
+    <references>
+    ["https://www.gov.br/compras/pt-br/agente-publico/orientacoes-e-procedimentos/19-orientacoes-sobre-pis-e-cofins-em-contratacoes-de-prestacao-de-servicos-com-dedicacao-exclusiva-de-mao-de-obra","https://www.gov.br/pgfn/pt-br/cidadania-tributaria/por-assunto/indice-assuntos-portal/irpj-csll/lucro-real-lucro-presumido-e-lucro-arbitrado","https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/tributos/CSLL","http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=129001","http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=15520","http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=15943","http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=88973","http://www.sefaz.mt.gov.br/forum/substituicao-tributaria/mercadoria-st-para-revenda-adquirida-de-empresa-do-simples-interestadual/","http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=81268","http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=55839&visao=anotado","https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/perguntas-frequentes/beneficios-fiscais/beneficios-fiscais","http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?naoPublicado=&idAto=13034&visao=compilado","http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?visao=anotado&idAto=122178","http://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/L10.865compilado.htm","http://www.planalto.gov.br/ccivil_03/decreto/2002/D4524.htm","https://www.portaltributario.com.br/guia/pis_medicamentos.html","https://cosmos.bluesoft.com.br/produtos/7896213160715-shampoo-aspa-necessaire","https://www.lefisc.com.br/materias/2011/252011ir.htm","https://hscontabil.com.br/pis-e-cofins-no-lucro-real-como-calcular-e-se-beneficiar/","https://www.lefisc.com.br/materias/2008/282008piscofins.asp","https://tributei.net/blog/aliquotas-pis-cofins/","https://www.portaltributario.com.br/artigos/pis-cofins-regimes.htm","https://www.oitchau.com.br/blog/cofins-e-pis-como-devem-ser-calculados/","https://blog.esimplesauditoria.com.br/calcular-pis-cofins/","https://www.lefisc.com.br/materias/3102006ir2.htm","https://www.jettax.com.br/blog/pis-pasep-e-cofins/","https://www.portaltributario.com.br/tributario/regime-monofasico-pis-cofins.htm","https://tdcadvogados.com.br/aproveitamento-de-credito-pis-e-cofins/","https://qive.com.br/blog/pis-cofins/","https://blog.dootax.com.br/pis-e-cofins/","https://exatusassessoria.com.br/lucro-real-e-lucro-presumido-um-enfoque-nos-impostos-pis-cofins-irpj-e-csll/","https://www.contabilizei.com.br/contabilidade-online/lucro-presumido/","https://suporte.dominioatendimento.com/central/faces/solucao.html?codigo=2402","https://ibgem.com.br/2021/05/25/pis-cofins-lucro-real/","https://ibgem.com.br/2022/03/24/aliquotas-pis-e-cofins-lucro-real-entenda-como-se-aplica/"]
+    </references>
+    
+    </knowledge-1>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://www.gov.br/compras/pt-br/agente-publico/orientacoes-e-procedimentos/19-orientacoes-sobre-pis-e-cofins-em-contratacoes-de-prestacao-de-servicos-com-dedicacao-exclusiva-de-mao-de-obra": "19. Orientações sobre PIS e COFINS em contratações de prestação de serviços, com dedicação exclusiva de mão de obra — Portal de Compras do Governo Federal"
+  + "https://www.gov.br/pgfn/pt-br/cidadania-tributaria/por-assunto/indice-assuntos-portal/irpj-csll/lucro-real-lucro-presumido-e-lucro-arbitrado": "Lucro real, lucro presumido e lucro arbitrado — Procuradoria-Geral da Fazenda Nacional"
+  + "https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/tributos/CSLL": "Contribuição Social sobre o Lucro Líquido CSLL — Receita Federal"
+  + "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=129001": "SC Cosit nº 40/2023"
+  + "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=15520": "IN SRF nº 594/2005"
+  + "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=15943": "IN RFB nº 977/2009"
+  + "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=88973": "SC Cosit nº 580/2017"
+  + "http://www.sefaz.mt.gov.br/forum/substituicao-tributaria/mercadoria-st-para-revenda-adquirida-de-empresa-do-simples-interestadual/": "MERCADORIA ST PARA REVENDA ADQUIRIDA DE EMPRESA DO SIMPLES -..."
+  + "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=81268": "IN RFB nº 1700/2017"
+  + "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=55839&visao=anotado": "Parec. Norm. Cosit Nº 9 - 2014"
+  + "https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/perguntas-frequentes/beneficios-fiscais/beneficios-fiscais": "Benefícios Fiscais — Receita Federal"
+  + "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?naoPublicado=&idAto=13034&visao=compilado": "IN SRF nº 11/1996"
+  + "http://normas.receita.fazenda.gov.br/sijut2consulta/link.action?visao=anotado&idAto=122178": "SC Cosit nº 183/2021"
+  + "http://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/L10.865compilado.htm": "L10865compilado"
+  + "http://www.planalto.gov.br/ccivil_03/decreto/2002/D4524.htm": "D4524"
+  + "https://www.portaltributario.com.br/guia/pis_medicamentos.html": "PIS E COFINS – ALÍQUOTAS – MEDICAMENTOS, HIGIENE PESSOAL E COSMÉTICOS"
+  + "https://cosmos.bluesoft.com.br/produtos/7896213160715-shampoo-aspa-necessaire": "SHAMPOO ASPA NECESSAIRE - GTIN/EAN/UPC 7896213160715 - Cadastro de Produto com Tributação e NCM - Cosmos"
+  + "https://www.lefisc.com.br/materias/2011/252011ir.htm": "Créditos de PIS e COFINS a Descontar (Regime Não-Cumulativo)"
+  + "https://hscontabil.com.br/pis-e-cofins-no-lucro-real-como-calcular-e-se-beneficiar/": "PIS e COFINS no Lucro Real: como calcular e se beneficiar?"
+  + "https://www.lefisc.com.br/materias/2008/282008piscofins.asp": "PIS/PASEP e COFINS – Regime Não-cumulativo (Lucro Real)"
+  + "https://tributei.net/blog/aliquotas-pis-cofins/": "Quais São as Alíquotas do PIS e COFINS no Lucro Presumido, Lucro Real e Simples Nacional?"
+  + "https://www.portaltributario.com.br/artigos/pis-cofins-regimes.htm": "PIS E COFINS  SÍNTESE DOS REGIMES DE INCIDÊNCIA"
+  + "https://www.oitchau.com.br/blog/cofins-e-pis-como-devem-ser-calculados/": "Cofins e PIS: O que são? Como calcular? - Oitchau"
+  + "https://blog.esimplesauditoria.com.br/calcular-pis-cofins/": "Calcular PIS e COFINS: tudo que você precisa saber!"
+  + "https://www.lefisc.com.br/materias/3102006ir2.htm": "PIS/ PASEP E COFINS INCIDÊNCIA NÃO-CUMULATIVA - CONSIDERAÇÕES GERAIS"
+  + "https://www.jettax.com.br/blog/pis-pasep-e-cofins/": "Créditos de PIS/Pasep e COFINS - Jettax"
+  + "https://www.portaltributario.com.br/tributario/regime-monofasico-pis-cofins.htm": "REGIME MONOFÁSICO DE TRIBUTAÇÃO PIS/COFINS"
+  + "https://tdcadvogados.com.br/aproveitamento-de-credito-pis-e-cofins/": "Aproveitamento de Crédito PIS e COFINS: Lucro Real e Presumido"
+  + "https://qive.com.br/blog/pis-cofins/": "PIS e COFINS 2025: Obrigações, mudanças e novidades | Qive"
+  + "https://blog.dootax.com.br/pis-e-cofins/": "PIS e COFINS: o que são e como calcular? Tire suas dúvidas"
+  + "https://exatusassessoria.com.br/lucro-real-e-lucro-presumido-um-enfoque-nos-impostos-pis-cofins-irpj-e-csll/": "Lucro Real e Lucro Presumido um enfoque nos impostos Pis, Cofins, IRPJ e CSLL - Exatus Escritório de Contabilidade"
+  + "https://www.contabilizei.com.br/contabilidade-online/lucro-presumido/": "O que é Lucro Presumido? Prós x Contras | Tabela | Alíquotas"
+  + "https://suporte.dominioatendimento.com/central/faces/solucao.html?codigo=2402": "Como configurar Lucro Real com PIS e COFINS Cumulativo?"
+  + "https://ibgem.com.br/2021/05/25/pis-cofins-lucro-real/": "PIS e COFINS no Lucro Real: Entenda tudo! - IBGEM"
+  + "https://ibgem.com.br/2022/03/24/aliquotas-pis-e-cofins-lucro-real-entenda-como-se-aplica/": "Alíquotas PIS e COFINS Lucro Real: Entenda como se aplica - IBGEM"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

@@ -1,0 +1,11 @@
+{
+  "action": "answer",
+  "think": "A pergunta é simplesmente 'olá', e as informações coletadas já definem 'olá' como uma saudação em português.",
+  "answer": "Olá é uma interjeição usada como saudação ou chamamento; também pode expressar espanto ou surpresa.",
+  "references": [
+    {
+      "exactQuote": "Olá, o que é: interjeição Forma de saudação ou chamamento; Expressa espanto ou surpresa.",
+      "url": "https://www.lexico.pt/ola_2/"
+    }
+  ]
+}

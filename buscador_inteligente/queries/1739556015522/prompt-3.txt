@@ -1,0 +1,165 @@
+Current date: Fri, 14 Feb 2025 18:01:49 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    preciso que procure o contato da big lobster que é um data center em fortaleza, se não achar um numero que eu possa ligar ou um email procure no linkedin alguem que trabalha lá na parte de tecnologia e na parte comercial e me passe o link do perfil
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "preciso que procure o contato da big lobster que é um data center em fortaleza, se não achar um numero que eu possa ligar ou um email procure no linkedin alguem que trabalha lá na parte de tecnologia e na parte comercial e me passe o link do perfil".
+                    In particular, you tried to search for the following keywords: "Big Lobster data center Fortaleza contato telefone email, Big Lobster LinkedIn".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+                    At step 2, you took the **search** action and look for external information for the question: "preciso que procure o contato da big lobster que é um data center em fortaleza, se não achar um numero que eu possa ligar ou um email procure no linkedin alguem que trabalha lá na parte de tecnologia e na parte comercial e me passe o link do perfil".
+                    In particular, you tried to search for the following keywords: "site:linkedin.com Tecto Fortaleza "data center" tecnologia comercial".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about Big Lobster data center Fortaleza contato telefone email LinkedIn tecnologia comercial?
+    </question>
+    <answer>
+    The project consists of the construction of a second data center in the city of Fortaleza, in the state of Ceará. The new site will be dedicated to edge computing, bringing content closer to customers and expanding the infrastructure to meet the demand for col...; Explore Tecto Mega Lobster - data center by Tecto Data Centers in Fortaleza, Brazil (Av. Dioguinho &amp; R. Francisco Montenegro).; Explore V.tal Big Lobster - data center by V.tal in Fortaleza, Brazil (R. Raimundo Esteves, 333 - Antonio Diogo).; The project consists of the construction and operation of phase 1 of a hyperscale data center in Fortaleza, in the northeastern state of Ceará, Brazil. The f...; V.tal is an end-to-end digital infrastructure solutions company and holder of the largest neutral fiber optic network in Brazil, serving telecom operators, internet providers and OTTs.; We cannot provide a description for this page right now; Data Centers in Fortaleza - Colocation and Cloud facilities in Fortaleza (Brazil) at Data Center Map; Mega Lobster também ficará na Praia do Futuro e deve contar com 20 MW em capacidade instalada; A V.tal inaugurou, nesta sexta-feira, 3, segundo edge data center na cidade de Fortaleza, que vai operar com uma capacidade de 4MW; Fornecemos dados e Análises Claras e Confiáveis para auxiliar sua tomada de decisões Equipe profissional de reconhecida experiência em níveis nacional e internacional. FALE CONOSCO CONHEÇA A NOSSA EMPRESA Agradecemos aos clientes que mais uma vez acreditara na assertividade do nosso trabalho.; Datacenter certificado TIER III, garantindo redundância, escalabilidade e baixa latência para Norte e Nordeste do país. Saiba mais!; A obra irá gerar cerca de 500 empregos, com a criação de 60 empregos técnicos após a sua conclusão O Ceará terá, em breve, mais um grande empreendimento tecnológico funcionando em seu território. Trata-se do data center “Mega Lobster”, da empresa V.tal, que será implementado ...; A construção do Mega Lobster, Data Center de larga escala e alta densidade da Tecto em Fortaleza (CE), está em ritmo acelerado.; A empresa V.tal realizou nesta sexta-feira (3), fruto de um investimento de R$ 200 milhões, a inauguração do seu segundo Data Center em Fortaleza, o Big Lobster, na Praia do Futuro. Integrado à estação de chegada de cabos submarinos (CSL- Cable Landing Station), possui redundância de ...; Tecto avança com a construção do data center Mega Lobster em Fortaleza; Mega Lobster terá capacidade cinco vezes maior do que infraestrutura inaugurada em fevereiro.; Nova unidade inicia operação com capacidade de 4MW, suporte para 400 racks e está totalmente integrada à sua Cable Landing Station, com redundância de conexão; O “Mega Lobster”, da empresa paulista V.tal. Com investimento de R$ 550 milhões, o empreendimento vai ser implementado em Fortaleza, no bairro Praia do Futuro. Nesta quinta-feira (17), o governador Elmano de Freitas (PT) participou de solenidade que marcou o pontapé inicial das obras.; O Ceará recebeu o segundo data center da empresa V.tal, na Praia do Futuro, em Fortaleza. Com uma capacidade de 4 MW, o projeto chamado Big Lobster terá quatro data halls com espaço para acomodar 400 racks. Cerca de 50% da capacidade já está comercializada e mais 25% estão sendo negociados.; A ouvidoria do Leão é um meio de comunicação entre a instituição, sócios, torcedores e público em geral. Sua opinião é muito importante para nós! Fique à vontade para deixar sua crítica, sugestão ou comentário. Sua mensagem será destinada para nosso ouvidor e respondida mais ...; Lobster’s mission? To connect people, systems and things, inspire employees to embrace digitalisation and help businesses realise their digital transformation goals. ... API management, API publishing, API monetization, Application Integration, Big Data, B2B Integration, Business Automation, ...; Lobster.COM | 41 followers on LinkedIn. We are in the event-gratification business. We are direct retailers to hosts and caterers. Lobster.com is America&#x27;s online market for True-Weight®, &quot;Wild-Caught,&quot; hard-shell live Maine lobster.; Red Lobster | 32,899 followers on LinkedIn. With 58,000 employees and more than 700 restaurants in the United States and Canada, and a growing international presence, Red Lobster is the world’s largest seafood restaurant company. Our vision is to be where the world goes for seafood now and ...; Lonestar Lobster LLC | 118 followers on LinkedIn. Who we are Lonestar Lobster is a growing family owned seafood company started in 2011. The docks in Maine and Canada were vertically integrated to source Texas and surrounding markets with live lobsters. Our state of the art facility and holding ...; We cannot provide a description for this page right now; 1 billion members | Manage your professional identity. Build and engage with your professional network. Access knowledge, insights and opportunities.; Lobster Ink | 14,282 followers on LinkedIn. We help businesses in hospitality, foodservice, and tourism onboard, upskill and inspire frontline teams. | We&#x27;re Lobster Ink, the online learning company that helps the hospitality, foodservice, and tourism sectors upskill, onboard and inspire frontline ...; Top Lobster | 106 followers on LinkedIn. Establish Dominance.; View BigLobster Seafood’s profile on LinkedIn, the world’s largest professional community. BigLobster has 1 job listed on their profile. See the complete profile on LinkedIn and discover BigLobster’s connections and jobs at similar companies.; Lobster_data | Lobster_data transforms data integration with no-code technology, making it accessible beyond IT departments. It simplifies connections across any format, channel, or system with a user-friendly interface. Offering versatile API management, it connects with numerous systems and ...; Luke&#x27;s Lobster | 5,377 followers on LinkedIn. Traceable, Sustainable Seafood. | Luke’s Lobster was born out of the dream of Maine native and third-generation lobsterman Luke Holden to bring the quality, affordable lobster rolls of his youth to the big city.; Lobster France | 3,696 followers on LinkedIn. Solutions no-code pour l&#x27;intégration des données, l&#x27;automatisation des processus et la gestion des données produit. | Lobster développe et commercialise des solutions logicielles no-code : Lobster_data pour une intégration de données plus ...; 1 billion members | Manage your professional identity. Build and engage with your professional network. Access knowledge, insights and opportunities.; LobsterAnywhere.com | 82 followers on LinkedIn. Point. Click. Crack! Fresh Lobster and Seafood Gifts Delivered. | Online since 1999, LobsterAnywhere ships live Maine lobster and fresh seafood gifts coast-to-coast and anywhere in between. We have shipped lobster to every state in the USA and ...; 同意并加入领英 · 点击“继续”，即表示您同意遵守领英的《用户协议》、《隐私政策》及《Cookie 政策》。
+    </answer>
+    
+    <references>
+    ["https://www.bnamericas.com/en/project-profile/second-data-center-fortaleza","https://www.datacentermap.com/brazil/fortaleza/vtal-mega-lobster/","https://www.datacentermap.com/brazil/fortaleza/vtal-big-lobster/","https://www.bnamericas.com/en/project-profile/mega-lobster-data-center","https://datacenterhawk.com/marketplace/providers/v-tal/rua-raimundo-esteves-333-antonio-diogo/big-lobster","https://www.fortaleza.ce.gov.br/images/FUNCIONAMENTO_PMF_0804.pdf","https://www.datacentermap.com/brazil/fortaleza/","https://teletime.com.br/03/07/2023/v-tal-adquire-terreno-para-novo-data-center-em-fortaleza/","https://www.telesintese.com.br/v-tal-inaugura-seu-segundo-data-center-em-fortaleza/","https://realtimebigdata.com.br/","https://saveincloud.com/pt/datacenters-brasil/fortaleza-nordeste/","https://www.ceara.gov.br/2024/10/17/ceara-ganha-novo-data-center-e-fortalece-sua-posicao-como-polo-tecnologico-no-brasil/","https://inforchannel.com.br/2025/02/08/tecto-progride-nas-obras-do-mega-lobster-seu-terceiro-data-center-em-fortaleza/","https://www.portalin.com.br/negocios/v-tal-investe-r-200-milhoes-e-inaugura-segundo-data-center-na-praia-do-futuro/","https://www.datacenterdynamics.com/br/not%C3%ADcias/tecto-avanca-com-a-construcao-do-data-center-mega-lobster-em-fortaleza/","https://www.baguete.com.br/noticias/03/07/2023/v-tal-anuncia-terceiro-data-center-em-fortaleza","https://ipnews.com.br/v-tal-lanca-mais-um-edge-data-center-em-fortaleza/","https://www.opiniaoce.com.br/com-investimento-de-r-550-milhoes-ceara-ganha-novo-data-center-em-fortaleza/","https://conexao085.com.br/hub-de-tecnologia-v-tal-inaugura-2o-data-center-em-fortaleza/","https://fortaleza1918.com.br/contato/","https://www.linkedin.com/company/lobster-data-gmbh/","https://www.linkedin.com/company/lobster.com","https://www.linkedin.com/company/-red-lobster","https://www.linkedin.com/company/lonestar-lobster-llc","https://ca.linkedin.com/company/big-lobster-seafood-inc-","https://ca.linkedin.com/in/jason-xue-71604534","https://uk.linkedin.com/company/lobster-ink","https://www.linkedin.com/company/toplobster","https://www.linkedin.com/in/biglobster-seafood-4b0ab596/","https://www.linkedin.com/products/lobster-uk-lobsterdata/","https://www.linkedin.com/company/luke's-lobster","https://www.linkedin.com/company/lobster-france","https://ca.linkedin.com/company/lobster","https://www.linkedin.com/company/lobsteranywhere-com","https://cn.linkedin.com/in/big-lobster-422a74a1"]
+    </references>
+    
+    </knowledge-1>
+    
+
+
+    <knowledge-2>
+    <question>
+    What do Internet say about site:linkedin.com V.tal Fortaleza data center tecnologia comercial?
+    </question>
+    <answer>
+    1 billion members | Manage your professional identity. Build and engage with your professional network. Access knowledge, insights and opportunities.; Location: São Paulo · 500+ connections on LinkedIn. View Sandro Simas’ profile on LinkedIn, a professional community of 1 billion members.; Hostweb Data Center | 6.073 seguidores no LinkedIn. Inovação tecnológica para uma gestão inteligente | A Hostweb é uma empresa brasileira especializada na prestação de serviços de Data Center com ampla infraestrutura própria, com dois sites criados com alta segurança e tecnologia ...; As 44 melhores vagas de Estágio Informática de hoje em: Fortaleza, Ceará, Brasil. Aproveite sua rede profissional para conseguir um emprego. Novas vagas de Estágio Informática adicionadas diariamente.; A solução para problemas de informática · Experience: Rset Brasil · Location: Fortaleza · 13 connections on LinkedIn. View Rset Brasil Tecnologia’s profile on LinkedIn, a professional community of 1 billion members.; Assistente comercial na Geosales Tecnologia · Experience: Geosales Tecnologia · Location: Fortaleza · 500+ connections on LinkedIn. View Karen Camilos profile on LinkedIn, a professional community of 1 billion members.; Supervisora Comercial na Hostweb Data Center · Experience: Hostweb Data Center · Location: Fortaleza · 488 connections on LinkedIn. View Rute Rocha’s profile on LinkedIn, a professional community of 1 billion members.; . | Learn more about Madson Rachadel’s work experience, education, connections &amp; more by visiting their profile on LinkedIn; Gerente de tecnologia da informação na Comercial Maia Ltda. · Experience: Comercial Maia Ltda. · Education: Centro Universitário Estácio do Ceará · Location: Fortaleza · 396 connections on LinkedIn. View Assis Bezerra’s profile on LinkedIn, a professional community of 1 billion members.; MD/Head of Real Estate Investments at BTG Pactual · Experience: BTG Pactual · Education: Harvard Business School · Location: Rio de Janeiro · 500+ connections on LinkedIn. View Michel Wurman’s profile on LinkedIn, a professional community of 1 billion members.; Consultora de Expansão, Outbound, Business Development Center Representative · Experience: Fortes Tecnologia · Location: Fortaleza · 192 connections on LinkedIn. View Raquel Araújo’s profile on LinkedIn, a professional community of 1 billion members.; Login to LinkedIn to keep in touch with people you know, share ideas, and build your career.; Login to LinkedIn to keep in touch with people you know, share ideas, and build your career.; Tecno Center | 191 followers on LinkedIn. Soluções práticas para problemas reais | Oferecemos a nossos clientes a implementação e suporte de Tecnologia voltada a solução de problemas, ganhos de eficiência e otimização de processos. Nossa diretoria é formada por profissionais que ...; Executivo de tecnologia com sólida experiência em diversos domínios da Cyber Segurança e… · Experience: V.tal · Education: Universidade Federal Rural do Rio de Janeiro · Location: São Paulo · 500+ connections on LinkedIn. View André Borges’ profile on LinkedIn, a professional ...; 1 bilhões de usuários | Gerencie sua identidade profissional. Crie e interaja com sua rede profissional. Aproveite o acesso a informações, estatísticas e oportunidades.; Sócio / Diretor comercial em Severino Tecnologia · Aplicativo de gestão de condomínios! · Experience: Severino Tecnologia · Location: Fortaleza · 228 connections on LinkedIn. View Bruno Gurgel’s profile on LinkedIn, a professional community of 1 billion members.; Gestão Comercial/ Eventos / CRM - Salesforce / Omnichat. · Desenvolvimento de Negócios e Gestão Comercial, Ominichat, CRM, plataforma Adare, Salesforce. Formada em Administração de Eventos e cursando Gestão Comercial. Criatividade, Negociação, atendimento, suporte e desenvolvimento ...; Centro de Alta Tecnologia - Centro Comercial - | 126 seguidores en LinkedIn. CAT. Centro Comercial, auditorios, plazoleta, parqueadero; computadores, portátiles, celulares, drones, camaras, tablets, redes, partes y accesorios. https://cat.com.co; Director Técnico Comercial Área Data Center · Ingeniero Técnico Industrial, especialidad eléctrica por la Universidad Politécnica de Madrid, ATP (Accredited Tier Professional) &amp; ATS (Accredited Tier Specialist) por Uptime Institute, DCS Operations (Data Center Specialist Operations) por ...
+    </answer>
+    
+    <references>
+    ["https://www.linkedin.com/company/tecto-datacenters","https://www.linkedin.com/in/sandrosimas/","https://br.linkedin.com/company/hostweb-data-center-e-servicos","https://br.linkedin.com/jobs/est%C3%A1gio-inform%C3%A1tica-vagas-fortaleza","https://www.linkedin.com/in/rset-brasil-tecnologia-34a08077/","https://www.linkedin.com/in/karen-camilo-8380821b7/","https://www.linkedin.com/in/rute-rocha-b40782137/","https://www.linkedin.com/in/madsonrachadel/","https://www.linkedin.com/in/assis-bezerra-9577aa107/","https://www.linkedin.com/in/michel-wurman-82b7438/","https://www.linkedin.com/in/raquel-ara%C3%BAjo-7636aa1ba/","https://www.linkedin.com/posts/andrebusnardo_introducing-tecto-data-centers-activity-7253087210722185218-0gJO","https://www.linkedin.com/posts/tecto-datacenters_as-we-bid-farewell-to-2024-and-welcome-2025-activity-7279535127456591873-KnKR","https://www.linkedin.com/company/tecno-center","https://www.linkedin.com/in/andreborgesbr/","https://pt.linkedin.com/posts/v-tal_a-marca-tecto-data-centers-foi-lançada-oficialmente-activity-7253125997414273027-eSiy","https://www.linkedin.com/in/bruno-gurgel-9b401262/","https://www.linkedin.com/in/gabriela-marino-1802a7230/","https://co.linkedin.com/company/centroaltatecnologia","https://www.linkedin.com/in/fco-javier-nieto-sanz-08391865/"]
+    </references>
+    
+    </knowledge-2>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://www.bnamericas.com/en/project-profile/second-data-center-fortaleza": "Second data center (Big Lobster) - BNamericas"
+  + "https://www.datacentermap.com/brazil/fortaleza/vtal-mega-lobster/": "Tecto Mega Lobster Data Center in Fortaleza"
+  + "https://www.datacentermap.com/brazil/fortaleza/vtal-big-lobster/": "V.tal Big Lobster Data Center in Fortaleza"
+  + "https://www.bnamericas.com/en/project-profile/mega-lobster-data-center": "Mega Lobster Data Center (Phase 1) - BNamericas"
+  + "https://datacenterhawk.com/marketplace/providers/v-tal/rua-raimundo-esteves-333-antonio-diogo/big-lobster": "V.tal Big Lobster | Rua Raimundo Esteves, 333 - Antonio Diogo, Fortaleza - datacenterHawk"
+  + "https://www.fortaleza.ce.gov.br/images/FUNCIONAMENTO_PMF_0804.pdf": "Fortaleza"
+  + "https://www.datacentermap.com/brazil/fortaleza/": "Fortaleza Data Centers"
+  + "https://teletime.com.br/03/07/2023/v-tal-adquire-terreno-para-novo-data-center-em-fortaleza/": "V.tal adquire terreno para novo data center em Fortaleza | TELETIME News"
+  + "https://www.telesintese.com.br/v-tal-inaugura-seu-segundo-data-center-em-fortaleza/": "V.tal inaugura seu segundo data center em Fortaleza"
+  + "https://realtimebigdata.com.br/": "Home - Real Time Big Data"
+  + "https://saveincloud.com/pt/datacenters-brasil/fortaleza-nordeste/": "Datacenter Fortaleza - SaveinCloud"
+  + "https://www.ceara.gov.br/2024/10/17/ceara-ganha-novo-data-center-e-fortalece-sua-posicao-como-polo-tecnologico-no-brasil/": "Ceará ganha novo data center e fortalece sua posição como polo tecnológico no Brasil - Governo do Estado do Ceará"
+  + "https://inforchannel.com.br/2025/02/08/tecto-progride-nas-obras-do-mega-lobster-seu-terceiro-data-center-em-fortaleza/": "Tecto progride nas obras do Mega Lobster, seu terceiro Data Center em Fortaleza - Inforchannel"
+  + "https://www.portalin.com.br/negocios/v-tal-investe-r-200-milhoes-e-inaugura-segundo-data-center-na-praia-do-futuro/": "V.tal investe R$ 200 milhões e inaugura segundo Data Center na Praia do Futuro - Portal IN - Pompeu Vasconcelos - Balada IN"
+  + "https://www.datacenterdynamics.com/br/not%C3%ADcias/tecto-avanca-com-a-construcao-do-data-center-mega-lobster-em-fortaleza/": "Tecto avança com a construção do data center Mega Lobster em Fortaleza - DCD"
+  + "https://www.baguete.com.br/noticias/03/07/2023/v-tal-anuncia-terceiro-data-center-em-fortaleza": "V.tal anuncia terceiro data center em Fortaleza - Baguete"
+  + "https://ipnews.com.br/v-tal-lanca-mais-um-edge-data-center-em-fortaleza/": "V.tal lança mais um edge data center em Fortaleza"
+  + "https://www.opiniaoce.com.br/com-investimento-de-r-550-milhoes-ceara-ganha-novo-data-center-em-fortaleza/": "Com investimento de R$ 550 milhões, Ceará ganha novo data center em Fortaleza – Opinião CE"
+  + "https://conexao085.com.br/hub-de-tecnologia-v-tal-inaugura-2o-data-center-em-fortaleza/": "Hub de tecnologia: V. tal inaugura 2º data center em Fortaleza - Conexão 085"
+  + "https://fortaleza1918.com.br/contato/": "Contato - Fortaleza Esporte Clube"
+  + "https://www.linkedin.com/company/lobster-data-gmbh/": "Lobster | LinkedIn"
+  + "https://www.linkedin.com/company/lobster.com": "Lobster.COM | LinkedIn"
+  + "https://www.linkedin.com/company/-red-lobster": "Red Lobster | LinkedIn"
+  + "https://www.linkedin.com/company/lonestar-lobster-llc": "Lonestar Lobster LLC | LinkedIn"
+  + "https://ca.linkedin.com/company/big-lobster-seafood-inc-": "Big Lobster Seafood Inc."
+  + "https://ca.linkedin.com/in/jason-xue-71604534": "JASON XUE - Big Lobster Seafood Inc."
+  + "https://uk.linkedin.com/company/lobster-ink": "Lobster Ink | LinkedIn"
+  + "https://www.linkedin.com/company/toplobster": "Top Lobster | LinkedIn"
+  + "https://www.linkedin.com/in/biglobster-seafood-4b0ab596/": "BigLobster Seafood - Management - Big Lobster Seafood Inc. | LinkedIn"
+  + "https://www.linkedin.com/products/lobster-uk-lobsterdata/": "Lobster_data | LinkedIn"
+  + "https://www.linkedin.com/company/luke's-lobster": "Luke's Lobster | LinkedIn"
+  + "https://www.linkedin.com/company/lobster-france": "Lobster France | LinkedIn"
+  + "https://ca.linkedin.com/company/lobster": "Lobster | LinkedIn"
+  + "https://www.linkedin.com/company/lobsteranywhere-com": "LobsterAnywhere.com | LinkedIn"
+  + "https://cn.linkedin.com/in/big-lobster-422a74a1": "big lobster - designer - hoop | LinkedIn - 领英"
+  + "https://www.linkedin.com/company/tecto-datacenters": "Tecto Data Centers"
+  + "https://www.linkedin.com/in/sandrosimas/": "Sandro Simas - São Paulo, São Paulo, Brazil | Professional Profile | LinkedIn"
+  + "https://br.linkedin.com/company/hostweb-data-center-e-servicos": "Hostweb Data Center | LinkedIn"
+  + "https://br.linkedin.com/jobs/est%C3%A1gio-inform%C3%A1tica-vagas-fortaleza": "44 vagas de Estágio Informática em: Fortaleza, Ceará, Brasil"
+  + "https://www.linkedin.com/in/rset-brasil-tecnologia-34a08077/": "Rset Brasil Tecnologia - Operacional e Diretor Comercial - Rset Brasil | LinkedIn"
+  + "https://www.linkedin.com/in/karen-camilo-8380821b7/": "Karen Camilo - Assistente comercial - Geosales Tecnologia | LinkedIn"
+  + "https://www.linkedin.com/in/rute-rocha-b40782137/": "Rute Rocha - Supervisora Cooporativa - Hostweb Data Center | LinkedIn"
+  + "https://www.linkedin.com/in/madsonrachadel/": "Madson Rachadel - Consultor Comercial para Projetos em Data Center - Infotecnica Tecnologia Ltda | LinkedIn"
+  + "https://www.linkedin.com/in/assis-bezerra-9577aa107/": "Assis Bezerra - Gerente de tecnologia da informação - Comercial Maia Ltda. | LinkedIn"
+  + "https://www.linkedin.com/in/michel-wurman-82b7438/": "Michel Wurman - Head Of Real Estate Investments Area - BTG Pactual | LinkedIn"
+  + "https://www.linkedin.com/in/raquel-ara%C3%BAjo-7636aa1ba/": "Raquel Araújo - Fortaleza, Ceará, Brazil | Professional Profile | LinkedIn"
+  + "https://www.linkedin.com/posts/andrebusnardo_introducing-tecto-data-centers-activity-7253087210722185218-0gJO": "Andre Busnardo's Post - Introducing Tecto Data Centers!"
+  + "https://www.linkedin.com/posts/tecto-datacenters_as-we-bid-farewell-to-2024-and-welcome-2025-activity-7279535127456591873-KnKR": "Tecto Data Centers' Post"
+  + "https://www.linkedin.com/company/tecno-center": "Tecno Center | LinkedIn"
+  + "https://www.linkedin.com/in/andreborgesbr/": "André Borges - V.tal | LinkedIn"
+  + "https://pt.linkedin.com/posts/v-tal_a-marca-tecto-data-centers-foi-lançada-oficialmente-activity-7253125997414273027-eSiy": "V.tal no LinkedIn: A marca Tecto Data Centers foi lançada ..."
+  + "https://www.linkedin.com/in/bruno-gurgel-9b401262/": "Bruno Gurgel - Sócio / Diretor Comercial - Severino Tecnologia | LinkedIn"
+  + "https://www.linkedin.com/in/gabriela-marino-1802a7230/": "Gabriela Marino - Assistente comercial - Guard Center - Tecnologia e Gestão em Segurança | LinkedIn"
+  + "https://co.linkedin.com/company/centroaltatecnologia": "Centro de Alta Tecnologia - Centro Comercial - | LinkedIn"
+  + "https://www.linkedin.com/in/fco-javier-nieto-sanz-08391865/": "Fco Javier Nieto Sanz - Director Técnico Comercial Área Data Center - Commtech Commissioning Services | LinkedIn"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

@@ -1,0 +1,137 @@
+Current date: Mon, 17 Feb 2025 18:39:04 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    Preciso saber através de evidencias como comentarios, avaliações ou artigos em blogs, sites ou qualquer outro lugar a opinião das pessoas sobre os softwares de logistica, meu objetivo é entender as necessecidades dos usuários, procure no mínomop por 100 fontes
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "Preciso saber através de evidencias como comentarios, avaliações ou artigos em blogs, sites ou qualquer outro lugar a opinião das pessoas sobre os softwares de logistica, meu objetivo é entender as necessecidades dos usuários, procure no mínomop por 100 fontes".
+                    In particular, you tried to search for the following keywords: "necessidades usuários opiniões, comentários avaliações".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about opiniões "software logística" comentários avaliações "necessidades usuários"?
+    </question>
+    <answer>
+    Você sabe quais são os anseios de seus clientes? Conheça formas ideais de como atender às necessidades e expectativas dos clientes.; Identificação de Necessidades dos Usuários e Requisitos IHC - Download as a PDF or view online for free; Oi, eu sou um mero UX designer e vou contar para vocês como faço para descobrir as necessidades dos usuários através da pesquisa.; Ao adotar uma abordagem de design centrado no usuário, um dos principais objetivos é definir (ou saber) quais são as necessidades dos usuários do projeto. Infelizmente, determinar exatamente o que o usuário precisa de um produto não é tão fácil... Continue lendo; Quer saber como identificar as necessidades dos clientes? Então confere essas 5 dicas que separamos neste post para você!; Como envolve a coleta de dados ... que as opiniões pessoais não influenciem os resultados. Realizar uma pesquisa quantitativa junto a um número maior de pessoas também é uma etapa importante dentro do UX research, pois ajuda a validar as suposições extraídas das pesquisas qualitativas. Por meio de perguntas fechadas é possível, por exemplo, descobrir padrões entre os usuários e saber mais sobre suas necessidades, valores e ...; O feedback do usuário é essencial, pois contribui para identificar gargalos e dificuldades específicas que podem ter passado despercebidos durante o desenvolvimento. Ele também ajuda a alinhar o produto final com as expectativas do público-alvo, permitindo ajustes precisos na interface.; Entender as necessidades do seu cliente ajuda a direcionar melhor as campanhas de marketing. Veja como!; Através do relato desse momento ... as opiniões e as impressões do entrevistado com relação ao fato narrado e os aspectos que caracterizaram a situação. Como o roteiro foi construído e adaptado a partir do trabalho de Mafra Pereira (2010), não houve necessidade de realização ...; Departamento de Informática – PUC-Rio · Futuro Estudante · Programas · Futuro Estudante de Graduação · Futuro Estudante de Pós · Graduação · Coordenação e Informações p/ Alunos · Seminários da Graduação · Agenda de Apresentações de Projeto Final · Cursos; Esse tipo de demanda é relacionada à solução que você disponibiliza ao cliente. De modo a certificar que sua persona vai ter uma boa jornada de compra em seu negócio, é importante preencher alguns requisitos para que o produto tenha a adequação necessária e supere as expectativas ...; A Revista Conhecimento em Ação (RCA) é um periódico científico de acesso aberto e publicação de fluxo contínuo – vinculado ao Departamento de Biblioteconomia da Faculdade de Administração e Ciências Contábeis (FACC) da Universidade Federal do Rio de Janeiro (UFRJ).; O autor destaca a necessidade de melhorar a experiência do usuário nos serviços públicos, propondo atendimento empático e eficiente. Ele enfatiza a importância das ouvidorias, avaliação da performance dos serviços através da perspectiva dos usuários, e sugere mudanças legislativas ...; Quando se estuda informação é necessário qualificá-la, pois há uma problemática e dificuldade na definição do conceito por seu uso em diversos campos. Na CI (Ciência da Informação), a informação é social (depende de seu contexto do uso), e só existe informação quando é institucionalizada e utilizada, portanto ela possui foco no tratamento e uso. Nesse sentido, os estudos do usuário ...; Learn how to apply user-centered and participatory design methods in your environmental design process, and how to design for the environment.; Os motivadores psicológicos são moldados através das nossas crenças, opiniões, desejos e preferências.  · Também há uma camada psicológica extra, com motivações que levam a pessoa a comprar em um determinado lugar. É nessa parte específica que vemos as necessidades do cliente, ...; Scientific Information System Redalyc. Network of Scientific Journals. Non-profit academy-owned Open Access. Diamond open access model.; Rio de Janeiro: IMS ABRASCO, 2001. p.113-126.), “necessidades de saúde” é uma taxonomia organizada em quatro grupos, a saber: (1) ter boas condições de vida; (2) ter acesso e poder consumir tecnologias que viabilizem uma melhora na condição de vida; (3) a criação de vínculos entre usuário ...; Segundo pesquisa da Google realizada em março de 2019, 33% dos usuários entrevistados afirmam que pagariam mais para obter o que desejam de forma mais rápida e ágil. Sendo assim, focar em se adaptar em atender cada vez mais as expectativas e necessidades dos usuários é a melhor opção ...; Recentemente li um artigo da Profª. Valéria Valls a respeito da Gestão da Qualidade em serviços de informação (2006) onde uma observação me chamou a atenção. O artigo comentava a necessidade de quebrar o paradigma de que o profissional da ciência da informação conhece as demandas ...; We&#x27;re all about consumer reviews. Get the real inside story from shoppers like you. Read, write and share reviews on Trustpilot today.; Discover the 2023 top Review Management software for small business to enterprises. Compare and filter by 1.5M verified user reviews, features, integrations, pricing and more.; Do you agree with Tripadvisor&#x27;s TrustScore? Voice your opinion today and hear what 3,483 customers have already said.; Geralmente, a avaliação de desempenho mede por um período de tempo mais longo os diversos âmbitos da vida profissional de um funcionário. E compara diversos indicadores-chave de performance ou os KPI´s. Já o feedback, representa o conjunto de comentários, opiniões, ou críticas (sejam ...; Se a avaliação que estás prestes a realizar contém uma mistura de comentários positivos e negativos, podes considerar envolver as críticas construtivas com comentários positivos, uma técnica conhecida como “técnica do sanduíche”.; Consumers are more spoilt for choice on what to buy and where to shop than ever before, and online customer reviews are a key ingredient to guiding this choice.; Fatores como o número de revisões que empresa possui, a atualidade dessas avaliações, a classificação média da empresa ou a credibilidade do comentário que acompanha a avaliação são tidos em conta quando o Google indexa e avalia o seu site.; 1 bilhões de usuários | Gerencie sua identidade profissional. Crie e interaja com sua rede profissional. Aproveite o acesso a informações, estatísticas e oportunidades.; Entenda a importncia das avaliações dos clientes para o seu negócio, com REDUNIQ. Aproveite o poder do feedback positivo.; Minerais agregados, de mármore em gravilha para pavimento; Comentários e Reviews Regras de participação – Tem de ser um cliente registado na nossa página e tem de efetuar o comentário a partir da tua conta. – Apenas pode comentar produtos que já tenha comprado. – Apenas pode escrever um comentário por cada produto que comprou. – A…; eKomi fornece comentários transparentes e independentes dos consumidores. eKomi recolhe opiniões reais de clientes sobre as lojas e produtos. Eu fiz uma transação com este vendedor recentemente e agora gostava de avaliar; Opiniões de Ambience.pt ✓ 82 avaliações reais por clientes reais ✓ Avaliação total: Muito bom (4,56); Confira exemplos de comentários de avaliação de desempenho para usar nas devolutivas e feedbacks dos seus colaboradores.; Precisa dar a devolutiva da AVD e não sabe como? Apresentamos exemplos de comentários de avaliação de desempenho para te inspirar!; Discover 140+ performance review examples to provide effective feedback and improve employee performance as a part of performance reviews; O feedback pode trazer muitos benefícios para o ambiente escolar - confira aqui alguns dos principais exemplos de feedbacks para alunos!; Frases sobre avaliação de desempenho inspiradoras e para feedback de avaliados: descubra o que escrever na avaliação de desempenho.; 200 Exemplos de Feedback para Melhorar Avaliações de Desempenho; Avaliar o desempenho dos colaboradores é uma das ferramentas mais poderosas para o crescimento das equipes e o sucesso de uma empresa. No entanto, encontrar as palavras certas para um feedback que seja ao mesmo tempo claro, construtivo e motivador pode ser um desafio. Pensando nisso, reunimos aqui 100 exemplos prontos de comentários ...
+    </answer>
+    
+    <references>
+    ["https://www.agendor.com.br/blog/necessidades-e-expectativas-dos-clientes/","https://www.slideshare.net/alannagianin/usabilidade-na-interao-humano-computador-identificao-de-necessidades-dos-usurios-e-requisitos-ihc","https://medium.com/ux-strategy/como-descobrir-necessidades-dos-usu%C3%A1rios-atrav%C3%A9s-de-pesquisa-38489b6cb3c8","http://designr.com.br/do-que-o-usuario-precisa-em-termos-de-ux-design/","https://www.zendesk.com.br/blog/como-identificar-as-necessidades-dos-clientes/","https://www.mjvinnovation.com/pt-br/blog/ux-research/","https://www.domatech.com.br/blog/ux-ui/importancia-do-feedback-do-usuario","https://www.organicadigital.com/blog/como-entender-realmente-as-necessidades-do-seu-cliente/","https://www.redalyc.org/journal/147/14753783009/html/","https://www.inf.puc-rio.br/~inf1403/docs/alberto2011_1/18_Design_Requisitos.pdf","https://rockcontent.com/br/blog/necessidades-dos-clientes/","https://revistas.ufrj.br/index.php/rca/article/view/41554/24045","https://republica.org/emnotas/conteudo/a-importancia-da-experiencia-dos-usuarios-dos-servicos-publicos-e-da-qualidade-do-atendimento-a-populacao/","https://arquivista.net/2014/12/17/usuarios-conceitos-estudos-de-necessidades-e-formas-de-estudo/","https://www.linkedin.com/advice/0/how-can-you-ensure-user-needs-met-design-mii6f","https://www1.magazord.com.br/blog/necessidades-do-cliente/","https://www.redalyc.org/pdf/3610/361033302003.pdf","https://www.scielosp.org/article/sausoc/2022.v31n1/e200983/","https://www.envisiontecnologia.com.br/2019/06/03/necessidades-do-usuario-entenda-porque-conveniencia-e-comodidade-sao-tao-importantes-na-fidelizacao-de-clientes/","https://gestaodocumental.wordpress.com/2011/01/24/voce-conhece-a-necessidade-dos-seus-usuarios/","https://www.trustpilot.com","https://www.getapp.com/customer-service-support-software/feedback-and-reviews-management/","https://www.trustpilot.com/review/www.tripadvisor.com","https://factorialhr.pt/blog/dar-feedback-dicas/","https://cezannehr.com/pt/hr-blog/2024/01/desempenho-feedback-eficaz/","https://jumpseller.com/learn/importance-of-customer-reviews-on-e-commerce/","https://moreleads.pt/blog/importancia-reviews-no-sucesso-do-e-commerce/","https://pt.linkedin.com/pulse/pedir-feedback-é-muito-mais-importante-do-que-dar-e-tenho-costa-8fjaf","https://www.reduniq.pt/en/blog/a-importancia-das-reviews-dos-clientes-para-o-seu-negocio/","https://acorus.pt/page/reviews","https://freshzone.pt/comentarios-e-reviews/","https://www.ekomi.pt/avaliacao-estudarparatrabalhar.html","https://www.trustedshops.pt/avaliacao/info_X9CEEF0881501E1DF0782A27395A57E81.html","https://www.feedz.com.br/blog/exemplos-de-comentarios-de-avaliacao-de-desempenho/","https://www.qulture.rocks/blog/exemplos-de-comentarios-de-avaliacao-de-desempenho","https://clickup.com/blog/performance-review-examples/","https://blog.khanacademy.org/pt-br/exemplo-de-feedbacks-para-alunos/","https://www.agendor.com.br/blog/frases-sobre-avaliacao-de-desempenho/","https://gfoundry.com/pt/200-exemplos-de-comentarios-de-avaliacao-de-desempenho/","https://blog.empregare.com/exemplos-de-avaliacao-de-desempenho/"]
+    </references>
+    
+    </knowledge-1>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://www.agendor.com.br/blog/necessidades-e-expectativas-dos-clientes/": "Atender necessidades e expectativas dos clientes: 13 dicas | Blog Agendor"
+  + "https://www.slideshare.net/alannagianin/usabilidade-na-interao-humano-computador-identificao-de-necessidades-dos-usurios-e-requisitos-ihc": "Identificação de Necessidades dos Usuários e Requisitos IHC | PPT"
+  + "https://medium.com/ux-strategy/como-descobrir-necessidades-dos-usu%C3%A1rios-atrav%C3%A9s-de-pesquisa-38489b6cb3c8": "Como descobrir necessidades dos usuários através de pesquisa? | by Jeferson Tornisielo | Hub de Design TOTVS | Medium"
+  + "http://designr.com.br/do-que-o-usuario-precisa-em-termos-de-ux-design/": "Do que o Usuário Precisa em Termos de UX Design? - Designr"
+  + "https://www.zendesk.com.br/blog/como-identificar-as-necessidades-dos-clientes/": "Como identificar as necessidades dos clientes: entenda de uma vez!"
+  + "https://www.mjvinnovation.com/pt-br/blog/ux-research/": "UX research: saiba como mapear as necessidades do usuário - MJV Technology & Innovation"
+  + "https://www.domatech.com.br/blog/ux-ui/importancia-do-feedback-do-usuario": "Feedback do Usuário: Importância para UX Design | Domatech"
+  + "https://www.organicadigital.com/blog/como-entender-realmente-as-necessidades-do-seu-cliente/": "Como entender as necessidades do seu cliente + Planilha gratuita"
+  + "https://www.redalyc.org/journal/147/14753783009/html/": "Estudo de usuário: necessidades informacionais de empresas contratantes de pesquisas de mercado"
+  + "https://www.inf.puc-rio.br/~inf1403/docs/alberto2011_1/18_Design_Requisitos.pdf": "O Processo de Design Necessidades dos Usuários ..."
+  + "https://rockcontent.com/br/blog/necessidades-dos-clientes/": "Entenda como identificar as necessidades dos clientes da sua empresa"
+  + "https://revistas.ufrj.br/index.php/rca/article/view/41554/24045": "Vista do As necessidades do usuário da informação e as habilidades e competências do moderno profissional da informação | Revista Conhecimento em Ação"
+  + "https://republica.org/emnotas/conteudo/a-importancia-da-experiencia-dos-usuarios-dos-servicos-publicos-e-da-qualidade-do-atendimento-a-populacao/": "A importância da experiência dos usuários dos serviços pblicos e da qualidade do atendimento à população - República.org"
+  + "https://arquivista.net/2014/12/17/usuarios-conceitos-estudos-de-necessidades-e-formas-de-estudo/": "Usuários, conceitos, estudos de necessidades e formas de estudo – Portal do Arquivista"
+  + "https://www.linkedin.com/advice/0/how-can-you-ensure-user-needs-met-design-mii6f": "How can you ensure that user needs are met in design?"
+  + "https://www1.magazord.com.br/blog/necessidades-do-cliente/": "Como entender as necessidades do cliente e entregar o que as pessoas querem – Magazord – Digital Commerce"
+  + "https://www.redalyc.org/pdf/3610/361033302003.pdf": "Redalyc"
+  + "https://www.scielosp.org/article/sausoc/2022.v31n1/e200983/": "SciELO - Public Health - “Necessidades de saúde”: reflexões acerca da (in)definição de um conceito “Necessidades de saúde”: reflexões acerca da (in)definição de um conceito"
+  + "https://www.envisiontecnologia.com.br/2019/06/03/necessidades-do-usuario-entenda-porque-conveniencia-e-comodidade-sao-tao-importantes-na-fidelizacao-de-clientes/": "Necessidades do usuário: entenda porque conveniência e comodidade são tão importantes na fidelização de clientes! – Envision Tecnologia"
+  + "https://gestaodocumental.wordpress.com/2011/01/24/voce-conhece-a-necessidade-dos-seus-usuarios/": "Você conhece a necessidade dos seus usuários? – Gestão Documental e do Conhecimento"
+  + "https://www.trustpilot.com": "Trustpilot Reviews: Experience the power of customer reviews"
+  + "https://www.getapp.com/customer-service-support-software/feedback-and-reviews-management/": "Best Review Management Software 2023 - Reviews on 271+ Tools | GetApp"
+  + "https://www.trustpilot.com/review/www.tripadvisor.com": "Tripadvisor Reviews | Read Customer Service Reviews of www.tripadvisor.com"
+  + "https://factorialhr.pt/blog/dar-feedback-dicas/": "Dar feedback: 5 dicas para gerir o desempenho das equipas | Factorial"
+  + "https://cezannehr.com/pt/hr-blog/2024/01/desempenho-feedback-eficaz/": "Avaliações de desempenho: Como dar feedback de forma eficaz? - Cezanne HR"
+  + "https://jumpseller.com/learn/importance-of-customer-reviews-on-e-commerce/": "The Effects of Customer Reviews on Online Stores."
+  + "https://moreleads.pt/blog/importancia-reviews-no-sucesso-do-e-commerce/": "A importância das reviews no sucesso do E-commerce [Infográfico] - moreleads.pt"
+  + "https://pt.linkedin.com/pulse/pedir-feedback-é-muito-mais-importante-do-que-dar-e-tenho-costa-8fjaf": "Pedir feedback é muito mais importante do que dar ..."
+  + "https://www.reduniq.pt/en/blog/a-importancia-das-reviews-dos-clientes-para-o-seu-negocio/": "A importância das reviews e das avaliações dos clientes para o seu negócio"
+  + "https://acorus.pt/page/reviews": "Testemunhos, comentários e avaliações | Acorus"
+  + "https://freshzone.pt/comentarios-e-reviews/": "Comentários e Reviews – Freshzone"
+  + "https://www.ekomi.pt/avaliacao-estudarparatrabalhar.html": "estudarparatrabalhar.com comentários de clientes - Rating: 4.9 de 271 Opiniões dos clientes e experiências para estudarparatrabalhar.com"
+  + "https://www.trustedshops.pt/avaliacao/info_X9CEEF0881501E1DF0782A27395A57E81.html": "Ambience.pt Experiências | Ler 82 Ambience.pt Avaliações"
+  + "https://www.feedz.com.br/blog/exemplos-de-comentarios-de-avaliacao-de-desempenho/": "100 Exemplos de comentários de avaliação de desempenho"
+  + "https://www.qulture.rocks/blog/exemplos-de-comentarios-de-avaliacao-de-desempenho": "42 exemplos de comentários de avaliação de desempenho"
+  + "https://clickup.com/blog/performance-review-examples/": "140+ Performance Review Examples (Phrases + Comments)"
+  + "https://blog.khanacademy.org/pt-br/exemplo-de-feedbacks-para-alunos/": "Exemplos de feedbacks para alunos e a sua importância"
+  + "https://www.agendor.com.br/blog/frases-sobre-avaliacao-de-desempenho/": "15 frases sobre avaliação de desempenho e como criá-las | Blog Agendor"
+  + "https://gfoundry.com/pt/200-exemplos-de-comentarios-de-avaliacao-de-desempenho/": "200 Exemplos de comentários de avaliação de desempenho"
+  + "https://blog.empregare.com/exemplos-de-avaliacao-de-desempenho/": "200 exemplos de avaliação de desempenho prontos para você usar | Blog do RH"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

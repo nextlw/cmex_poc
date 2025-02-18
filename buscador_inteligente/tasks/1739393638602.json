@@ -1,0 +1,15 @@
+{
+  "action": "answer",
+  "think": "Após pesquisar no LinkedIn e em outras fontes, encontrei informações sobre vagas de UX Senior e seus salários. Embora não tenha encontrado uma vaga específica que corresponda exatamente aos seus critérios (UX Senior, LinkedIn, acima de R$15.000), as informações coletadas me permitem fornecer uma resposta útil sobre o cenário geral.",
+  "answer": "Encontrei diversas vagas de UX Senior no LinkedIn, mas não localizei nenhuma que especifique um salário acima de R$15.000. No entanto, algumas profissões de tecnologia pagam até R$15.000 por mês, e a média salarial para UX/UI Designer Sênior no Brasil pode chegar a R$18.500, dependendo da localização e da empresa. Recomendo pesquisar diretamente no LinkedIn e entrar em contato com recrutadores para obter informações mais precisas sobre as vagas disponíveis e seus respectivos salários.",
+  "references": [
+    {
+      "exactQuote": "Em um mercado em evolução, descobrir as profissões em alta que oferecem remuneração de até R$ 15 mil pode ser um bom caminho.",
+      "url": "https://www.guiadacarreira.com.br/blog/profissoes-em-alta-que-pagam-ate-15-mil-por-mes"
+    },
+    {
+      "exactQuote": "A média salarial de UI/UX Designer Sênior é de R$ 18.500 por mês nessa localidade (Brasil).",
+      "url": "https://www.portalinsights.com.br/perguntas-frequentes/quanto-ganha-um-ux-nos-eua"
+    }
+  ]
+}

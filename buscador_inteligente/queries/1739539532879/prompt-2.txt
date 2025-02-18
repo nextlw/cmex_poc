@@ -1,0 +1,117 @@
+Current date: Fri, 14 Feb 2025 13:26:35 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    quem é eduardo josé da totvs, pegue as informações no linkedIn, quero as informações e um resumo sobre quem ele é, se houver mais de um traga os 10 links de perfil mais relevantes
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "quem é eduardo josé da totvs, pegue as informações no linkedIn, quero as informações e um resumo sobre quem ele é, se houver mais de um traga os 10 links de perfil mais relevantes".
+                    In particular, you tried to search for the following keywords: "Eduardo José TOTVS LinkedIn site:linkedin.com".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about Eduardo José TOTVS LinkedIn?
+    </question>
+    <answer>
+    Estudante de desenvolvimento web ... oportunidade no mercado de trabalho · Experience: Start Tech - TOTVS · Education: João Martins · Location: Embu das Artes · 152 connections on LinkedIn. View José Eduardo de Souza’s profile on LinkedIn, a professional community of 1 ...; Experience: TOTVS ESPIRITO SANTO · Education: Fundação Dom Cabral · Location: Vila Velha · 500+ connections on LinkedIn. View Eduardo Couto’s profile on LinkedIn, a professional community of 1 billion members.; 1 bilhões de usuários | Gerencie sua identidade profissional. Crie e interaja com sua rede profissional. Aproveite o acesso a informações, estatísticas e oportunidades.; Diretor de Segmentos - Construção e Projetos, Educacional e Serviços · Experience: TOTVS · Education: Universidade Federal de Minas Gerais · Location: Belo Horizonte · 500+ connections on LinkedIn. View Eduardo Pires da Silva’s profile on LinkedIn, a professional community of 1 billion ...; Analista de negócios sênior Protheus · Forte experiência por +8 anos no consultoria em ERP Totvs Protheus e em +20 anos de processos administrativos/gestão de pessoas como Empresário, formado Bacharel em Ciência da Computação e pós-graduado MBA em Gestão de Negócios Vivência com ...; 1 bilhões de usuários | Gerencie sua identidade profissional. Crie e interaja com sua rede profissional. Aproveite o acesso a informaç��es, estatísticas e oportunidades.; Analista de Suporte Pleno | Datasul | Progress 4GL OpenEdge | Power BI | SQL | Jira Software | Azure DevOps | Confluence · Sou um profissional autodidata com uma sólida experiência como Analista de Suporte Técnico, especializado nos módulos backoffice do Datasul.; - Senior executive: 24y of experience in tech, financial services, credit, fintechs… · Experience: TOTVS TECHFIN · Location: São Paulo · 500+ connections on LinkedIn. View Eduardo Neubern’s profile on LinkedIn, a professional community of 1 billion members.; To improve my knowledge and improving me as a professional. · Experience: TOTVS · Education: Faculdade de Tecnologia de Jundiaí · Location: Barueri · 493 connections on LinkedIn. View José Fernandes Júnior’s profile on LinkedIn, a professional community of 1 billion members.; Software Engineer at Compasso UOL · Software Developer with experience working on large projects for multinational companies. I started in the area in 2020, focusing on development with Java, Kotlin, Spring, Quarkus, among other technologies that I use to create scalable and high-level projects.; I work since 2001 without an IT segment, with knowledge and experience in infrastructure… · Experience: TOTVS · Education: Estácio · Location: São José · 500+ connections on LinkedIn. View Braulio Gomes Braulio Gomes’ profile on LinkedIn, a professional community of 1 billion members.; I began my career as a software developer at Neolog in 2015, now owned by TOTVS. This… · Experience: TOTVS · Education: Universidade Presbiteriana Mackenzie · Location: Wesley Chapel · 37 connections on LinkedIn. View EDUARDO TAKARA’s profile on LinkedIn, a professional community of ...; Experience: TOTVS · Education: Pontifícia Universidade Católica do Rio Grande do Sul · Location: Porto Alegre · 500+ connections on LinkedIn. View Eduardo Urruth Teixeira’s profile on LinkedIn, a professional community of 1 billion members.; Consultor na JEM Media Consultancy · Experience: JEM Media Consultancy · Location: Lisboa · 500+ connections on LinkedIn. View José Eduardo Moniz’s profile on LinkedIn, a professional community of 1 billion members.; As a Senior Agile Specialist, I help on disseminating the agile mindset across in the… · Experience: Meta · Education: UFSCar · Location: Araraquara · 500+ connections on LinkedIn. View José Eduardo Ribeiro’s profile on LinkedIn, a professional community of 1 billion members.; CyberSecurity Analyst | Threat Hunter · Me encanta aprender nuevas tecnologías, solucionar problemas y entender como funcionan las cosas. Al comenzar la carrera comprendí que mi pasión era la ciberseguridad. Con experiencia en el departamento de respuesta ante incidentes y actualmente enfocado ...; Analista de Suporte Pleno - SAP HRP-BWP-ECP . Microsoft 365 Admin . Active Directory . ITSM . SharePoint . QlikView . TOTVS , VPN · Servi ao Exército Brasileiro por 1 ano na área de logística na 2 companhia de transporte e hoje eu trabalho como suporte de Ti.; Product Owner | Project Leader | Business Analysis | Software Engineer · Olá, seja bem vinda(o) ao meu perfil! Sou Eduardo, graduado em Engenharia de Software e Engenharia Elétrica, profissional com carreira sólida e ampla experiência de 11 anos na área de Produtos Digitais, Desenvolvimento ...; Auxiliar administrativo | MSpro Assessoria e Consultoria Empresarial · Tenho o objetivo de crescer profissionalmente e de maneira produtiva, contribuindo para o desenvolvimento da organização como um todo. Tenho facilidade para digitação, organização em geral.; Analista de Implantação | Varejo | ERP | PDV | TEF| NFC-E | SAT · Analista de Implantação atuando na área de Varejo e Automação comercial a 20 anos. Implantação em sistemas de Ponto de Venda (PDV), e Sistemas de Retaguarda (ERP). Serviços executados em clientes por todo território ...
+    </answer>
+    
+    <references>
+    ["https://www.linkedin.com/in/jos%C3%A9-eduardo-de-souza-a51808232/?_l=en","https://www.linkedin.com/in/eduardo-couto-28376221/","https://br.linkedin.com/in/josé-eduardo-de-souza-a51808232","https://www.linkedin.com/in/eduardo-pires-da-silva/","https://www.linkedin.com/in/josecarlosdearaujojr/","http://br.linkedin.com/pub/jo%5C%5Cu00e3o-eduardo-totvs/5/275/b1","https://www.linkedin.com/in/carlitos1304/","https://www.linkedin.com/in/eduneubern/","https://www.linkedin.com/in/jose-fernandes-junior/","https://www.linkedin.com/in/eduarddojose/","https://www.linkedin.com/in/braulio-gomes-rodrigues-ti/","https://www.linkedin.com/in/eduardo-takara/","https://www.linkedin.com/in/eduardourruth/?_l=en","https://www.linkedin.com/in/jos%C3%A9-eduardo-moniz-8981baa4/","https://www.linkedin.com/in/jeduribeiro/","https://www.linkedin.com/in/eduardo-jos%C3%A9-b-919747220/","https://www.linkedin.com/in/eduardo-leite-a0897a142/","https://www.linkedin.com/in/eduardojpcosta/","https://www.linkedin.com/in/kaire-eduardo/","https://www.linkedin.com/in/jos%C3%A9-filho-24bb1320/"]
+    </references>
+    
+    </knowledge-1>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://www.linkedin.com/in/jos%C3%A9-eduardo-de-souza-a51808232/?_l=en": "José Eduardo de Souza - Front End Developer Student - Start Tech - TOTVS | LinkedIn"
+  + "https://www.linkedin.com/in/eduardo-couto-28376221/": "Eduardo Couto - TOTVS ESPIRITO SANTO | LinkedIn"
+  + "https://br.linkedin.com/in/josé-eduardo-de-souza-a51808232": "José Eduardo de Souza - Start Tech -TOTVS"
+  + "https://www.linkedin.com/in/eduardo-pires-da-silva/": "Eduardo Pires da Silva - Diretor de Segmentos - TOTVS | LinkedIn"
+  + "https://www.linkedin.com/in/josecarlosdearaujojr/": "José Carlos de Araujo Junior - Analista de negócios sênior Protheus - Moove ERP - Consultoria Especializada | LinkedIn"
+  + "http://br.linkedin.com/pub/jo%5C%5Cu00e3o-eduardo-totvs/5/275/b1": "LinkedIn Brasil: entre ou cadastre-se"
+  + "https://www.linkedin.com/in/carlitos1304/": "Carlos Eduardo Chierighini de Siqueira - Analista de Suporte Técnico II - TOTVS | LinkedIn"
+  + "https://www.linkedin.com/in/eduneubern/": "Eduardo Neubern - TOTVS TECHFIN | LinkedIn"
+  + "https://www.linkedin.com/in/jose-fernandes-junior/": "José Fernandes Júnior - TOTVS | LinkedIn"
+  + "https://www.linkedin.com/in/eduarddojose/": "Eduardo José S. - Olinda, Pernambuco, Brazil | Professional Profile | LinkedIn"
+  + "https://www.linkedin.com/in/braulio-gomes-rodrigues-ti/": "Braulio Gomes Braulio Gomes - TOTVS | LinkedIn"
+  + "https://www.linkedin.com/in/eduardo-takara/": "EDUARDO TAKARA - TOTVS | LinkedIn"
+  + "https://www.linkedin.com/in/eduardourruth/?_l=en": "Eduardo Urruth Teixeira - TOTVS | LinkedIn"
+  + "https://www.linkedin.com/in/jos%C3%A9-eduardo-moniz-8981baa4/": "José Eduardo Moniz - Consultor - JEM Media Consultancy | LinkedIn"
+  + "https://www.linkedin.com/in/jeduribeiro/": "José Eduardo Ribeiro - Meta | LinkedIn"
+  + "https://www.linkedin.com/in/eduardo-jos%C3%A9-b-919747220/": "Eduardo José B. - Madrid, Community of Madrid, Spain | Professional Profile | LinkedIn"
+  + "https://www.linkedin.com/in/eduardo-leite-a0897a142/": "Eduardo Leite - Infraestrutura TI Pleno - GrupoSC Distribuidora de Medicamentos | LinkedIn"
+  + "https://www.linkedin.com/in/eduardojpcosta/": "Eduardo José de Paula Costa - Líder de projetos - Topaz | LinkedIn"
+  + "https://www.linkedin.com/in/kaire-eduardo/": "Kaire Eduardo - Analista de suporte técnico - TOTVS | LinkedIn"
+  + "https://www.linkedin.com/in/jos%C3%A9-filho-24bb1320/": "José Filho - Analista de implantação - TOTVS | LinkedIn"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

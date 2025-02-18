@@ -1,0 +1,23 @@
+{
+  "action": "answer",
+  "think": "Após revisar o conhecimento disponível, posso fornecer uma resposta concisa sobre os impactos tributários do álcool gel em relação à reforma tributária no Brasil. A reforma tributária em curso introduz um Imposto Seletivo, apelidado de \"imposto do pecado\", que pode incidir sobre produtos como bebidas alcoólicas. Embora o álcool gel não seja explicitamente uma bebida alcoólica, a reforma tributária também está alterando o regime de tributação sobre o consumo, o que pode impactar indiretamente o setor de higiene pessoal, onde o álcool gel se enquadra.",
+  "answer": "A reforma tributária em curso no Brasil, com a introdução do Imposto Seletivo (IS), conhecido como \"imposto do pecado\", poderá impactar o álcool gel. Embora o foco principal do IS sejam produtos como cigarros e bebidas alcoólicas, a reforma tributária também promove alterações no regime de tributação sobre o consumo, o que pode gerar impactos indiretos no setor de higiene pessoal, onde o álcool gel se insere. A regulamentação da reforma ainda está em andamento, e os detalhes sobre a incidência de impostos sobre produtos específicos, como o álcool gel, serão definidos em lei complementar.",
+  "references": [
+    {
+      "exactQuote": "Esse novo tributo ganhou o apelido de 'imposto do pecado', porque deve incidir sobre itens como cigarros, bebidas alcoólicas e pesticidas",
+      "url": "https://g1.globo.com/google/amp/economia/noticia/2023/07/06/imposto-do-pecado-o-que-diz-reforma-tributaria-sobre-os-tributos-para-itens-como-cigarro-e-alcool.ghtml"
+    },
+    {
+      "exactQuote": "A regulamentação da reforma tributária, tema que dominou as discussões no Congresso em 2024, ainda não acabou.",
+      "url": "https://www12.senado.leg.br/noticias/materias/2025/01/03/reforma-tributaria-segunda-parte-da-regulamentacao-sera-votada-em-2025"
+    },
+    {
+      "exactQuote": "A Reforma Tributária que está sendo atualmente discutida poderia gerar impactos em sua empresa. Descubra quais são eles neste artigo!",
+      "url": "https://www.prosoft.com.br/blog/entenda-os-impactos-da-reforma-tributaria/"
+    },
+    {
+      "exactQuote": "Os setores de comércio e serviços temem que a regulamentação da reforma tributária prevista no projeto em exame no Senado ( PLP 68/2024 ) acarrete perda de competitividade das empresas do país, pois poderá aumentar o custo tributário, principalmente para os empreendimentos que estão ...",
+      "url": "https://www12.senado.leg.br/noticias/materias/2024/09/05/reforma-tributaria-comercio-e-servicos-apontam-perda-de-competitividade-e-alta-de-precos"
+    }
+  ]
+}

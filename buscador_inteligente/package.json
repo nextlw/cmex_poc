@@ -1,0 +1,67 @@
+{
+  "name": "agentic-search",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npx ts-node src/agent.ts",
+    "search": "npx ts-node src/test-duck.ts",
+    "rewrite": "npx ts-node src/tools/query-rewriter.ts",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "serve": "ts-node src/server.ts",
+    "server": "ts-node src/server.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "generate-docs": "swagger-jsdoc -d src/swagger.yaml -o docs/swagger.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@ai-sdk/google": "^1.1.14",
+    "@ai-sdk/openai": "^1.1.12",
+    "@google/generative-ai": "^0.21.0",
+    "@types/capture-console": "^1.0.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node-fetch": "^2.6.12",
+    "ai": "^4.1.41",
+    "axios": "^1.7.9",
+    "capture-console": "^1.0.2",
+    "chokidar": "^4.0.3",
+    "cors": "^2.8.5",
+    "duck-duck-scrape": "^2.2.7",
+    "express": "^4.21.2",
+    "node-fetch": "^3.3.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "undici": "^7.3.0",
+    "ws": "^8.18.0",
+    "yamljs": "^0.3.0",
+    "zod-to-json-schema": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/chokidar": "^2.1.7",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.4",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.7",
+    "@types/ws": "^8.5.14",
+    "@types/yamljs": "^0.2.34",
+    "@typescript-eslint/eslint-plugin": "^8.24.0",
+    "@typescript-eslint/parser": "^8.24.0",
+    "dotenv": "^16.4.7",
+    "eslint": "^9.20.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@scarf/scarf"
+    ]
+  }
+}

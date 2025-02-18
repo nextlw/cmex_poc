@@ -1,0 +1,19 @@
+{
+  "action": "answer",
+  "think": "Com base nas informações coletadas, posso responder à pergunta com certeza.",
+  "answer": "Eduardo Saverin é atualmente o homem mais rico do Brasil.",
+  "references": [
+    {
+      "exactQuote": "O homem mais rico do Brasil hoje é Eduardo Saverin.",
+      "url": "https://exame.com/invest/guia/quem-e-o-homem-mais-rico-do-brasil/"
+    },
+    {
+      "exactQuote": "Eduardo Saverin no Topo: Eduardo Saverin, cofundador do Facebook, mantém sua posição como o homem mais rico do Brasil, com um patrimônio de US$ 28 bilhões e entra para lista dos homens mais ricos do mundo.",
+      "url": "https://blog.genialinvestimentos.com.br/homens-mais-ricos-do-brasil/"
+    },
+    {
+      "exactQuote": "Um dos fundadores do Facebook, Eduardo Saverin é o homem mais rico do Brasil. Segundo a Forbes, sua fortuna é de US$ 28 bilhões – o equivalente a cerca de R$ 141,4 bilhões pela cotação atual.",
+      "url": "https://www.terra.com.br/economia/como-homem-mais-rico-do-brasil-quase-triplicou-sua-fortuna-chegando-a-r-141-bilhoes,be78c191eaabca39ce6d8f80f7e87f2d2zamajrk.html"
+    }
+  ]
+}

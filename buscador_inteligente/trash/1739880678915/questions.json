@@ -1,0 +1,24 @@
+[
+  "passar casca de banana no rosto faz bem pra pele?",
+  {
+    "query": "Existe evidência científica que apoia ou refuta o uso da casca de banana no rosto?",
+    "semantica": "Esta query busca informações sobre a validade de um método de tratamento facial, baseado na casca de banana. Ela se concentra em estudos científicos que confirmam ou rejeitam os benefícios do uso da casca de banana.",
+    "exemplo_pratico": "Um estudo publicado no Journal of Cosmetic Dermatology investigou a eficácia de uma máscara facial feita com casca de banana e encontrou evidências de que ela pode ser benéfica para a pele, especialmente em relação à hidratação.",
+    "legislação": "Não há legislação específica sobre o uso da casca de banana no rosto, mas as regulamentações sobre cosméticos exigem que os produtos sejam testados e comprovem seus benefícios antes de serem comercializados. Portanto, a validade do método dependerá dos resultados desses estudos.",
+    "observacoes": "É importante notar que o uso da casca de banana no rosto não é um tratamento reconhecido pela medicina convencional e deve ser considerado como uma prática caseira."
+  },
+  {
+    "query": "Quais são os componentes biológicos presentes na casca de banana e como eles podem interagir com a pele?",
+    "semantica": "Esta query busca identificar os ingredientes químicos ou biológicos da casca de banana e entender seu potencial impacto sobre a pele. Ela se concentra em descobrir as propriedades ativas que poderiam ser responsáveis pelos supostos benefícios.",
+    "exemplo_pratico": "A casca de banana contém compostos como ácido ferúlico, vitaminas do complexo B e antioxidantes que podem ajudar a proteger a pele contra os danos causados pelo envelhecimento. No entanto, esses componentes precisam ser estudados em profundidade para entender seu impacto real.",
+    "legislação": "Não há legislação específica sobre os componentes da casca de banana, mas as leis de cosméticos exigem que os ingredientes sejam listados e suas propriedades descritas com base em evidências científicas.",
+    "observacoes": "É importante considerar que a casca de banana não é um ingrediente comprovado por regulamentações ou estudos rigorosos, mas pode ser uma prática caseira popular."
+  },
+  {
+    "query": "O método tradicional de aplicação (casca crua, extratos, etc.) afeta os resultados?",
+    "semantica": "Esta query busca entender como a forma de aplicação da casca de banana impacta seus supostos benefícios. Ela se concentra em avaliar se o método de uso influencia na eficácia do tratamento facial.",
+    "exemplo_pratico": "Aplicar a casca crua pode ser menos eficiente, pois os nutrientes podem não ser absorvidos da maneira esperada. Usar extratos ou cremes com base em casca de banana pode ser mais eficaz, já que esses produtos são processados para maximizar a entrega dos componentes ativos.",
+    "legislação": "Não há legislação específica sobre o método de aplicação da casca de banana. No entanto, as regulamentações sobre cosméticos exigem que os métodos de uso sejam testados e descritos com base em evidências científicas.",
+    "observacoes": "O método tradicional pode ser menos eficaz do que formas processadas, mas ainda é uma prática popular e pode ter benefícios limitados."
+  }
+]
