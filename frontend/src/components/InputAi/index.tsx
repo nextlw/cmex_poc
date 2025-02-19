@@ -3,7 +3,7 @@ import "./styles.css";
 import { InputAiProps } from "./types";
 import Button from "../Button";
 import { BiSearch } from "react-icons/bi";
-
+import Spinner from "../Spinner";
 /**
  * Componente de input com animações visuais quando você interage ou quando tá carregando.
  * Perfeito pra capturar descrições ou textos de produtos.
@@ -47,6 +47,11 @@ const InputAi: React.FC<InputAiProps> = ({
   isLoading = false,
   onButtonClick = () => { }, // Função vazia, o botão eu implementei dentro do input de forma opcional.
   style,
+  showAutoComplete,
+  autoCompleteData = [],
+  handleAutocompleteClick,
+  isAutocompleteLoading,
+  onClickOutside
 }): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -82,7 +87,7 @@ const InputAi: React.FC<InputAiProps> = ({
     // Função helper pra manipular as classes e animações
     const updateElement = (config: any, isLoading: boolean) => {
       const { ref, loadingClasses = [], removeClasses = [], animation } = config;
-      
+
       if (!ref.current) return;
 
       if (isLoading) {
@@ -98,6 +103,22 @@ const InputAi: React.FC<InputAiProps> = ({
     // Aplica as configurações em todos os elementos
     loadingConfig.forEach(config => updateElement(config, isLoading));
   }, [isLoading]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        onClickOutside(); // Executa a função se clicar fora
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClickOutside]);
 
   const handleFocus = () => {
     if (
@@ -229,6 +250,26 @@ const InputAi: React.FC<InputAiProps> = ({
             - Referenciado por overlayRef pra controle de animações
         */}
         <div className="sobreposicao-gradiente" ref={overlayRef}></div>
+
+        {showAutoComplete &&
+          <div className="autocomplete rounded-xl flex flex-col gap-1">
+            {isAutocompleteLoading &&
+              <div className="h-[48px]">
+                <Spinner classes="left-[50%] top-[20px]" />
+              </div>
+            }
+            {autoCompleteData.map((item) =>
+            (
+              <button key={item.id}
+                className="autocomplete__item rounded-md hover:bg-gray-100 flex flex-row gap-2 items-center justify-between py-4 px-3"
+                onClick={() => handleAutocompleteClick(item)}
+              >
+                <span className="text-gray-700 font-semibold break-keep">{item.resultado[0].ncm}</span>
+                <span className="text-gray-500 break-keep leading-none flex-1 text-left">{item.resultado[0].descricao}</span>
+              </button>
+            )
+            )}
+          </div>}
       </div>
     </>
   );

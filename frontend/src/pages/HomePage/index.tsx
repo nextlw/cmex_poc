@@ -1,5 +1,5 @@
 // Importa o React e os hooks necessários
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 // Importa o tipo SugerirNCM do arquivo types centralizado
 import { SugerirNCM } from "../../types";
 // Importa a instância do axios configurada
@@ -81,8 +81,10 @@ const HomePage: React.FC = () => {
     setSelectedModel(value);
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (ncmSugerido: string = "", autocomplete: Boolean = false) => {
     setErrorMessage(null);
+    setShowAutoComplete(false)
+    setAutoCompleteData([])
 
     if (pesquisa.length < 3) {
       setErrorMessage("Digite pelo menos 3 caracteres para a busca.");
@@ -94,10 +96,12 @@ const HomePage: React.FC = () => {
     try {
       let response;
       let modeloUsado = selectedModel;
+      const consulta = ncmSugerido ? `${pesquisa} com NCM sugerido ${ncmSugerido}` : pesquisa
 
       // Envia os dados para a rota de queries
       response = await axiosInstance.post("/queries", {
-        consulta: pesquisa,
+        consulta: consulta,
+        autocomplete: autocomplete,
         modelo: modeloUsado,
         ...dropdownSelection,
       });
@@ -113,20 +117,64 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const debouncedHandleSearch = useMemo(
-    () => debounce(handleSearch, 1000),
-    [pesquisa, dropdownSelection]
-  );
+  const clickOutsideAutocomplete = () => {
+    setShowAutoComplete(false)
+    setAutoCompleteData([])
+  }
 
-  useEffect(() => {
-    return () => {
-      debouncedHandleSearch.cancel();
-    };
-  }, [debouncedHandleSearch]);
+  // Dispara uma requisição para o endpoint de autocomplete
+  const autocomplete = async (consulta: string) => {
+    try {
+      const response = await axiosInstance.post("/autocomplete", {
+        consulta: consulta,
+      });
+      return response.data.data
+    } catch (error) {
+      return null
+    }
+  }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPesquisa(e.target.value);
-    debouncedHandleSearch();
+  // Controla o estado do balão de Autocomplete
+  const [showAutoComplete, setShowAutoComplete] = useState<Boolean>(false)
+  const [autoCompleteData, setAutoCompleteData] = useState<Array<JSON>>([])
+  const [isAutocompleteLoading, setIsAutocompleteLoading] = useState<Boolean>(false)
+
+  // Comportamento ao clicar em uma sugestão do autocomplete
+  const handleAutocompleteClick = (value: JSON) => {
+    setPesquisa(value.descricao)
+    handleSearch(value.resultado[0].ncm, true)
+  }
+
+  // Comportamento ao exibir o balão de autocomplete
+  const debouncedHandleSearch = useRef(
+    debounce(async (query: string) => {
+
+      setIsAutocompleteLoading(true)
+      setShowAutoComplete(true)
+
+      const response = await autocomplete(query)
+
+      // Mostra o balão de Autocomplete e preenche os dados
+      if (response && response.length > 0) {
+        setAutoCompleteData(response)
+      } else {
+        setShowAutoComplete(false)
+        setAutoCompleteData([])
+      }
+
+      setIsAutocompleteLoading(false)
+
+    }, 500)
+  ).current;
+
+
+  const handleChange = (value: string) => {
+    setPesquisa(value);
+    setShowAutoComplete(false)
+    setAutoCompleteData([])
+    if (value.length > 3) {
+      debouncedHandleSearch(value);
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -136,6 +184,8 @@ const HomePage: React.FC = () => {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
+      setShowAutoComplete(false)
+      setAutoCompleteData([])
       handleSearch();
     }
   };
@@ -149,7 +199,7 @@ const HomePage: React.FC = () => {
         modeloSelecionado={selectedModel}
         aoMudarModelo={handleModelChange}
       />
-      
+
       <div className="grid-container">
         <div className="col-span-12">
           <PageHeader
@@ -166,14 +216,19 @@ const HomePage: React.FC = () => {
                 <InputAi
                   width="100%"
                   value={pesquisa}
-                  onChange={handleChange}
+                  onChange={(e) => handleChange(e.target.value)}
                   onKeyPress={handleKeyPress}
                   isLoading={isLoading}
                   placeholder="Digite o nome do produto"
                   onButtonClick={handleSearch}
+                  showAutoComplete={showAutoComplete}
+                  autoCompleteData={autoCompleteData}
+                  handleAutocompleteClick={handleAutocompleteClick}
+                  isAutocompleteLoading={isAutocompleteLoading}
+                  onClickOutside={clickOutsideAutocomplete}
                 />
               </div>
-              
+
               <div className="grid-container p-4 pb-2">
                 <div className="col-span-12">
                   <DropdownMenu onSelectionChange={handleDropdownChange} />
@@ -189,9 +244,9 @@ const HomePage: React.FC = () => {
                       {isLoading ? (
                         <InfoBasicasSkeleton />
                       ) : (
-                        <InfoBasicas 
-                          ncm={item.ncm} 
-                          descricao={item.descricao} 
+                        <InfoBasicas
+                          ncm={item.ncm}
+                          descricao={item.descricao}
                         />
                       )}
                     </div>
@@ -211,8 +266,8 @@ const HomePage: React.FC = () => {
                     {isLoading ? (
                       <BoxdeImpostosSkeleton />
                     ) : (
-                      <BoxdeImpostos 
-                        classificacao={item.classificacao_tributaria} 
+                      <BoxdeImpostos
+                        classificacao={item.classificacao_tributaria}
                       />
                     )}
                   </div>
@@ -262,7 +317,7 @@ const HomePage: React.FC = () => {
               </div>
             </div>
           </form>
-          
+
           {errorMessage && sugerirNCM.length === 0 && (
             <div className="mensagem-erro">{errorMessage}</div>
           )}

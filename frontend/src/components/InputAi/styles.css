@@ -8,7 +8,6 @@
   margin: 0 auto;
   border: none;
   border-radius: 100px;
-  overflow: hidden;
   position: relative;
   line-height: 0%;
   background: var(--color-input-background);
@@ -31,6 +30,7 @@
   background-position: 0% 50%;
   z-index: 0;
   transition: background 0.3s ease;
+  border-radius: 100px;
 }
 
 /* Estado focado do gradiente - Cor sólida azul */
@@ -189,3 +189,21 @@
   margin-top: var(--mg-sm);
   text-align: center;
 }
+
+.autocomplete {
+  width: 100%;
+  position: absolute;
+  top: calc(100% + 5px);
+  z-index: 9999;
+  background-color: white;
+  color: black;
+  box-sizing: border-box;
+  padding: .5rem;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.autocomplete__item {
+  width: 100%;
+  transition: .5s;
+} 

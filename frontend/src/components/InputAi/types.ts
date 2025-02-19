@@ -9,4 +9,9 @@ export interface InputAiProps {
   readOnly?: boolean;
   onButtonClick?: () => void;
   style?: React.CSSProperties;
+  showAutoComplete: Boolean
+  autoCompleteData?: Array<JSON>
+  handleAutocompleteClick: (value: JSON) => void
+  isAutocompleteLoading: Boolean
+  onClickOutside: () => void
 }
