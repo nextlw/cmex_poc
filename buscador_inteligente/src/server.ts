@@ -448,7 +448,10 @@ app.post('/api/v1/query', (async (req: Request, res: Response) => {
       // Emite o resultado da resposta
       eventEmitter.emit(`progress-${requestId}`, {
         type: 'answer',
-        data: result,
+        data: {
+          answer: 'Resposta obtida no back-end ...',
+          ...result
+        },
         trackers: {
           tokenUsage: context.tokenTracker.getTotalUsage(),
           actionState: context.actionTracker.getState()

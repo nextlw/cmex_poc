@@ -7,7 +7,8 @@ import configJson from '../config.json';
 /**
  * Indica se deve usar o modelo local.
  */
-export const USE_LOCAL_MODEL = true; // Forçando uso do modelo local
+export const USE_LOCAL_MODEL = true;
+console.log('Modo de modelo:', USE_LOCAL_MODEL ? 'Local' : 'Remoto');
 
 /**
  * Interface de configuração do modelo.
@@ -109,7 +110,21 @@ export const SEARCH_PROVIDER: 'brave' | 'jina' | 'duck' = 'jina';
 /**
  * Endpoint do modelo local.
  */
-export const LOCAL_MODEL_ENDPOINT = process.env.LOCAL_MODEL_ENDPOINT || "http://localhost:1234";
+const rawEndpoint = process.env.LOCAL_MODEL_ENDPOINT || "http://localhost:1234";
+console.log('Endpoint local bruto:', rawEndpoint);
+
+// Normaliza o endpoint removendo barras duplicadas e garantindo formato correto
+export const LOCAL_MODEL_ENDPOINT = rawEndpoint.replace(/([^:]\/)\/+/g, '$1');
+console.log('Endpoint local normalizado:', LOCAL_MODEL_ENDPOINT);
+
+// Valida se o endpoint está em um formato válido
+try {
+  new URL(LOCAL_MODEL_ENDPOINT);
+  console.log('Endpoint local validado com sucesso');
+} catch (error) {
+  console.error('Erro: endpoint local inválido:', error);
+  throw new Error(`Endpoint local inválido: ${LOCAL_MODEL_ENDPOINT}`);
+}
 
 /**
  * Configurações dos modelos.

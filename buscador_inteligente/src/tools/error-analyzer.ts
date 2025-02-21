@@ -7,52 +7,51 @@ import { TokenTracker } from "../utils/token-tracker";
 import Ajv from 'ajv';
 
 interface ErrorAnalysisResponse {
-    recap: string;
-    blame: string;
-    improvement: string;
+    data: {
+        think: string;
+        answer: string;
+        context?: {
+            similarQuery?: string;
+            previousContext?: string;
+        };
+        references?: Array<{
+            exactQuote: string;
+            url: string;
+        }>;
+    }
 }
 
 const responseSchema = {
-  /**
-   * O tipo da resposta é um objeto
-   */
-  type: "object",
-  /**
-   * As propriedades da resposta
-   */
-  properties: {
-    /**
-     * A propriedade recap é uma string
-     */
-    recap: {
-      /**
-       * O tipo da propriedade recap é uma string
-       */
-      type: "string"
+    type: "object",
+    properties: {
+        data: {
+            type: "object",
+            properties: {
+                think: { type: "string" },
+                answer: { type: "string" },
+                context: {
+                    type: "object",
+                    properties: {
+                        similarQuery: { type: "string" },
+                        previousContext: { type: "string" }
+                    }
+                },
+                references: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: {
+                            exactQuote: { type: "string" },
+                            url: { type: "string" }
+                        },
+                        required: ["exactQuote", "url"]
+                    }
+                }
+            },
+            required: ["think", "answer"]
+        }
     },
-    /**
-     * A propriedade blame é uma string
-     */
-    blame: {
-      /**
-       * O tipo da propriedade blame é uma string
-       */
-      type: "string"
-    },
-    /**
-     * A propriedade improvement é uma string
-     */
-    improvement: {
-      /**
-       * O tipo da propriedade improvement é uma string
-       */
-      type: "string"
-    }
-  },
-  /**
-   * As propriedades obrigatórias
-   */
-  required: ["recap", "blame", "improvement"]
+    required: ["data"]
 };
 
 const ajv = new Ajv();
@@ -169,79 +168,42 @@ export async function analyzeSteps(steps: any[], tracker?: TokenTracker): Promis
         }
     });
 
-    /* Código original comentado para referência futura
-    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({
-        model: modelConfigs.errorAnalyzer.model,
-        generationConfig: {
-            temperature: modelConfigs.errorAnalyzer.temperature
-        }
-    });
-    */
-
-    /**
-     * Tenta analisar os passos do diário e gerar uma resposta de análise de erro.
-     */
     try {
-        /**
-         * Obtém o prompt para o modelo.
-         */
         const prompt = getPrompt(steps);
-        /**
-         * Gera o conteúdo com o modelo.
-         */
         const result = await model.generateContent(prompt);
-        /**
-         * Obtém a resposta do modelo.
-         */
         const response = await result.response;
-        /**
-         * Obtém o uso do modelo.
-         */
         const usage = response.usageMetadata;
-        /**
-         * Converte a resposta do modelo para JSON.
-         */
-        const json = JSON.parse(response.text()) as ErrorAnalysisResponse;
-        /**
-         * Exibe a resposta da análise de erro.
-         */
-        console.log('Error analysis:', {
-            is_valid: !json.blame,
-            reason: json.blame || 'No issues found'
-        });
-        /**
-         * Obtém o número de tokens utilizados.
-         */
-        const tokens = usage?.totalTokenCount || 0;
-        /**
-         * Rastreia o uso do modelo.
-         */
-        (tracker || new TokenTracker()).trackUsage('error-analyzer', tokens);
-        /**
-         * Validar a resposta antes de retornar
-         */
-        if (!validate(json)) {
+
+        // Converte a resposta do modelo para JSON
+        const json = JSON.parse(response.text());
+
+        // Formata a resposta no novo padrão
+        const formattedResponse: ErrorAnalysisResponse = {
+            data: {
+                think: json.think || "Analisando a query...",
+                answer: json.answer || "",
+                context: json.context || {},
+                references: json.references || []
+            }
+        };
+
+        // Validar a resposta
+        if (!validate(formattedResponse)) {
             throw new Error(`Resposta inválida: ${JSON.stringify(validate.errors)}`);
         }
-        /**
-         * Adicionar recap padrão quando não fornecido
-         */
-        if (!json.recap) {
-            json.recap = 'Análise parcial realizada';
-        }
-        /**
-         * Retorna a resposta da análise de erro e o número de tokens utilizados.
-         */
-        return { analysis: JSON.stringify(json), tokens };
+
+        // Exibe a resposta da análise
+        console.log('Error analysis:', {
+            is_valid: true,
+            context: formattedResponse.data.context
+        });
+
+        const tokens = usage?.totalTokenCount || 0;
+        (tracker || new TokenTracker()).trackUsage('error-analyzer', tokens);
+
+        return { analysis: JSON.stringify(formattedResponse), tokens };
     } catch (error) {
-        /**
-         * Lança um erro se ocorrer um erro na análise de erro.
-         */
         console.error('Error in answer evaluation:', error);
-        /**
-         * Lança o erro.
-         */
         throw error;
     }
 }

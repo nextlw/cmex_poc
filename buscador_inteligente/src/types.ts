@@ -73,6 +73,10 @@ export type EvaluationType = 'definitive' | 'freshness' | 'plurality' | 'attribu
 export type EvaluationCriteria = {
   types: EvaluationType[];
   languageStyle: string;
+  maxAgeDays?: number;
+  think?: string;
+  pass?: boolean;
+  tokens?: number;
 };
 
 // Interface de Uso de Tokens
@@ -131,6 +135,7 @@ export interface ReadResponse {
 export type EvaluationResponse = {
   pass: boolean;
   think: string;
+  tokens?: number;
   type?: 'definitive' | 'freshness' | 'plurality' | 'attribution';
   freshness_analysis?: {
     likely_outdated: boolean;
@@ -144,13 +149,18 @@ export type EvaluationResponse = {
     count_expected?: number;
     count_provided: number;
   };
+  attribution_analysis?: {
+    sources_provided: boolean;
+    sources_verified: boolean;
+    quotes_accurate: boolean;
+  };
 };
 
 export type ErrorAnalysisResponse = {
-  recap: string;
-  blame: string;
-  improvement: string;
-  questionsToAnswer: string[];
+  recap?: string;
+  blame?: string;
+  improvement?: string;
+  questionsToAnswer?: string[];
 };
 
 export interface SearchResult {

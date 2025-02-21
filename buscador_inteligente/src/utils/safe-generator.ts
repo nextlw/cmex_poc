@@ -1,6 +1,6 @@
 import * as z from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { TokenTracker } from "../utils/token-tracker";
+import { TokenTracker } from "./token-tracker";
 import { getModel, ToolName} from "../config";
 
 interface ModelInstance {

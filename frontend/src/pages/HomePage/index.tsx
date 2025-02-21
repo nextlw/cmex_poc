@@ -1,5 +1,11 @@
 // Importa o React e os hooks necessários
-import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 // Importa o tipo SugerirNCM do arquivo types centralizado
 import { SugerirNCM } from "../../types";
 // Importa a instância do axios configurada
@@ -81,10 +87,13 @@ const HomePage: React.FC = () => {
     setSelectedModel(value);
   };
 
-  const handleSearch = async (ncmSugerido: string = "", autocomplete: Boolean = false) => {
+  const handleSearch = async (
+    ncmSugerido: string = "",
+    autocomplete: Boolean = false
+  ) => {
     setErrorMessage(null);
-    setShowAutoComplete(false)
-    setAutoCompleteData([])
+    setShowAutoComplete(false);
+    setAutoCompleteData([]);
 
     if (pesquisa.length < 3) {
       setErrorMessage("Digite pelo menos 3 caracteres para a busca.");
@@ -96,7 +105,9 @@ const HomePage: React.FC = () => {
     try {
       let response;
       let modeloUsado = selectedModel;
-      const consulta = ncmSugerido ? `${pesquisa} com NCM sugerido ${ncmSugerido}` : pesquisa
+      const consulta = ncmSugerido
+        ? `${pesquisa} com NCM sugerido ${ncmSugerido}`
+        : pesquisa;
 
       // Envia os dados para a rota de queries
       response = await axiosInstance.post("/queries", {
@@ -108,7 +119,6 @@ const HomePage: React.FC = () => {
 
       console.log("Resposta do backend:", response.data);
       setSugerirNCM(response.data);
-
     } catch (error) {
       console.error("Erro ao buscar sugestões:", error);
       setErrorMessage("Erro ao buscar informações. Tente novamente.");
@@ -118,9 +128,9 @@ const HomePage: React.FC = () => {
   };
 
   const clickOutsideAutocomplete = () => {
-    setShowAutoComplete(false)
-    setAutoCompleteData([])
-  }
+    setShowAutoComplete(false);
+    setAutoCompleteData([]);
+  };
 
   // Dispara uma requisição para o endpoint de autocomplete
   const autocomplete = async (consulta: string) => {
@@ -128,64 +138,66 @@ const HomePage: React.FC = () => {
       const response = await axiosInstance.post("/autocomplete", {
         consulta: consulta,
       });
-      return response.data.data
+      console.log("Resultado do autocomplete:", response.data.data);
+      return response.data.data;
     } catch (error) {
-      return null
+      console.error("Erro no autocomplete:", error);
+      return null;
     }
-  }
+  };
 
   // Controla o estado do balão de Autocomplete
-  const [showAutoComplete, setShowAutoComplete] = useState<Boolean>(false)
-  const [autoCompleteData, setAutoCompleteData] = useState<Array<JSON>>([])
-  const [isAutocompleteLoading, setIsAutocompleteLoading] = useState<Boolean>(false)
+  const [showAutoComplete, setShowAutoComplete] = useState<Boolean>(false);
+  const [autoCompleteData, setAutoCompleteData] = useState<Array<JSON>>([]);
+  const [isAutocompleteLoading, setIsAutocompleteLoading] =
+    useState<Boolean>(false);
 
   // Comportamento ao clicar em uma sugestão do autocomplete
   const handleAutocompleteClick = (value: JSON) => {
-    setPesquisa(value.descricao)
-    handleSearch(value.resultado[0].ncm, true)
-  }
+    setPesquisa(value.descricao);
+    handleSearch(value.resultado[0].ncm, true);
+  };
 
   // Comportamento ao exibir o balão de autocomplete
   const debouncedHandleSearch = useRef(
     debounce(async (query: string) => {
+      setIsAutocompleteLoading(true);
+      setShowAutoComplete(true);
 
-      setIsAutocompleteLoading(true)
-      setShowAutoComplete(true)
-
-      const response = await autocomplete(query)
+      const response = await autocomplete(query);
 
       // Mostra o balão de Autocomplete e preenche os dados
       if (response && response.length > 0) {
-        setAutoCompleteData(response)
+        setAutoCompleteData(response);
       } else {
-        setShowAutoComplete(false)
-        setAutoCompleteData([])
+        setShowAutoComplete(false);
+        setAutoCompleteData([]);
       }
 
-      setIsAutocompleteLoading(false)
-
+      setIsAutocompleteLoading(false);
     }, 500)
   ).current;
 
-
   const handleChange = (value: string) => {
     setPesquisa(value);
-    setShowAutoComplete(false)
-    setAutoCompleteData([])
+    setShowAutoComplete(false);
+    setAutoCompleteData([]);
     if (value.length > 3) {
       debouncedHandleSearch(value);
     }
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleSearchChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setBuscarValor(e.target.value);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      setShowAutoComplete(false)
-      setAutoCompleteData([])
+      setShowAutoComplete(false);
+      setAutoCompleteData([]);
       handleSearch();
     }
   };
@@ -285,7 +297,11 @@ const HomePage: React.FC = () => {
                         Tabela ICMS
                       </h3>
                       <span>
-                        {isTabelaICMSOpen ? <BiChevronDown /> : <BiChevronRight />}
+                        {isTabelaICMSOpen ? (
+                          <BiChevronDown />
+                        ) : (
+                          <BiChevronRight />
+                        )}
                       </span>
                       <span className="text-[var(--color-text-gray-500)] ml-2">
                         Clique para expandir

@@ -10,12 +10,13 @@ import { analyzeSteps } from "./tools/error-analyzer";
 import { SEARCH_PROVIDER, STEP_SLEEP, modelConfigs, LOCAL_MODEL_ENDPOINT, USE_LOCAL_MODEL } from "./config";
 import { TokenTracker } from "./utils/token-tracker";
 import { ActionTracker } from "./utils/action-tracker";
-import { StepAction, SchemaProperty, ResponseSchema, AnswerAction } from "./types";
+import { StepAction, SchemaProperty, ResponseSchema, AnswerAction, VisitAction } from "./types";
 import { TrackerContext } from "./types";
 import { jinaSearch } from "./tools/jinaSearch";
 import { LocalModelClient } from "./tools/local-model-client";
 import { spawn } from 'child_process';
 import { EventEmitter } from 'events';
+
 
 const eventEmitter = new EventEmitter();
 
@@ -34,34 +35,43 @@ let activeModelClient: GoogleGenerativeAI | LocalModelClient;
 
 // Função para inicializar o cliente do modelo
 function initializeModelClient(modelName?: string) {
-    // Configura o modelo local
-    const localModel = new LocalModelClient(LOCAL_MODEL_ENDPOINT);
-    activeModelClient = localModel;
-    console.log("Usando o modelo local.");
+    console.log('Iniciando inicialização do cliente do modelo...');
+    console.log('Endpoint configurado:', LOCAL_MODEL_ENDPOINT);
     
-    /* Código original comentado para referência futura
-    if (USE_LOCAL_MODEL) {
+    try {
+        // Configura o modelo local
+        console.log('Criando instância do LocalModelClient...');
         const localModel = new LocalModelClient(LOCAL_MODEL_ENDPOINT);
+        
+        if (!localModel) {
+            console.error('Erro: Falha ao criar instância do LocalModelClient');
+            throw new Error('Falha ao criar instância do modelo local');
+        }
+        
+        console.log('LocalModelClient criado com sucesso');
         activeModelClient = localModel;
-        console.log("Modelo local detectado. Usando o endpoint local.");
-    } else {
-        activeModelClient = new GoogleGenerativeAI(GEMINI_API_KEY);
-        console.log("Modelo remoto detectado. Usando o endpoint remoto do Gemini.");
-    }
-    */
+        console.log('Cliente do modelo ativo configurado para modo local');
 
-    // Configura o modelo se especificado
-    if (modelName) {
-        modelConfigs.agent.model = modelName;
+        // Configura o modelo se especificado
+        if (modelName) {
+            console.log('Configurando modelo específico:', modelName);
+            modelConfigs.agent.model = modelName;
+            console.log('Configuração do modelo atualizada');
+        }
+
+        return activeModelClient;
+    } catch (error) {
+        console.error('Erro fatal na inicialização do cliente do modelo:', error);
+        throw error;
     }
 }
 
 // Função para garantir que o cliente está inicializado
-function ensureModelClientInitialized() {
+function ensureModelClientInitialized(modelName?: string) {
     // Verifica se o cliente não está inicializado
     if (!activeModelClient) {
         // Inicializa o cliente do modelo
-        initializeModelClient();
+        initializeModelClient(modelName);
     }
 }
 
@@ -413,6 +423,8 @@ function updateContext(step: any) {
     allContext.push(step)
 }
 
+
+
     /**
      * Remove todos os caracteres de quebra de linha do texto fornecido.
      *
@@ -628,15 +640,29 @@ export async function getResponse(
 
         // executa o passo e a ação
         if (thisStep.action === 'answer') {
+            const answerStep = thisStep as AnswerAction;
+            if (typeof answerStep.answer !== 'string') {
+                console.log('Iniciando correção do formato da resposta final...');
+                if (activeModelClient instanceof LocalModelClient) {
+                    const correctedAnswer = await activeModelClient.retryWithCorrection(
+                        JSON.stringify(answerStep),
+                        'Formato de resposta inválido: campo "answer" deve ser string'
+                    );
+                    
+                    // Atualiza a resposta com a versão corrigida
+                    answerStep.answer = JSON.parse(correctedAnswer).answer;
+                }
+            }
+
             updateContext({
                 totalStep,
                 question: currentQuestion,
-                ...thisStep,
+                ...answerStep,
             });
 
             const evaluation = await evaluateAnswer(
                 currentQuestion, 
-                thisStep, 
+                answerStep, 
                 { types: ['definitive'], languageStyle: 'plain Portuguese' },
                 [context.tokenTracker, context.actionTracker],
                 visitedURLs
@@ -644,7 +670,6 @@ export async function getResponse(
 
             if (currentQuestion === question) {
                 if (badAttempts >= maxBadAttempts) {
-                    // EXIT POINT OF THE PROGRAM!!!!
                     diaryContext.push(`
                     At step ${step} and ${badAttempts} attempts, you took **answer** action and found an answer, not a perfect one but good enough to answer the original question:
 
@@ -652,7 +677,7 @@ export async function getResponse(
                     ${currentQuestion}
 
                     Your answer: 
-                    ${thisStep.answer}
+                    ${answerStep.answer}
 
                     The evaluator thinks your answer is good because: 
                     ${evaluation.response.think}
@@ -663,7 +688,7 @@ export async function getResponse(
                     break
                 }
                 if (evaluation.response.pass) {
-                    if (thisStep.references?.length > 0 || Object.keys(allURLs).length === 0) {
+                    if (answerStep.references?.length > 0 || Object.keys(allURLs).length === 0) {
                         // PONTO DE SAÍDA DO PROGRAMA!!!!
                         diaryContext.push(`
                         At step ${step}, you took **answer** action and finally found the answer to the original question:
@@ -672,7 +697,7 @@ export async function getResponse(
                         ${currentQuestion}
 
                         Your answer: 
-                        ${thisStep.answer}
+                        ${answerStep.answer}
 
                         The evaluator thinks your answer is good because: 
                         ${evaluation.response.think}
@@ -690,7 +715,7 @@ export async function getResponse(
                         ${currentQuestion}
 
                         Your answer: 
-                        ${thisStep.answer}
+                        ${answerStep.answer}
 
                         Unfortunately, you did not provide any references to support your answer. 
                         You need to find more URL references to support your answer.`);
@@ -707,7 +732,7 @@ export async function getResponse(
                     ${currentQuestion}
 
                     Your answer: 
-                    ${thisStep.answer}
+                    ${answerStep.answer}
 
                     The evaluator thinks your answer is bad because: 
                     ${evaluation.response.think}
@@ -717,7 +742,7 @@ export async function getResponse(
 
                     badContext.push({
                         question: currentQuestion,
-                        answer: thisStep.answer,
+                        answer: answerStep.answer,
                         evaluation: evaluation.response.think,
                         ...JSON.parse(errorAnalysis.analysis)
                     });
@@ -734,7 +759,7 @@ export async function getResponse(
                 ${currentQuestion}
 
                 Your answer: 
-                ${thisStep.answer}
+                ${answerStep.answer}
 
                 The evaluator thinks your answer is good because: 
                 ${evaluation.response.think}
@@ -743,8 +768,8 @@ export async function getResponse(
                 `);
                 allKnowledge.push({
                     question: currentQuestion,
-                    answer: thisStep.answer,
-                    references: thisStep.references,
+                    answer: answerStep.answer,
+                    references: answerStep.references,
                     type: 'qa'
                 });
             }
@@ -901,72 +926,17 @@ export async function getResponse(
                 });
                 allowSearch = false;
             }
-        } else if (thisStep.action === 'visit' && thisStep.URLTargets?.length) {
-            // visita as URLs
-            let uniqueURLs = thisStep.URLTargets;
-            if (visitedURLs.length > 0) {
-                // verifica duplicatas
-                uniqueURLs = uniqueURLs.filter((url: string) => !visitedURLs.includes(url));
-            }
-
-            if (uniqueURLs.length > 0) {
-                // lê as URLs
-                const urlResults = await Promise.all(
-                    uniqueURLs.map(async (url: string) => {
-                        const { response, tokens } = await readUrl(url, context.tokenTracker);
-                        allKnowledge.push({
-                            question: `What is in ${response.data?.url || 'the URL'}?`,
-                            answer: removeAllLineBreaks(response.data?.content || 'No content available'),
-                            references: [response.data?.url],
-                            type: 'url'
-                        });
-                        visitedURLs.push(url);
-                        delete allURLs[url];
-                        return { url, result: response, tokens };
-                    })
-                );
-                diaryContext.push(`
-                    At step ${step}, you took the **visit** action for "${currentQuestion}" and deep into the following URLs.
-                    You visited the following URLs:
-                    ${thisStep.URLTargets.join('\n')}
-                    Useful information was extracted for future reference. You found some useful information on the web and add them to your knowledge for future reference.
-                `);
-                updateContext({
-                    totalStep,
-                    question: currentQuestion,
-                    ...thisStep,
-                    result: urlResults
-                });
-
-                // Emite evento para ação visit
-                eventEmitter.emit(`progress-${requestId || question}`, {
-                    type: 'visit',
-                    data: {
-                        message: `Visit action processed for URLs: ${thisStep.URLTargets.join(', ')}`,
-                        urlResults
-                    },
-                    trackers: {
-                        tokenUsage: context.tokenTracker.getTotalUsage(),
-                        actionState: context.actionTracker.getState()
-                    }
-                });
-            } else {
-                // não encontrou nada de novo
-                diaryContext.push(`
-                    At step ${step}, you took the **visit** action and try to visit the following URLs:
-                    ${thisStep.URLTargets.join('\n')}
-                    But then you realized you have already visited these URLs and you already know very well about their contents.
-
-                    You decided to think out of the box or cut from a completely different angle.`);
-
-                // atualiza o contexto
-                updateContext({
-                    totalStep,
-                    ...thisStep,
-                    result: 'You have visited all possible URLs and found no new information. You must think out of the box or from a different angle!!!'
-                });
-                allowRead = false;
-            }
+        } else if (thisStep.action === 'visit' && (thisStep as VisitAction)['URLTargets']?.length) {
+            eventEmitter.emit(`progress-${requestId || question}`, {
+                type: 'visit',
+                data: {
+                    urlList: (thisStep as VisitAction)['URLTargets']
+                },
+                trackers: {
+                    tokenUsage: context.tokenTracker.getTotalUsage(),
+                    actionState: context.actionTracker.getState()
+                }
+            });
         }
 
         // armazena o contexto
@@ -986,12 +956,11 @@ export async function getResponse(
             errors: []
         };
 
-        // Antes de integrar com o script de finalização, envia um evento para o front informando o status.
         eventEmitter.emit(`progress-${requestId || question}`, {
             type: 'query',
             data: {
                 message: `Sua pergunta "${question}" foi registrada e está sendo processada.`,
-                buttonNumber: totalStep  // Esse número pode ser usado pelo front para exibir um botão numerado
+                buttonNumber: totalStep
             },
             trackers: {
                 tokenUsage: context.tokenTracker.getTotalUsage(),
@@ -1117,8 +1086,8 @@ export async function main() {
     const question = process.argv[2] || "";
     const modelArg = process.argv[3];
 
-    // Inicializa o cliente do modelo com o argumento fornecido
-    initializeModelClient(modelArg);
+    // Use ensureModelClientInitialized para garantir a inicialização
+    ensureModelClientInitialized(modelArg);
 
     // executa o agente de raciocínio
     const { result: finalStep, context: tracker } = await getResponse(question) as { result: AnswerAction; context: TrackerContext };
@@ -1128,24 +1097,24 @@ export async function main() {
     tracker.tokenTracker.printSummary();
     console.log('Modelo rodando:', modelConfigs.agent.model);
 
-    // Integração com o script de finalização
-    try {
-        const pythonProcess = spawn('python', ['finalizacao.py', question, finalStep.answer], {
-            stdio: ['inherit', 'inherit', 'inherit']
-        });
-        // Trata erros
-        pythonProcess.on('error', (error: Error) => {
-            console.error('Erro ao executar script de finalização:', error);
-        });
-        // Trata o fechamento do script
-        pythonProcess.on('close', (code: number | null) => {
-            if (code !== 0) {
-                console.error(`Script de finalização encerrou com código ${code}`);
-            }
-        });
-    } catch (error) {
-        console.error('Erro ao executar script de finalização:', error);
-    }
+    // // Integração com o script de finalização
+    // try {
+    //     const pythonProcess = spawn('python', ['finalizacao.py', question, finalStep.answer], {
+    //         stdio: ['inherit', 'inherit', 'inherit']
+    //     });
+    //     // Trata erros
+    //     pythonProcess.on('error', (error: Error) => {
+    //         console.error('Erro ao executar script de finalização:', error);
+    //     });
+    //     // Trata o fechamento do script
+    //     pythonProcess.on('close', (code: number | null) => {
+    //         if (code !== 0) {
+    //             console.error(`Script de finalização encerrou com código ${code}`);
+    //         }
+    //     });
+    // } catch (error) {
+    //     console.error('Erro ao executar script de finalização:', error);
+    // }
 }
 
 // executa a função principal

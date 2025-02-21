@@ -1,11 +1,10 @@
 import {z} from 'zod';
-import {GenerateObjectResult} from 'ai';
 import {TokenTracker} from "../utils/token-tracker";
 import {AnswerAction, EvaluationCriteria, EvaluationResponse, EvaluationType} from '../types';
 import {readUrl, removeAllLineBreaks} from "./read";
-import {ObjectGeneratorSafe} from "../utils/safe-generator";
+import {LocalModelClient} from "./local-model-client";
+import {modelConfigs, LOCAL_MODEL_ENDPOINT} from "../config";
 import {ActionTracker} from "../utils/action-tracker";
-
 
 const baseSchema = {
   pass: z.boolean().describe('Whether the answer passes the evaluation criteria defined by the evaluator'),
@@ -110,7 +109,7 @@ function getDefinitivePrompt(question: string, answer: string): string {
   return `You are an evaluator of answer definitiveness. Analyze if the given answer provides a definitive response or not.
 
 <rules>
-First, if the answer is not a direct response to the question, it must return false. 
+First, if the answer is not a direct response to the question, it must return false.
 Definitiveness is the king! The following types of responses are NOT definitive and must return false:
   1. Expressions of uncertainty: "I don't know", "not sure", "might be", "probably"
   2. Lack of information statements: "doesn't exist", "lack of information", "could not find"
@@ -131,7 +130,8 @@ Question: "What are the system requirements for running Python 3.9?"
 Answer: "Python 3.9 requires Windows 7 or later, macOS 10.11 or later, or Linux."
 Evaluation: {
   "pass": true,
-  "think": "The answer makes clear, definitive statements without uncertainty markers or ambiguity."
+  "think": "The answer makes clear, definitive statements without uncertainty markers or ambiguity.",
+  "type": "definitive"
 }
 
 Question: "Who will be the president of the United States in 2032?"
@@ -158,7 +158,14 @@ Evaluation: {
 
 Now evaluate this pair:
 Question: ${JSON.stringify(question)}
-Answer: ${JSON.stringify(answer)}`;
+Answer: ${JSON.stringify(answer)}
+
+Return a JSON object strictly in the format:
+{
+  "type": "definitive" or some other type if not definitive,
+  "pass": boolean,
+  "think": "Your reasoning here"
+}`;
 }
 
 function getFreshnessPrompt(question: string, answer: string, currentTime: string): string {
@@ -310,7 +317,6 @@ Question: ${JSON.stringify(question)}
 Answer: ${JSON.stringify(answer)}`;
 }
 
-
 const questionEvaluationSchema = z.object({
   needsFreshness: z.boolean().describe('Whether the question requires freshness check'),
   needsPlurality: z.boolean().describe('Whether the question requires plurality check'),
@@ -403,25 +409,23 @@ export async function evaluateQuestion(
   tracker?: TokenTracker
 ): Promise<EvaluationCriteria> {
   try {
-    const generator = new ObjectGeneratorSafe(tracker);
+    const generator = new LocalModelClient(LOCAL_MODEL_ENDPOINT);
 
-    const result = await generator.generateObject({
-      model: TOOL_NAME,
-      schema: questionEvaluationSchema,
-      prompt: getQuestionEvaluationPrompt(question),
-    });
-
-    console.log('Question Evaluation:', result.object);
+    const result = await generator.generateContent(getQuestionEvaluationPrompt(question));
+    const rawResponse = result.response.text();
+    const parsedResponse = JSON.parse(rawResponse);
+    
+    // Validar a resposta usando o schema
+    const validated = questionEvaluationSchema.parse(parsedResponse);
 
     // Always include definitive in types
     const types: EvaluationType[] = ['definitive'];
-    if (result.object.needsFreshness) types.push('freshness');
-    if (result.object.needsPlurality) types.push('plurality');
+    if (validated.needsFreshness) types.push('freshness');
+    if (validated.needsPlurality) types.push('plurality');
 
     console.log('Question Metrics:', types);
 
-    // Always evaluate definitive first, then freshness (if needed), then plurality (if needed)
-    return {types, languageStyle: result.object.languageStyle};
+    return {types, languageStyle: validated.languageStyle};
 
   } catch (error) {
     console.error('Error in question evaluation:', error);
@@ -430,28 +434,57 @@ export async function evaluateQuestion(
   }
 }
 
-
-async function performEvaluation<T>(
+async function performEvaluation(
   evaluationType: EvaluationType,
   params: {
-    schema: z.ZodType<T>;
+    schema: z.ZodSchema;
     prompt: string;
   },
-  trackers: [TokenTracker, ActionTracker],
-): Promise<GenerateObjectResult<T>> {
-  const generator = new ObjectGeneratorSafe(trackers[0]);
+  trackers: [TokenTracker, ActionTracker]
+): Promise<EvaluationResponse> {
+  try {
+    const localModel = new LocalModelClient(LOCAL_MODEL_ENDPOINT);
+    const model = localModel.getGenerativeModel({
+      model: modelConfigs.evaluator.model,
+      generationConfig: {
+        temperature: modelConfigs.evaluator.temperature,
+        responseMimeType: "application/json",
+        responseSchema: params.schema
+      }
+    });
 
-  const result = await generator.generateObject({
-    model: TOOL_NAME,
-    schema: params.schema,
-    prompt: params.prompt,
-  }) as unknown as GenerateObjectResult<any>;
+    const result = await model.generateContent(params.prompt);
+    const response = result.response;
+    const content = JSON.parse(response.text());
+    
+    const resultadoValido = params.schema.safeParse(content);
+    if (!resultadoValido.success) {
+      // Aqui você pode coletar as mensagens de erro e trackear o "think" para o LLM corrigir o formato.
+      const mensagensErro = resultadoValido.error.issues.map(issue => issue.message).join(", ");
+      trackers[1].trackThink(`Formato inválido: ${mensagensErro}`);
+      
+      // Em vez de lançar uma exceção, retorne uma resposta que indique que o JSON está no formato incorreto
+      // e que o LLM deve corrigir o output.
+      return {
+        pass: false,
+        think: `O JSON retornado não está no formato esperado: ${mensagensErro}. Por favor, corrija o output e tente novamente.`,
+        tokens: response.usageMetadata?.totalTokenCount || 0
+      };
+    }
 
-  trackers[1].trackThink(result.object.think)
-
-  console.log(`${evaluationType} ${TOOL_NAME}`, result.object);
-
-  return result;
+    // Caso a validação seja bem-sucedida, continue normalmente.
+    const validatedData = resultadoValido.data;
+    trackers[1].trackThink(validatedData.think);
+    console.log(`${evaluationType} evaluation:`, validatedData);
+    
+    return {
+      ...validatedData,
+      tokens: response.usageMetadata?.totalTokenCount || 0
+    };
+  } catch (error) {
+    console.error('Erro na avaliação:', error);
+    throw error;
+  }
 }
 
 
@@ -463,82 +496,88 @@ export async function evaluateAnswer(
   trackers: [TokenTracker, ActionTracker],
   visitedURLs: string[] = []
 ): Promise<{ response: EvaluationResponse }> {
-  let result;
+  let result: EvaluationResponse | undefined;
 
-  // Only add attribution if we have valid references
-  if (action.references && action.references.length > 0 && action.references.some(ref => ref.url.startsWith('http'))) {
+  if (action.references?.length > 0 && action.references.some(ref => ref.url.startsWith('http'))) {
     evaluationCri.types = ['attribution', ...evaluationCri.types];
   }
 
   for (const evaluationType of evaluationCri.types) {
-    switch (evaluationType) {
-      case 'attribution': {
-        // Safely handle references and ensure we have content
-        const urls = action.references?.filter(ref => ref.url.startsWith('http') && !visitedURLs.includes(ref.url)).map(ref => ref.url) || [];
-        const uniqueURLs = [...new Set(urls)];
-        const allKnowledge = await fetchSourceContent(uniqueURLs, trackers);
-
-        if (!allKnowledge.trim()) {
-          return {
-            response: {
+    try {
+      switch (evaluationType) {
+        case 'attribution': {
+          const urls = action.references
+            ?.filter(ref => ref.url.startsWith('http') && !visitedURLs.includes(ref.url))
+            .map(ref => ref.url) || [];
+          const uniqueURLs = [...new Set(urls)];
+          const allKnowledge = await fetchSourceContent(uniqueURLs, trackers);
+          
+          if (!allKnowledge.trim()) {
+            result = {
               pass: false,
-              think: "The answer does not provide any valid attribution references that could be verified. No accessible source content was found to validate the claims made in the answer.",
+              think: "No valid attribution references found",
               type: 'attribution',
-            }
-          };
-        }
+              attribution_analysis: {
+                sources_provided: false,
+                sources_verified: false,
+                quotes_accurate: false
+              }
+            };
+            break;
+          }
 
-        result = await performEvaluation(
-          'attribution',
-          {
-            schema: attributionSchema,
-            prompt: getAttributionPrompt(question, action.answer, allKnowledge),
-          },
-          trackers
-        );
-        break;
+          result = await performEvaluation(
+            'attribution',
+            {
+              schema: attributionSchema,
+              prompt: getAttributionPrompt(question, action.answer, allKnowledge)
+            },
+            trackers
+          );
+          break;
+        }
+        case 'definitive':
+          result = await performEvaluation(
+            'definitive',
+            {
+              schema: definitiveSchema,
+              prompt: getDefinitivePrompt(question, action.answer)
+            },
+            trackers
+          );
+          break;
+        case 'freshness':
+          result = await performEvaluation(
+            'freshness',
+            {
+              schema: freshnessSchema,
+              prompt: getFreshnessPrompt(question, action.answer, new Date().toISOString())
+            },
+            trackers
+          );
+          break;
+        case 'plurality':
+          result = await performEvaluation(
+            'plurality',
+            {
+              schema: pluralitySchema,
+              prompt: getPluralityPrompt(question, action.answer)
+            },
+            trackers
+          );
+          break;
       }
 
-      case 'definitive':
-        result = await performEvaluation(
-          'definitive',
-          {
-            schema: definitiveSchema,
-            prompt: getDefinitivePrompt(question, action.answer),
-          },
-          trackers
-        );
-        break;
-
-      case 'freshness':
-        result = await performEvaluation(
-          'freshness',
-          {
-            schema: freshnessSchema,
-            prompt: getFreshnessPrompt(question, action.answer, new Date().toISOString()),
-          },
-          trackers
-        );
-        break;
-
-      case 'plurality':
-        result = await performEvaluation(
-          'plurality',
-          {
-            schema: pluralitySchema,
-            prompt: getPluralityPrompt(question, action.answer),
-          },
-          trackers
-        );
-        break;
-    }
-
-    if (!result?.object.pass) {
-      return {response: result.object};
+      if (!result?.pass) {
+        return { response: result };
+      }
+    } catch (error) {
+      console.error(`Error in ${evaluationType} evaluation:`, error);
+      throw error;
     }
   }
 
-  return {response: result!.object};
+  return { response: result! };
 }
 
 // Helper function to fetch and combine source content

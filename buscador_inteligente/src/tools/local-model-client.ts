@@ -459,7 +459,7 @@ Para ação de reflexão:
         // Validação adicional do formato da ação
         if (!['search', 'answer', 'reflect', 'visit'].includes(content.action)) {
           // Loga o erro
-          console.error('Ação inválida detectada mesmo após normalização:', content.action);
+          console.error('!');
           // Tenta corrigir o erro
           const correctedContent = await this.retryWithCorrection(prompt, 'Ação inválida');
           // Retorna o conteúdo corrigido
@@ -513,15 +513,38 @@ Para ação de reflexão:
     };
   }
 
+  // Adicionar método de validação melhorado
+  private validateResponse(content: any): boolean {
+    if (!content || typeof content !== 'object') return false;
+    
+    const { action } = content;
+    
+    switch (action) {
+      case 'search':
+        return typeof content.think === 'string' 
+          && typeof content.searchQuery === 'string';
+          
+      case 'answer':
+        return typeof content.think === 'string'
+          && typeof content.answer === 'string'
+          && Array.isArray(content.references);
+          
+      case 'reflect':
+        return typeof content.think === 'string'
+          && Array.isArray(content.questionsToAnswer);
+          
+      default:
+        return false;
+    }
+  }
+
+  // Modificar o método generateContent para usar a nova validação
   async generateContent(prompt: string) {
     // Obtém o resultado bruto a partir do método sendRequest
     const result = await this.sendRequest(prompt);
-
-    // Valida o formato do resultado
-    if (!validateResponseStructure(result)) {
-      throw new Error(
-        `Formato de resposta inválido. Esperado: ${JSON.stringify(this.expectedFormats)}`
-      );
+    
+    if (!this.validateResponse(result)) {
+      throw new Error(`Formato de resposta inválido: ${JSON.stringify(result)}`);
     }
 
     // Embala a resposta para garantir a consistência do contrato:
@@ -533,22 +556,5 @@ Para ação de reflexão:
         usageMetadata: result.usage || { totalTokenCount: 0 }
       }
     };
-  }
-}
-
-// Adicione esta função de validação
-function validateResponseStructure(response: any): boolean {
-  const validActions = ['search', 'answer', 'reflect'];
-  if (!validActions.includes(response.action)) return false;
-  
-  switch(response.action) {
-    case 'search':
-      return !!response.think && !!response.searchQuery;
-    case 'answer':
-      return !!response.think && !!response.answer && Array.isArray(response.references);
-    case 'reflect':
-      return !!response.think && Array.isArray(response.questionsToAnswer);
-    default:
-      return false;
   }
 }

@@ -2,6 +2,7 @@
 import { modelConfigs, LOCAL_MODEL_ENDPOINT } from "../config";
 import { TokenTracker } from "../utils/token-tracker";
 import { LocalModelClient } from "./local-model-client";
+import { z } from 'zod';
 
 
 // const MAX_RETRIES = 20; // Número máximo de tentativas
@@ -109,64 +110,39 @@ export async function dedupQueries(queries: string[], existingQueries: string[],
  * @returns Um objeto contendo as queries deduplicadas e o número de tokens utilizados.
  * @throws Se o formato da resposta do modelo local for inválido.
  */
-    async function tryLocalModel() {
-        const localModel = new LocalModelClient(LOCAL_MODEL_ENDPOINT);
-        const model = localModel.getGenerativeModel({
-            model: "qwen2.5-7b-instruct-1m",
-            generationConfig: {
-                temperature: modelConfigs.dedup.temperature
-            }
-        });
+const dedupSchema = z.object({
+  unique_queries: z.array(z.string()),
+  think: z.string().optional()
+});
 
-
-
-
-        const result = await tryWithRetry(async () => {
-            const response = await model.generateContent(prompt);
-            return response;
-        });
-
-
-
-        /**
-         * Obtém a resposta do modelo local e a converte para JSON.
-         */
-        const response = result.response;
-
-        /**
-         * Converte a resposta do modelo local para JSON.
-         */
-        const content = JSON.parse(response.text());
-
-
-        /**
-         * Verifica se o formato da resposta do modelo local é válido.
-         * @returns Um objeto contendo as queries deduplicadas e o número de tokens utilizados.
-         * @throws Se o formato da resposta do modelo local for inválido.
-         */
-        if (!content.unique_queries || !Array.isArray(content.unique_queries)) {
-            throw new Error('Formato veio diferente, vou tentar adaptar');
-        }
-
-        /**
-         * Rastreia o uso do modelo local e retorna as queries deduplicadas e o número de tokens utilizados.
-         */
-        (tracker || new TokenTracker()).trackUsage('dedup', response.usageMetadata?.totalTokenCount || 0);
-        /**
-         * Retorna as queries deduplicadas e o número de tokens utilizados.
-         * @returns Um objeto contendo as queries deduplicadas e o número de tokens utilizados.
-         */
-        return {
-            /**
-             * As queries deduplicadas.
-             */
-            unique_queries: content.unique_queries,
-            /**
-             * O número de tokens utilizados.
-             */
-            tokens: response.usageMetadata?.totalTokenCount || 0
-        };
+async function tryLocalModel() {
+  const localModel = new LocalModelClient(LOCAL_MODEL_ENDPOINT);
+  const model = localModel.getGenerativeModel({
+    model: "qwen2.5-7b-instruct-1m",
+    generationConfig: {
+      temperature: modelConfigs.dedup.temperature
     }
+  });
+
+  const result = await tryWithRetry(async () => {
+    const response = await model.generateContent(prompt);
+    return response;
+  });
+
+  const response = result.response;
+  const content = JSON.parse(response.text());
+  
+  try {
+    const validated = dedupSchema.parse(content);
+    return {
+      unique_queries: validated.unique_queries,
+      tokens: response.usageMetadata?.totalTokenCount || 0
+    };
+  } catch (error) {
+    console.error('Erro na validação do schema:', error);
+    throw new Error('Formato de resposta inválido');
+  }
+}
 
 
 

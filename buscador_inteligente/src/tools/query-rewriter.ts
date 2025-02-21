@@ -3,18 +3,16 @@ import { TokenTracker } from "../utils/token-tracker";
 import { SearchAction } from "../types";
 import { KeywordsResponse } from "../types";
 import { LocalModelClient } from "./local-model-client";
-import { ObjectGeneratorSafe } from "../utils/safe-generator";
 import { z } from 'zod';
 
 /**
  * Esquema de resposta para a query rewriter.
  */
 const responseSchema = z.object({
-  think: z.string().describe('Strategic reasoning about query complexity and search approach'),
-  queries: z.array(z.string().describe('keyword-based search query, 2-3 words preferred, total length < 30 characters'))
+  think: z.string(),
+  queries: z.array(z.string())
     .min(1)
     .max(3)
-    .describe('Array of search keywords queries, orthogonal to each other')
 });
 
 /**
@@ -173,56 +171,29 @@ export async function rewriteQuery(
       }
     });
 
-    // Obtém o prompt
     const prompt = getPrompt(action);
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const usage = response.usageMetadata;
 
-    console.log("Resposta completa:", response.text());
-
     try {
-      // Sanitiza e tenta fazer o parse do JSON
       const sanitizedText = sanitizeJSON(response.text());
+      const parsed = JSON.parse(sanitizedText);
+      const validated = responseSchema.parse(parsed);
 
-      // Validação adicional com ObjectGeneratorSafe
-      const generator = new ObjectGeneratorSafe(tracker);
-      const validatedResult = await generator.generateObject({
-        model: 'queryRewriter',
-        schema: responseSchema,
-        prompt: sanitizedText
-      });
-
-      // Use o resultado validado diretamente
-      if (!validatedResult.object.queries || !Array.isArray(validatedResult.object.queries)) {
-        console.error("Resposta inválida do modelo - queries não é um array:", validatedResult.object);
-        return {
-          queries: [action.searchQuery],
-          tokens: validatedResult.usage,
-        };
-      }
-
-      console.log("Query rewriter:", validatedResult.object.queries);
       return { 
-        queries: validatedResult.object.queries, 
-        tokens: validatedResult.usage 
+        queries: validated.queries, 
+        tokens: usage?.totalTokenCount || 0 
       };
-
     } catch (parseError) {
-      // Loga o erro
       console.error("Erro ao processar JSON:", parseError);
-      // Loga a resposta original
-      console.error("Resposta original:", response.text());
-      // Se falhar, retorna a query original
       return {
         queries: [action.searchQuery],
         tokens: usage?.totalTokenCount || 0,
       };
     }
   } catch (error) {
-    // Loga o erro
     console.error("Erro na reescrita da query:", error);
-    // Em caso de erro, retorna a query original
     return {
       queries: [action.searchQuery],
       tokens: 0,
