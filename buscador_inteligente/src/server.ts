@@ -3,7 +3,7 @@ import express, {Request, Response, RequestHandler} from 'express';
 import cors from 'cors';
 import {EventEmitter} from 'events';
 import {getResponse} from './agent';
-import {StepAction, StreamMessage, TrackerContext} from './types';
+import {StepAction, StreamMessage, TrackerContext, AnswerAction} from './types';
 import fs from 'fs/promises';
 import path from 'path';
 import {TokenTracker} from "./utils/token-tracker";
@@ -13,6 +13,7 @@ import { specs } from './swagger';
 import chokidar from 'chokidar';
 import { Server as WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
+import { QuerySession } from './types/session';
 
 /**
  * Interface para armazenar logs do servidor.
@@ -446,17 +447,22 @@ app.post('/api/v1/query', (async (req: Request, res: Response) => {
       // Armazena o resultado da tarefa
       await storeTaskResult(requestId, result);
       // Emite o resultado da resposta
-      eventEmitter.emit(`progress-${requestId}`, {
-        type: 'answer',
-        data: {
-          answer: 'Resposta obtida no back-end ...',
-          ...result
-        },
-        trackers: {
-          tokenUsage: context.tokenTracker.getTotalUsage(),
-          actionState: context.actionTracker.getState()
-        }
-      });
+      if (result.action === 'answer') {
+        const answerResult = result as AnswerAction;
+        eventEmitter.emit(`progress-${requestId}`, {
+          type: 'answer',
+          data: {
+            answer: answerResult.answer,
+            think: answerResult.think,
+            references: answerResult.references,
+            reasoning: answerResult.accumulatedReasoning
+          },
+          trackers: {
+            tokenUsage: context.tokenTracker.getTotalUsage(),
+            actionState: context.actionTracker.getState()
+          }
+        });
+      }
       cleanup(requestId);
     } catch (error: any) {
       // Atualiza para error em caso de falha
@@ -916,30 +922,36 @@ app.get('/api/v1/queries', async (req: Request, res: Response) => {
           
           if (!stats.isDirectory()) return null;
           
-          // Lê o arquivo queries.json que contém os metadados
-          const queriesPath = path.join(queryPath, 'queries.json');
-          const queriesContent = await fs.readFile(queriesPath, 'utf-8').catch(() => '{}');
-          const metadata = JSON.parse(queriesContent);
-          
-          // Lista os prompts disponíveis para essa query
-          const promptFiles = (await fs.readdir(queryPath))
-            .filter(file => file.startsWith('prompt-'))
-            .sort((a, b) => {
-              const numA = parseInt(a.split('-')[1]);
-              const numB = parseInt(b.split('-')[1]);
-              return numA - numB;
-            });
-          
-          return {
-            id: queryId,
-            title: metadata.title || 'Consulta sem título',
-            timestamp: metadata.timestamp || new Date(parseInt(queryId)).toISOString(),
-            status: metadata.status || 'completed',
-            question: metadata.originalQuestion,
-            summary: metadata.summary,
-            promptCount: promptFiles.length
-          };
-          
+          // Tenta carregar a sessão primeiro
+          const sessionPath = path.join(queryPath, 'session.json');
+          try {
+            const sessionData = await fs.readFile(sessionPath, 'utf-8');
+            const session: QuerySession = JSON.parse(sessionData);
+            return {
+              id: queryId,
+              title: session.question,
+              timestamp: session.timestamp,
+              status: session.status,
+              question: session.question,
+              summary: session.summary,
+              metadata: session.metadata,
+              stepCount: session.steps.length
+            };
+          } catch {
+            // Se não encontrar a sessão, usa o formato antigo
+            const queriesPath = path.join(queryPath, 'queries.json');
+            const queriesContent = await fs.readFile(queriesPath, 'utf-8').catch(() => '{}');
+            const metadata = JSON.parse(queriesContent);
+            
+            return {
+              id: queryId,
+              title: metadata.title || 'Consulta sem título',
+              timestamp: metadata.timestamp || new Date(parseInt(queryId)).toISOString(),
+              status: metadata.status || 'completed',
+              question: metadata.originalQuestion,
+              summary: metadata.summary
+            };
+          }
         } catch (error) {
           console.error(`Erro ao processar query ${queryId}:`, error);
           return null;
@@ -949,7 +961,7 @@ app.get('/api/v1/queries', async (req: Request, res: Response) => {
     
     const validQueries = queries
       .filter(query => query !== null)
-      .sort((a, b) => parseInt(b!.id) - parseInt(a!.id));
+      .sort((a, b) => new Date(b!.timestamp).getTime() - new Date(a!.timestamp).getTime());
     
     res.json({
       total: validQueries.length,
@@ -1062,3 +1074,53 @@ server.listen(port, () => {
  * Exporta a aplicação.
  */
 export default app;
+
+// Rota para salvar uma sessão
+app.post('/api/v1/queries/:requestId', async (req: Request, res: Response) => {
+  try {
+    const { requestId } = req.params;
+    const session: QuerySession = req.body;
+    
+    // Cria o diretório da query se não existir
+    const queryDir = path.join(process.cwd(), 'queries', requestId);
+    await fs.mkdir(queryDir, { recursive: true });
+    
+    // Salva os dados da sessão
+    await fs.writeFile(
+      path.join(queryDir, 'session.json'),
+      JSON.stringify(session, null, 2)
+    );
+
+    // Salva os metadados da query (mantém compatibilidade com o código existente)
+    await saveQueryMetadata(requestId, {
+      title: session.question,
+      originalQuestion: session.question,
+      timestamp: session.timestamp,
+      status: session.status,
+      summary: session.summary,
+      promptCount: session.steps.length,
+      question: session.question
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erro ao salvar sessão:', error);
+    res.status(500).json({ error: 'Erro ao salvar sessão' });
+  }
+});
+
+// Rota para carregar uma sessão
+app.get('/api/v1/queries/:requestId/session', async (req: Request, res: Response) => {
+  try {
+    const { requestId } = req.params;
+    const sessionPath = path.join(process.cwd(), 'queries', requestId, 'session.json');
+    
+    const sessionData = await fs.readFile(sessionPath, 'utf-8');
+    const session: QuerySession = JSON.parse(sessionData);
+    
+    res.json(session);
+  } catch (error) {
+    console.error('Erro ao carregar sessão:', error);
+    res.status(404).json({ error: 'Sessão não encontrada' });
+  }
+});

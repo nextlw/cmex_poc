@@ -10,7 +10,7 @@ import { analyzeSteps } from "./tools/error-analyzer";
 import { SEARCH_PROVIDER, STEP_SLEEP, modelConfigs, LOCAL_MODEL_ENDPOINT, USE_LOCAL_MODEL } from "./config";
 import { TokenTracker } from "./utils/token-tracker";
 import { ActionTracker } from "./utils/action-tracker";
-import { StepAction, SchemaProperty, ResponseSchema, AnswerAction, VisitAction } from "./types";
+import { StepAction, SchemaProperty, ResponseSchema, AnswerAction, VisitAction, SearchAction, ReflectAction } from "./types";
 import { TrackerContext } from "./types";
 import { jinaSearch } from "./tools/jinaSearch";
 import { LocalModelClient } from "./tools/local-model-client";
@@ -245,7 +245,6 @@ function getPrompt(
 ): string {
     const sections: string[] = [];
 
-
     sections.push(`Current date: ${new Date().toUTCString()}
 
     You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
@@ -255,21 +254,20 @@ function getPrompt(
     </question>
     `);
 
-        // Adiciona a seção de contexto se existir
-        if (context?.length) {
-            sections.push(`
+    // Adiciona a seção de contexto se existir
+    if (context?.length) {
+        sections.push(`
     You have conducted the following actions:
     <context>
     ${context.join('\n')}
-
     </context>
     `);
-        }
+    }
 
-        // Adiciona a seção de conhecimento se existir
-        if (knowledge?.length) {
-            const knowledgeItems = knowledge
-                .map((k, i) => `
+    // Adiciona a seção de conhecimento se existir
+    if (knowledge?.length) {
+        const knowledgeItems = knowledge
+            .map((k, i) => `
     <knowledge-${i + 1}>
     <question>
     ${k.question}
@@ -284,22 +282,20 @@ function getPrompt(
     ` : ''}
     </knowledge-${i + 1}>
     `)
-                .join('\n\n');
+            .join('\n\n');
 
-            sections.push(`
+        sections.push(`
     You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
     <knowledge>
-
     ${knowledgeItems}
-
     </knowledge>
     `);
-        }
+    }
 
-        // Adiciona a seção de contexto de tentativas anteriores se existir
-        if (badContext?.length) {
-            const attempts = badContext
-                .map((c, i) => `
+    // Adiciona a seção de contexto de tentativas anteriores se existir
+    if (badContext?.length) {
+        const attempts = badContext
+            .map((c, i) => `
     <attempt-${i + 1}>
     - Question: ${c.question}
     - Answer: ${c.answer}
@@ -308,16 +304,14 @@ function getPrompt(
     - Actions Blame: ${c.blame}
     </attempt-${i + 1}>
     `)
-                .join('\n\n');
+            .join('\n\n');
 
-            const learnedStrategy = badContext.map(c => c.improvement).join('\n');
+        const learnedStrategy = badContext.map(c => c.improvement).join('\n');
 
-            sections.push(`
+        sections.push(`
     Your have tried the following actions but failed to find the answer to the question:
     <bad-attempts>    
-
     ${attempts}
-
     </bad-attempts>
 
     Based on the failed attempts, you have learned the following strategy:
@@ -325,17 +319,17 @@ function getPrompt(
     ${learnedStrategy}
     </learned-strategy>
     `);
-      }
+    }
 
-        // Construi a seção de ações
-        const actions: string[] = [];
+    // Construi a seção de ações
+    const actions: string[] = [];
 
-        if (allURLs && Object.keys(allURLs).length > 0 && allowRead) {
-            const urlList = Object.entries(allURLs)
-                .map(([url, desc]) => `  + "${url}": "${desc}"`)
-                .join('\n');
+    if (allURLs && Object.keys(allURLs).length > 0 && allowRead) {
+        const urlList = Object.entries(allURLs)
+            .map(([url, desc]) => `  + "${url}": "${desc}"`)
+            .join('\n');
 
-            actions.push(`
+        actions.push(`
     <action-visit>    
     - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
     <url-list>
@@ -343,43 +337,53 @@ function getPrompt(
     </url-list>
     - When you have enough search result in the context and want to deep dive into specific URLs
     - It allows you to access the full content behind any URLs
-
     </action-visit>
     `);
-        }
+    }
 
-        if (allowSearch) {
-            actions.push(`
+    if (allowSearch) {
+        actions.push(`
     <action-search>    
     - Query external sources using a public search engine
     - Focus on solving one specific aspect of the question
     - Only give keywords search query, not full sentences
     </action-search>
     `);
-        }
+    }
 
-        if (allowAnswer) {
-            actions.push(`
+    if (allowAnswer) {
+        actions.push(`
     <action-answer>
     - Provide final response only when 100% certain
     - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)${allowReflect ? '\n- If doubts remain, use <action-reflect> instead' : ''}
+    - Format your answer in markdown with the following sections:
+      - **Resposta Direta**: Uma resposta clara e concisa à pergunta.
+      - **Nota Detalhada**: Explicação adicional com contexto ou raciocínio.
+      - **Referências**: Liste todas as fontes relevantes em formato [Citação Exata](URL).
+    - Use todo o conhecimento acumulado para garantir uma resposta abrangente
+    - Inclua exemplos, dados numéricos e citações quando relevante
+    - Mantenha a formatação markdown consistente
     </action-answer>
     `);
-        }
+    }
 
-        if (beastMode) {
-            actions.push(`
+    if (beastMode) {
+        actions.push(`
     <action-answer>
     - Any answer is better than no answer
     - Partial answers are allowed, but make sure they are based on the context and knowledge you have gathered    
     - When uncertain, educated guess based on the context and knowledge is allowed and encouraged.
     - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+    - Format your answer in markdown with the following sections:
+      - **Resposta Direta**: Uma resposta clara e concisa à pergunta.
+      - **Nota Detalhada**: Explicação adicional com contexto ou raciocínio.
+      - **Referências**: Liste todas as fontes relevantes em formato [Citação Exata](URL).
     </action-answer>
     `);
-        }
+    }
 
-        if (allowReflect) {
-            actions.push(`
+    if (allowReflect) {
+        actions.push(`
     <action-reflect>    
     - Perform critical analysis through hypothetical scenarios or systematic breakdowns
     - Identify knowledge gaps and formulate essential clarifying questions
@@ -390,17 +394,17 @@ function getPrompt(
     - Non-compound/non-complex
     </action-reflect>
     `);
-        }
+    }
 
-        sections.push(`
+    sections.push(`
     Based on the current context, you must choose one of the following actions:
     <actions>
     ${actions.join('\n\n')}
     </actions>
     `);
 
-        // Adiciona o rodapé
-        sections.push(`Respond exclusively in valid JSON format matching exact JSON schema.
+    // Adiciona o rodapé
+    sections.push(`Respond exclusively in valid JSON format matching exact JSON schema.
 
     Critical Requirements:
     - Include ONLY ONE action type
@@ -937,6 +941,63 @@ export async function getResponse(
                     actionState: context.actionTracker.getState()
                 }
             });
+        }
+
+        // Após cada passo, acumule o raciocínio no diaryContext
+        if (thisStep.action !== 'answer' || !isAnswered) {
+            const reasoningStep = `
+### Passo ${totalStep}: ${thisStep.action.charAt(0).toUpperCase() + thisStep.action.slice(1)}
+- **Pensamento**: ${thisStep.think || 'Nenhum pensamento registrado'}
+- **Ação Realizada**: ${
+                thisStep.action === 'search' ? `Busca com query: "${(thisStep as SearchAction).searchQuery}"` :
+                thisStep.action === 'reflect' ? `Reflexão gerando perguntas: ${(thisStep as ReflectAction).questionsToAnswer?.join(', ') || 'Nenhuma pergunta'}` :
+                thisStep.action === 'visit' ? `Visita às URLs: ${(thisStep as VisitAction).URLTargets?.join(', ') || 'Nenhuma URL'}` :
+                'Nenhuma ação detalhada'
+            }
+${diaryContext.join('\n\n') || ''}`.trim();
+            
+            // Atualize o contexto acumulado
+            thisStep.accumulatedReasoning = (thisStep.accumulatedReasoning || '') + '\n\n' + reasoningStep;
+        }
+
+        // Quando a resposta final é gerada (action === 'answer' e isAnswered === true)
+        if (thisStep.action === 'answer' && isAnswered) {
+            const answerStep = thisStep as AnswerAction;
+            const finalPrompt = getPrompt(
+                question,
+                diaryContext,
+                allQuestions,
+                false, // Desativa reflexões para a resposta final
+                true,
+                false,
+                false,
+                badContext,
+                allKnowledge,
+                allURLs,
+                false
+            );
+
+            const model = activeModelClient.getGenerativeModel({
+                model: modelConfigs.agent.model,
+                generationConfig: {
+                    temperature: modelConfigs.agent.temperature,
+                    responseMimeType: "application/json",
+                    responseSchema: getSchema(false, false, true, false)
+                }
+            });
+
+            const result = await model.generateContent(finalPrompt);
+            const response = await result.response;
+            const rawResponseText = await response.text();
+            thisStep = captureLLMOutput(rawResponseText);
+
+            // Adicione o raciocínio acumulado à resposta final
+            thisStep.accumulatedReasoning = `
+## Processo de Raciocínio
+${thisStep.accumulatedReasoning || 'Nenhum raciocínio acumulado'}
+
+## Resposta Final
+${answerStep.answer}`;
         }
 
         // armazena o contexto

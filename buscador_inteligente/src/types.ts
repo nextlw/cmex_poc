@@ -24,6 +24,7 @@ export type ResponseSchema = {
 type BaseAction = {
   action: "search" | "answer" | "reflect" | "visit" | "coding";
   think: string;
+  accumulatedReasoning?: string;
 };
 
 export type SearchAction = BaseAction & {
