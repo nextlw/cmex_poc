@@ -357,7 +357,7 @@ function getPrompt(
     - Provide final response only when 100% certain
     - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)${allowReflect ? '\n- If doubts remain, use <action-reflect> instead' : ''}
     - Format your answer in markdown with the following sections:
-      - **Resposta Direta**: Uma resposta clara e concisa à pergunta.
+      - **Resposta Direta**: Uma resposta clara e concisa à pergunta ou problema, levando em consideração o contexto e o conhecimento acumulado, podendo também ser uma negativa e explicar o porque vocie acha isso e onde procurou mas nnao encontrou.
       - **Nota Detalhada**: Explicação adicional com contexto ou raciocínio.
       - **Referências**: Liste todas as fontes relevantes em formato [Citação Exata](URL).
     - Use todo o conhecimento acumulado para garantir uma resposta abrangente

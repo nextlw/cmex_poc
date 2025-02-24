@@ -63,3 +63,39 @@ export interface Reference {
       };
     };
   }
+
+export type StepType = string;
+
+export type MessageType = "query" | "step" | "error" | "response" | "connected" | "reflect" | "search" | "log" | "visit" | "answer";
+
+export interface ActionItem {
+  type: StepType;
+  title: string;
+  completed: boolean;
+  active: boolean;
+  status: 'waiting' | 'processing' | 'completed';
+  urls?: string[];
+}
+
+export interface ActionIconProps {
+  type: StepType;
+}
+
+export interface ActionStatusProps {
+  status: ActionItem['status'];
+}
+
+export interface ActionListProps {
+  actions: ActionItem[];
+  onActionClick: (index: number) => void;
+  startTime?: Date;
+  urlCount?: number;
+  query?: string;
+  activeActionIndex: number;
+  setActiveActionIndex: (index: number) => void;
+}
+
+export interface ProcessingContentProps {
+  step: StepType;
+  query?: string;
+}

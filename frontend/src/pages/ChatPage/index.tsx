@@ -10,154 +10,58 @@ import React, {
 import InputAi from "../../components/InputAi";
 import "./styles.css";
 import { PiListStarFill } from "react-icons/pi";
-// import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import ReactMarkdown from 'react-markdown';
 import QueryHistory from "../../components/QueryHistory";
 import {
-  QueryHistoryItem,
-  Message,
   AgentState,
-  Reference,
   QuerySession,
-  QueryStep,
+  QueryHistoryItem,
 } from "../../components/QueryHistory/types";
-import { FiClock, FiDatabase, FiCpu, FiSearch, FiBookOpen, FiActivity, FiCompass, FiCheckCircle } from 'react-icons/fi';
-import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import {
+  FiClock,
+  FiDatabase,
+  FiCpu,
+  FiSearch,
+  FiBookOpen,
+  FiActivity,
+  FiCompass,
+  FiCheckCircle,
+} from "react-icons/fi";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import ChatMessage from "../../components/ChatMessage";
+import { ChatMessageProps } from "../../components/ChatMessage/types";
+import {
+  ActionItem,
+  ActionIconProps,
+  ActionStatusProps,
+  ActionListProps,
+  ProcessingContentProps,
+} from "./types";
 
-type MessageType = "query" | "step" | "error" | "response" | "connected" | "reflect" | "search" | "log" | "visit" | "answer";
-
-const ChatMessage: React.FC<Message> = ({ type, content, isTyping, data, step }) => {
-  const [displayedContent, setDisplayedContent] = useState<React.ReactNode>("");
-  const reasoningSectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (reasoningSectionRef.current) {
-      reasoningSectionRef.current.scrollTop = reasoningSectionRef.current.scrollHeight;
-    }
-  }, [displayedContent]);
-
-  useEffect(() => {
-    if (!isTyping) {
-      setDisplayedContent(
-        type === "response" || type === "answer" ? (
-          <>
-            {data?.reasoning && (
-              <div className="reasoning-section" ref={reasoningSectionRef}>
-                <ReactMarkdown>{data.reasoning}</ReactMarkdown>
-                {data.urls && data.urls.length > 0 && (
-                  <div className="url-list">
-                    <h4>URLs sendo processadas:</h4>
-                    {data.urls.map((url: string, urlIndex: number) => (
-                      <div key={urlIndex} className="url-item">
-                        <div className="spinner" />
-                        <span>{new URL(url).hostname}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-            <div className={type === "answer" ? "final-answer" : ""}>
-              <ReactMarkdown>{content}</ReactMarkdown>
-            </div>
-          </>
-        ) : (
-          content
-        )
-      );
-      return;
-    }
-
-    let index = 0;
-    const timer = setInterval(() => {
-      if (index <= content.length) {
-        setDisplayedContent(
-          type === "response" || type === "answer" ? (
-            <>
-              {data?.reasoning && (
-                <div className="reasoning-section" ref={reasoningSectionRef}>
-                  <ReactMarkdown>{data.reasoning.slice(0, index)}</ReactMarkdown>
-                  {data.urls && data.urls.length > 0 && (
-                    <div className="url-list">
-                      <h4>URLs sendo processadas:</h4>
-                      {data.urls.map((url: string, urlIndex: number) => (
-                        <div key={urlIndex} className="url-item">
-                          <div className="spinner" />
-                          <span>{new URL(url).hostname}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className={type === "answer" ? "final-answer" : ""}>
-                <ReactMarkdown>{content.slice(0, index)}</ReactMarkdown>
-              </div>
-            </>
-          ) : (
-            content.slice(0, index)
-          )
-        );
-        index += 3;
-      } else {
-        clearInterval(timer);
-      }
-    }, 10);
-
-    return () => clearInterval(timer);
-  }, [content, isTyping, type, data]);
-
-  const messageClass = `chat-message ${type} ${isTyping ? "typing" : ""} ${type === "answer" ? "final-answer" : ""}`;
-
-  return (
-    <div className={messageClass} id={`step-${step}`}>
-      {type === "query" && <div className="query-label">Pergunta</div>}
-      {type === "step" && <div className="step-label">Pensando</div>}
-      {type === "response" && <div className="response-label">Resposta</div>}
-      {type === "answer" && <div className="response-label">Resposta Final</div>}
-      {type === "error" && <div className="error-label">Erro</div>}
-      {type === "reflect" && <div className="reflect-label">Reflexão</div>}
-      {type === "connected" && <div className="step-label">Conectado</div>}
-      {type === "log" && <div className="log-label">Log do Servidor</div>}
-      <div className="message-content">{displayedContent}</div>
-    </div>
-  );
-};
-
-interface ActionItem {
-  type: string;
-  title: string;
-  completed: boolean;
-  active: boolean;
-  status: 'waiting' | 'processing' | 'completed';
-  urls?: string[];
-}
-
-const ActionIcon: React.FC<{ type: string }> = ({ type }) => {
+const ActionIcon: React.FC<ActionIconProps> = ({ type }) => {
   switch (type) {
-    case 'understand':
+    case "understand":
       return <FiActivity />;
-    case 'explore':
+    case "explore":
       return <FiCompass />;
-    case 'think':
+    case "think":
       return <FiActivity />;
-    case 'search':
+    case "search":
       return <FiSearch />;
-    case 'read':
+    case "read":
       return <FiBookOpen />;
-    case 'answer':
+    case "answer":
       return <FiCheckCircle />;
     default:
       return <FiSearch />;
   }
 };
 
-const ActionStatus: React.FC<{ status: ActionItem['status'] }> = ({ status }) => {
-  if (status === 'completed') {
+const ActionStatus: React.FC<ActionStatusProps> = ({ status }) => {
+  if (status === "completed") {
     return <span className="action-status completed">✓</span>;
   }
-  if (status === 'processing') {
+  if (status === "processing") {
     return (
       <span className="action-status processing">
         <div className="spinner" />
@@ -175,7 +79,10 @@ const ThinkingAnimation: React.FC = () => (
   </div>
 );
 
-const ProcessingContent: React.FC<{ step: string; query?: string }> = ({ step, query }) => {
+const ProcessingContent: React.FC<ProcessingContentProps> = ({
+  step,
+  query,
+}) => {
   const [calculations] = useState(() => {
     const calcs = [
       "Analisando tokens de entrada...",
@@ -187,7 +94,7 @@ const ProcessingContent: React.FC<{ step: string; query?: string }> = ({ step, q
     return calcs.sort(() => Math.random() - 0.5).slice(0, 3);
   });
 
-  if (step === 'understand') {
+  if (step === "understand") {
     return (
       <div className="calculation-container">
         <p>Entendendo o que o usuário quis dizer com:</p>
@@ -197,7 +104,7 @@ const ProcessingContent: React.FC<{ step: string; query?: string }> = ({ step, q
     );
   }
 
-  if (step === 'explore') {
+  if (step === "explore") {
     return (
       <div className="calculation-container">
         {calculations.map((calc, index) => (
@@ -213,38 +120,76 @@ const ProcessingContent: React.FC<{ step: string; query?: string }> = ({ step, q
   return null;
 };
 
-const DEFAULT_STEPS = [
-  { type: 'understand', title: 'Entendendo...', status: 'waiting', completed: false, active: false },
-  { type: 'explore', title: 'Explorando...', status: 'waiting', completed: false, active: false },
-  { type: 'think', title: 'Pensando...', status: 'waiting', completed: false, active: false },
-  { type: 'search', title: 'Pesquisando...', status: 'waiting', completed: false, active: false },
-  { type: 'read', title: 'Lendo...', status: 'waiting', completed: false, active: false }
-] as ActionItem[];
+const DEFAULT_STEPS: ActionItem[] = [
+  {
+    type: "understand",
+    title: "Entendendo...",
+    status: "waiting",
+    completed: false,
+    active: false,
+  },
+  {
+    type: "explore",
+    title: "Explorando...",
+    status: "waiting",
+    completed: false,
+    active: false,
+  },
+  {
+    type: "think",
+    title: "Pensando...",
+    status: "waiting",
+    completed: false,
+    active: false,
+  },
+  {
+    type: "search",
+    title: "Pesquisando...",
+    status: "waiting",
+    completed: false,
+    active: false,
+  },
+  {
+    type: "read",
+    title: "Lendo...",
+    status: "waiting",
+    completed: false,
+    active: false,
+  },
+];
 
-const ActionsList: React.FC<{
-  actions: ActionItem[];
-  onActionClick: (index: number) => void;
-  startTime?: Date;
-  urlCount?: number;
-  query?: string;
-}> = ({ actions, onActionClick, startTime, urlCount = 0, query }) => {
-  const contentAreaRef = useRef<HTMLDivElement>(null);
-  const elapsedTime = startTime ? formatDistanceToNow(startTime, { locale: ptBR }) : '0';
-  const hasMultipleSteps = actions.filter(a => a.status !== 'waiting').length > 1;
-  const mainSteps = actions.filter(action => 
-    ['understand', 'explore', 'think', 'search', 'read', 'answer'].includes(action.type)
+const ActionsList: React.FC<ActionListProps> = ({
+  actions,
+  onActionClick,
+  startTime,
+  urlCount = 0,
+  activeActionIndex,
+  setActiveActionIndex,
+}) => {
+  const elapsedTime = startTime
+    ? formatDistanceToNow(startTime, { locale: ptBR })
+    : "0";
+  const hasMultipleSteps =
+    actions.filter((a) => a.status !== "waiting").length > 1;
+  const mainSteps = actions.filter((action) =>
+    ["understand", "explore", "think", "search", "read", "answer"].includes(
+      action.type
+    )
   );
 
   const handleActionClick = (index: number) => {
     onActionClick(index);
+    setActiveActionIndex(index);
     const stepElement = document.getElementById(`step-${index + 1}`);
     if (stepElement) {
-      stepElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      stepElement.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
   return (
-    <div className={`actions-list ${hasMultipleSteps ? 'has-multiple-steps' : ''}`}>
+    <div
+      className={`actions-list ${hasMultipleSteps ? "has-multiple-steps" : ""}`}
+    >
       <div className="session-header">
         <div className="session-title">
           <FiSearch />
@@ -253,7 +198,9 @@ const ActionsList: React.FC<{
         <div className="session-stats">
           <div className="stat-item">
             <FiClock />
-            <span>{elapsedTime.replace(' segundos', '').replace(' minutos', 'm')}</span>
+            <span>
+              {elapsedTime.replace(" segundos", "").replace(" minutos", "m")}
+            </span>
             <span className="stat-item-label">s</span>
           </div>
           <div className="stat-item">
@@ -267,11 +214,13 @@ const ActionsList: React.FC<{
           </div>
         </div>
       </div>
-      
+
       {mainSteps.map((action, index) => (
         <div
           key={index}
-          className={`action-item ${action.completed ? 'completed' : ''} ${action.active ? 'active' : ''} ${action.status !== 'waiting' ? 'show' : ''}`}
+          className={`action-item ${action.completed ? "completed" : ""} ${
+            index === activeActionIndex ? "active" : ""
+          } ${action.status !== "waiting" ? "show" : ""}`}
           onClick={() => handleActionClick(index)}
         >
           <div className="action-icon">
@@ -279,16 +228,19 @@ const ActionsList: React.FC<{
           </div>
           <div className="action-text">
             {action.title}
-            {action.type === 'search' && action.urls && action.urls.length > 0 && (
-              <div className="url-list">
-                {action.urls.map((url, urlIndex) => (
-                  <div key={urlIndex} className="url-item">
-                    <div className="spinner" />
-                    <span>{new URL(url).hostname}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+            {action.type === "search" &&
+              action.urls &&
+              action.urls.length > 0 && (
+                <div className="url-list">
+                  <h4>URLs sendo processadas:</h4>
+                  {action.urls.map((url: string, urlIndex: number) => (
+                    <div key={urlIndex} className="url-item">
+                      <div className="spinner" />
+                      <span>{new URL(url).hostname}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
           </div>
           <ActionStatus status={action.status} />
         </div>
@@ -299,7 +251,9 @@ const ActionsList: React.FC<{
 
 const ChatPage: React.FC = () => {
   const eventSourceRef = useRef<EventSource | null>(null);
-  const [selectedModel, setSelectedModel] = useState<string>("qwen2.5-7b-instruct-1m");
+  const [selectedModel, setSelectedModel] = useState<string>(
+    "qwen2.5-7b-instruct-1m"
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [agentState, setAgentState] = useState<AgentState>({
@@ -312,17 +266,7 @@ const ChatPage: React.FC = () => {
   const [urlCount, setUrlCount] = useState(0);
   const [defaultSteps, setDefaultSteps] = useState<ActionItem[]>(DEFAULT_STEPS);
   const [processingStep, setProcessingStep] = useState<string | null>(null);
-  const [currentSession, setCurrentSession] = useState<QuerySession | null>(null);
-
-  const actionTitles: Record<string, string> = {
-    understand: 'Entendendo...',
-    explore: 'Explorando...',
-    think: 'Pensando...',
-    search: 'Pesquisando...',
-    read: 'Lendo...',
-    visit: 'Lendo...',
-    answer: 'Respondendo...'
-  };
+  const [currentSession] = useState<QuerySession | null>(null);
 
   // Sobrescrever console.log para capturar eventos
   const originalConsoleLog = console.log;
@@ -371,6 +315,7 @@ const ChatPage: React.FC = () => {
     setShowWelcome(true);
     setActions([]);
     setActiveActionIndex(0);
+    setDefaultSteps(DEFAULT_STEPS);
   };
 
   const sendQuestion = async (question: string) => {
@@ -398,7 +343,9 @@ const ChatPage: React.FC = () => {
       const data = JSON.parse(text);
 
       if (!response.ok) {
-        throw new Error(`Erro ao enviar pergunta: ${data.error || response.statusText}`);
+        throw new Error(
+          `Erro ao enviar pergunta: ${data.error || response.statusText}`
+        );
       }
 
       if (!data.requestId) {
@@ -425,366 +372,158 @@ const ChatPage: React.FC = () => {
   };
 
   const startEventStream = async (requestId: string) => {
-    const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+    const API_URL =
+      import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
 
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
     }
 
-    const eventSource = new EventSource(`${API_URL}/api/v1/stream/${requestId}`);
+    const eventSource = new EventSource(
+      `${API_URL}/api/v1/stream/${requestId}`
+    );
     eventSourceRef.current = eventSource;
 
     eventSource.onopen = () => {
       console.log("Conexão SSE estabelecida");
+      setAgentState((prev) => ({
+        ...prev,
+        messages: [
+          ...prev.messages,
+          {
+            type: "connected",
+            content: "🔌 Conexão estabelecida com o servidor",
+            isTyping: false,
+            step: prev.messages.length + 1,
+          },
+        ],
+      }));
     };
 
     eventSource.onmessage = async (event) => {
-      console.log("Evento SSE recebido:", event.data);
+      console.log("Evento recebido no cliente:", event.data);
 
-      if (event.data) {
-        try {
-          const data = JSON.parse(event.data);
-          console.log("Dados do evento processados:", data);
+      try {
+        const data = JSON.parse(event.data);
+        console.log("Dados parseados:", data);
 
-          setAgentState((prev) => {
-            const newState = { ...prev };
-            let messages = [...prev.messages];
+        setAgentState((prev) => {
+          const newState = { ...prev };
+          let messages = [...prev.messages];
 
-            switch (data.type) {
-              case "connected":
-                messages.push({
-                  type: "connected",
-                  content: "🔌 Conectado ao servidor",
-                  isTyping: false,
-                });
-                break;
+          // Função auxiliar para adicionar mensagem
+          const addMessage = (messageData: Partial<ChatMessageProps>) => {
+            const newMessage: ChatMessageProps = {
+              type: messageData.type || "log",
+              content: messageData.content || "",
+              isTyping: messageData.isTyping || false,
+              data: messageData.data,
+              step: prev.messages.length + 1,
+            };
+            messages.push(newMessage);
+          };
 
-              case "definitive":
-                if (data.data?.answer) {
-                  messages.push({
-                    type: "response",
-                    content: `💡 Resposta definitiva: ${data.data.answer}`,
-                    isTyping: false,
-                  });
-                }
-                break;
-
-              case "progress":
-                if (data.trackers?.actionState) {
-                  const { action, think, searchQuery, questionsToAnswer, accumulatedReasoning, urlsToVisit } = data.trackers.actionState;
-                  
-                  // Atualiza os passos padrão baseado na ação atual
-                  if (action === 'search') {
-                    updateDefaultSteps('search', searchQuery);
-                  } else if (action === 'visit' || action === 'read') {
-                    updateDefaultSteps('read');
-                  } else if (action === 'reflect' || action === 'think') {
-                    updateDefaultSteps('think');
-                  }
-
-                  // Atualiza a lista de ações com título simplificado
-                  const actionTitle = actionTitles[action] || 'Processando...';
-
-                  setActions(prev => {
-                    const newAction: ActionItem = {
-                      type: action,
-                      title: actionTitle,
-                      completed: false,
-                      active: true,
-                      status: 'processing' as const,
-                      urls: action === 'visit' ? urlsToVisit : undefined
-                    };
-
-                    const updatedActions = prev.map(a => ({
-                      ...a,
-                      active: false,
-                      completed: true,
-                      status: 'completed' as const
-                    }));
-
-                    return [...updatedActions, newAction];
-                  });
-                  setActiveActionIndex(prev => prev + 1);
-
-                  setAgentState((prev) => {
-                    const lastMessage = prev.messages[prev.messages.length - 1];
-                    const currentReasoning = lastMessage?.data?.reasoning || '';
-                    
-                    // Se temos accumulatedReasoning, usamos ele diretamente
-                    if (accumulatedReasoning) {
-                      if (lastMessage && lastMessage.type === "response") {
-                        return {
-                          ...prev,
-                          messages: [
-                            ...prev.messages.slice(0, -1),
-                            {
-                              ...lastMessage,
-                              data: {
-                                ...lastMessage.data,
-                                reasoning: accumulatedReasoning
-                              },
-                              isTyping: true
-                            }
-                          ]
-                        };
-                      }
-
-                      return {
-                        ...prev,
-                        messages: [
-                          ...prev.messages,
-                          {
-                            type: "response" as const,
-                            content: "",
-                            isTyping: true,
-                            data: {
-                              reasoning: accumulatedReasoning
-                            }
-                          }
-                        ]
-                      };
-                    }
-
-                    // Caso contrário, construímos o novo passo com título completo
-                    let newStep = '';
-                    if (think) {
-                      newStep += `\n### ${actionTitle.replace('...', '')}: ${think.split('\n')[0]}\n`;
-                      newStep += `**Pensamento**: ${think}\n`;
-                    }
-
-                    if (action === "search" && searchQuery) {
-                      newStep += `\n🔍 **Busca**: "${searchQuery}"\n`;
-                    }
-
-                    if (action === "reflect" && questionsToAnswer?.length) {
-                      newStep += `\n🤔 **Questões para investigar**:\n`;
-                      questionsToAnswer.forEach((q: string) => {
-                        newStep += `- ${q}\n`;
-                      });
-                    }
-
-                    if (action === "visit" && urlsToVisit?.length) {
-                      newStep += `\n🌐 **URLs para visitar**:\n`;
-                      urlsToVisit.forEach((url: string) => {
-                        newStep += `- [${url}](${url})\n`;
-                      });
-                    }
-
-                    // Se já existe uma mensagem de resposta, atualiza o raciocínio
-                    if (lastMessage && lastMessage.type === "response") {
-                      return {
-                        ...prev,
-                        messages: [
-                          ...prev.messages.slice(0, -1),
-                          {
-                            ...lastMessage,
-                            data: {
-                              ...lastMessage.data,
-                              reasoning: currentReasoning + newStep
-                            },
-                            isTyping: true
-                          }
-                        ]
-                      };
-                    }
-
-                    // Se não existe, cria uma nova mensagem
-                    return {
-                      ...prev,
-                      messages: [
-                        ...prev.messages,
-                        {
-                          type: "response" as const,
-                          content: "",
-                          isTyping: true,
-                          data: {
-                            reasoning: newStep
-                          }
-                        }
-                      ]
-                    };
-                  });
-                }
-                break;
-
-              case "answer":
-                if (data.data) {
-                  // Marca todas as ações como completas
-                  setActions(prev => prev.map(a => ({
-                    ...a,
-                    active: false,
-                    completed: true,
-                    status: 'completed' as const
-                  })));
-
-                  // Adiciona a ação final
-                  setActions(prev => [...prev, {
-                    type: 'answer',
-                    title: 'Resposta Final',
-                    completed: true,
-                    active: true,
-                    status: 'completed' as const
-                  }]);
-
-                  setAgentState((prev) => {
-                    const lastMessage = prev.messages[prev.messages.length - 1];
-                    const currentReasoning = lastMessage?.data?.reasoning || '';
-                    
-                    return {
-                      ...prev,
-                      messages: [
-                        ...prev.messages,
-                        {
-                          type: "response" as const,
-                          content: data.data.answer,
-                          isTyping: false,
-                          data: {
-                            reasoning: currentReasoning,
-                            references: data.data.references,
-                            think: data.data.think
-                          }
-                        }
-                      ]
-                    };
-                  });
-                  setIsLoading(false);
-                }
-                break;
-
-              case "error":
-                console.error("Erro recebido do servidor:", data.data);
-                messages.push({
-                  type: "error",
-                  content: `❌ Erro: ${data.data || "Erro desconhecido"}`,
-                  isTyping: false,
-                });
-                setIsLoading(false);
-                break;
-
-              case "status":
-                if (data.data?.status === "error") {
-                  messages.push({
-                    type: "error",
-                    content: `❌ Status: ${data.data.status}`,
-                    isTyping: false,
-                  });
-                }
-                break;
-
-              case "visit":
-                if (Array.isArray(data.data?.urlList)) {
-                  setUrlCount(prev => prev + data.data.urlList.length);
-                  setAgentState((prev) => {
-                    const lastMessage = prev.messages[prev.messages.length - 1];
-                    const currentReasoning = lastMessage?.data?.reasoning || '';
-                    
-                    // Se temos accumulatedReasoning no tracker, usamos ele
-                    if (data.trackers?.actionState?.accumulatedReasoning) {
-                      if (lastMessage && lastMessage.type === "response") {
-                        return {
-                          ...prev,
-                          messages: [
-                            ...prev.messages.slice(0, -1),
-                            {
-                              ...lastMessage,
-                              data: {
-                                ...lastMessage.data,
-                                reasoning: data.trackers.actionState.accumulatedReasoning
-                              },
-                              isTyping: true
-                            }
-                          ]
-                        };
-                      }
-
-                      return {
-                        ...prev,
-                        messages: [
-                          ...prev.messages,
-                          {
-                            type: "response" as const,
-                            content: "",
-                            isTyping: true,
-                            data: {
-                              reasoning: data.trackers.actionState.accumulatedReasoning
-                            }
-                          }
-                        ]
-                      };
-                    }
-
-                    // Caso contrário, construímos o novo passo
-                    const newStep = `\n### Passo ${prev.messages.length + 1}\n` +
-                      `**Ação**: Visitar URLs\n` +
-                      `**URLs selecionadas**:\n${data.data.urlList.map((url: string) => `- [${url}](${url})`).join('\n')}\n`;
-
-                    if (lastMessage && lastMessage.type === "response") {
-                      return {
-                        ...prev,
-                        messages: [
-                          ...prev.messages.slice(0, -1),
-                          {
-                            ...lastMessage,
-                            data: {
-                              ...lastMessage.data,
-                              reasoning: currentReasoning + newStep
-                            },
-                            isTyping: true
-                          }
-                        ]
-                      };
-                    }
-
-                    return {
-                      ...prev,
-                      messages: [
-                        ...prev.messages,
-                        {
-                          type: "response" as const,
-                          content: "",
-                          isTyping: true,
-                          data: {
-                            reasoning: newStep
-                          }
-                        }
-                      ]
-                    };
-                  });
-                }
-                break;
-
-              default:
-                console.log("Tipo de evento não tratado:", data.type);
-                break;
-            }
-
-            console.log("Novo estado de mensagens:", messages);
-            newState.messages = messages;
-            return newState;
-          });
-
-          if (data.type === "answer" || data.type === "error") {
-            console.log("Fechando conexão após receber resposta/erro");
-            eventSource.close();
-            eventSourceRef.current = null;
-          }
-        } catch (error) {
-          console.error("Erro ao processar evento:", error);
-          setAgentState((prev) => ({
-            ...prev,
-            messages: [
-              ...prev.messages,
-              {
-                type: "error",
-                content: `❌ Erro ao processar evento: ${
-                  error instanceof Error ? error.message : "Erro desconhecido"
-                }`,
+          switch (data.type) {
+            case "log":
+              addMessage({
+                type: "log",
+                content:
+                  typeof data.data === "string"
+                    ? data.data
+                    : JSON.stringify(data.data, null, 2),
                 isTyping: false,
-              },
-            ],
-          }));
+              });
+              break;
+
+            case "progress":
+              if (data.trackers?.actionState) {
+                const {
+                  think,
+                  searchQuery,
+                  questionsToAnswer,
+                  accumulatedReasoning,
+                  urlsToVisit,
+                } = data.trackers.actionState;
+
+                let content = "";
+                if (think) content += `💭 ${think}\n`;
+                if (searchQuery) content += `🔍 Buscando: "${searchQuery}"\n`;
+                if (questionsToAnswer?.length) {
+                  content += "❓ Questões para investigar:\n";
+                  questionsToAnswer.forEach((q: string) => {
+                    content += `- ${q}\n`;
+                  });
+                }
+
+                addMessage({
+                  type: "step",
+                  content,
+                  isTyping: true,
+                  data: {
+                    reasoning: accumulatedReasoning,
+                    urls: urlsToVisit,
+                  },
+                });
+              }
+              break;
+
+            case "answer":
+              if (data.data) {
+                addMessage({
+                  type: "answer",
+                  content: data.data.answer,
+                  isTyping: false,
+                  data: {
+                    reasoning: data.data.think,
+                    references: data.data.references,
+                  },
+                });
+              }
+              break;
+
+            case "error":
+              addMessage({
+                type: "error",
+                content: `❌ ${data.data || "Erro desconhecido"}`,
+                isTyping: false,
+              });
+              break;
+
+            default:
+              // Logs gerais e outros tipos de eventos
+              addMessage({
+                type: "log",
+                content: JSON.stringify(data, null, 2),
+                isTyping: false,
+              });
+          }
+
+          newState.messages = messages;
+          return newState;
+        });
+
+        if (data.type === "answer" || data.type === "error") {
+          console.log("Fechando conexão após receber resposta/erro");
+          eventSource.close();
+          eventSourceRef.current = null;
           setIsLoading(false);
         }
+      } catch (error) {
+        console.error("Erro ao processar evento:", error);
+        setAgentState((prev) => ({
+          ...prev,
+          messages: [
+            ...prev.messages,
+            {
+              type: "error",
+              content: `❌ Erro ao processar evento: ${
+                error instanceof Error ? error.message : "Erro desconhecido"
+              }`,
+              isTyping: false,
+              step: prev.messages.length + 1,
+            },
+          ],
+        }));
       }
     };
 
@@ -803,6 +542,7 @@ const ChatPage: React.FC = () => {
             type: "error",
             content: "❌ Erro na conexão com o servidor",
             isTyping: false,
+            step: prev.messages.length + 1,
           },
         ],
       }));
@@ -849,31 +589,35 @@ const ChatPage: React.FC = () => {
   };
 
   // Função para atualizar o estado dos passos padrão
-  const updateDefaultSteps = (currentAction: string, query?: string) => {
-    setDefaultSteps(prev => {
+  const updateDefaultSteps = (query?: string) => {
+    setDefaultSteps((prev) => {
       let updated = false;
-      return prev.map(step => {
+      return prev.map((step) => {
         if (!updated) {
-          if (step.status === 'waiting') {
+          if (step.status === "waiting") {
             updated = true;
             let title = step.title;
-            if (step.type === 'understand' && query) {
-              title = `Entendendo "${query.slice(0, 30)}${query.length > 30 ? '...' : ''}"`;
-            } else if (step.type === 'search' && query) {
-              title = `Pesquisando "${query.slice(0, 30)}${query.length > 30 ? '...' : ''}"`;
+            if (step.type === "understand" && query) {
+              title = `Entendendo "${query.slice(0, 30)}${
+                query.length > 30 ? "..." : ""
+              }"`;
+            } else if (step.type === "search" && query) {
+              title = `Pesquisando "${query.slice(0, 30)}${
+                query.length > 30 ? "..." : ""
+              }"`;
             }
             return {
               ...step,
-              status: 'processing' as const,
+              status: "processing" as const,
               active: true,
-              title
+              title,
             };
           }
           return {
             ...step,
-            status: 'completed' as const,
+            status: "completed" as const,
             completed: true,
-            active: false
+            active: false,
           };
         }
         return step;
@@ -883,14 +627,14 @@ const ChatPage: React.FC = () => {
 
   // Função para iniciar a sequência inicial
   const startInitialSequence = (query: string) => {
-    const steps = ['understand', 'explore', 'think', 'search'];
+    const steps = ["understand", "explore", "think", "search"];
     let currentIndex = 0;
 
     const sequenceInterval = setInterval(() => {
       if (currentIndex < steps.length) {
         const step = steps[currentIndex];
         setProcessingStep(step);
-        updateDefaultSteps(step, query);
+        updateDefaultSteps(query);
         currentIndex++;
       } else {
         clearInterval(sequenceInterval);
@@ -906,78 +650,81 @@ const ChatPage: React.FC = () => {
       id: requestId,
       question: inputValue,
       timestamp: new Date().toISOString(),
-      status: 'in_progress',
+      status: "in_progress",
       steps: agentState.messages.map((message, index) => ({
         id: index + 1,
         type: message.type,
         content: message.content,
         timestamp: new Date().toISOString(),
         data: message.data,
-        action: actions[index] || defaultSteps[index]
+        action: actions[index] || defaultSteps[index],
       })),
       metadata: {
         model: selectedModel,
         totalTokens: 0, // Será atualizado com o valor real
-        elapsedTime: startTime ? formatDistanceToNow(startTime, { locale: ptBR }) : '0',
-        urlCount
-      }
+        elapsedTime: startTime
+          ? formatDistanceToNow(startTime, { locale: ptBR })
+          : "0",
+        urlCount,
+      },
     };
 
     try {
-      const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+      const API_URL =
+        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
       await fetch(`${API_URL}/api/v1/queries/${requestId}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(session)
+        body: JSON.stringify(session),
       });
     } catch (error) {
-      console.error('Erro ao salvar sessão:', error);
+      console.error("Erro ao salvar sessão:", error);
     }
   };
 
-  // Função para carregar uma sessão
-  const loadSession = async (requestId: string) => {
-    try {
-      const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
-      const response = await fetch(`${API_URL}/api/v1/queries/${requestId}`);
-      if (!response.ok) throw new Error('Sessão não encontrada');
-      
-      const session: QuerySession = await response.json();
-      setCurrentSession(session);
-      
-      // Restaura o estado da sessão
-      setAgentState(prev => ({
-        ...prev,
-        messages: session.steps.map(step => ({
-          type: step.type,
-          content: step.content,
-          isTyping: false,
-          data: step.data,
-          step: step.id
-        }))
-      }));
+  // // Função para carregar uma sessão
+  // const loadSession = async (requestId: string) => {
+  //   try {
+  //     const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+  //     const response = await fetch(`${API_URL}/api/v1/queries/${requestId}`);
+  //     if (!response.ok) throw new Error('Sessão não encontrada');
 
-      // Restaura as ações
-      const sessionActions = session.steps
-        .filter(step => step.action)
-        .map(step => step.action!);
-      setActions(sessionActions);
+  //     const session: QuerySession = await response.json();
+  //     setCurrentSession(session);
 
-      // Restaura os metadados
-      if (session.metadata) {
-        setUrlCount(session.metadata.urlCount || 0);
-        if (session.metadata.elapsedTime) {
-          const now = new Date();
-          const elapsed = new Date(now.getTime() - parseInt(session.metadata.elapsedTime));
-          setStartTime(elapsed);
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao carregar sessão:', error);
-    }
-  };
+  //     // Restaura o estado da sessão
+  //     setAgentState(prev => ({
+  //       ...prev,
+  //       messages: session.steps.map(step => ({
+  //         type: step.type,
+  //         content: step.content,
+  //         isTyping: false,
+  //         data: step.data,
+  //         step: step.id
+  //       }))
+  //     }));
+
+  //     // Restaura as ações
+  //     const sessionActions = session.steps
+  //       .filter(step => step.action)
+  //       .map(step => step.action!);
+  //     setActions(sessionActions);
+
+  //     // Restaura os metadados
+  //     if (session.metadata) {
+  //       setUrlCount(session.metadata.urlCount || 0);
+  //       if (session.metadata.elapsedTime) {
+  //         const now = new Date();
+  //         const elapsed = new Date(now.getTime() - parseInt(session.metadata.elapsedTime));
+  //         setStartTime(elapsed);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao carregar sessão:', error);
+  //   }
+  // };
 
   // Atualiza o handleSend para salvar a sessão
   const handleSend = async () => {
@@ -988,7 +735,7 @@ const ChatPage: React.FC = () => {
     setUrlCount(0);
     setDefaultSteps(DEFAULT_STEPS);
     setProcessingStep(null);
-    
+
     startInitialSequence(inputValue);
 
     setAgentState((prev) => ({
@@ -1000,7 +747,7 @@ const ChatPage: React.FC = () => {
           type: "query",
           content: inputValue,
           isTyping: false,
-          step: prev.messages.length + 1
+          step: prev.messages.length + 1,
         },
       ],
     }));
@@ -1031,7 +778,7 @@ const ChatPage: React.FC = () => {
       if (step) {
         const stepElement = document.getElementById(`step-${step.id}`);
         if (stepElement) {
-          stepElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          stepElement.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }
     }
@@ -1044,29 +791,31 @@ const ChatPage: React.FC = () => {
         id: currentSession.id,
         question: inputValue,
         timestamp: new Date().toISOString(),
-        status: 'in_progress',
+        status: "in_progress",
         steps: agentState.messages.map((message, index) => ({
           id: index + 1,
           type: message.type,
           content: message.content,
           timestamp: new Date().toISOString(),
           data: message.data,
-          action: actions[index] || defaultSteps[index]
+          action: actions[index] || defaultSteps[index],
         })),
         metadata: {
           model: selectedModel,
           totalTokens: 0,
-          elapsedTime: startTime ? formatDistanceToNow(startTime, { locale: ptBR }) : '0',
-          urlCount
-        }
+          elapsedTime: startTime
+            ? formatDistanceToNow(startTime, { locale: ptBR })
+            : "0",
+          urlCount,
+        },
       };
 
       saveSession(currentSession.id);
 
       // Atualizar os passos na interface
-      const steps = session.steps.filter(step => step.action);
+      const steps = session.steps.filter((step) => step.action);
       if (steps.length > 0) {
-        setActions(steps.map(step => step.action!));
+        setActions(steps.map((step) => step.action!));
         setActiveActionIndex(steps.length - 1);
       }
     }
@@ -1090,19 +839,19 @@ const ChatPage: React.FC = () => {
                 type: "query" as const,
                 content: query.question || query.title,
                 isTyping: false,
-                step: 1
+                step: 1,
               },
               {
                 type: "step" as const,
                 content: `💭 Status: ${query.status}`,
                 isTyping: false,
-                step: 2
+                step: 2,
               },
               {
                 type: "response" as const,
                 content: `✅ ${query.summary || "Sem resumo disponível"}`,
                 isTyping: false,
-                step: 3
+                step: 3,
               },
             ],
           }));
@@ -1124,7 +873,7 @@ const ChatPage: React.FC = () => {
           <div className="page-header-container">
             <PageHeader
               icon={<PiListStarFill />}
-              title="Chat com IA"
+              title="Pesquise o que você precisar"
               icon_size="26px"
             />
             <button
@@ -1137,7 +886,7 @@ const ChatPage: React.FC = () => {
                 borderRadius: "4px",
               }}
             >
-              Limpar Chat
+              Limpar
             </button>
           </div>
           <div className="pb-8 shadow-lg shadow-inherit rounded-lg">
@@ -1156,12 +905,14 @@ const ChatPage: React.FC = () => {
           </div>
           <div className="chat-content">
             <div className="chat-messages">
-              <ActionsList 
+              <ActionsList
                 actions={[...defaultSteps, ...actions]}
                 onActionClick={handleActionClick}
                 startTime={startTime}
                 urlCount={urlCount}
                 query={inputValue}
+                activeActionIndex={activeActionIndex}
+                setActiveActionIndex={setActiveActionIndex}
               />
               <div className="content-area">
                 {showWelcome && agentState.messages.length === 0 && (

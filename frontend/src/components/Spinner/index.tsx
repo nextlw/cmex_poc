@@ -1,5 +1,4 @@
-import React from "react";
-import "./styles.css"; // Insira aqui o CSS mostrado antes ou algo similar
+import "./styles.css";
 
 interface SpinnerProps {
   classes?: string
