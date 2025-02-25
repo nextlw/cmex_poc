@@ -337,7 +337,7 @@ async function saveQueryMetadata(requestId: string, metadata: {
 }
 
 // Adicione um novo tipo para os status possíveis
-type QueryStatus = 'pending' | 'processing' | 'completed' | 'error';
+type QueryStatus = 'in_progress' | 'processing' | 'completed' | 'error';
 
 // Função para atualizar o status sem substituir outros dados
 async function updateQueryStatus(requestId: string, status: QueryStatus) {
@@ -412,8 +412,8 @@ app.post('/api/v1/query', (async (req: Request, res: Response) => {
     res.json({requestId});
 
     try {
-      // Inicializa com status pending
-      await updateQueryStatus(requestId, 'pending');
+      // Inicializa com status in_progress
+      await updateQueryStatus(requestId, 'in_progress');
       
       // Atualiza para processing quando começa
       await updateQueryStatus(requestId, 'processing');

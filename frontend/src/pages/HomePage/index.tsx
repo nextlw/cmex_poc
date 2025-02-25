@@ -7,7 +7,7 @@ import React, {
   useRef,
 } from "react";
 // Importa o tipo SugerirNCM do arquivo types centralizado
-import { SugerirNCM } from "../../types";
+import { SugerirNCM } from "../../types/index";
 // Importa a instância do axios configurada
 import axiosInstance from "../../axiosConfig";
 // Importa o componente InputAi

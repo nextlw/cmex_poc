@@ -24,7 +24,7 @@ export interface Reference {
     id: string;
     title: string;
     timestamp: string;
-    status: 'pending' | 'completed' | 'error';
+    status: 'in_progress' | 'completed' | 'error';
     question: string;
   }
   

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./styles.css";
 import { QueryHistoryItem, QueryHistoryProps } from "./types";
 import ConfirmationModal from "../ConfirmationModal";
-import { LogsResponse } from "../../types/APITypes";
+import { LogsResponse } from "../../types/index";
 import { FiX } from "react-icons/fi";
 
 // Adicionar interface para o evento personalizado
@@ -190,16 +190,11 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
     }
   }, [newQuery, onNewQueryAdded]);
 
-  const handleSelectQuery = (query: QueryHistoryItem) => {
-    // Se estiver no modo de seleção, apenas seleciona o item
-    if (selectionMode) {
-      toggleQuerySelection(query.id);
-      return;
+  const handleQueryClick = (query: QueryHistoryItem) => {
+    if (!selectionMode) {
+      setSelectedQuery(query);
+      onSelectQuery(query);
     }
-    
-    // Caso contrário, seleciona a query para visualização
-    setSelectedQuery(query);
-    onSelectQuery(query);
   };
 
   // Função para alternar a seleção de uma query
@@ -315,14 +310,6 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
       }, 500);
 
       setQueryToDelete(null);
-    }
-  };
-
-  // Adicionar uma função específica para clicar em uma query (excluindo checkbox)
-  const handleQueryClick = (query: QueryHistoryItem) => {
-    if (!selectionMode) {
-      setSelectedQuery(query);
-      onSelectQuery(query);
     }
   };
 
