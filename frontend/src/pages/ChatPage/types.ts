@@ -4,15 +4,19 @@ export interface Reference {
   }
   
   export interface Message {
-    type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log';
+    type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log' | 'visit';
     content: string;
     isTyping?: boolean;
     data?: {
       think?: string;
       answer?: string;
+      reasoning?: string;
       references?: Reference[];
       searchQuery?: string;
       questionsToAnswer?: string[];
+      urls?: string[];
+      outputs?: any[];
+      trackers?: any;
     };
   }
 

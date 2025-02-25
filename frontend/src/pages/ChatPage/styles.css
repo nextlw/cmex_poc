@@ -1,3 +1,14 @@
+/*
+* CMEX - Estilos para a página de chat
+* 
+* Importante: As barras de rolagem seguem um padrão específico de estilo:
+* - Largura de 8px
+* - Transparente quando inativo
+* - Semi-transparente ao passar o mouse
+* - Espaçamento mínimo de 8px dos elementos à esquerda
+* - Compatível com temas claro e escuro
+*/
+
 .chat-page-container {
   display: flex;
   height: calc(100vh - 60px);
@@ -40,9 +51,9 @@
 }
 
 .clear-button {
-  background-color: #4a9eff;
-  color: #fff;
-  border: none;
+  color: var(--color-primary, #2775cf);
+  background-color: transparent;
+  border: 1px solid var(--color-primary, #2775cf);
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
   cursor: pointer;
@@ -50,7 +61,8 @@
 }
 
 .clear-button:hover {
-  background-color: #3a8eef;
+  background-color: var(--color-primary, #2775cf);
+  color: white;
 }
 
 .chat-content {
@@ -958,4 +970,56 @@
     opacity: 1;
     transform: translateX(0);
   }
+}
+
+/* Adicionar estilos para o botão de Nova Pesquisa */
+.button-container {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.action-button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-button {
+  color: var(--color-primary, #2775cf);
+  background-color: transparent;
+  border: 1px solid var(--color-primary, #2775cf);
+}
+
+.clear-button:hover {
+  background-color: var(--color-primary, #2775cf);
+  color: white;
+}
+
+/* Adicionar a classe .with-scrollbar aos elementos que precisam de rolagem */
+.actions-list,
+.content-area,
+.chat-messages,
+.chat-message .reasoning-section {
+  scrollbar-gutter: stable;
+  padding-right: 8px !important;
+}
+
+/* Adicionar estilos para o título da pergunta */
+.query-title {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-color-primary);
+  margin-bottom: var(--sp-md);
+  padding: var(--sp-sm) var(--sp-md);
+  border-left: 4px solid var(--color-primary);
+  background-color: var(--color-atributos-background);
+  border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+  box-shadow: var(--box-shadow-md);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 } 

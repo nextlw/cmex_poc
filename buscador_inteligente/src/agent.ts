@@ -166,7 +166,7 @@ function getSchema(allowReflect: boolean, allowRead: boolean, allowAnswer: boole
             // Define a descrição das questões a serem respondidas
             description: "List of most important questions to fill the knowledge gaps of finding the answer to the original question",
             // Define o número máximo de itens das questões a serem respondidas
-            maxItems: 2
+            maxItems: 30
         };
     }
 
@@ -184,9 +184,9 @@ function getSchema(allowReflect: boolean, allowRead: boolean, allowAnswer: boole
                 type: SchemaType.STRING
             },
             // Define o número máximo de itens das URLs a serem visitadas
-            maxItems: 2,
+            maxItems: 30,
             // Define a descrição das URLs a serem visitadas
-            description: "Must be an array of URLs, choose up the most relevant 2 URLs to visit"
+            description: "Must be an array of URLs, choose up the most relevant 30 URLs to visit"
         };
     }
 
@@ -331,7 +331,7 @@ function getPrompt(
 
         actions.push(`
     <action-visit>    
-    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer, explore most possible URLs to find the answer
     <url-list>
     ${urlList}
     </url-list>
@@ -354,7 +354,7 @@ function getPrompt(
     if (allowAnswer) {
         actions.push(`
     <action-answer>
-    - Provide final response only when 100% certain
+    - Provide final response only when 96% certain
     - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)${allowReflect ? '\n- If doubts remain, use <action-reflect> instead' : ''}
     - Format your answer in markdown with the following sections:
       - **Resposta Direta**: Uma resposta clara e concisa à pergunta ou problema, levando em consideração o contexto e o conhecimento acumulado, podendo também ser uma negativa e explicar o porque vocie acha isso e onde procurou mas nnao encontrou.
@@ -362,7 +362,7 @@ function getPrompt(
       - **Referências**: Liste todas as fontes relevantes em formato [Citação Exata](URL).
     - Use todo o conhecimento acumulado para garantir uma resposta abrangente
     - Inclua exemplos, dados numéricos e citações quando relevante
-    - Mantenha a formatação markdown consistente
+    - Mantenha a formatação consistente
     </action-answer>
     `);
     }
@@ -409,7 +409,7 @@ function getPrompt(
     Critical Requirements:
     - Include ONLY ONE action type
     - Never add unsupported keys
-    - Exclude all non-JSON text, markdown, or explanations
+    - Exclude all non-JSON text
     - Maintain strict JSON syntax
     - All text content must be in Portuguese (Brazil)
     - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)`);

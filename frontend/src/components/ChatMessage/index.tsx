@@ -5,6 +5,7 @@ import './styles.css';
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isTyping, data, step }) => {
   const [displayedContent, setDisplayedContent] = useState<React.ReactNode>("");
+  const [showDebug, setShowDebug] = useState(false);
   const reasoningSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,7 +30,18 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isTyping, data
                     {data.urls.map((url: string, urlIndex: number) => (
                       <div key={urlIndex} className="url-item">
                         <div className="spinner" />
-                        <span>{new URL(url).hostname}</span>
+                        <span>{url && url.startsWith('http') ? new URL(url).hostname : url}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {data.outputs && data.outputs.length > 0 && (
+                  <div className="outputs-section">
+                    <h4>Informações adicionais:</h4>
+                    {data.outputs.map((output: any, idx: number) => (
+                      <div key={idx} className="output-item">
+                        <pre>{JSON.stringify(output, null, 2)}</pre>
                       </div>
                     ))}
                   </div>
@@ -38,10 +50,73 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isTyping, data
             )}
             <div className={type === "answer" ? "final-answer" : ""}>
               <ReactMarkdown>{content}</ReactMarkdown>
+              
+              {data?.references && data.references.length > 0 && (
+                <div className="references-section">
+                  <h4>Referências:</h4>
+                  {data.references.map((ref: any, idx: number) => (
+                    <div key={idx} className="reference-item">
+                      <div className="quote">{ref.exactQuote}</div>
+                      <div className="source">
+                        <a href={ref.url} target="_blank" rel="noopener noreferrer">
+                          {ref.url && ref.url.startsWith('http') ? new URL(ref.url).hostname : ref.url}
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {process.env.NODE_ENV === 'development' && data?.trackers && (
+                <div className="debug-section">
+                  <button 
+                    className="toggle-debug-btn" 
+                    onClick={() => setShowDebug(!showDebug)}
+                  >
+                    {showDebug ? "Esconder" : "Mostrar"} informações de depuração
+                  </button>
+                  
+                  {showDebug && (
+                    <pre className="debug-info">
+                      {JSON.stringify(data.trackers, null, 2)}
+                    </pre>
+                  )}
+                </div>
+              )}
             </div>
           </>
         ) : (
-          <ReactMarkdown>{content}</ReactMarkdown>
+          <>
+            <ReactMarkdown>{content}</ReactMarkdown>
+            
+            {data?.outputs && data.outputs.length > 0 && (
+              <div className="outputs-section">
+                <h4>Informações adicionais:</h4>
+                {data.outputs.map((output: any, idx: number) => (
+                  <div key={idx} className="output-item">
+                    <pre>{JSON.stringify(output, null, 2)}</pre>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {process.env.NODE_ENV === 'development' && data?.trackers && (
+              <div className="debug-section">
+                <button 
+                  className="toggle-debug-btn" 
+                  onClick={() => setShowDebug(!showDebug)}
+                >
+                  {showDebug ? "Esconder" : "Mostrar"} informações de depuração
+                </button>
+                
+                {showDebug && (
+                  <pre className="debug-info">
+                    {JSON.stringify(data.trackers, null, 2)}
+                  </pre>
+                )}
+              </div>
+            )}
+          </>
         )
       );
       return;
@@ -64,7 +139,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isTyping, data
                       {data.urls.map((url: string, urlIndex: number) => (
                         <div key={urlIndex} className="url-item">
                           <div className="spinner" />
-                          <span>{new URL(url).hostname}</span>
+                          <span>{url && url.startsWith('http') ? new URL(url).hostname : url}</span>
                         </div>
                       ))}
                     </div>
@@ -91,7 +166,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isTyping, data
   const messageClass = `chat-message ${type} ${isTyping ? "typing" : ""} ${type === "answer" ? "final-answer" : ""}`;
 
   return (
-    <div className={messageClass} id={`step-${step}`}>
+    <div className={messageClass} id={`step-${step}`} data-message-id={`message-${step}`} data-testid={`chat-message-${step}`}>
       {type === "query" && <div className="query-label">Pergunta</div>}
       {type === "step" && <div className="step-label">Pensando</div>}
       {type === "response" && <div className="response-label">Resposta</div>}
@@ -100,7 +175,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isTyping, data
       {type === "reflect" && <div className="reflect-label">Reflexão</div>}
       {type === "connected" && <div className="step-label">Conectado</div>}
       {type === "log" && <div className="log-label">Log do Servidor</div>}
-      <div className="message-content">{displayedContent}</div>
+      {type === "search" && <div className="search-label">Pesquisa</div>}
+      {type === "visit" && <div className="visit-label">Visitando URL</div>}
+      <div className="message-content" data-testid={`message-content-${type}`}>{displayedContent}</div>
     </div>
   );
 };

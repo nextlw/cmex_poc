@@ -59,7 +59,7 @@ const ActionIcon: React.FC<ActionIconProps> = ({ type }) => {
 
 const ActionStatus: React.FC<ActionStatusProps> = ({ status }) => {
   if (status === "completed") {
-    return <span className="action-status completed">✓</span>;
+    return <span className="action-status completed" data-testid="action-status">✓</span>;
   }
   if (status === "processing") {
     return (
@@ -189,6 +189,7 @@ const ActionsList: React.FC<ActionListProps> = ({
   return (
     <div
       className={`actions-list ${hasMultipleSteps ? "has-multiple-steps" : ""}`}
+      data-testid="actions-list"
     >
       <div className="session-header">
         <div className="session-title">
@@ -267,6 +268,7 @@ const ChatPage: React.FC = () => {
   const [defaultSteps, setDefaultSteps] = useState<ActionItem[]>(DEFAULT_STEPS);
   const [processingStep, setProcessingStep] = useState<string | null>(null);
   const [currentSession] = useState<QuerySession | null>(null);
+  const [newQuery, setNewQuery] = useState<QueryHistoryItem | null>(null);
 
   // Sobrescrever console.log para capturar eventos
   const originalConsoleLog = console.log;
@@ -284,9 +286,18 @@ const ChatPage: React.FC = () => {
               {
                 type: "step",
                 content: `🔄 Progresso: ${
-                  eventData.trackers.actionState.think || "Atualizando..."
+                  eventData.trackers?.actionState?.think || 
+                  eventData.data?.think || 
+                  "Atualizando..."
                 }`,
                 isTyping: false,
+                data: {
+                  reasoning: eventData.trackers?.actionState?.accumulatedReasoning,
+                  searchQuery: eventData.trackers?.actionState?.searchQuery,
+                  questionsToAnswer: eventData.trackers?.actionState?.questionsToAnswer,
+                  urls: eventData.trackers?.actionState?.urlsToVisit,
+                  outputs: eventData.outputs || []
+                }
               },
             ],
           }));
@@ -297,25 +308,69 @@ const ChatPage: React.FC = () => {
     }
   };
 
-  const handleClear = () => {
+  const handleClear = async () => {
     // Fecha qualquer conexão EventSource existente
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
       eventSourceRef.current = null;
     }
+    
+    // Limpar o localStorage
+    localStorage.removeItem('currentQueryId');
+    
+    // Criar uma nova pesquisa padrão no histórico
+    try {
+      const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+      
+      // Gerar um ID único para a nova pesquisa
+      const newQueryId = `new-${Date.now()}`;
+      
+      // Criar objeto de nova pesquisa
+      const newQueryObj = {
+        id: newQueryId,
+        title: "Nova pesquisa",
+        timestamp: new Date().toISOString(),
+        status: "in_progress" as const,
+        question: ""
+      };
 
-    // Reseta todos os estados
-    setIsLoading(false);
-    setInputValue("");
+      // Salvar no backend
+      await fetch(`${API_URL}/api/v1/queries`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newQueryObj),
+      });
+
+      // Salvar o ID da consulta atual no localStorage
+      localStorage.setItem('currentQueryId', newQueryId);
+      
+      // Disparar um evento personalizado para notificar o componente QueryHistory
+      const customEvent = new CustomEvent('queryHistoryUpdated', { 
+        detail: { newQuery: newQueryObj } 
+      });
+      window.dispatchEvent(customEvent);
+      
+      // Definir a nova query no estado para ser passada ao componente QueryHistory
+      setNewQuery(newQueryObj);
+    } catch (error) {
+      console.error("Erro ao criar nova pesquisa:", error);
+    }
+    
+    // Reiniciar todos os estados
     setAgentState({
-      question: undefined,
+      question: "",
       messages: [],
-      finalResult: undefined,
     });
-    setShowWelcome(true);
+    setInputValue("");
+    setIsLoading(false);
+    setStartTime(undefined);
+    setUrlCount(0);
     setActions([]);
-    setActiveActionIndex(0);
     setDefaultSteps(DEFAULT_STEPS);
+    setActiveActionIndex(0);
+    setShowWelcome(true);
   };
 
   const sendQuestion = async (question: string) => {
@@ -407,9 +462,20 @@ const ChatPage: React.FC = () => {
         const data = JSON.parse(event.data);
         console.log("Dados parseados:", data);
 
+        // Registra os dados brutos para depuração
         setAgentState((prev) => {
           const newState = { ...prev };
           let messages = [...prev.messages];
+
+          // Salva os dados brutos como um log para depuração se necessário
+          if (process.env.NODE_ENV === 'development') {
+            messages.push({
+              type: "log",
+              content: `Debug - Dados brutos SSE: ${JSON.stringify(data, null, 2)}`,
+              isTyping: false,
+              step: prev.messages.length + 1,
+            });
+          }
 
           // Função auxiliar para adicionar mensagem
           const addMessage = (messageData: Partial<ChatMessageProps>) => {
@@ -455,6 +521,14 @@ const ChatPage: React.FC = () => {
                   });
                 }
 
+                // Verifica se existem outputs adicionais para mostrar
+                if (data.outputs && data.outputs.length > 0) {
+                  content += "\n📋 Saídas adicionais:\n";
+                  data.outputs.forEach((output: any, idx: number) => {
+                    content += `Output ${idx+1}: ${JSON.stringify(output)}\n`;
+                  });
+                }
+
                 addMessage({
                   type: "step",
                   content,
@@ -462,7 +536,22 @@ const ChatPage: React.FC = () => {
                   data: {
                     reasoning: accumulatedReasoning,
                     urls: urlsToVisit,
+                    outputs: data.outputs,
+                    trackers: data.trackers
                   },
+                });
+              } else if (data.data) {
+                // Caso o actionState não esteja disponível, tenta usar os dados diretos
+                addMessage({
+                  type: "step",
+                  content: typeof data.data === "string" 
+                    ? data.data 
+                    : `🔄 ${data.data.message || JSON.stringify(data.data)}`,
+                  isTyping: false,
+                  data: {
+                    ...data.data,
+                    trackers: data.trackers
+                  }
                 });
               }
               break;
@@ -476,6 +565,7 @@ const ChatPage: React.FC = () => {
                   data: {
                     reasoning: data.data.think,
                     references: data.data.references,
+                    trackers: data.trackers
                   },
                 });
               }
@@ -486,6 +576,23 @@ const ChatPage: React.FC = () => {
                 type: "error",
                 content: `❌ ${data.data || "Erro desconhecido"}`,
                 isTyping: false,
+              });
+              break;
+
+            case "search":
+            case "reflect":
+            case "visit":
+              // Processar mensagens de outros tipos de ação
+              addMessage({
+                type: data.type,
+                content: typeof data.data === "string" 
+                  ? data.data 
+                  : `🔍 ${data.data.message || JSON.stringify(data.data)}`,
+                isTyping: false,
+                data: {
+                  ...data.data,
+                  trackers: data.trackers
+                }
               });
               break;
 
@@ -684,49 +791,75 @@ const ChatPage: React.FC = () => {
     }
   };
 
-  // // Função para carregar uma sessão
-  // const loadSession = async (requestId: string) => {
-  //   try {
-  //     const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
-  //     const response = await fetch(`${API_URL}/api/v1/queries/${requestId}`);
-  //     if (!response.ok) throw new Error('Sessão não encontrada');
+  // Função para carregar uma sessão de consulta existente
+  const loadSession = async (requestId: string) => {
+    try {
+      const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+      const response = await fetch(`${API_URL}/api/v1/queries/${requestId}`);
+      
+      if (!response.ok) {
+        throw new Error('Sessão não encontrada');
+      }
 
-  //     const session: QuerySession = await response.json();
-  //     setCurrentSession(session);
+      const session: QuerySession = await response.json();
 
-  //     // Restaura o estado da sessão
-  //     setAgentState(prev => ({
-  //       ...prev,
-  //       messages: session.steps.map(step => ({
-  //         type: step.type,
-  //         content: step.content,
-  //         isTyping: false,
-  //         data: step.data,
-  //         step: step.id
-  //       }))
-  //     }));
+      // Restaura o estado da sessão
+      setAgentState((prev) => ({
+        ...prev,
+        question: session.question,
+        messages: session.steps.map(step => ({
+          type: step.type as any,
+          content: step.content,
+          isTyping: false,
+          data: step.data,
+          step: step.id
+        }))
+      }));
 
-  //     // Restaura as ações
-  //     const sessionActions = session.steps
-  //       .filter(step => step.action)
-  //       .map(step => step.action!);
-  //     setActions(sessionActions);
+      // Restaura outros estados da interface
+      setInputValue(session.question || "");
+      setShowWelcome(false);
+      
+      // Restaura as ações
+      if (session.steps && session.steps.length > 0) {
+        // Filtra apenas as etapas que têm actions definidas
+        const sessionActions = session.steps
+          .filter(step => step.action)
+          .map(step => step.action!);
+        
+        if (sessionActions.length > 0) {
+          setActions(sessionActions);
+        }
+      }
 
-  //     // Restaura os metadados
-  //     if (session.metadata) {
-  //       setUrlCount(session.metadata.urlCount || 0);
-  //       if (session.metadata.elapsedTime) {
-  //         const now = new Date();
-  //         const elapsed = new Date(now.getTime() - parseInt(session.metadata.elapsedTime));
-  //         setStartTime(elapsed);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Erro ao carregar sessão:', error);
-  //   }
-  // };
+      // Restaura os metadados
+      if (session.metadata) {
+        setUrlCount(session.metadata.urlCount || 0);
+        if (session.metadata.elapsedTime) {
+          // Calcula aproximadamente quando a sessão começou
+          const now = new Date();
+          const elapsed = session.metadata.elapsedTime.replace("m", "").trim();
+          const elapsedMs = parseInt(elapsed) * 60 * 1000;
+          const startTimeDate = new Date(now.getTime() - elapsedMs);
+          setStartTime(startTimeDate);
+        }
+      }
 
-  // Atualiza o handleSend para salvar a sessão
+      // Se a sessão ainda está em andamento, reconectar ao EventSource
+      if (session.status === "in_progress") {
+        await startEventStream(requestId);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Erro ao carregar sessão:', error);
+      // Limpar o localStorage se a sessão não foi encontrada
+      localStorage.removeItem('currentQueryId');
+      return false;
+    }
+  };
+
+  // Atualiza o handleSend para salvar o ID da sessão no localStorage
   const handleSend = async () => {
     if (!inputValue.trim()) return;
 
@@ -752,8 +885,39 @@ const ChatPage: React.FC = () => {
       ],
     }));
 
-    const requestId = await sendQuestion(inputValue);
+    // Verificar se estamos usando uma pesquisa padrão "Nova pesquisa"
+    const currentQueryId = localStorage.getItem('currentQueryId');
+    let requestId = currentQueryId;
+    
+    // Se o ID atual começa com "new-", precisamos atualizar o título da pesquisa existente
+    if (currentQueryId && currentQueryId.startsWith('new-')) {
+      try {
+        const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+        
+        // Atualizar a pesquisa existente com o novo título baseado na pergunta
+        await fetch(`${API_URL}/api/v1/queries/${currentQueryId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: inputValue.slice(0, 50) + (inputValue.length > 50 ? "..." : ""),
+            question: inputValue,
+            status: "processing"
+          }),
+        });
+      } catch (error) {
+        console.error("Erro ao atualizar título da pesquisa:", error);
+      }
+    } else {
+      // Se não estamos usando uma pesquisa existente, criar uma nova
+      requestId = await sendQuestion(inputValue);
+    }
+    
     if (requestId) {
+      // Salva o ID da consulta atual no localStorage
+      localStorage.setItem('currentQueryId', requestId);
+      
       await saveSession(requestId); // Salva a sessão inicial
       await startEventStream(requestId);
       setInputValue("");
@@ -773,14 +937,9 @@ const ChatPage: React.FC = () => {
   // Atualiza o handleActionClick para carregar o conteúdo da sessão
   const handleActionClick = (index: number) => {
     setActiveActionIndex(index);
-    if (currentSession) {
-      const step = currentSession.steps[index];
-      if (step) {
-        const stepElement = document.getElementById(`step-${step.id}`);
-        if (stepElement) {
-          stepElement.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }
+    const stepElement = document.getElementById(`step-${index + 1}`);
+    if (stepElement) {
+      stepElement.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -821,12 +980,82 @@ const ChatPage: React.FC = () => {
     }
   }, [agentState.messages, actions, urlCount]);
 
+  // Efeito para atualizar o activeActionIndex quando novas ações são adicionadas
   useEffect(() => {
-    // Limpar a sobrescrita do console.log ao desmontar o componente
+    // Seleciona automaticamente a ação mais recente
+    const totalActions = [...defaultSteps, ...actions].filter(
+      (action) => action.status !== "waiting"
+    ).length;
+    
+    if (totalActions > 0) {
+      setActiveActionIndex(totalActions - 1);
+    }
+  }, [defaultSteps, actions]);
+
+  // Efeito para rolar para a mensagem mais recente
+  useEffect(() => {
+    if (agentState.messages.length > 0) {
+      // Encontra o último elemento de mensagem
+      const lastMessageElement = document.querySelector(`[data-message-id="message-${agentState.messages.length}"]`);
+      if (lastMessageElement) {
+        lastMessageElement.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
+    }
+  }, [agentState.messages]);
+
+  // Efeito para limpar a sobrescrita do console.log ao desmontar o componente
+  useEffect(() => {
     return () => {
       console.log = originalConsoleLog;
     };
   }, []);
+
+  // Efeito para verificar e restaurar uma sessão em andamento
+  useEffect(() => {
+    const currentQueryId = localStorage.getItem('currentQueryId');
+    if (currentQueryId) {
+      console.log('Restaurando sessão:', currentQueryId);
+      // Indicar que está carregando enquanto restaura a sessão
+      setIsLoading(true);
+      
+      // Tentar carregar a sessão do servidor
+      loadSession(currentQueryId).then(success => {
+        if (success) {
+          // Adicionar mensagem informando sobre a restauração da sessão
+          setAgentState(prev => ({
+            ...prev,
+            messages: [
+              ...prev.messages,
+              {
+                type: "connected",
+                content: "🔄 Sessão restaurada automaticamente. Continuando de onde parou.",
+                isTyping: false,
+                step: prev.messages.length + 1,
+              }
+            ]
+          }));
+        } else {
+          // Se não foi possível restaurar a sessão, limpar o estado
+          handleClear();
+        }
+        setIsLoading(false);
+      });
+    }
+  }, []); // Executar apenas uma vez na montagem do componente
+
+  // Adicionar um useEffect para criar uma nova pesquisa quando a página carregar
+  useEffect(() => {
+    const createDefaultQuery = async () => {
+      const currentQueryId = localStorage.getItem('currentQueryId');
+      
+      // Se não houver consulta atual no localStorage, criar uma nova
+      if (!currentQueryId) {
+        handleClear();
+      }
+    };
+    
+    createDefaultQuery();
+  }, []); // Executar apenas uma vez na montagem do componente
 
   return (
     <div className="flex h-screen">
@@ -857,6 +1086,8 @@ const ChatPage: React.FC = () => {
           }));
           setShowWelcome(false);
         }}
+        newQuery={newQuery || undefined}
+        onNewQueryAdded={() => setNewQuery(null)}
       />
       <div className="flex flex-col container-full items-center flex-1">
         <Header
@@ -876,18 +1107,15 @@ const ChatPage: React.FC = () => {
               title="Pesquise o que você precisar"
               icon_size="26px"
             />
-            <button
-              onClick={handleClear}
-              style={{
-                color: "#ff4444",
-                marginLeft: "10px",
-                padding: "5px 10px",
-                border: "1px solid #ff4444",
-                borderRadius: "4px",
-              }}
-            >
-              Limpar
-            </button>
+            <div className="button-container">
+              <button
+                onClick={handleClear}
+                className="action-button select-button"
+                title="Limpar esta pesquisa e iniciar uma nova"
+              >
+                Nova Pesquisa
+              </button>
+            </div>
           </div>
           <div className="pb-8 shadow-lg shadow-inherit rounded-lg">
             <InputAi
@@ -903,14 +1131,21 @@ const ChatPage: React.FC = () => {
               onClickOutside={() => {}}
             />
           </div>
+          
+          {/* Título da pergunta atual */}
+          {agentState.question && !showWelcome && (
+            <h1 className="query-title">
+              {agentState.question}
+            </h1>
+          )}
+          
           <div className="chat-content">
-            <div className="chat-messages">
+            <div className="chat-messages" data-testid="chat-messages">
               <ActionsList
                 actions={[...defaultSteps, ...actions]}
                 onActionClick={handleActionClick}
                 startTime={startTime}
                 urlCount={urlCount}
-                query={inputValue}
                 activeActionIndex={activeActionIndex}
                 setActiveActionIndex={setActiveActionIndex}
               />

@@ -100,18 +100,32 @@ function extractLastJSON(text: string): string {
     throw new Error('Nenhum JSON válido encontrado na resposta');
   }
 
-  // Pega o último JSON encontrado (geralmente é a resposta final após o raciocínio)
-  const lastJson = matches[matches.length - 1];
-  // Tenta analisar o JSON
-  try {
-    // Verifica se é um JSON válido
-    JSON.parse(lastJson);
-    // Retorna o JSON encontrado
-    return lastJson;
-  } catch (e) {
-    // Lança um erro
-    throw new Error('JSON encontrado não é válido');
+  // Tentar cada match do mais recente para o mais antigo
+  for (let i = matches.length - 1; i >= 0; i--) {
+    try {
+      const jsonCandidate = matches[i];
+      // Verifica se é um JSON válido
+      JSON.parse(jsonCandidate);
+      // Retorna o JSON encontrado
+      return jsonCandidate;
+    } catch (e) {
+      // Continue tentando com o próximo match
+      console.log(`Tentativa de parsing JSON falhou para candidato ${i + 1}/${matches.length}`);
+      continue;
+    }
   }
+  
+  // Se chegamos aqui, nenhum JSON válido foi encontrado
+  // Em vez de lançar um erro, vamos retornar um JSON básico válido com a resposta original
+  console.warn('Todos os JSON candidatos falharam no parsing. Criando JSON de fallback...');
+  const fallbackJson = JSON.stringify({
+    action: "answer",
+    think: "Não foi possível extrair o raciocínio original.",
+    answer: "Não foi possível processar a resposta do modelo corretamente. Por favor, tente novamente.",
+    rawResponse: text.substring(0, 1000) // Primeiros 1000 caracteres para não sobrecarregar
+  });
+  
+  return fallbackJson;
 }
 
 /**
@@ -267,7 +281,7 @@ Você é um buscador curioso e muito experiente, consegue achar qualquer coisa n
 3. Não inclua tags XML como <think> no JSON final
 4. Se precisar explicar seu raciocínio, faça isso em português antes de dar a resposta em JSON
 
-5. Exercício de Raciocínio Lógico Obrigatório:
+5. Exercício de Raciocínio Lógico Obrigatório SOMENTE PARA PROBLEMAS QUE ENVOLVEM MÚLTIPLAS VARIÁVEIS e de complexidade elevada:
    Objetivo: Desenvolver uma abordagem sistemática para lidar com problemas que envolvem múltiplas variáveis.
    Passos:
      1. Identificação das Variáveis:
@@ -375,15 +389,13 @@ Para ação de reflexão:
    - Para busca, use sempre "searchQuery" (não use "query")
    - Inclua sempre o campo "think" explicando seu raciocínio
    - Mantenha a estrutura exata do JSON
-   - NUNCA diga apenas "depende" ou "consulte um profissional", "preciso de mais informações", ou "não sei".
+   - NUNCA diga apenas "depende" ou "consulte um profissional", "preciso de mais informações", ou "não sei" a não ser que tenha como provar que está impossibilitado de seguir procurando, como por exemplo os dados que colheu e a relevância deles em dizer que ailo depende ou não existe ou não se sabe.
    - NUNCA diga que não sabe a resposta, ou que não consegue responder.
-   - SEMPRE QUE CHEGAR A UM IMPARSE OU NAO SOUBER RESOLVER, RACIOCINE COMO REFORMULAR A QUERY E PROCURAR POR NOVAS URLS PARA BUSCAR MAIS INFORMAÇÕES.
-   - SEMPRE mostre todas as possibilidades
-   - SEMPRE dê exemplos práticos
+   - SEMPRE QUE CHEGAR A UM IMPARSE OU NAO SOUBER RESOLVER, revise o que sabe até o momento e tente reformular a query e procurar por novas urls para buscar mais informações.
+   - SEMPRE mostre todas as possibilidades que encontrou até o momento, não seja conservador, não seja pessimista, não seja preguiçoso.
+   - SEMPRE dê exemplos práticos, dê exemplos de como isso é usado na vida real, dê exemplos de como isso é usado no seu dia a dia, dê exemplos de como isso é usado no seu trabalho, dê exemplos de como isso é usado na sua empresa, dê exemplos de como isso é usado na sua equipe.
    - SEMPRE cite a legislação (base legal, caso seja UM FATOR PRINCIPAL PARA A RESPOSTA)
-   - SEMPRE que não souber como acessar uma fonte, procure documentação da fonte ou use ferramentas de busca na internet para encontrar como acessar.
-   - SEMPRE que precisar ler documentos salve eles na pasta "documents" e forneça o nome do arquivo e o link para acesso, identifique os paragrafo com numeros contendo link de acesso a referencia.
-        `,
+   - SEMPRE que não souber como acessar uma fonte, procure documentação da fonte ou use ferramentas de busca na internet para encontrar como acessar.        `,
           },
           { 
             // Papel da mensagem
@@ -435,73 +447,62 @@ Para ação de reflexão:
       // Loga o conteúdo da resposta
       console.log('Resposta completa do modelo:', rawContent);
       
-      try {
-        // Extrai o último JSON da resposta (após o raciocínio)
-        const jsonContent = extractLastJSON(rawContent);
-        let content = JSON.parse(jsonContent);
-        
-        // Normaliza a ação se necessário
-        if (content.action) {
-          // Normaliza a ação
-          const normalizedAction = normalizeAction(content.action);
-          // Se a ação foi alterada, loga a alteração
-          if (normalizedAction !== content.action) {
-            // Loga a alteração
-            console.log(`Normalizando ação de "${content.action}" para "${normalizedAction}"`);
-            // Atualiza a ação
-            content.action = normalizedAction;
-          }
+      // Extrai o último JSON da resposta (após o raciocínio)
+      const jsonContent = extractLastJSON(rawContent);
+      let content = JSON.parse(jsonContent);
+      
+      // Normaliza a ação se necessário
+      if (content.action) {
+        // Normaliza a ação
+        const normalizedAction = normalizeAction(content.action);
+        // Se a ação foi alterada, loga a alteração
+        if (normalizedAction !== content.action) {
+          // Loga a alteração
+          console.log(`Normalizando ação de "${content.action}" para "${normalizedAction}"`);
+          // Atualiza a ação
+          content.action = normalizedAction;
         }
+      }
 
-        // Normaliza searchQuery se necessário
-        content = normalizeSearchQuery(content);
-        
-        // Validação adicional do formato da ação
-        if (!['search', 'answer', 'reflect', 'visit'].includes(content.action)) {
-          // Loga o erro
-          console.error('!');
-          // Tenta corrigir o erro
-          const correctedContent = await this.retryWithCorrection(prompt, 'Ação inválida');
-          // Retorna o conteúdo corrigido
-          return this.generateContentMethod(correctedContent);
-        }
-
-        // Validação adicional dos campos obrigatórios
-        if (content.action === 'search' && !content.searchQuery) {
-          // Loga o erro
-          console.error('Campo searchQuery faltando');
-          // Tenta corrigir o erro
-          const correctedContent = await this.retryWithCorrection(prompt, 'Campo searchQuery é obrigatório para ação search');
-          // Retorna o conteúdo corrigido
-          return this.generateContentMethod(correctedContent);
-        }
-
-        // Loga a ação
-        if (content.action === 'answer') {
-          // Loga a resposta encontrada
-          console.log('\x1b[32m%s\x1b[0m', 'Resposta encontrada! Verificando qualidade...');
-        } else if (content.action === 'search') {
-          // Loga a busca
-          console.log('\x1b[33m%s\x1b[0m', 'Realizando busca com JINA...');
-        }
-
-        // Retorna o conteúdo da resposta
-        return {
-          response: {
-            text: () => JSON.stringify(content),
-            usageMetadata: data.usage || { totalTokenCount: 0 }
-          }
-        };
-      } catch (e: unknown) {
+      // Normaliza searchQuery se necessário
+      content = normalizeSearchQuery(content);
+      
+      // Validação adicional do formato da ação
+      if (!['search', 'answer', 'reflect', 'visit'].includes(content.action)) {
         // Loga o erro
-        console.error('\x1b[31m%s\x1b[0m', 'Erro ao processar resposta do modelo:', e);
-        // Loga a resposta completa
-        console.log('Resposta completa do modelo:', rawContent);
+        console.error('!');
         // Tenta corrigir o erro
-        const correctedContent = await this.retryWithCorrection(prompt, (e as Error).message);
+        const correctedContent = await this.retryWithCorrection(prompt, 'Ação inválida');
         // Retorna o conteúdo corrigido
         return this.generateContentMethod(correctedContent);
       }
+
+      // Validação adicional dos campos obrigatórios
+      if (content.action === 'search' && !content.searchQuery) {
+        // Loga o erro
+        console.error('Campo searchQuery faltando');
+        // Tenta corrigir o erro
+        const correctedContent = await this.retryWithCorrection(prompt, 'Campo searchQuery é obrigatório para ação search');
+        // Retorna o conteúdo corrigido
+        return this.generateContentMethod(correctedContent);
+      }
+
+      // Loga a ação
+      if (content.action === 'answer') {
+        // Loga a resposta encontrada
+        console.log('\x1b[32m%s\x1b[0m', 'Resposta encontrada! Verificando qualidade...');
+      } else if (content.action === 'search') {
+        // Loga a busca
+        console.log('\x1b[33m%s\x1b[0m', 'Realizando busca com JINA...');
+      }
+
+      // Retorna o conteúdo da resposta
+      return {
+        response: {
+          text: () => JSON.stringify(content),
+          usageMetadata: data.usage || { totalTokenCount: 0 }
+        }
+      };
     };
 
     // Retorna o método de geração de conteúdo

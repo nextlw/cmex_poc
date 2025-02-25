@@ -14,11 +14,14 @@ export interface QueryHistoryItem {
   status: 'in_progress' | 'completed' | 'error';
   timestamp: string;
   references?: Reference[];
+  isDeleting?: boolean;
 }
 
 export interface QueryHistoryProps {
   onSelectQuery: (query: QueryHistoryItem) => void;
   selectedQueryId?: string;
+  newQuery?: QueryHistoryItem;
+  onNewQueryAdded?: () => void;
 }
 
 export interface Message {

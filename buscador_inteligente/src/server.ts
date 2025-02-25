@@ -25,6 +25,7 @@ interface ServerLog {
   context: {
     pid: number;
     env: string;
+    requestId?: string;
   };
 }
 
@@ -521,37 +522,58 @@ app.get('/api/v1/stream/:requestId', (async (req: Request, res: StreamResponse) 
       switch(action) {
         case 'search':
           formattedData = {
-            type: 'progress',
+            type: 'search',
             data: {
               action: action,
               think: data.data.think,
-              searchQuery: data.data.searchQuery
+              searchQuery: data.data.searchQuery,
+              message: `Pesquisando informações para: "${data.data.searchQuery}"`,
+              searchResults: data.data.searchResults || []
             },
+            outputs: data.outputs || [],
             trackers: data.trackers
           };
           break;
         
         case 'answer':
           formattedData = {
-            type: 'progress',
+            type: 'answer',
             data: {
               action: action,
               think: data.data.think,
               answer: data.data.answer,
-              references: data.data.references
+              references: data.data.references,
+              reasoning: data.data.reasoning || data.data.accumulatedReasoning
             },
+            outputs: data.outputs || [],
             trackers: data.trackers
           };
           break;
         
         case 'reflect':
           formattedData = {
-            type: 'progress',
+            type: 'reflect',
             data: {
               action: action,
               think: data.data.think,
-              questionsToAnswer: data.data.questionsToAnswer
+              questionsToAnswer: data.data.questionsToAnswer,
+              message: `Refletindo sobre: ${data.data.questionsToAnswer ? data.data.questionsToAnswer.join(', ') : 'a pergunta'}`
             },
+            outputs: data.outputs || [],
+            trackers: data.trackers
+          };
+          break;
+
+        case 'visit':
+          formattedData = {
+            type: 'visit',
+            data: {
+              action: action,
+              think: data.data.think,
+              URLTargets: data.data.URLTargets,
+              message: `Visitando URLs: ${data.data.URLTargets ? data.data.URLTargets.join(', ') : ''}`
+            },
+            outputs: data.outputs || [],
             trackers: data.trackers
           };
           break;
@@ -560,6 +582,7 @@ app.get('/api/v1/stream/:requestId', (async (req: Request, res: StreamResponse) 
           formattedData = {
             type: 'progress',
             data: data.data,
+            outputs: data.outputs || [],
             trackers: data.trackers
           };
       }
@@ -567,6 +590,7 @@ app.get('/api/v1/stream/:requestId', (async (req: Request, res: StreamResponse) 
       formattedData = {
         type: data.type || 'progress',
         data: data.data,
+        outputs: data.outputs || [],
         trackers: data.trackers
       };
     }
@@ -603,6 +627,21 @@ app.get('/api/v1/stream/:requestId', (async (req: Request, res: StreamResponse) 
     } : null
   };
   res.write(`data: ${JSON.stringify(initialData)}\n\n`);
+
+  // Envia logs antigos associados a este requestId
+  const recentLogs = serverLogs
+    .filter(log => log.context?.requestId !== undefined && log.context.requestId === requestId)
+    .slice(-20);
+  
+  if (recentLogs.length > 0) {
+    const logsData = {
+      type: 'log',
+      data: `Histórico de logs recentes (${recentLogs.length}):\n${recentLogs.map(log => 
+        `[${new Date(log.timestamp).toLocaleTimeString()}] ${log.message}`).join('\n')}`,
+      trackers: null
+    };
+    res.write(`data: ${JSON.stringify(logsData)}\n\n`);
+  }
 }) as RequestHandler);
 
 /**
