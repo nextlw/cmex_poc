@@ -41,6 +41,7 @@ import "../../styles/grid.css";
 import InfoBasicasSkeleton from "../../components/InfoBasicas/InfoBasicasSkeleton";
 import BoxdeImpostosSkeleton from "../../components/BoxdeImpostos/BoxdeImpostosSkeleton";
 import AtributosSkeleton from "../../components/Atributos/AtributosSkeleton";
+import { AutocompleteType } from "../../components/InputAi/types";
 
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
@@ -148,13 +149,11 @@ const HomePage: React.FC = () => {
 
   // Controla o estado do balão de Autocomplete
   const [showAutoComplete, setShowAutoComplete] = useState<Boolean>(false);
-  const [autoCompleteData, setAutoCompleteData] = useState<Array<JSON>>([]);
-  const [isAutocompleteLoading, setIsAutocompleteLoading] =
-    useState<Boolean>(false);
+  const [autoCompleteData, setAutoCompleteData] = useState<Array<AutocompleteType>>([]);
+  const [isAutocompleteLoading, setIsAutocompleteLoading] = useState<Boolean>(false);
 
   // Comportamento ao clicar em uma sugestão do autocomplete
-  const handleAutocompleteClick = (value: JSON) => {
-    setPesquisa(value.descricao);
+  const handleAutocompleteClick = (value: AutocompleteType) => {
     handleSearch(value.resultado[0].ncm, true);
   };
 
