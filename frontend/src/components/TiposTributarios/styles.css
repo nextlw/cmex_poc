@@ -1,149 +1,218 @@
 .tipos-tributarios {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  padding: 1rem;
-  background-color: rgba(17, 24, 39, 0.5);
-  border-radius: 0.5rem;
-  border: 1px solid rgba(71, 131, 208, 0.5);
+  height: 100%;
+  padding: 16px;
+  gap: 16px;
+  background-color: var(--color-select-background);
+  border-radius: 8px;
+  border: 1px solid var(--color-select-border);
 }
 
 .tipo-tributario-item {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-  padding-left: 24px;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
 }
 
 .tipo-tributario-item::before {
   content: '';
   position: absolute;
-  left: 0;
+  left: 4px;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: 4px;
   box-shadow: 0 0 8px currentColor;
 }
 
-/* Estados dos indicadores LED */
-.estado-default::before {
-  background-color: #9e9e9e;
-  box-shadow: 0 0 8px #9e9e9e;
-}
-
-.estado-positivo::before {
-  background-color: #4caf50;
-  box-shadow: 0 0 8px #4caf50;
-}
-
-.estado-atencao::before {
-  background-color: #ffc107;
-  box-shadow: 0 0 8px #ffc107;
-}
-
-.estado-negativo::before {
-  background-color: #f44336;
-  box-shadow: 0 0 8px #f44336;
-}
-
-.estado-neutro::before {
-  background-color: #2196f3;
-  box-shadow: 0 0 8px #2196f3;
+.tipo-tributario-card,
+.tipo-tributario-card-discussao {
+  width: 100%;
+  flex: 1;
 }
 
 .tipo-tributario-card {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 500;
+  height: 100%;
   min-width: 300px;
+  background-color: rgba(26, 32, 44, 0.2);
+  border: 1px solid var(--color-select-border);
+  color: var(--color-text-primary);
 }
 
-.tipo-tributario-card::before {
-  content: '';
-  position: relative;
-  left: 0rem;
-  right: 1rem;
-  min-width: 8px;
-  min-height: 8px;
-  border-radius: 50%;
-  margin-right: 0.5rem;
+.tipo-tributario-card-discussao {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  height: 100%;
+  min-width: 300px;
+  background-color: var(--color-select-background);
+  border: 1px solid var(--color-select-border);
+  color: var(--color-text-primary);
 }
 
 .tipo-tributario-label {
   text-transform: capitalize;
+  color: var(--color-text-primary);
 }
 
 .tipo-tributario-badge {
-  background-color: rgba(255, 255, 255, 0.2);
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-/* Card de Justificativa */
-.tipo-tributario-justificativa {
-  flex: 1;
   background-color: rgba(255, 255, 255, 0.1);
-  padding: 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-}
-
-.justificativa-label {
-  display: block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #94a3b8;
+  color: var(--color-text-primary);
 }
 
-.justificativa-texto {
-  color: #e2e8f0;
-  line-height: 1.5;
+/* Estado Default */
+.estado-default::before {
+  background-color: #80bdff;
+  box-shadow: 0 0 8px #8b8d9a;
 }
 
-/* Estados */
-.estado-default {
-  background-color: #374151; /* Cinza neutro */
-  color: #fff;
+.estado-default .tipo-tributario-card {
+  background-color: rgba(30, 33, 56, 0.2);
+  border: 1px solid #343a47;
 }
 
-.estado-positivo {
-  background-color: #059669; /* Verde */
-  color: #fff;
+/* Códigos 01, 02, 03 - Operação Tributada (Tons de Azul) */
+[class*="tributada"]::before,
+[class*="aliquota_basica"]::before,
+[class*="aliquota_diferenciada"]::before {
+  background-color: #29b6f6;
+  box-shadow: 0 0 8px #29b6f6;
 }
 
-.estado-atencao {
-  background-color: #D97706; /* Amarelo */
-  color: #fff;
+[class*="tributada"] .tipo-tributario-card,
+[class*="aliquota_basica"] .tipo-tributario-card,
+[class*="aliquota_diferenciada"] .tipo-tributario-card {
+  background-color: rgba(2, 119, 189, 0.2);
+  border: 1px solid #01579b;
 }
 
-.estado-negativo {
-  background-color: #DC2626; /* Vermelho */
-  color: #fff;
+/* Códigos 04, 05, 06 - Tributada Monofásica (Tons de Roxo) */
+[class*="monofasica"]::before {
+  background-color: #9575cd;
+  box-shadow: 0 0 8px #9575cd;
 }
 
-.estado-neutro {
-  background-color: #2563EB; /* Azul */
-  color: #fff;
+[class*="monofasica"] .tipo-tributario-card {
+  background-color: rgba(94, 53, 177, 0.2);
+  border: 1px solid #4527a0;
+}
+
+/* Códigos 07, 08 - Isentas/Não Tributadas (Tons de Verde) */
+[class*="isenta"]::before,
+[class*="nao_tributada"]::before {
+  background-color: #4caf50;
+  box-shadow: 0 0 8px #4caf50;
+}
+
+[class*="isenta"] .tipo-tributario-card,
+[class*="nao_tributada"] .tipo-tributario-card {
+  background-color: rgba(46, 125, 50, 0.2);
+  border: 1px solid #1b5e20;
+}
+
+/* Código 09, 50 - Suspensão (Tons de Amarelo) */
+[class*="suspensa"]::before {
+  background-color: #ffd54f;
+  box-shadow: 0 0 8px #ffd54f;
+}
+
+[class*="suspensa"] .tipo-tributario-card {
+  background-color: rgba(255, 160, 0, 0.2);
+  border: 1px solid #ff6f00;
+}
+
+/* Código 49 - Outras Operações (Tons de Vermelho) */
+[class*="outras_operacoes"]::before,
+[class*="sem_credito"]::before {
+  background-color: #ef5350;
+  box-shadow: 0 0 8px #ef5350;
+}
+
+[class*="outras_operacoes"] .tipo-tributario-card,
+[class*="sem_credito"] .tipo-tributario-card {
+  background-color: rgba(198, 40, 40, 0.2);
+  border: 1px solid #b71c1c;
+}
+
+/* Código 70, 71, 72 - Operações com Direito a Crédito (Tons de Verde Claro) */
+[class*="credito"]::before {
+  background-color: #81c784;
+  box-shadow: 0 0 8px #81c784;
+}
+
+[class*="credito"] .tipo-tributario-card {
+  background-color: rgba(67, 160, 71, 0.2);
+  border: 1px solid #2e7d32;
+}
+
+/* Código 73, 74 - ST e Substituído (Tons de Laranja) */
+[class*="substituicao"]::before,
+[class*="substituido"]::before {
+  background-color: #ffb74d;
+  box-shadow: 0 0 8px #ffb74d;
+}
+
+[class*="substituicao"] .tipo-tributario-card,
+[class*="substituido"] .tipo-tributario-card {
+  background-color: rgba(245, 124, 0, 0.2);
+  border: 1px solid #e65100;
+}
+
+/* Código 75 - Exportação (Tons de Ciano) */
+[class*="exportacao"]::before {
+  background-color: #4dd0e1;
+  box-shadow: 0 0 8px #4dd0e1;
+}
+
+[class*="exportacao"] .tipo-tributario-card {
+  background-color: rgba(0, 172, 193, 0.2);
+  border: 1px solid #00838f;
 }
 
 @media (max-width: 640px) {
   .tipos-tributarios {
     flex-direction: column;
+    gap: 16px;
+    padding: 16px;
   }
 
   .tipo-tributario-card {
     width: 100%;
     min-width: unset;
   }
+}
 
-  .tipo-tributario-justificativa {
-    width: 100%;
+/* Para telas maiores que 768px (desktop) */
+@media (min-width: 768px) {
+  .tipo-tributario-item {
+    flex-direction: row;
   }
-} 
+  
+  .tipo-tributario-card,
+  .tipo-tributario-card-discussao {
+    flex: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .tipo-tributario-card-discussao {
+    flex-direction: row;
+  }
+}

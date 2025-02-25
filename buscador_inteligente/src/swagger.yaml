@@ -1,0 +1,289 @@
+openapi: 3.0.0
+info:
+  title: API de Busca Inteligente
+  version: 1.0.0
+  description: API para realizar buscas inteligentes usando LLM
+servers:
+  - url: http://localhost:3000
+    description: Servidor de Desenvolvimento
+
+components:
+  schemas:
+    Query:
+      type: object
+      required:
+        - q
+      properties:
+        q:
+          type: string
+          description: Pergunta a ser respondida pela LLM
+        budget:
+          type: number
+          description: Orçamento máximo de tokens (padrão 1.000.000)
+        maxBadAttempt:
+          type: number
+          description: Número máximo de tentativas ruins permitidas (padrão 3)
+        model:
+          type: string
+          description: |
+            Modelo a ser usado. Se não especificado, usa:
+            - qwen2.5-7b-instruct-1m (quando USE_LOCAL_MODEL=true)
+            - gemini-2.0-flash (quando USE_LOCAL_MODEL=false)
+          enum:
+            - qwen2.5-7b-instruct-1m
+            - gemini-2.0-flash
+    
+    LLMOutput:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Data e hora da saída
+        type:
+          type: string
+          enum: [progress, final_answer, error]
+          description: Tipo da saída da LLM
+        data:
+          type: object
+          description: Dados da saída (varia conforme o tipo)
+
+    TaskResult:
+      type: object
+      properties:
+        action:
+          type: string
+          description: Ação executada pela LLM
+        answer:
+          type: string
+          description: Resposta gerada
+        references:
+          type: array
+          items:
+            type: object
+            properties:
+              exactQuote:
+                type: string
+              url:
+                type: string
+        think:
+          type: string
+          description: Raciocínio da LLM
+
+    ServerLog:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        message:
+          type: string
+        level:
+          type: string
+          enum: [log, error, warn, info]
+
+    PromptContent:
+      type: object
+      properties:
+        filename:
+          type: string
+        content:
+          type: string
+
+    LogsResponse:
+      type: object
+      properties:
+        serverLogs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerLog'
+        promptContents:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromptContent'
+
+    SearchAction:
+      type: object
+      properties:
+        action:
+          type: string
+          enum: [search]
+        think:
+          type: string
+        searchQuery:
+          type: string
+      required: [action, think, searchQuery]
+
+    AnswerAction:
+      type: object
+      properties:
+        action:
+          type: string
+          enum: [answer]
+        think:
+          type: string
+        answer:
+          type: string
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+      required: [action, think, answer, references]
+
+    ReflectAction:
+      type: object
+      properties:
+        action:
+          type: string
+          enum: [reflect]
+        think:
+          type: string
+        questionsToAnswer:
+          type: array
+          items:
+            type: string
+      required: [action, think, questionsToAnswer]
+
+    Reference:
+      type: object
+      properties:
+        exactQuote:
+          type: string
+        url:
+          type: string
+      required: [exactQuote, url]
+
+paths:
+  /api/v1/query:
+    post:
+      summary: Inicia uma nova consulta à LLM
+      tags:
+        - Consultas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+      responses:
+        '200':
+          description: ID da requisição gerado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requestId:
+                    type: string
+        '400':
+          description: Parâmetros inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /api/v1/outputs:
+    get:
+      summary: Obtém todas as saídas da LLM
+      tags:
+        - Monitoramento
+      responses:
+        '200':
+          description: Lista de todas as saídas da LLM
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LLMOutput'
+
+  /api/v1/task/{requestId}:
+    get:
+      summary: Obtém o resultado de uma tarefa específica
+      tags:
+        - Resultados
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+          description: ID da requisição
+      responses:
+        '200':
+          description: Resultado da tarefa encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+        '404':
+          description: Tarefa não encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /api/v1/stream/{requestId}:
+    get:
+      summary: Acompanha o progresso de uma consulta em tempo real
+      tags:
+        - Monitoramento
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+          description: ID da requisição
+      responses:
+        '200':
+          description: Stream de eventos SSE estabelecido
+          content:
+            text/event-stream:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [connected, progress, answer, error]
+                  data:
+                    type: object
+                  trackers:
+                    type: object
+                    properties:
+                      tokenUsage:
+                        type: number
+                      actionState:
+                        type: object
+                  outputs:
+                    type: array
+                    items:
+                      type: object
+
+  /api/v1/logs:
+    get:
+      summary: Obtém todos os logs do servidor e conteúdos dos prompts
+      tags:
+        - Logs
+      responses:
+        '200':
+          description: Logs do servidor e conteúdos dos prompts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsResponse'
+
+  /api-docs:
+    get:
+      summary: Documentação da API
+      tags:
+        - Documentation
+      responses:
+        '200':
+          description: Documentação da API 

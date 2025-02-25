@@ -1,0 +1,114 @@
+Current date: Mon, 10 Feb 2025 20:33:51 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    Visite o perfil https://www.linkedin.com/in/paulopelaez/ e me traga as informações que achar
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "Visite o perfil https://www.linkedin.com/in/paulopelaez/ e me traga as informações que achar".
+                    In particular, you tried to search for the following keywords: "linkedin perfil paulopelaez".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about linkedin perfil paulopelaez?
+    </question>
+    <answer>
+    Founder &amp; CTO - Google For Startups invested in Lovel Y24 · Empreendedor, apaixonado por tecnologia e recrutamento tech, formado em Ciência da computação pela FGV. · Experience: Lovel · Education: Centro Universitário Farias Brito · Location: Fortaleza · 500+ connections on LinkedIn.; Na última quarta(21/06) na EEEP Leonel de Moura Brizola, tivemos a oportunidade de receber o CTO da Lovel, Paulo Pelaez, com uma palestra sobre a base na carreira tech.; 1 bilhões de usuários | Gerencie sua identidade profissional. Crie e interaja com sua rede profissional. Aproveite o acesso a informações, estatísticas e oportunidades.; 1 billion members | Manage your professional identity. Build and engage with your professional network. Access knowledge, insights and opportunities.; Location: Lisbon Metropolitan Area · 500+ connections on LinkedIn. View Paulo Rosado’s profile on LinkedIn, a professional community of 1 billion members.; Perfil.com | 3,381 followers on LinkedIn. Periodismo Puro en tiempo real | Bienvenidos a la página oficial en LinkedIn de Perfil.com, el sitio de noticias de Editorial Perfil. Acá podrás encontrar noticias desde Buenos Aires, Argentina. Periodismo puro en tiempo real.; Location: León · 500+ connections on LinkedIn. View Pablo Pelaez’s profile on LinkedIn, a professional community of 1 billion members.; 1 billion members | Manage your professional identity. Build and engage with your professional network. Access knowledge, insights and opportunities.; Location: Atlanta · 500+ connections on LinkedIn. View Felipe Pelaez’s profile on LinkedIn, a professional community of 1 billion members.; See posts, photos and more on Facebook; 1 mil millones de miembros | Gestiona tu identidad profesional. Amplía e interactúa con tu red profesional. Accede a conocimientos, información y oportunidades.; Ve el perfil de Jaime Alberto Pelaez Espinosa en LinkedIn, la mayor red profesional del mundo. Jaime Alberto tiene 4 empleos en su perfil. Ve el perfil completo en LinkedIn y descubre los contactos y empleos de Jaime Alberto en empresas similares.; 1 mil millones de miembros | Gestiona tu identidad profesional. Amplía e interactúa con tu red profesional. Accede a conocimientos, información y oportunidades.; Ve el perfil de Gema Pelaez Aller en LinkedIn, la mayor red profesional del mundo. Gema tiene 5 empleos en su perfil. Ve el perfil completo en LinkedIn y descubre los contactos y empleos de Gema en empresas similares.; 1 mil millones de miembros | Gestiona tu identidad profesional. Amplía e interactúa con tu red profesional. Accede a conocimientos, información y oportunidades.; Su concienzuda selección de los candidatos se ha plasmado posteriormente en un éxito profesional notable. Se trata de un profesional atento a todos los crecientes retos pedagógicos y de interacción empresarial. Su perfil es polivalente y sus resultados indiscutibles.; Designer de Superfícies | Designer de Embalagens | Ilustrador · Atuei como arte-finalista e professor de arte, desenho, ilustração, design e arte desde 2008. Em 2019 passei a atuar como Designer de Superfícies na área de impressão digital têxtil onde trabalho desde então.
+    </answer>
+    
+    <references>
+    ["https://www.linkedin.com/in/paulopelaez/","https://br.linkedin.com/posts/paulopelaez_quem-gosta-de-uma-boa-dica-aqui-vai-activity-6976288047470379008-dbai","https://br.linkedin.com/in/alejandro-pelaez-8770b29","https://www.linkedin.com/in/marcela-pelaez-21762014","https://www.linkedin.com/in/paulorosado/","https://www.linkedin.com/company/perfilcom","https://www.linkedin.com/in/pablo-pelaez-421182/","https://www.linkedin.com/in/eduardopelaez","https://www.linkedin.com/in/felipepelaez/","https://m.facebook.com/people/Paulo-Pelaez/100003009957420","https://es.linkedin.com/in/jorge-d%C3%ADez-pel%C3%A1ez-63150b59","https://es.linkedin.com/in/jaime-alberto-pelaez-espinosa-a9403710","https://es.linkedin.com/in/martin-pelaez-281a77b3","https://es.linkedin.com/in/gema-pelaez-aller-79a4b0175","https://es.linkedin.com/in/pedro-david-pelaez-0798a1133","https://javier-pelaez.com/","https://www.linkedin.com/in/paulosanlima/"]
+    </references>
+    
+    </knowledge-1>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://www.linkedin.com/in/paulopelaez/": "Paulo Pelaez - Founder & CTO - Lovel | LinkedIn"
+  + "https://br.linkedin.com/posts/paulopelaez_quem-gosta-de-uma-boa-dica-aqui-vai-activity-6976288047470379008-dbai": "Paulo Pelaez publicou no LinkedIn"
+  + "https://br.linkedin.com/in/alejandro-pelaez-8770b29": "Alejandro Pelaez - Director Sao Paulo (Brazil) Office at Procolombia ...https://br.linkedin.com/in/alejandro-pelaez-8770b29"
+  + "https://www.linkedin.com/in/marcela-pelaez-21762014": "LinkedIn: Log In or Sign Up"
+  + "https://www.linkedin.com/in/paulorosado/": "Paulo Rosado - Lisbon Metropolitan Area | Professional Profile | LinkedIn"
+  + "https://www.linkedin.com/company/perfilcom": "Perfil.com | LinkedIn"
+  + "https://www.linkedin.com/in/pablo-pelaez-421182/": "Pablo Pelaez - León, Castilla and Leon, Spain | Professional Profile | LinkedIn"
+  + "https://www.linkedin.com/in/eduardopelaez": "Eduardo Pelaez - President - Qualiden Inc. | LinkedIn"
+  + "https://www.linkedin.com/in/felipepelaez/": "Felipe Pelaez - Atlanta, Georgia, United States | Professional Profile | LinkedIn"
+  + "https://m.facebook.com/people/Paulo-Pelaez/100003009957420": "Paulo Pelaez"
+  + "https://es.linkedin.com/in/jorge-d%C3%ADez-pel%C3%A1ez-63150b59": "LinkedIn: inicio de sesión o registro"
+  + "https://es.linkedin.com/in/jaime-alberto-pelaez-espinosa-a9403710": "Jaime Alberto Pelaez Espinosa | LinkedIn"
+  + "https://es.linkedin.com/in/martin-pelaez-281a77b3": "Martin Pelaez - Islas Baleares, España | Perfil profesional"
+  + "https://es.linkedin.com/in/gema-pelaez-aller-79a4b0175": "Gema Pelaez Aller - Plain Concepts | LinkedIn"
+  + "https://es.linkedin.com/in/pedro-david-pelaez-0798a1133": "Pedro David Pelaez | LinkedIn"
+  + "https://javier-pelaez.com/": "Javier Peláez – Just another WordPress site"
+  + "https://www.linkedin.com/in/paulosanlima/": "Paulo L. - Guarulhos, São Paulo, Brazil | Professional Profile | LinkedIn"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

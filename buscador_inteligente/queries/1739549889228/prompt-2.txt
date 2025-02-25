@@ -1,0 +1,106 @@
+Current date: Fri, 14 Feb 2025 16:18:46 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    quais os impactos tributário no produto de alcool gel em relacao a reforma tributaria em curso, no brasil
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "quais os impactos tributário no produto de alcool gel em relacao a reforma tributaria em curso, no brasil".
+                    In particular, you tried to search for the following keywords: "reforma tributária "álcool gel" Brasil, impactos tributários "álcool gel" Brasil".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about reforma tributária álcool gel impactos tributários Brasil?
+    </question>
+    <answer>
+    O mantra levou às alturas o consumo de álcool em gel – produto cuja venda explodiu no Brasil e que está na linha de frente da mobilização de um setor industrial inteiro contra a reforma do Imposto de Renda nos termos colocados pelo relator, deputado Celso Sabino.; Empresas precisam ter autorização de funcionamento e alvará ou licença sanitária emitida pelo estado ou município; Conteúdos, Notícias e Tudo sobre Álcool gel. Reportagens, entrevistas, breaking news e mais. Acompanhe na CNN Brasil!; Ementa Dispõe sobre as atividades econômicas relativas ao álcool gel.; O governo reduziu temporariamente ... 70%, álcool gel, desinfetantes, máscaras e roupas de proteção e produtos de uso médico, como cateteres, tubo laríngeo, aparelhos respiratórios e de eletrodiagnóstico. A medida, que já havia sido anunciada na semana passada pelo ministro da Economia, Paulo Guedes, foi publicada na edição extra do “Diário Oficial da União” na sexta-feira (20). A lista consta do anexo do Decreto 10.284. Mais recente Próxima Brasil tem 18 mortes ...; Supermercados e farmácias não poderão mais comercializar produto a partir de 30 de abril. Medida havia sido flexibilizada em 2020 por conta da pandemia da Covid-19.; Proposta apresentada pelo vereador Alberi Dias virou piada nacional e ganhou destaque no noticiário internacional; Isenção também é válida desinfetantes, roupas de proteção e produtos de uso médico, como cateteres, tubo laríngeo, aparelhos respiratórios e de eletrodiagnóstico; Empresas precisam ter autorização de funcionamento e alvará ou licença sanitária emitida pelo estado ou município; Conteúdo farmacêutico. Divulgação sobre ciência e saúde com foco no setor farmacêutico e na profissão farmacêutica. Portal de utilidade pública sem fins lucrativos.
+    </answer>
+    
+    <references>
+    ["https://exame.com/exame-in/alcool-gel-na-linha-de-frente-contra-relatorio-da-reforma-do-ir/","https://www.camara.leg.br/noticias/780930-comissao-aprova-desburocratizacao-da-producao-de-alcool-em-gel-durante-crises-sanitarias/","https://www.cnnbrasil.com.br/tudo-sobre/alcool-gel/","https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao=2239627","https://valor.globo.com/brasil/noticia/2020/03/21/governo-zera-ipi-de-lcool-gel-e-outros-itens.ghtml","https://g1.globo.com/google/amp/rs/rio-grande-do-sul/noticia/2024/04/21/proibicao-da-venda-de-alcool-liquido-70percent-veja-alternativas-de-limpeza-e-saiba-como-mercados-do-rs-se-adaptam-a-medida.ghtml","https://gauchazh.clicrbs.com.br/colunistas/daniel-scola/noticia/2021/03/ideia-de-pulverizar-cidade-com-alcool-gel-passaria-batida-se-nao-estivesse-o-brasil-no-radar-do-mundo-ckmdas42700080198rn1ukbpr.html","https://valorinveste.globo.com/mercados/brasil-e-politica/noticia/2020/03/21/governo-zera-ipi-de-alcool-gel-mascaras-e-outros-itens.ghtml","https://pfarma.com.br/noticia-setor-farmaceutico/legislacao-farmaceutica/5297-fabricacao-alcool-gel.html"]
+    </references>
+    
+    </knowledge-1>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://exame.com/exame-in/alcool-gel-na-linha-de-frente-contra-relatorio-da-reforma-do-ir/": "'Álcool gel' na linha de frente contra relatório da reforma do IR | Exame"
+  + "https://www.camara.leg.br/noticias/780930-comissao-aprova-desburocratizacao-da-producao-de-alcool-em-gel-durante-crises-sanitarias/": "Comissão aprova desburocratização da produção de álcool em gel durante crises sanitárias - Notícias - Portal da Câmara dos Deputados"
+  + "https://www.cnnbrasil.com.br/tudo-sobre/alcool-gel/": "Álcool gel - Notícias e tudo sobre | CNN Brasil"
+  + "https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao=2239627": "Portal da Câmara dos Deputados"
+  + "https://valor.globo.com/brasil/noticia/2020/03/21/governo-zera-ipi-de-lcool-gel-e-outros-itens.ghtml": "Governo zera IPI de álcool gel e outros itens | Brasil | Valor Econômico"
+  + "https://g1.globo.com/google/amp/rs/rio-grande-do-sul/noticia/2024/04/21/proibicao-da-venda-de-alcool-liquido-70percent-veja-alternativas-de-limpeza-e-saiba-como-mercados-do-rs-se-adaptam-a-medida.ghtml": "Proibição da venda de álcool líquido 70%: veja alternativas de limpeza e saiba como mercados do RS se adaptam à medida | Rio Grande do Sul | G1"
+  + "https://gauchazh.clicrbs.com.br/colunistas/daniel-scola/noticia/2021/03/ideia-de-pulverizar-cidade-com-alcool-gel-passaria-batida-se-nao-estivesse-o-brasil-no-radar-do-mundo-ckmdas42700080198rn1ukbpr.html": "Ideia de pulverizar cidade com álcool gel passaria batida se não estivesse o Brasil no radar do mundo | GZH"
+  + "https://valorinveste.globo.com/mercados/brasil-e-politica/noticia/2020/03/21/governo-zera-ipi-de-alcool-gel-mascaras-e-outros-itens.ghtml": "Governo zera IPI de álcool gel, máscaras e outros itens | Brasil e Política | Valor Investe"
+  + "https://pfarma.com.br/noticia-setor-farmaceutico/legislacao-farmaceutica/5297-fabricacao-alcool-gel.html": "Anvisa autoriza fabricação de álcool gel sem autorização prévia - PFARMA"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

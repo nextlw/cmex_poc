@@ -15,6 +15,7 @@ class RegistroPesquisas(BaseModel):
     avaliado_em: Optional[datetime] = None
     avaliacao: Optional[bool] = None
     comentarios: Optional[Dict] = None
+    autocomplete: Optional[bool] = None
     # criado_em: datetime -> preenchido automaticamente no Supabase
 
     class Config:

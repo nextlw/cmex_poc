@@ -1,0 +1,134 @@
+Current date: Thu, 13 Feb 2025 22:33:06 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    Quero que você encontre profissionais no LinkedIn para meu time comercial de Inside Sales. Estou buscando SDRs (Sales Development Representatives) e Closers que atendam aos seguintes critérios:  Localização: Fortaleza, Ceará. Experiência: Pelo menos 2 anos no mercado. Setor: Experiência com software, preferencialmente SaaS. Habilidades: Conhecimento em metodologias de vendas, como SPIN Selling, BANT, contorno de objeções e outras estratégias de qualificação e fechamento. Diferenciais: Experiência com CRM (ex.: HubSpot, Salesforce, Pipedrive). Histórico de superação de metas ou prêmios de desempenho. Experiência vendendo soluções B2B. Segmentação:  Identifique dois grupos distintos: Profissionais que estão abertos a novas oportunidades. Todos os perfis qualificados, independentemente do status de interesse. Seu objetivo é me ajudar a identificar e segmentar esses profissionais da melhor forma possível para recrutamento., finalize a busca quando tiver certeza de 10 resultados
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "Quero que você encontre profissionais no LinkedIn para meu time comercial de Inside Sales. Estou buscando SDRs (Sales Development Representatives) e Closers que atendam aos seguintes critérios:  Localização: Fortaleza, Ceará. Experiência: Pelo menos 2 anos no mercado. Setor: Experiência com software, preferencialmente SaaS. Habilidades: Conhecimento em metodologias de vendas, como SPIN Selling, BANT, contorno de objeções e outras estratégias de qualificação e fechamento. Diferenciais: Experiência com CRM (ex.: HubSpot, Salesforce, Pipedrive). Histórico de superação de metas ou prêmios de desempenho. Experiência vendendo soluções B2B. Segmentação:  Identifique dois grupos distintos: Profissionais que estão abertos a novas oportunidades. Todos os perfis qualificados, independentemente do status de interesse. Seu objetivo é me ajudar a identificar e segmentar esses profissionais da melhor forma possível para recrutamento., finalize a busca quando tiver certeza de 10 resultados".
+                    In particular, you tried to search for the following keywords: "linkedin sdr closer fortaleza saas, linkedin sdr closer fortaleza saas "aberto a novas oportunidades" OR "em busca de", linkedin crm "superação de metas" B2B fortaleza".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about LinkedIn SDR Closer Fortaleza SaaS "aberto a novas oportunidades" OR "em busca de" CRM "superação de metas" B2B?
+    </question>
+    <answer>
+    Um dos grandes desafios para os gestores de equipes comerciais de inside sales é a harmonia entre SDR`s e Closers. E já te adianto aqui, essa harmonia nunca vai ser perfeita.; 6 principais vagas de Sdr hoje em Fortaleza, Ceará, Brasil. Aproveite sua rede profissional e seja contratado. Novas vagas de Sdr adicionadas diariamente.; 19 principais vagas de Sdr hoje em Fortaleza, Ceará, Brasil. Aproveite sua rede profissional e seja contratado. Novas vagas de Sdr adicionadas diariamente.; Anunciada 15:06:08. Requisitos;Ensino Superior concluído ou em andamento;Experiência comprovada em vendas;Habilidade… - veja esta vaga e outras semelhantes no LinkedIn.; Anunciada 20:06:37. Classificação LeadsProspecção Ativa Produtos e ServiçosElaboração de propostaFollow-up de… - veja esta vaga e outras semelhantes no LinkedIn.; As 250 melhores vagas de Inside Sales Closer de hoje em: Brasil. Aproveite sua rede profissional para conseguir um emprego. Novas vagas de Inside Sales Closer adicionadas diariamente.; Let&#x27;s define the role of Sales Development Representatives (SDRs). Learn why their work is important for lead generation and how sales reps contribute to your sales success.; Here are 5 Reasons you should consider promoting your top Outbound SDR to a closing role: Your champion in a sales cycle will often go “cold” as they can’t make a business case to their boss. Outbound SDRs are used to being proactive, so they won’t hesitate to reach out to a different ...; “He who knows nothing is closer to the truth than he whose mind is filled with falsehoods… · Experience: Jump Ventures · Location: Fortaleza · 500+ connections on LinkedIn. View Rafael Lobo’s profile on LinkedIn, a professional community of 1 billion members.; Por Francisco Tramujas Os termos Hunter / farmer ou ainda SDR (Sales Development Representative) / Closer estão invadindo cada vez mais o Linkedin, mesmo para quem não é de vendas. O crescimento da importância das áreas comerciais, e o amadurecimento deste mercado, está popularizando ...; Find all the resources you need to hire a great sales development representative for your company. Learn top interview questions to ask, how to write a job description, and more.; SDR | 1,948 followers on LinkedIn. Network design and implementation. We run our own network, too, where we offer cloud services, including voice. We are a partner of Cisco and VMWare, which enables us to deliver what we feel is the absolute best infrastructure for cloud computing, which is ...; Login to LinkedIn to keep in touch with people you know, share ideas, and build your career.; When SDRs and AEs work together, the whole is bigger than the sum. Doreen Pernel from Box shows us how.; Craft a winning sales profile LinkedIn Headline to stand out from the crowd. This guide is packed with examples and tips to help you win over more clients.; The SDR manager role is probably the most difficult at B2B SaaS companies. Sales wants higher quality appointments. Marketing wants higher MQL… | 21 comments on LinkedIn; Prolins It Solution | 5,520 followers on LinkedIn. Há mais de 20 anos, somos a software house que aproxima você de soluções especializadas e inovadoras para sua empresa. | For over 20 years, we have been the software house that brings you closer to specialized and innovative solutions for ...; Casa Fortaleza | 2.392 seguidores no LinkedIn. A vida acontece em casa | A Casa Fortaleza é uma das referências no Mercado Brasileiro de decoração. Ao longo das décadas, sempre esteve em sintonia com a dinâmica do mundo da arquitetura e suas constantes inovações.; Anunciada 18:39:25. Prospectar Leads, Qualificar Leads e Criar oportunidades de venda. Criatividade, Agilidade, Boa… - veja esta vaga e outras semelhantes no LinkedIn.; SDR Portugal | 2.173 seguidores no LinkedIn. Associação sem fins lucrativos candidata à criação e gestão do Sistema de Depósito e Reembolso de embalagens de bebidas de uso único, a implementar em Portugal. O SDR Portugal é constituído pela Associação Circular Drinks (que integra ...; Informar aos recrutadores que você está aberto a novas oportunidades; Como colocar no LinkedIn que estou procurando emprego? Se essa é a sua pergunta, não se preocupe. É só conferir as nossas dicas.; Saiba como colocar no LinkedIn que você está procurando emprego (até na foto de perfil) e como ficar de olho nas oportunidades; Vá no seu perfil do LinkedIn e clique em &#x27;tenho interesse em..; Estamos atravessando um cenário econômico turbulento, que contribui com o aumento de profissionais em busca de recolocação. Mesmo para aqueles que estão empregados, o momento transparece alguma instabilidade e insegurança.; O LinkedIn permite que você mostre para recrutadores e outros profissionais que está procurando trabalho. Ou ainda, fazer o caminho inverso, removendo essa marc; Auxiliar de Inventário Sênior Formado como Técnico em Radiologia · Experience: Em Busca de Novas Oportunidades · Education: Instituto técnico Denizard Rivail · Location: Fortaleza · 120 connections on LinkedIn. View Romilson Braz de Souza’s profile on LinkedIn, a professional community ...; Em busca de novas oportunidades · Estive a 2 anos no setor de atendimento de uma empresa de energia elétrica. Curso Análise e Desenvolvimento de Sistemas pela Unicesumar EAD. · Experience: Multi Energisa Serviços S.A. · Education: UniCesumar · Location: Fortaleza · 67 connections on ...; Grupo Fortaleza | 911 seguidores no LinkedIn. Inova, Renova e Transforma! 🌍 ♻️ 💙 | Nós somos o Grupo Fortaleza, temos como nosso grande propósito através das empresas que nos integram contribuir para a evolução da sociedade por meio da inovação!; Em busca de novas oportunidades · Experience: Desempregada · Education: FAMETRO · Location: Fortaleza · 500+ connections on LinkedIn. View Janete dos Santos Barbosa’s profile on LinkedIn, a professional community of 1 billion members.; Vá no seu perfil do LinkedIn e clique em &#x27;tenho interesse em…&#x27; &gt; Encontrar um novo emprego. Na próxima página você irá definir algumas informações do cargo que está buscando: - Cargos - Locais de trabalho - Localidades da vaga - Data de início - Tipos de vaga Selecione quem pode ...; Rede social oferece comandos extras para pesquisar vagas, envia alertas quando há novas oportunidades e avisa aos recrutadores que o usuário está disponível; confira; Há dias com uma vontade arrebatadora para escrever sobre algo forte. Sim, sobre você, sobre mim, sobre o status &quot; Estou em busca de novas oportunidades ou disponível &quot;, na linguagem comum, conhecido como &quot;desempregado&quot;, ou aquele período torpe que estamos &quot;coçando&quot;, ou &quot; à toa&quot;.; Essas recomendações podem fortalecer sua credibilidade e destacar suas habilidades e realizações. Além disso, solicite endossos das suas habilidades para aumentar sua validação profissional. 8. Esteja aberto a oportunidades: Ative a opção de &quot;Interessado(a) em Oportunidades&quot; no seu perfil. Isso permite que os recrutadores saibam que você está aberto a novas ...; Em busca de novas oportunidades de emprego. contato: franzemorais@hotmail.com - 85… · Experience: DR CONSTRUÇÕES · Education: FACULDADE OBOÉ · Location: Fortaleza · 500+ connections on LinkedIn. View José (Franzé) Morais’ profile on LinkedIn, a professional community of 1 billion ...; Auxiliar Comercial · Profissional em busca de uma nova oportunidade no mercado de trabalho com experiência em atendimento ao público e vendas. Estou aberto a novas oportunidades em outras áreas, acredito que mudanças sempre nos traz aprendizado. · Experience: E-Cred Soluções Financeiras ...; Pró-ativo, abertura de novos clientes, gestão da carteira de clientes, vendas de maquinas de Adquerencia, suporte via telefone, e-mail e Chat, efetivação de vendas, cobrança, atuando com foco no alcance e superação de metas e elevaão da satisfação dos clientes. sempre buscando ...
+    </answer>
+    
+    <references>
+    ["https://pt.linkedin.com/pulse/sdr-x-closer-5-dicas-para-evitar-atritos-entre-equipes-pedro-villa","https://br.linkedin.com/jobs/sdr-vagas-fortaleza-ce?trk=guest_job_details_jd_jserp_more_jobs_link","https://br.linkedin.com/jobs/sdr-vagas-fortaleza","https://br.linkedin.com/jobs/view/auxiliar-de-pr%C3%A9-vendas-sdr-at-grupo-econ%C3%B4mico-meireles-e-freitas-3399270187","https://br.linkedin.com/jobs/view/sdr-ti-presencial-fortaleza-at-tecla-t-3623298629","https://br.linkedin.com/jobs/inside-sales-closer-vagas","https://www.freshworks.com/crm/sales/sdr-sales-development-reps/","https://www.linkedin.com/pulse/why-your-top-outbound-sdr-great-closer-michael-hanson","https://www.linkedin.com/in/rafael-lobo-76305232/","https://www.linkedin.com/pulse/hunter-ou-farmer-sdr-closer-como-o-amadurecimento-do-setor-tramujas-","https://business.linkedin.com/talent-solutions/resources/how-to-hire-guides/sales-development-representative","https://www.linkedin.com/company/sdr","https://www.linkedin.com/pulse/sales-complete-sdr-playbook-sara-storm-4nm2f","https://www.linkedin.com/pulse/6-ways-aes-work-closer-sdrs-james-ski","https://www.close.com/blog/linkedin-headline-examples","https://www.linkedin.com/posts/kylevamvouris_the-sdr-manager-role-is-probably-the-most-activity-7124443522404950016-hAPM?trk=public_profile_like_view","https://www.linkedin.com/company/prolins-it-solution","https://br.linkedin.com/company/casa-fortaleza","https://br.linkedin.com/jobs/view/sales-development-representative-sdr-at-fix-pay-3475143035","https://pt.linkedin.com/company/sdr-portugal","https://www.linkedin.com/help/linkedin/answer/a507508/informar-aos-recrutadores-que-voce-tem-interesse-em-um-novo-emprego-?lang=pt","https://blog.portalpos.com.br/como-colocar-no-linkedin-que-estou-procurando-emprego/","https://tecnoblog.net/responde/como-colocar-no-linkedin-que-voce-esta-procurando-emprego/","https://pt.linkedin.com/pulse/como-avisar-que-você-est��-aberto-novas-oportunidades-linkedin-abreu","https://www.linkedin.com/pulse/estou-aberto-novas-oportunidades-e-agora-sergio-margosian","https://canaltech.com.br/software/como-ativar-ou-tirar-o-aviso-open-to-work-do-linkedin/","https://www.linkedin.com/in/romilson-braz-de-souza-a887b917b/","https://www.linkedin.com/in/rodrigo-dos-santos-andrade-43605a210/?_l=en","https://br.linkedin.com/company/grupo-fortaleza","https://www.linkedin.com/in/janete-dos-santos-barbosa-1805a636/","https://pt.linkedin.com/pulse/como-avisar-que-você-está-aberto-novas-oportunidades-jamile-abreu","https://www.techtudo.com.br/listas/2021/10/seis-dicas-para-encontrar-vagas-de-emprego-no-linkedin-que-poucos-conhecem.ghtml","https://pt.linkedin.com/pulse/status-estou-em-busca-de-novas-oportunidades-ou-gisele-de-luna","https://alexsilvaconsultoria.com/pagina/alavancando-sua-carreira-com-o-linkedin-taticas-para-conquistar-novas-oportunidades/139","https://www.linkedin.com/in/jos%C3%A9-franz%C3%A9-morais-8b547431/","https://www.linkedin.com/in/jo%C3%A3o-paulo-rodrigues-da-silva-70096622b/","https://www.linkedin.com/in/elivelton-rodrigues-79bbb116a/"]
+    </references>
+    
+    </knowledge-1>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://pt.linkedin.com/pulse/sdr-x-closer-5-dicas-para-evitar-atritos-entre-equipes-pedro-villa": "SDR x Closer: 5 dicas para evitar atritos entre as equipes."
+  + "https://br.linkedin.com/jobs/sdr-vagas-fortaleza-ce?trk=guest_job_details_jd_jserp_more_jobs_link": "4 vagas de Sdr em: Fortaleza, Ceará, Brasil - LinkedIn"
+  + "https://br.linkedin.com/jobs/sdr-vagas-fortaleza": "19 vagas de Sdr em: Fortaleza, Ceará, Brasil"
+  + "https://br.linkedin.com/jobs/view/auxiliar-de-pr%C3%A9-vendas-sdr-at-grupo-econ%C3%B4mico-meireles-e-freitas-3399270187": "Grupo Econômico Meireles e Freitas está contratando AUXILIAR DE PRÉ-VENDAS (SDR) em: Fortaleza, Ceará, Brasil | LinkedIn"
+  + "https://br.linkedin.com/jobs/view/sdr-ti-presencial-fortaleza-at-tecla-t-3623298629": "Tecla T está contratando SDR TI ( Presencial - Fortaleza) em: Fortaleza, Ceará, Brasil | LinkedIn"
+  + "https://br.linkedin.com/jobs/inside-sales-closer-vagas": "250 vagas de Inside Sales Closer em: Brasil"
+  + "https://www.freshworks.com/crm/sales/sdr-sales-development-reps/": "What Is A Sales Development Representative (SDR)? Freshsales"
+  + "https://www.linkedin.com/pulse/why-your-top-outbound-sdr-great-closer-michael-hanson": "Why Your Top Outbound SDR Will Be a Great “Closer”"
+  + "https://www.linkedin.com/in/rafael-lobo-76305232/": "Rafael Lobo - Jump Ventures | LinkedIn"
+  + "https://www.linkedin.com/pulse/hunter-ou-farmer-sdr-closer-como-o-amadurecimento-do-setor-tramujas-": "Hunter ou Farmer? SDR ou Closer? Como o amadurecimento do setor comercial pode impactar no seu negócio?"
+  + "https://business.linkedin.com/talent-solutions/resources/how-to-hire-guides/sales-development-representative": "Sales Development Representative Hiring Guide | LinkedIn Talent Solutions"
+  + "https://www.linkedin.com/company/sdr": "SDR | LinkedIn"
+  + "https://www.linkedin.com/pulse/sales-complete-sdr-playbook-sara-storm-4nm2f": "LinkedIn Login, Sign in | LinkedIn"
+  + "https://www.linkedin.com/pulse/6-ways-aes-work-closer-sdrs-james-ski": "6 ways for AEs to work closer with their SDRs - LinkedIn"
+  + "https://www.close.com/blog/linkedin-headline-examples": "How to Write a Winning Sales Profile LinkedIn Headline (With 8 Examples)"
+  + "https://www.linkedin.com/posts/kylevamvouris_the-sdr-manager-role-is-probably-the-most-activity-7124443522404950016-hAPM?trk=public_profile_like_view": "Kyle Vamvouris on LinkedIn: The SDR manager role is probably the most difficult at B2B SaaS companies.… | 21 comments"
+  + "https://www.linkedin.com/company/prolins-it-solution": "Prolins It Solution | LinkedIn"
+  + "https://br.linkedin.com/company/casa-fortaleza": "Casa Fortaleza | LinkedIn"
+  + "https://br.linkedin.com/jobs/view/sales-development-representative-sdr-at-fix-pay-3475143035": "Fix Pay está contratando Sales Development Representative (SDR) em: Fortaleza, Ceará, Brasil | LinkedIn"
+  + "https://pt.linkedin.com/company/sdr-portugal": "SDR Portugal | LinkedIn"
+  + "https://www.linkedin.com/help/linkedin/answer/a507508/informar-aos-recrutadores-que-voce-tem-interesse-em-um-novo-emprego-?lang=pt": "Informar aos recrutadores que você está aberto a novas oportunidades | Ajuda do LinkedIn"
+  + "https://blog.portalpos.com.br/como-colocar-no-linkedin-que-estou-procurando-emprego/": "Como colocar no LinkedIn que estou procurando emprego?"
+  + "https://tecnoblog.net/responde/como-colocar-no-linkedin-que-voce-esta-procurando-emprego/": "Como colocar no LinkedIn que você está procurando emprego • Aplicativos e Software • Tecnoblog"
+  + "https://pt.linkedin.com/pulse/como-avisar-que-você-est��-aberto-novas-oportunidades-linkedin-abreu": "Como avisar que você está aberto a novas oportunidades no LinkedIn."
+  + "https://www.linkedin.com/pulse/estou-aberto-novas-oportunidades-e-agora-sergio-margosian": "Estou aberto a novas oportunidades. E agora? - LinkedIn"
+  + "https://canaltech.com.br/software/como-ativar-ou-tirar-o-aviso-open-to-work-do-linkedin/": "Como ativar ou tirar o aviso Open to Work do Linkedin - Canaltech"
+  + "https://www.linkedin.com/in/romilson-braz-de-souza-a887b917b/": "Romilson Braz de Souza - Operador de logística - Em Busca de Novas Oportunidades | LinkedIn"
+  + "https://www.linkedin.com/in/rodrigo-dos-santos-andrade-43605a210/?_l=en": "Rodrigo dos Santos Andrade - Fortaleza, Ceará, Brazil | Professional Profile | LinkedIn"
+  + "https://br.linkedin.com/company/grupo-fortaleza": "Grupo Fortaleza | LinkedIn"
+  + "https://www.linkedin.com/in/janete-dos-santos-barbosa-1805a636/": "Janete dos Santos Barbosa - Desempregada - Desempregada | LinkedIn"
+  + "https://pt.linkedin.com/pulse/como-avisar-que-você-está-aberto-novas-oportunidades-jamile-abreu": "Como avisar que você está aberto a novas oportunidades?"
+  + "https://www.techtudo.com.br/listas/2021/10/seis-dicas-para-encontrar-vagas-de-emprego-no-linkedin-que-poucos-conhecem.ghtml": "Seis dicas para encontrar vagas de emprego no LinkedIn que poucos conhecem"
+  + "https://pt.linkedin.com/pulse/status-estou-em-busca-de-novas-oportunidades-ou-gisele-de-luna": "Status: " Estou em busca de novas oportunidades ou disponível ""
+  + "https://alexsilvaconsultoria.com/pagina/alavancando-sua-carreira-com-o-linkedin-taticas-para-conquistar-novas-oportunidades/139": "Alavancando sua Carreira com o LinkedIn: Táticas para Conquistar Novas Oportunidades"
+  + "https://www.linkedin.com/in/jos%C3%A9-franz%C3%A9-morais-8b547431/": "José (Franzé) Morais - DR CONSTRUÇÕES | LinkedIn"
+  + "https://www.linkedin.com/in/jo%C3%A3o-paulo-rodrigues-da-silva-70096622b/": "João Paulo Rodrigues da Silva. - Caldas Novas, Goiás, Brazil | Professional Profile | LinkedIn"
+  + "https://www.linkedin.com/in/elivelton-rodrigues-79bbb116a/": "Elivelton Rodrigues - Vendedor - RV Tecnologia e Sistemas S.A. | LinkedIn"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

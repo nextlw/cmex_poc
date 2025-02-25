@@ -1,0 +1,18 @@
+.message-link-title {
+  display: inline-block;
+  margin: 0;
+}
+
+.message-link-title a {
+  color: #60a5fa; /* Cor azul do Tailwind (blue-400) */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.message-link-title a:hover {
+  color: #93c5fd; /* Cor azul mais clara do Tailwind (blue-300) */
+}
+
+.message-link-title a:visited {
+  color: #818cf8; /* Cor índigo do Tailwind (indigo-400) */
+} 

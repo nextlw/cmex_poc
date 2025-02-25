@@ -2,6 +2,7 @@
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse, Response
 from app.config import supabase, SETTINGS
+from gotrue.errors import AuthApiError
 
 # Schemas
 from ..models.error import Erro, ErrorDetail
@@ -10,7 +11,7 @@ from ..models.error import Erro, ErrorDetail
 # Handler de autenticação
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
-        
+
         # Pega a origem do request
         origin = request.headers.get("origin")
 
@@ -53,6 +54,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
 
         try:
+            
             # Assumindo o formato "Bearer <token>"
             token = auth_header.split(" ")[1]
 
@@ -65,9 +67,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 response = await call_next(request)
                 return response
 
-        except Exception as e:
-            
-            print("Exception::::", e)
+        except AuthApiError as e:
 
             # Monta a mensagem de erro
             error = Erro(
@@ -75,7 +75,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 errors=[
                     ErrorDetail(
                         loc=["header", "Authorization"],
-                        msg="Token inválido ou expirado",
+                        msg=str(e),
                         type="invalid_token",
                         ctx=None,
                     )

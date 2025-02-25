@@ -6,7 +6,7 @@ import "./styles.css";
 import SearchResults from "../../components/SearchResults";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { ptBR } from 'date-fns/locale';
+import { ptBR } from "date-fns/locale/pt-BR";
 
 const BuscaPage: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState<string | null>(
@@ -18,21 +18,12 @@ const BuscaPage: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
 
-  const formatDateToYearMonth = (date: Date | null) => {
-    if (!date) return '';
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-  };
 
   const handleSearch = async () => {
     if (!search) return;
     
     setIsLoading(true);
     try {
-      const period = {
-        from: formatDateToYearMonth(startDate),
-        to: formatDateToYearMonth(endDate)
-      };
-
       const response = await fetch(`https://api-comexstat.mdic.gov.br/tables/nbm?search=${search}&language=pt&page=1&perPage=50&add=ncm`, {
         method: 'GET',
         headers: {
@@ -49,7 +40,8 @@ const BuscaPage: React.FC = () => {
           unit: item.unit || '',
           nbm: item.nbm || '',
           coNbm: item.coNbm || '',
-          coNcm: item.coNcm || ''
+          coNcm: item.coNcm || '',
+          url: `https://portalunico.siscomex.gov.br/classif/#/sumario?perfil=publico&ncm=${item.coNcm}`
         }));
         
         setResults(formattedResults);

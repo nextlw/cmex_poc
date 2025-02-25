@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({
 
           <Logo />
           {!screenSize.isMobile && !screenSize.isIntermediate && (
-            <HeaderLinks links={["Início", "Histórico", "Busca", "Configurações"]} />
+            <HeaderLinks links={["Início", "Histórico", "Busca", "Chat", "Configurações"]} />
           )}
         </div>
 

@@ -1,4 +1,3 @@
-import React from "react";
 import HomePage from "./pages/HomePage";
 import HistoricoPage from "./pages/Historico";
 import PrivateRoute from "../src/auth/PrivateRoute";
@@ -14,6 +13,7 @@ import "./styles/globals.css";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./auth/AuthContext";
 import BuscaPage from "./pages/BuscaPage";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
   return (
@@ -47,6 +47,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <BuscaPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/chat"
+              element={
+                <PrivateRoute>
+                  <ChatPage />
                 </PrivateRoute>
               }
             />

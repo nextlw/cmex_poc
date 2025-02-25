@@ -1,0 +1,117 @@
+Current date: Fri, 14 Feb 2025 17:25:11 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    na cachaça na revenda qual o percentual de pis e cofins no lucro real, quero dados atuais. pesquise em fontes reais, preciso de referencias
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "na cachaça na revenda qual o percentual de pis e cofins no lucro real, quero dados atuais. pesquise em fontes reais, preciso de referencias".
+                    In particular, you tried to search for the following keywords: "alíquotas PIS COFINS "revenda cachaça" "lucro real"".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about alíquotas PIS COFINS revenda cachaça lucro real?
+    </question>
+    <answer>
+    II - juntamente com as contribuições ... revender o bem antes da conversão da alíquota a 0 (zero), na forma do § 8º deste artigo, ou desatender as demais condições do art. 13 desta Lei. § 7º Nas notas fiscais relativas à venda de que trata o caput deste artigo deverá constar a expressão &quot;Venda efetuada com suspensão da exigência da Contribuição para o PIS/Pasep e da Cofins&quot;, com a ...; Diferentemente do IRPJ e da CSLL, o PIS e COFINS no Lucro Real incidem sobre o faturamento da empresa. As alíquotas utilizadas no cálculo são de 1,65% e 7,60% para o PIS e COFINS, respectivamente.; Descubra as alíquotas do PIS/COFINS dos principais regimes tributários. Saiba c dicas para otimizar sua apuração com a Tributei.; Não dará direito a crédito o ... para revenda que não estiverem sujeitos ao pagamento da COFINS, o que é o caso dos cereais que tiveram as alíquotas dessa contribuição reduzidas a zero, como o arroz e o trigo. SOLUÇÃO DE CONSULTA Nº 231 de 30 de Junho de 2010 · ASSUNTO: Contribuição para o Financiamento da Seguridade Social - Cofins EMENTA: CRÉDITO PRESUMIDO. MUDANÇA DE REGIME APURAÇÃO DA CONTRIBUIÇÃO EM FUNÇÃO DA PASSAGEM PARA O LUCRO ...; O montante desses créditos será determinado mediante aplicação, sobre o valor dos mencionados pagamentos, de alíquota correspondente a 75% (setenta e cinco por cento) sobre 1,65% (referente ao PIS/PASEP) e 7,6% (referente a COFINS). ... c)aos encargos de depreciação e amortização de ...; PIS/COFINS = Faturamento bruto * Alíquota (0,65% ou 3%) Portanto, uma empresa que obteve o faturamento bruto de R$20.000,00 faria o seguinte cálculo: ... No regime de incidência não-cumulativa acontece a apropriação de créditos em relação a custos, despesas e encargos da empresa.; Para calcular o PIS e COFINS no Lucro Real é necessário saber o valor de suas alíquotas. Note que nesse regime o PIS, que passa a ser de 1,65% (e não mais 0,65%), enquanto a COFINS chega a 7,6% (de 3%) da Receita.; Nesta sistemática, o PIS possui alíquota de 0,65%, enquanto a COFINS possui alíquota de 3,0%. No regime do lucro real, apura-se o PIS e a COFINS, em regra, pela sistemática da não cumulatividade.; Para a determinação dos créditos, serão aplicadas as alíquotas de 1,65% para o PIS/Pasep e de 7,6% para a COFINS sobre (Instrução Normativa RFB nº 1.911/2019, art. 166): o valor de aquisição, no caso de bens para revenda e utilizados como insumo;; Como uma forma de tentar equilibrar a concorrência entre produtos nacionais e produtos importados, a Lei nº 10.865/2004 criou a incidência de PIS/Cofins sobre as importações, tanto de produtos quanto de serviços. A alíquota incidente, como regra, é a mesma de 9,25% de maneira conjunta.; Nesse regime, as alíquotas da Contribuição para o PIS/PASEP e da COFINS são, respectivamente, de 0,65% e de 3%. As pessoas jurídicas de direito privado, e as que lhe são equiparadas pela legislação do imposto de renda, que apuram o IRPJ com base no Lucro Presumido ou arbitrado estão ...; No Lucro Presumido, onde não ocorre a apropriação de créditos em relação a custos, encargos e algumas despesas, o valor das alíquotas são de: ... COFINS: 3%. No Lucro Presumido, a fórmula para calcular PIS e COFINS é:; Você sabe o que é Lucro Real? Acesse e confira quais empresas devem e quais podem aderir a esse regime de tributação, bem como realizar seu cálculo!; Não deixe que calcular PIS e COFINS seja um mistério! Explore nosso artigo completo e domine as técnicas para ser mais eficiente.; No Brasil temos diferentes regimes de tributação para o recolhimento dos impostos das empresas em todos os segmentos, entre eles o Lucro Real e o Lucro Presumido; As distribuidoras de remédios e as farmácias, quando revendem os medicamentos com tributação monofásica, não pagam PIS e COFINS. No entanto, devem recolher as duas contribuições calculadas sobre as demais receitas não tributadas no modelo monofásico, aplicando as alíquotas de 0,65% e 3% (se estiver no lucro ...; No regime de incidência cumulativa, o PIS e a COFINS incidem sobre toda a receita bruta da empresa. As alíquotas são de 0,65% para o PIS e de 3% para a COFINS.; Entre as diversas estratégias para otimizar a carga tributária, aproveitamento de credito pis e cofins lucro real é uma das mais eficazes.; Sua empresa está enquadrada no Lucro Real e não sabe como apurar o PIS e COFINS? Confira a diferença entre eles e dicas para realizar a apuração.; Para configurar as empresas do Lucro Real que possuem produtos com tributação de PIS e COFINS cumulativo, siga os passos abaixo: Parâmetros 1 - Acesse o menu Controle &gt; Parâmetros; 2 - Caso necessário, crie uma [Nova Vigência]; 3 - Na guia Geral &gt; Impostos, inclua os impostos &#x27;4 - PIS&#x27; ...
+    </answer>
+    
+    <references>
+    ["https://www.lefisc.com.br/materias/2008/282008piscofins.asp","https://hscontabil.com.br/pis-e-cofins-no-lucro-real-como-calcular-e-se-beneficiar/","https://tributei.net/blog/aliquotas-pis-cofins/","https://www.lefisc.com.br/materias/2011/252011ir.htm","https://www.lefisc.com.br/materias/3102006ir2.htm","https://blog.dootax.com.br/pis-e-cofins/","https://ibgem.com.br/2021/05/25/pis-cofins-lucro-real/","https://qive.com.br/blog/pis-cofins/","https://www.jettax.com.br/blog/pis-pasep-e-cofins/","https://valor.globo.com/legislacao/artigo/pis-cofins-o-que-e-como-funciona-e-como-calcular.ghtml","https://www.portaltributario.com.br/artigos/pis-cofins-regimes.htm","https://www.oitchau.com.br/blog/cofins-e-pis-como-devem-ser-calculados/","https://www.serasaexperian.com.br/blog-pme/lucro-real/","https://blog.esimplesauditoria.com.br/calcular-pis-cofins/","https://exatusassessoria.com.br/lucro-real-e-lucro-presumido-um-enfoque-nos-impostos-pis-cofins-irpj-e-csll/","https://www.portaltributario.com.br/tributario/regime-monofasico-pis-cofins.htm","https://www.normaslegais.com.br/tributario/calculo_pis_cofins.htm","https://tdcadvogados.com.br/aproveitamento-de-credito-pis-e-cofins/","https://fazendacontabilidade.com.br/o-que-e-pis-e-cofins-no-lucro-real-e-como-apurar/","https://suporte.dominioatendimento.com/central/faces/solucao.html?codigo=2402"]
+    </references>
+    
+    </knowledge-1>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://www.lefisc.com.br/materias/2008/282008piscofins.asp": "PIS/PASEP e COFINS – Regime Não-cumulativo (Lucro Real)"
+  + "https://hscontabil.com.br/pis-e-cofins-no-lucro-real-como-calcular-e-se-beneficiar/": "PIS e COFINS no Lucro Real: como calcular e se beneficiar?"
+  + "https://tributei.net/blog/aliquotas-pis-cofins/": "Quais São as Alíquotas do PIS e COFINS no Lucro Presumido, Lucro Real e Simples Nacional?"
+  + "https://www.lefisc.com.br/materias/2011/252011ir.htm": "Créditos de PIS e COFINS a Descontar (Regime Não-Cumulativo)"
+  + "https://www.lefisc.com.br/materias/3102006ir2.htm": "PIS/ PASEP E COFINS INCIDÊNCIA NÃO-CUMULATIVA - CONSIDERAÇÕES GERAIS"
+  + "https://blog.dootax.com.br/pis-e-cofins/": "PIS e COFINS: o que são e como calcular? Tire suas dúvidas"
+  + "https://ibgem.com.br/2021/05/25/pis-cofins-lucro-real/": "PIS e COFINS no Lucro Real: Entenda tudo! - IBGEM"
+  + "https://qive.com.br/blog/pis-cofins/": "PIS e COFINS 2025: Obrigações, mudanças e novidades | Qive"
+  + "https://www.jettax.com.br/blog/pis-pasep-e-cofins/": "Créditos de PIS/Pasep e COFINS - Jettax"
+  + "https://valor.globo.com/legislacao/artigo/pis-cofins-o-que-e-como-funciona-e-como-calcular.ghtml": "PIS/Cofins: O que é, como funciona e como calcular | Legislação | Valor Econômico"
+  + "https://www.portaltributario.com.br/artigos/pis-cofins-regimes.htm": "PIS E COFINS  SÍNTESE DOS REGIMES DE INCIDÊNCIA"
+  + "https://www.oitchau.com.br/blog/cofins-e-pis-como-devem-ser-calculados/": "Cofins e PIS: O que são? Como calcular? - Oitchau"
+  + "https://www.serasaexperian.com.br/blog-pme/lucro-real/": "Lucro real: como funciona esse regime de tributação? - Serasa Experian"
+  + "https://blog.esimplesauditoria.com.br/calcular-pis-cofins/": "Calcular PIS e COFINS: tudo que você precisa saber!"
+  + "https://exatusassessoria.com.br/lucro-real-e-lucro-presumido-um-enfoque-nos-impostos-pis-cofins-irpj-e-csll/": "Lucro Real e Lucro Presumido um enfoque nos impostos Pis, Cofins, IRPJ e CSLL - Exatus Escritório de Contabilidade"
+  + "https://www.portaltributario.com.br/tributario/regime-monofasico-pis-cofins.htm": "REGIME MONOFÁSICO DE TRIBUTAÇÃO PIS/COFINS"
+  + "https://www.normaslegais.com.br/tributario/calculo_pis_cofins.htm": "CÁLCULO DO PIS E DA COFINS"
+  + "https://tdcadvogados.com.br/aproveitamento-de-credito-pis-e-cofins/": "Aproveitamento de Cr��dito PIS e COFINS: Lucro Real e Presumido"
+  + "https://fazendacontabilidade.com.br/o-que-e-pis-e-cofins-no-lucro-real-e-como-apurar/": "O que é PIS e COFINS no Lucro Real e Como Apurar?"
+  + "https://suporte.dominioatendimento.com/central/faces/solucao.html?codigo=2402": "Como configurar Lucro Real com PIS e COFINS Cumulativo?"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

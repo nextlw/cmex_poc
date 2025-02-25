@@ -1,0 +1,136 @@
+Current date: Fri, 14 Feb 2025 03:30:46 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    Instrução: "Sugira a criação de um novo produto com base nas avaliações de clientes de uma base de dados específica. Siga as etapas abaixo:  Analise as citações negativas para identificar um problema global ou recorrente. Pesquise os principais concorrentes do mercado e liste suas melhores funcionalidades. Identifique as falhas ou lacunas nos produtos concorrentes. Proponha um novo produto com funcionalidades inovadoras que resolvam os problemas encontrados, incorporando diferenciais competitivos. Saída esperada:  Um breve resumo do problema identificado. Uma lista das melhores funcionalidades dos concorrentes. Uma descrição detalhada do novo produto, incluindo nome, principais características e como ele resolve as falhas mencionadas."
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took the **search** action and look for external information for the question: "Instrução: "Sugira a criação de um novo produto com base nas avaliações de clientes de uma base de dados específica. Siga as etapas abaixo:  Analise as citações negativas para identificar um problema global ou recorrente. Pesquise os principais concorrentes do mercado e liste suas melhores funcionalidades. Identifique as falhas ou lacunas nos produtos concorrentes. Proponha um novo produto com funcionalidades inovadoras que resolvam os problemas encontrados, incorporando diferenciais competitivos. Saída esperada:  Um breve resumo do problema identificado. Uma lista das melhores funcionalidades dos concorrentes. Uma descrição detalhada do novo produto, incluindo nome, principais características e como ele resolve as falhas mencionadas."".
+                    In particular, you tried to search for the following keywords: "avaliações clientes "produtos concorrentes", lacunas mercado".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    What do Internet say about análise de avaliações de clientes produtos concorrentes lacunas no mercado?
+    </question>
+    <answer>
+    As avaliações de consumidores têm se tornado uma parte essencial do processo de compra online. Saiba quais os benefícios e como incentivá-las.; 85,57% dos consumidores verificam as opini√µes das pessoas antes de efectuarem uma compra. As opini√µes dos clientes s√£o como a boca a boca na web.; Pesquisa pré lançamento do produto: ... que o produto está atendendo as expectativas do cliente e se é necessário algum ajuste para melhorar ainda mais a performance ou a percepção de qualidade. Nesta pesquisa, pode-se até comparar o lançamento com um benchmark do mercado ou mesmo seus principais concorrentes, para saber como ele desempenha frente a concorrência. Pesquisa de Satisfação e de pós-venda: Coletar feedback dos clientes após a compra para avaliar o grau de ...; E quanto mais, melhor: segundo os números levantados pelo Capterra, metade dos compradores considera um número de 5 a 20 avaliações o ideal para um produto ser considerado confiável (somente 5% afirma confiar em um produto com menos de 5 avaliações) .; Não permitimos que ninguém escreva avaliações como forma de promoção. Confira a seguir os tipos de avaliações que não permitimos e que serão removidas: Uma avaliação feita por alguém que tenha um interesse financeiro direto ou indireto no produto.; Customer reviews are a great way to promote your products and generate social proof. Here are 10 tips on how to get those reviews!; Se os seus produtos ou serviços ... distribuição dos produtos (inclua a internet); Analise os pontos fortes e pontos fracos dos concorrentes (veja preços, custos, ambiente interno e externo, atendimento, qualidade dos produtos);...; As avaliação dos produtos e os comentários influenciam diretamente na aquisição de uma mercadoria. Saiba agora como utilizá-los para aumentar suas vendas!; A análise de clientes sobre seu ... satisfeito e obtenha os resultados esperados com o que adquiriu. Por isso, acompanhar os sites de avaliação de clientes podem ser um ganho na sua estratégia....; Avalie como eles estão presentes ... e marketplaces, quais produtos/serviços/assuntos geram mais acessos e outros aspectos relevantes. No fundo, o que você quer fazer aqui é avaliar como seus concorrentes fazem para atrair mais clientes....; A avaliação de produtos é essencial para influenciar a decisão de compra das pessoas. Desenvolva estratégias eficazes com nossas dicas!; Publish reviews about your products and their features on your website and on Google, solving doubts of potential buyers at the moment of purchase.; Espontânea: O cliente revisa sua própria opinião sobre o produto ou serviço, sem nenhum tipo de estímulo. Estimulada: Empresa oferece dinheiro ou benefício em troca de avaliação positiva para si própria ou negativa para o concorrente.; Aprenda a monitorar a reputação do seu negócio online, acompanhar avaliações e responder feedbacks para fortalecer a confiança e atrair mais clientes; Isso ajudará você a avaliar seu desempenho no setor. Embora a participação de mercado indique qual concorrente tem mais influência sobre seu público, ela não informa quem são essas pessoas. Compreender os dados demográficos do público pode ajudar a se relacionar melhor com seus clientes e, ao mesmo tempo, criar produtos ...; Analisar a concorrência é fundamental para identificar produtos e serviços semelhantes oferecidos pelas empresas concorrentes no mercado. É uma parte essencial de um plano de marketing, pois permite sinalizar os concorrentes diretos e avaliar os seus pontos fortes e fracos.; Fale sobre produtos que podem ser comparados com outros ou explique o que diferencia este produto de seus concorrentes. O Google ainda disponibiliza uma documentação completa com práticas recomendadas para quem deseja escrever boas avaliações ou para quem deseja incentivar os seus clientes a ...; As avaliações dos clientes têm um efeito direto sobre o que as pessoas compram porque tendem a mudar a maneira como as pessoas agem.; Especialista apresenta algumas dicas para incentivar e facilitar a avaliação de produto por parte dos clientes do e-commerce .; Alguns negócios não se sentem tanto à vontade em relação a encorajar avaliações de clientes ou a facilitar este processo. Em parte, isto pode se dar pelo medo de avaliações negativas.; Lacunas de mercado são oportunidades disfarçadas de vazios. Uma lacuna no mercado é um lugar ou área que as empresas atuais não estão atendendo. Por exemplo, a Netflix preencheu várias lacunas de mercado ao longo dos anos. Primeiro, com seu aluguel inicial de filmes por correspondência ...; Achar um espaço no mercado que ainda não foi ocupado pela concorrência é o Santo Graal da estratégia de posicionamento. Infelizmente esses espaços – conhecidos como lacuna de mercado – são, com frequência, ilusórios, e as vantagens de encontrar algum deles também são ilusórias.; Uma das principais características dos grandes empreendedores é que eles conseguem identificar oportunidades de negócios em segmentos ou regiões nas quais existem lacunas de mercado. Áreas descobertas que apresentam grande potencial.O problema é que nem s; Empresária começou produzindo conteúdos sobre educação financeira para pessoas de baixa renda e hoje tem uma empresa de consultoria. Leia no Poder360.; A análise de Gap, ou análise de lacunas, é essencial para empresas que desejam otimizar suas operações. Aprenda a fazer seguindo quatro passos práticos.; Um gap (ou gap) do mercado de ações é um salto no preço de um ativo financeiro como consequência de não haver operações cruzadas a esses preços.; “Segundo a pesquisa da Right Management, consultoria especializada em Gestão de Talentos e Carreira, 64% das companhias no Brasil encontra problemas para preencher os cargos” (VocêRH, Jan/2011) · Nosso Programa de Aprendizes, Estagiários e Trainees busca a identificação e formação ...; Cresce apelos entre europeus para enviar de volta migrantes sírios após a queda de Assad. Bloco, porém, sofre com a falta de mão de obra qualificada em dive...; Países europeus suspenderam pedidos de asilo de cidadãos sírios após a queda de Bashar al-Assad. Mas refugiados são importantes para trabalhos nas áreas de educação, saúde e construção.; Cresce apelos entre europeus para enviar de volta migrantes sírios após a queda de Assad. Bloco, porém, sofre com a falta de mão de obra qualificada em; Cresce apelos entre europeus para enviar de volta migrantes sírios após a queda de Assad. Bloco, ...; Texto final apresenta aspectos que podem prejudicar a efetividade do sistema de comércio de carbono; O country Manager da CNP Iberia para Portugal explora a nova aposta da empresa, que visa trabalhar com o mercado local, criando parcerias com bancos, retalhistas e telecomunicações de forma subtil.; Informações como essas fazem muitas pessoas almejarem a conclusão de suas formações, abrindo mão de outros planos para conquistar seus diplomas. Porém, o estudo O ensino e o mercado de trabalho — análise de cenário, encomendado pela Geofusion, da empresa Cortex, líder em inteligência ...; Find out what users want and identify new opportunities. Discover proven strategies to spot gaps in the market.; Market gaps are the differences between customer needs and what the existing products actually offer. We show you ways to spot market gaps!; A adaptabilidade estratégica é essencial para as empresas enfrentarem mudanças rápidas e constantes, atendendo às demandas dos consumidores e mantendo-se à frente da concorrência.; Concorrendo com modelos importados e muito caros ou com as nacionais, mais escassas de recursos, o modelo da montadora paranaense promete entregar alta performance com um preço acessível; Colmatar as lacunas de competências na sua organização é fundamental para qualquer programa de gestão de talentos. No entanto, as lacunas nas competências e conhecimentos dos colaboradores aumentaram recentemente devido aos avanços tecnológicos, às expectativas laborais e à consciência am
+    </answer>
+    
+    <references>
+    ["https://cndl.org.br/varejosa/o-poder-dos-consumidores-a-importancia-das-avaliacoes-de-clientes-sobre-produtos-no-e-commerce/","https://skeepers.io/pt/blog/avaliacoes-de-clientes-tudo-o-que-precisa-de-saber/","https://www.institutoqualibest.com/blog/avaliacao-de-produto/","https://www.capterra.com.br/blog/848/avaliacoes-de-produtos-na-rede","https://www.amazon.com.br/gp/help/customer/display.html?nodeId=G3UA5WC5S5UUKB5G","https://neilpatel.com/blog/convince-your-customers-to-review-your-products/","https://sebrae.com.br/sites/PortalSebrae/artigos/aprenda-como-identificar-seus-concorrentes,bf8b4cd7eb34f410VgnVCM1000004c00210aRCRD","https://dcx.lett.digital/avaliacoes-e-comentarios/","https://www.csacademy.com.br/blog/9-sites-para-acompanhar-analise-de-clientes/","https://www.locaweb.com.br/blog/temas/como-vender-mais/analise-de-concorrencia-saiba-qual-a-importancia-e-como-fazer/","https://lojaintegrada.com.br/hub/avaliacao-de-produtos-incentivar-clientes/","https://site.trustvox.com.br/en/reviews/product","https://www.uol.com.br/tilt/noticias/redacao/2018/11/23/cuidado-com-as-falsas-avaliacoes-de-produtos-aprenda-a-detectar.htm","https://harmo.me/blog/principais-sites-de-reputacao-online","https://pt.semrush.com/blog/analise-concorrencia/","https://www.vendus.pt/blog/analise-concorrencia/","https://www.conversion.com.br/blog/product-review-update/","https://eduvem.com/por-que-as-avaliacoes-dos-clientes-realmente-importam/","https://www.ecommercebrasil.com.br/artigos/avaliacao-de-produto-por-que-faz-a-diferenca-no-e-commerce","https://www.datafeedwatch.pt/blog/plataformas-de-classificacao-do-vendedor","https://cuboup.com/conteudo/oportunidades-no-mercado/","http://inovssc.com.br/ha-uma-lacuna-no-mercado-mas-ha-um-mercado-na-lacuna/","https://www.folhadelondrina.com.br/colunistas/consultoria-empresarial/nao-se-iluda-com-lacunas-de-mercado-enganosas-2981236e.html","https://www.poder360.com.br/videos/np-novos-negocios-devem-ocupar-lacunas-do-mercado-diz-nath-financas/","https://www.lucidchart.com/blog/pt/o-que-e-analise-de-lacunas","https://www.definebusinessterms.com/pt/lacuna-do-mercado-de-acoes-lacuna/","http://www.rtsconsultoria.com.br/voce-tem-percebido-uma-lacuna-no-mercado-de-trabalho/","https://www.band.uol.com.br/noticias/europa-esta-dividida-entre-repatriar-sirios-e-preencher-lacunas-no-mercado-de-obra-202412211000","https://g1.globo.com/mundo/noticia/2024/12/21/europa-esta-dividida-entre-repatriar-sirios-e-preencher-lacunas-no-mercado-de-obra.ghtml","https://istoe.com.br/europa-esta-dividida-entre-repatriar-sirios-e-preencher-lacunas-no-mercado-de-obra/","https://www.terra.com.br/economia/europa-esta-dividida-entre-repatriar-sirios-e-preencher-lacunas-no-mercado-de-obra,87fe387ce42af7bb3c827c82d7f70faex2bjydds.html","https://www.fecomercio.com.br/noticia/camara-dos-deputados-e-senado-aprovam-texto-do-mercado-de-carbono-com-avancos-mas-mantem-lacunas-preocupantes","https://eco.sapo.pt/entrevista/nova-era-da-cnp-em-portugal-seletiva-nos-parceiros-quer-atacar-lacunas-no-mercado/","https://abet-trabalho.org.br/pesquisa-aponta-lacunas-entre-ensino-superior-e-mercado-de-trabalho/","https://translate.google.com/translate?u=https%3A%2F%2Fwww.hotjar.com%2Fblog%2Fmarket-gaps%2F&hl=pt&sl=en&tl=pt&client=srp&prev=search","https://translate.google.com/translate?u=https%3A%2F%2Fuserpilot.com%2Fblog%2Fmarket-gaps%2F&hl=pt&sl=en&tl=pt&client=srp&prev=search","https://productoversee.com/identificando-lacunas-de-mercado-com-dados-de-product-analytics/","https://www.agazeta.com.br/motor/mxf-270f-tenta-preencher-lacuna-de-mercado-de-motocicletas-off-road-0723","https://www.randstad.pt/tendencias-360/mercado-do-trabalho/identificar-e-colmatar-lacunas-de-competencias-na-sua/"]
+    </references>
+    
+    </knowledge-1>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://cndl.org.br/varejosa/o-poder-dos-consumidores-a-importancia-das-avaliacoes-de-clientes-sobre-produtos-no-e-commerce/": "O poder dos consumidores: a importância das avaliações de clientes sobre produtos no e-commerce - Varejo S.A"
+  + "https://skeepers.io/pt/blog/avaliacoes-de-clientes-tudo-o-que-precisa-de-saber/": "Avaliações de clientes: tudo o que precisa de saber - Skeepers"
+  + "https://www.institutoqualibest.com/blog/avaliacao-de-produto/": "Avaliação de Produto: por que incentivar essa prática? – Instituto QualiBest"
+  + "https://www.capterra.com.br/blog/848/avaliacoes-de-produtos-na-rede": "Avaliações de produtos na rede determinam compras dos brasileiros"
+  + "https://www.amazon.com.br/gp/help/customer/display.html?nodeId=G3UA5WC5S5UUKB5G": "Amazon.com.br Ajuda: Avaliações de clientes"
+  + "https://neilpatel.com/blog/convince-your-customers-to-review-your-products/": "10 Tips to Get Customers to Review Your Products and Generate Social Proof"
+  + "https://sebrae.com.br/sites/PortalSebrae/artigos/aprenda-como-identificar-seus-concorrentes,bf8b4cd7eb34f410VgnVCM1000004c00210aRCRD": "Aprenda a identificar seus concorrentes - Sebrae"
+  + "https://dcx.lett.digital/avaliacoes-e-comentarios/": "Como utilizar as avaliações e comentários para aumentar as vendas?"
+  + "https://www.csacademy.com.br/blog/9-sites-para-acompanhar-analise-de-clientes/": "9 sites de avaliação de clientes sobre seu produto ou serviço"
+  + "https://www.locaweb.com.br/blog/temas/como-vender-mais/analise-de-concorrencia-saiba-qual-a-importancia-e-como-fazer/": "Análise de concorrência: saiba qual a importância e como fazer"
+  + "https://lojaintegrada.com.br/hub/avaliacao-de-produtos-incentivar-clientes/": "Avaliação de produtos: conheça formas de incentivar seus clientes"
+  + "https://site.trustvox.com.br/en/reviews/product": "Avaliação de Produtos | RA Reviews"
+  + "https://www.uol.com.br/tilt/noticias/redacao/2018/11/23/cuidado-com-as-falsas-avaliacoes-de-produtos-aprenda-a-detectar.htm": "Cuidado com as falsas avaliações de produtos! Aprenda a detectar - 23/11/2018 - UOL TILT"
+  + "https://harmo.me/blog/principais-sites-de-reputacao-online": "15 sites de avaliações online para atrair mais clientes"
+  + "https://pt.semrush.com/blog/analise-concorrencia/": "Análise de Concorrência: O Que é, Como Fazer e Ferramentas (+Template)"
+  + "https://www.vendus.pt/blog/analise-concorrencia/": "Análise da Concorrência da Sua Empresa - Cegid Vendus"
+  + "https://www.conversion.com.br/blog/product-review-update/": "Conheça a Product Review Update - Atualização do Google - Conversion"
+  + "https://eduvem.com/por-que-as-avaliacoes-dos-clientes-realmente-importam/": "Por que as avaliações dos clientes realmente importam? - Eduvem"
+  + "https://www.ecommercebrasil.com.br/artigos/avaliacao-de-produto-por-que-faz-a-diferenca-no-e-commerce": "Avaliação de produto: por que faz a diferença no e-commerce - E-Commerce Brasil"
+  + "https://www.datafeedwatch.pt/blog/plataformas-de-classificacao-do-vendedor": "33 plataformas de classificação do vendedor e avaliações de produtos para o Google em 2019"
+  + "https://cuboup.com/conteudo/oportunidades-no-mercado/": "Oportunidades no Mercado para sua Pequena Empresa Crescer"
+  + "http://inovssc.com.br/ha-uma-lacuna-no-mercado-mas-ha-um-mercado-na-lacuna/": "HÁ UMA LACUNA NO MERCADO, MAS HÁ UM MERCADO NA LACUNA? - Inov Serviços e Soluções em Contabilidade"
+  + "https://www.folhadelondrina.com.br/colunistas/consultoria-empresarial/nao-se-iluda-com-lacunas-de-mercado-enganosas-2981236e.html": "Não se iluda com lacunas de mercado enganosas"
+  + "https://www.poder360.com.br/videos/np-novos-negocios-devem-ocupar-lacunas-do-mercado-diz-nath-financas/": "Novos negócios devem ocupar lacunas do mercado, diz Nath Finanças"
+  + "https://www.lucidchart.com/blog/pt/o-que-e-analise-de-lacunas": "O que é a análise de lacunas? Veja 4 passos e exemplos"
+  + "https://www.definebusinessterms.com/pt/lacuna-do-mercado-de-acoes-lacuna/": "Lacuna do mercado de ações (lacuna) - Defina os termos comerciais"
+  + "http://www.rtsconsultoria.com.br/voce-tem-percebido-uma-lacuna-no-mercado-de-trabalho/": "Você tem percebido uma lacuna no mercado de trabalho? « RTS Solução Gestão de Pessoas Ltda."
+  + "https://www.band.uol.com.br/noticias/europa-esta-dividida-entre-repatriar-sirios-e-preencher-lacunas-no-mercado-de-obra-202412211000": "Europa está dividida entre repatriar sírios e preencher lacunas no mercado de obra | Band"
+  + "https://g1.globo.com/mundo/noticia/2024/12/21/europa-esta-dividida-entre-repatriar-sirios-e-preencher-lacunas-no-mercado-de-obra.ghtml": "Europa está dividida entre repatriar sírios e preencher lacunas no mercado de obra | Mundo | G1"
+  + "https://istoe.com.br/europa-esta-dividida-entre-repatriar-sirios-e-preencher-lacunas-no-mercado-de-obra/": "Europa está dividida entre repatriar sírios e preencher lacunas no mercado de obra"
+  + "https://www.terra.com.br/economia/europa-esta-dividida-entre-repatriar-sirios-e-preencher-lacunas-no-mercado-de-obra,87fe387ce42af7bb3c827c82d7f70faex2bjydds.html": "Europa está dividida entre repatriar sírios e preencher lacunas no mercado de obra"
+  + "https://www.fecomercio.com.br/noticia/camara-dos-deputados-e-senado-aprovam-texto-do-mercado-de-carbono-com-avancos-mas-mantem-lacunas-preocupantes": "Câmara dos Deputados e Senado aprovam texto do mercado de carbono com avanços, mas mantêm lacunas preocupantes"
+  + "https://eco.sapo.pt/entrevista/nova-era-da-cnp-em-portugal-seletiva-nos-parceiros-quer-atacar-lacunas-no-mercado/": "Nova era da CNP em Portugal: Seletiva nos parceiros, quer atacar lacunas no mercado – ECO"
+  + "https://abet-trabalho.org.br/pesquisa-aponta-lacunas-entre-ensino-superior-e-mercado-de-trabalho/": "Pesquisa aponta lacunas entre ensino superior e mercado de trabalho"
+  + "https://translate.google.com/translate?u=https%3A%2F%2Fwww.hotjar.com%2Fblog%2Fmarket-gaps%2F&hl=pt&sl=en&tl=pt&client=srp&prev=search": "Como identificar lacunas no mercado"
+  + "https://translate.google.com/translate?u=https%3A%2F%2Fuserpilot.com%2Fblog%2Fmarket-gaps%2F&hl=pt&sl=en&tl=pt&client=srp&prev=search": "Lacunas de mercado: 10 maneiras de identificar ..."
+  + "https://productoversee.com/identificando-lacunas-de-mercado-com-dados-de-product-analytics/": "Identificando Lacunas de Mercado com Dados de Product Analytics"
+  + "https://www.agazeta.com.br/motor/mxf-270f-tenta-preencher-lacuna-de-mercado-de-motocicletas-off-road-0723": "A Gazeta | MXF 270F tenta preencher lacuna de mercado de motocicletas off-road"
+  + "https://www.randstad.pt/tendencias-360/mercado-do-trabalho/identificar-e-colmatar-lacunas-de-competencias-na-sua/": "Identificar e colmatar lacunas de competências na sua organização | Randstad Portugal"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-search>    
+    - Query external sources using a public search engine
+    - Focus on solving one specific aspect of the question
+    - Only give keywords search query, not full sentences
+    </action-search>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+- If doubts remain, use <action-reflect> instead
+    </action-answer>
+    
+
+
+    <action-reflect>    
+    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
+    - Identify knowledge gaps and formulate essential clarifying questions
+    - Questions must be:
+    - Original (not variations of existing questions)
+    - Focused on single concepts
+    - Under 20 words
+    - Non-compound/non-complex
+    </action-reflect>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

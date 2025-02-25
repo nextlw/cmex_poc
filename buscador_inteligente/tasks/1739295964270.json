@@ -1,0 +1,19 @@
+{
+  "action": "answer",
+  "think": "Com base no conhecimento reunido, posso fornecer uma resposta definitiva sobre as principais diferenças entre TypeScript e JavaScript.",
+  "answer": "As principais diferenças entre TypeScript e JavaScript são: TypeScript é um superset do JavaScript que adiciona tipagem estática opcional, permitindo detectar erros em tempo de compilação, enquanto JavaScript é uma linguagem de tipagem dinâmica, onde os tipos são verificados em tempo de execução. TypeScript oferece recursos de orientação a objetos como classes e interfaces, o que facilita a escrita e manutenção de aplicações de grande escala. TypeScript precisa ser transpilado para JavaScript antes de ser executado, enquanto JavaScript é executado diretamente pelos navegadores e ambientes Node.js. TypeScript melhora a legibilidade e a manutenibilidade do código, enquanto JavaScript é mais flexível, mas pode levar a erros mais difíceis de detectar em projetos grandes.",
+  "references": [
+    {
+      "exactQuote": "TypeScript is a syntactic superset of JavaScript that adds optional static typing, making it easier to write and maintain large-scale applications.",
+      "url": "https://www.geeksforgeeks.org/difference-between-typescript-and-javascript/"
+    },
+    {
+      "exactQuote": "While JavaScript is dynamically-typed, TypeScript is a statically-typed superset of JavaScript, which means it offers strict static typing as an option but will allow dynamic typing, as well. As a result, TypeScript code is safer ...",
+      "url": "https://www.theserverside.com/tip/JavaScript-vs-TypeScript-Whats-the-difference"
+    },
+    {
+      "exactQuote": "TypeScript extends JavaScript by adding types to the language. TypeScript speeds up your development experience by catching errors and providing fixes before you even run your code.",
+      "url": "https://buttercms.com/blog/typescript-vs-javascript/"
+    }
+  ]
+}

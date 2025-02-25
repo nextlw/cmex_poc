@@ -1,5 +1,11 @@
 // Importa o React e os hooks necessários
-import React, { useState, useMemo, useEffect } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 // Importa o tipo SugerirNCM do arquivo types centralizado
 import { SugerirNCM } from "../../types";
 // Importa a instância do axios configurada
@@ -32,6 +38,10 @@ import Header from "../../components/Header";
 import PageHeader from "../../components/PageHeader";
 import { AiFillCodeSandboxCircle } from "react-icons/ai";
 import "../../styles/grid.css";
+import InfoBasicasSkeleton from "../../components/InfoBasicas/InfoBasicasSkeleton";
+import BoxdeImpostosSkeleton from "../../components/BoxdeImpostos/BoxdeImpostosSkeleton";
+import AtributosSkeleton from "../../components/Atributos/AtributosSkeleton";
+import { AutocompleteType } from "../../components/InputAi/types";
 
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
@@ -78,8 +88,13 @@ const HomePage: React.FC = () => {
     setSelectedModel(value);
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (
+    ncmSugerido: string = "",
+    autocomplete: Boolean = false
+  ) => {
     setErrorMessage(null);
+    setShowAutoComplete(false);
+    setAutoCompleteData([]);
 
     if (pesquisa.length < 3) {
       setErrorMessage("Digite pelo menos 3 caracteres para a busca.");
@@ -91,30 +106,20 @@ const HomePage: React.FC = () => {
     try {
       let response;
       let modeloUsado = selectedModel;
+      const consulta = ncmSugerido
+        ? `${pesquisa} com NCM sugerido ${ncmSugerido}`
+        : pesquisa;
 
       // Envia os dados para a rota de queries
       response = await axiosInstance.post("/queries", {
-        consulta: pesquisa,
+        consulta: consulta,
+        autocomplete: autocomplete,
         modelo: modeloUsado,
         ...dropdownSelection,
       });
 
       console.log("Resposta do backend:", response.data);
       setSugerirNCM(response.data);
-
-      // Salva no histórico
-      try {
-        await axiosInstance.post("/historico", {
-          ...response.data[0], // Pega o primeiro resultado
-          modelo: modeloUsado,
-          timestamp: new Date().toISOString(),
-          consulta: pesquisa,
-          ...dropdownSelection,
-        });
-      } catch (historyError) {
-        console.error("Erro ao salvar no histórico:", historyError);
-        // Não exibimos erro ao usuário pois a consulta principal funcionou
-      }
     } catch (error) {
       console.error("Erro ao buscar sugestões:", error);
       setErrorMessage("Erro ao buscar informações. Tente novamente.");
@@ -123,29 +128,75 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const debouncedHandleSearch = useMemo(
-    () => debounce(handleSearch, 1000),
-    [pesquisa, dropdownSelection]
-  );
-
-  useEffect(() => {
-    return () => {
-      debouncedHandleSearch.cancel();
-    };
-  }, [debouncedHandleSearch]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPesquisa(e.target.value);
-    debouncedHandleSearch();
+  const clickOutsideAutocomplete = () => {
+    setShowAutoComplete(false);
+    setAutoCompleteData([]);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // Dispara uma requisição para o endpoint de autocomplete
+  const autocomplete = async (consulta: string) => {
+    try {
+      const response = await axiosInstance.post("/autocomplete", {
+        consulta: consulta,
+      });
+      console.log("Resultado do autocomplete:", response.data.data);
+      return response.data.data;
+    } catch (error) {
+      console.error("Erro no autocomplete:", error);
+      return null;
+    }
+  };
+
+  // Controla o estado do balão de Autocomplete
+  const [showAutoComplete, setShowAutoComplete] = useState<Boolean>(false);
+  const [autoCompleteData, setAutoCompleteData] = useState<Array<AutocompleteType>>([]);
+  const [isAutocompleteLoading, setIsAutocompleteLoading] = useState<Boolean>(false);
+
+  // Comportamento ao clicar em uma sugestão do autocomplete
+  const handleAutocompleteClick = (value: AutocompleteType) => {
+    handleSearch(value.resultado[0].ncm, true);
+  };
+
+  // Comportamento ao exibir o balão de autocomplete
+  const debouncedHandleSearch = useRef(
+    debounce(async (query: string) => {
+      setIsAutocompleteLoading(true);
+      setShowAutoComplete(true);
+
+      const response = await autocomplete(query);
+
+      // Mostra o balão de Autocomplete e preenche os dados
+      if (response && response.length > 0) {
+        setAutoCompleteData(response);
+      } else {
+        setShowAutoComplete(false);
+        setAutoCompleteData([]);
+      }
+
+      setIsAutocompleteLoading(false);
+    }, 500)
+  ).current;
+
+  const handleChange = (value: string) => {
+    setPesquisa(value);
+    setShowAutoComplete(false);
+    setAutoCompleteData([]);
+    if (value.length > 3) {
+      debouncedHandleSearch(value);
+    }
+  };
+
+  const handleSearchChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setBuscarValor(e.target.value);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
+      setShowAutoComplete(false);
+      setAutoCompleteData([]);
       handleSearch();
     }
   };
@@ -159,7 +210,7 @@ const HomePage: React.FC = () => {
         modeloSelecionado={selectedModel}
         aoMudarModelo={handleModelChange}
       />
-      
+
       <div className="grid-container">
         <div className="col-span-12">
           <PageHeader
@@ -176,14 +227,19 @@ const HomePage: React.FC = () => {
                 <InputAi
                   width="100%"
                   value={pesquisa}
-                  onChange={handleChange}
+                  onChange={(e) => handleChange(e.target.value)}
                   onKeyPress={handleKeyPress}
                   isLoading={isLoading}
                   placeholder="Digite o nome do produto"
                   onButtonClick={handleSearch}
+                  showAutoComplete={showAutoComplete}
+                  autoCompleteData={autoCompleteData}
+                  handleAutocompleteClick={handleAutocompleteClick}
+                  isAutocompleteLoading={isAutocompleteLoading}
+                  onClickOutside={clickOutsideAutocomplete}
                 />
               </div>
-              
+
               <div className="grid-container p-4 pb-2">
                 <div className="col-span-12">
                   <DropdownMenu onSelectionChange={handleDropdownChange} />
@@ -196,18 +252,35 @@ const HomePage: React.FC = () => {
                 <div key={index} className="box-page">
                   <div className="box-page grid-container-inner">
                     <div className="page-item col-span-6 mobile-col-span-4 w-full">
-                      <InfoBasicas ncm={item.ncm} descricao={item.descricao} />
+                      {isLoading ? (
+                        <InfoBasicasSkeleton />
+                      ) : (
+                        <InfoBasicas
+                          ncm={item.ncm}
+                          descricao={item.descricao}
+                        />
+                      )}
                     </div>
                     <div className="page-item col-span-6 mobile-col-span-4 w-full">
-                      <Atributos
-                        atributos={item.atributos}
-                        atributos_tipi={item.atributos_tipi}
-                        isLoading={isLoading}
-                      />
+                      {isLoading ? (
+                        <AtributosSkeleton />
+                      ) : (
+                        <Atributos
+                          atributos={item.atributos}
+                          atributos_tipi={item.atributos_tipi}
+                          isLoading={isLoading}
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="col-span-12 box-page">
-                    <BoxdeImpostos classificacao={item.classificacao_tributaria} />
+                    {isLoading ? (
+                      <BoxdeImpostosSkeleton />
+                    ) : (
+                      <BoxdeImpostos
+                        classificacao={item.classificacao_tributaria}
+                      />
+                    )}
                   </div>
                 </div>
               ))}
@@ -223,7 +296,11 @@ const HomePage: React.FC = () => {
                         Tabela ICMS
                       </h3>
                       <span>
-                        {isTabelaICMSOpen ? <BiChevronDown /> : <BiChevronRight />}
+                        {isTabelaICMSOpen ? (
+                          <BiChevronDown />
+                        ) : (
+                          <BiChevronRight />
+                        )}
                       </span>
                       <span className="text-[var(--color-text-gray-500)] ml-2">
                         Clique para expandir
@@ -255,7 +332,7 @@ const HomePage: React.FC = () => {
               </div>
             </div>
           </form>
-          
+
           {errorMessage && sugerirNCM.length === 0 && (
             <div className="mensagem-erro">{errorMessage}</div>
           )}

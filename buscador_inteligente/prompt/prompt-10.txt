@@ -1,0 +1,349 @@
+Current date: Tue, 11 Feb 2025 14:00:16 GMT
+
+    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+
+    <question>
+    Como as implementações de calculo lambda no AWS Lambda impactam o uso dessas bibliotecas?
+    </question>
+    
+
+
+    You have conducted the following actions:
+    <context>
+    
+                    At step 1, you took **reflect** and think about the knowledge gaps. You found some sub-questions are important to the question: "como se executa um calculo lambda em node.js?"
+                    You realize you need to know the answers to the following sub-questions:
+                    - Qual é a sintaxe correta de um cálculo lambda em Node.js?
+- Existe alguma biblioteca ou pacote npm específico para esse tipo de operação?
+- Como se diferencia o cálculo lambda em Node.js de outras linguagens de programação?
+
+                    You will now figure out the answers to these sub-questions and see if they can help you find the answer to the original question.
+                    
+
+                At step 2, you took **answer** action. You found a good answer to the sub-question:
+
+                Sub-question: 
+                Qual é a sintaxe correta de um cálculo lambda em Node.js?
+
+                Your answer: 
+                Em Node.js, a sintaxe correta para um cálculo lambda é a mesma usada em JavaScript. Você pode criar uma função lambda de duas maneiras principais: usando o operador '=>' ou definições anônimas de função. Aqui estão exemplos dos dois métodos:
+
+1. Usando o operador '=>':
+
+const soma = (a, b) => a + b;
+console.log(soma(2, 3)); // Saída: 5
+
+2. Definição anônima de função:
+
+const subtracao = function(a, b) { return a - b; };
+console.log(subtracao(10, 5)); // Saída: 5
+
+                The evaluator thinks your answer is good because: 
+                The answer provides a clear and accurate explanation of lambda syntax in Node.js with examples, leaving no room for ambiguity or uncertainty.
+
+                Although you solved a sub-question, you still need to find the answer to the original question. You need to keep going.
+                
+
+                    At step 3, you took the **search** action and look for external information for the question: "Existe alguma biblioteca ou pacote npm específico para esse tipo de operação?".
+                    In particular, you tried to search for the following keywords: "npm package lambda node.js, node.js lambda libraries".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+                    At step 4, you took the **search** action and look for external information for the question: "Como se diferencia o cálculo lambda em Node.js de outras linguagens de programação?".
+                    In particular, you tried to search for the following keywords: "lambda calculus node.js, node.js lambda implementation, lambda calculus differences".
+                    You found quite some information and add them to your URL list and **visit** them later when needed. 
+                    
+
+                    At step 5, you took **reflect** and think about the knowledge gaps. You found some sub-questions are important to the question: "como se executa um calculo lambda em node.js?"
+                    You realize you need to know the answers to the following sub-questions:
+                    - Qual biblioteca npm mais usada para cálculos lambda em Node.js?
+- Como os cálculos lambda em Node.js diferem dos cálculos lambda em outras linguagens de programação?
+- Existe alguma diferença significativa na maneira como o cálculo lambda é implementado em diferentes versões do Node.js?
+
+                    You will now figure out the answers to these sub-questions and see if they can help you find the answer to the original question.
+                    
+
+                At step 6, you took **answer** action. You found a good answer to the sub-question:
+
+                Sub-question: 
+                Qual biblioteca npm mais usada para cálculos lambda em Node.js?
+
+                Your answer: 
+                A biblioteca npm mais usada para cálculos lambda em Node.js é 'aws-lambda'.
+
+                The evaluator thinks your answer is good because: 
+                The answer provides a clear and direct statement identifying 'aws-lambda' as the most used npm library for lambda calculations in Node.js, without any hedging or uncertainty.
+
+                Although you solved a sub-question, you still need to find the answer to the original question. You need to keep going.
+                
+
+                At step 7, you took **answer** action. You found a good answer to the sub-question:
+
+                Sub-question: 
+                Como os cálculos lambda em Node.js diferem dos cálculos lambda em outras linguagens de programação?
+
+                Your answer: 
+                Os cálculos lambda em Node.js diferem dos cálculos lambda em outras linguagens de programação principalmente na forma como são implementados e utilizados. Em Node.js, a sintaxe para cálculos lambda é idêntica à do JavaScript, que utiliza o operador '=>' ou funções anônimas. A biblioteca npm mais usada para cálculos lambda em Node.js é 'aws-lambda', embora existam outras bibliotecas como 'lambda-calculus' e 'lambdajs'. A implementação de cálculos lambda em Node.js, através do uso da AWS Lambda, permite que os programadores aproveitem a infraestrutura da AWS para processar eventos sem precisar gerenciar servidores. Esta abordagem é muito diferente das linguagens como Haskell ou Scala, onde o cálculo lambda é usado diretamente como um paradigma de programação funcional.
+
+                The evaluator thinks your answer is good because: 
+                The answer provides a clear and detailed explanation of how lambda calculus in Node.js differs from other programming languages, specifically mentioning syntax, libraries, and implementation approaches. There are no uncertainty markers or ambiguous statements.
+
+                Although you solved a sub-question, you still need to find the answer to the original question. You need to keep going.
+                
+
+                At step 8, you took **answer** action. You found a good answer to the sub-question:
+
+                Sub-question: 
+                Existe alguma diferença significativa na maneira como o cálculo lambda é implementado em diferentes versões do Node.js?
+
+                Your answer: 
+                Sim, há algumas diferenças significativas na maneira como o cálculo lambda é implementado em diferentes versões do Node.js. Embora a sintaxe para lambdas seja a mesma independentemente da versão, as bibliotecas npm utilizadas podem variar e influenciar diretamente os cálculos lambda em Node.js. A biblioteca 'aws-lambda' é amplamente utilizada e estável, mas outras bibliotecas como 'lambda-calculus', 'lambdajs' e 'node-lambda' também são opções viáveis para cálculos lambda no Node.js. As diferentes versões do Node.js podem oferecer novos recursos ou melhorias na otimização de código, que podem afetar a implementação de cálculos lambda.
+
+                The evaluator thinks your answer is good because: 
+                The answer provides a clear and affirmative response ('Sim') and explains the differences in lambda calculus implementation across Node.js versions, citing specific libraries and potential impacts of Node.js updates. There are no uncertainty markers.
+
+                Although you solved a sub-question, you still need to find the answer to the original question. You need to keep going.
+                
+
+                    At step 9, you took **reflect** and think about the knowledge gaps. You found some sub-questions are important to the question: "como se executa um calculo lambda em node.js?"
+                    You realize you need to know the answers to the following sub-questions:
+                    - Como as implementações de calculo lambda no AWS Lambda impactam o uso dessas bibliotecas?
+
+                    You will now figure out the answers to these sub-questions and see if they can help you find the answer to the original question.
+                    
+
+    </context>
+    
+
+
+    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
+    <knowledge>
+
+    
+    <knowledge-1>
+    <question>
+    Qual é a sintaxe correta de um cálculo lambda em Node.js?
+    </question>
+    <answer>
+    Em Node.js, a sintaxe correta para um cálculo lambda é a mesma usada em JavaScript. Você pode criar uma função lambda de duas maneiras principais: usando o operador '=>' ou definições anônimas de função. Aqui estão exemplos dos dois métodos:
+
+1. Usando o operador '=>':
+
+const soma = (a, b) => a + b;
+console.log(soma(2, 3)); // Saída: 5
+
+2. Definição anônima de função:
+
+const subtracao = function(a, b) { return a - b; };
+console.log(subtracao(10, 5)); // Saída: 5
+    </answer>
+    
+    <references>
+    [{"exactQuote":"JavaScript lambdas são funções anônimas que podem ser definidas usando o operador '=>'.","url":"https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Functions/Arrow_functions"},{"exactQuote":"Funções de expressão (lambdas) são funções anônimas que podem ser declaradas com o uso do operador '=>'.","url":"https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Areas_funcoes#fun%c3%a7%C3%B5es_anonimas"}]
+    </references>
+    
+    </knowledge-1>
+    
+
+
+    <knowledge-2>
+    <question>
+    What do Internet say about bibliotecas npm para lambda node.js?
+    </question>
+    <answer>
+    Install your function&#x27;s required ... the npm install command. In this example you install the AWS X-Ray SDK for Node.js. ... ~/my_function ├── index.mjs └── node_modules ├── async ├── async-listener ├── atomic-batcher ├── aws-sdk ├── aws-xray-sdk ├── aws-xray-sdk-core · You can also add custom modules that you create yourself to your deployment package...; Note: Most Node.js modules are platform-independent, but some are compiled against specific operating system environments. Lambda runs under a Linux environment. When installing modules with npm, it&#x27;s a best practice to build the .zip file in a Linux environment to make sure that the correct ...; The solution is to compile the modules on an EC2 instance launched from the AMI that corresponds with the Lambda Node.js runtime you&#x27;re using (See this list of Lambda runtimes and their respective AMIs). See also AWS Lambda Deployment Package in Node.js - AWS Lambda; Command line tool for locally running and remotely deploying your node.js applications to Amazon Lambda.. Latest version: 1.3.0, last published: a year ago. Start using node-lambda in your project by running `npm i node-lambda`. There are 26 other projects in the npm registry using node-lambda.; We cannot provide a description for this page right now; You can use your favorite npm packages in Lambda apps. They’ll be packaged along with your functions on deployment. We’ll use an npm package called uuid to generate unique names for images, and we’ll use jimp for manipulating uploaded images. First, we need a package.json file.; Log on to your AWS Console, and navigate over to Lambda Console. Click on Layers on the left panel, and then “Create Layer”. The next section is pretty self explanatory. Give your Layer a name, description and upload your nodejs zip archive file. Make sure you select the appropriate runtime, ...; To download, go to your Lambda console, click on the function and choose &quot;Export function&quot; from the &quot;Actions&quot; dropdown. Then click on &quot;Download deployment package&quot; afterwards. Once the download is complete, go to the node_modules folder, rank the folders by size and take a look.; Deploy AWS Lambda functions from command line using a json or yaml config file.. Latest version: 1.0.7, last published: 3 years ago. Start using aws-lambda in your project by running `npm i aws-lambda`. There are 887 other projects in the npm registry using aws-lambda.; Now that we&#x27;ve zipped the index.js file and the node_modules directory our Lambda function can use the npm modules in it. However, now we can&#x27;t use the online editor. Our deployment package is too large, due to the size of the npm_modules folder.; By Erick Wendel In this article, you&#x27;ll learn how to inject custom packages on AWS Lambda Functions&#x27; Runtime by using AWS Lambda Layers. You&#x27;ll also use Amplify to develop, deploy, and distribute your applications. Serverless applications are great f...; $ echo &#x27;var AWS = require(&quot;aws... $ node test.js [ &#x27;2013-06-15*&#x27;,&#x27;2013-10-15*&#x27;,&#x27;2014-02-01*&#x27;,&#x27;2014-05-01*&#x27;,&#x27;2014-06-15*&#x27;,&#x27;2014-09-01*&#x27;,&#x27;2014-10-01&#x27; ] At this point we’ve successfully created a directory containing one or more npm-installed packages and verified that the packages can load and execute by running a test script locally. You can now delete the test script and continue by creating a real Lambda function that ...; Being a JavaScript developer, my obvious choice was Node.js. I have been using Node.js for more than 3 years now, hence I frequently use the libraries created by the large, vibrant and innovative Node.js community members. Working with AWS lambda, I required to install a library from npm.; Install your function&#x27;s required ... the npm install command. In this example you install the AWS X-Ray SDK for Node.js. ... ~/my_function ├── index.mjs └── node_modules ├── async ├── async-listener ├── atomic-batcher ├── aws-sdk ├── aws-xray-sdk ├── aws-xray-sdk-core · You can also add custom modules that you create yourself to your deployment package...; To include dependencies from ... package.json. No more Googling “webpack node externals aws-sdk”. NPM will trace the dependencies of the packages you deem necessary and add them to your package. ... There’s also a handy flag -B . For example,npm install -B axios will add axios to bundleDependencies at install time. ... Here’s the wrinkle: npm pack produces a TAR and Lambda expects ...; This promotes component sharing ... function package as small as possible. In this example, I move nodeJs runtime dependencies out of lambda function code by placing them in a layer. To get started, update to v1.34.0 or greater for layers support and create a serverless project: $ npm i -g serverless$ ...; Lambda Packager builds your project&#x27;s npm packages for use on AWS Lambda using AWS Lambda. AWS Lambda runs Node.js apps, but you have to provide the node_modules directory yourself. Building it on your local machine won&#x27;t work if your dependencies contain native code that needs to be compiled.; Command line tool for locally running and remotely deploying your node.js applications to Amazon Lambda. Last updated 3 days ago by deviavir . BSD-2-Clause · Repository · Bugs · Original npm · Tarball · package.json; Recently I found that the aws-sdk NPM module is preinstalled in AWS Lambda nodejs8.10. And I can ... node.js modules are pre-installed in AWS Lambda?; For Lambda functions that use the Node.js runtime, a dependency can be any Node.js module. The Node.js runtime includes a number of common libraries, as well as a version of the AWS SDK for JavaScript. The nodejs16.x Lambda runtime includes version 2.x of the SDK.; I&#x27;ve created several Lambda functions using the web based editor. So far so good. I&#x27;d now like to start extending those with modules (such as Q for promises). I can&#x27;t figure out how to get the modu...; AWS announced neat Lambda Layers feature at re:Invent 2018, which gives developers up to five packages to inject into a given function at runtime. This promotes component sharing and keeps the core…; Directly zip the node_modules directory alongside your index.js handler file - very easy and straightforward. However, Lambda has a size limit of 50 MB, so if your npm modules exceed that, you have to use layers · Use Lambda layers - enables you to reuse the same third-party libraries between ...; Deploy AWS Lambda functions from command line using a json or yaml config file.. Latest version: 1.0.7, last published: 3 years ago. Start using aws-lambda in your project by running `npm i aws-lambda`. There are 887 other projects in the npm registry using aws-lambda.; In order to add a node lambda layer ... the folder name has to be nodejs so that aws lambda can identify the dependencies. Let us now build a layer which contains the node-fetch module that creates http requests with node js....; To include libraries not part of the AWS SDK for JavaScript in your Lambda deployment package, use npm and ensure your local Node.js version matches your function’s runtime. If libraries require native code, build the package in an Amazon Linux environment.; AWS Lambda confuses many people. So let&#x27;s talk AWS Lambda, serverless, and how to build a scalable image processing app using AWS Lambda and Node.js.; Learn how to create and deploy Lambda functions with Node.js and AWS SAM in this introduction to AWS Lambda.; Command line tool for locally running and remotely deploying your node.js applications to Amazon Lambda.. Latest version: 1.3.0, last published: a year ago. Start using node-lambda in your project by running `npm i node-lambda`. There are 26 other projects in the npm registry using node-lambda.; I want to build a deployment package ... in Node.js, but I get a &quot;Cannot find module&quot; error during invocation. The Cannot find module error usually occurs for one of three reasons: The Lambda function&#x27;s deployment package doesn&#x27;t have the correct folder structure to allow the Lambda service to load the required modules and libraries...; Deploy Node.js projects to AWS Lambda and API Gateway easily.; I was searching a lot but didn&#x27;t found a list off all libraries /modules or extra functionalities included by dafault on Lambda so I do not need to build it by myself. do you know where i can find it? ... ImageMagick (the static binaries) indeed seems to be available on Lambda. I guess image resizing is a very common use case such that they decided to include it on Lambda. They should update that doc page to make it official. You still have to include the node.js ...; Datadog, the leading service for cloud-scale monitoring.; The Datadog AWS Lambda Library for Node. Contribute to DataDog/datadog-lambda-js development by creating an account on GitHub.; This local setup can really speed ... of the Lambda environment. If you already have an existing Express application, it&#x27;s very easy to convert to a Serverless-friendly application. Do the following steps: Install the serverless-http package -- npm install --save serverless-http · Add the serverless-http configuration to your Express application. You’ll need to import the serverless-http library at the top of your file: ... # app.js const serverless ...; Tim Wagner, AWS Lambda Bryan Liston, AWS Solutions Architect In this post we take a look at how to use custom nodejs packages with AWS Lambda, including building and packaging native nodejs modules for use in your Lambda functions. To do the steps below, you’ll need an EC2 instance or a similar ...; Run Express and other Node.js frameworks on AWS Serverless technologies such as Lambda, API Gateway, Lambda@Edge, and more. - CodeGenieApp/serverless-express; We cannot provide a description for this page right now; For Lambda functions that use the Node.js runtime, a dependency can be any Node.js module. The Node.js runtime includes a number of common libraries, as well as a version of the AWS SDK for JavaScript. The nodejs16.x Lambda runtime includes version 2.x of the SDK.
+    </answer>
+    
+    <references>
+    ["https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html","https://repost.aws/knowledge-center/lambda-deployment-package-nodejs","https://stackoverflow.com/questions/34437900/how-to-load-npm-modules-in-aws-lambda","https://www.npmjs.com/package/node-lambda","https://dev.splunk.com/view/event-collector/SP-CAAAE6Z","https://stackify.com/aws-lambda-with-node-js-a-complete-getting-started-guide/","https://medium.com/@anjanava.biswas/nodejs-runtime-environment-with-aws-lambda-layers-f3914613e20e","https://hackernoon.com/using-aws-lambda-to-reduce-nodejs-app-size","https://www.npmjs.com/package/aws-lambda","https://bobbyhadz.com/blog/aws-lambda-use-npm-modules","https://www.freecodecamp.org/news/how-to-reuse-packages-with-aws-lambda-functions-using-amplify/","https://aws.amazon.com/blogs/compute/nodejs-packages-in-lambda/","https://medium.com/underscoreindia/upload-a-npm-module-to-aws-lambda-11a06d1eb64f","http://docs.aws.amazon.com/lambda/latest/dg/nodejs-create-deployment-pkg.html","https://hackernoon.com/package-lambda-functions-the-easy-way-with-npm-e38fc14613ba","https://medium.com/the-apps-team/how-to-add-nodejs-library-dependencies-in-a-aws-lambda-layer-with-serverless-framework-d774cb867197","https://github.com/tomdale/lambda-packager","https://developer.aliyun.com/mirror/npm/package/node-lambda","https://intellipaat.com/community/19139/which-npm-modules-are-preinstalled-in-aws-lambda-execution-environment","https://medium.com/the-cloud-builders-guild/how-to-add-nodejs-library-dependencies-in-a-aws-lambda-layer-with-serverless-framework-d774cb867197","https://dev.to/alim1496/managing-external-libraries-in-aws-lambda-functions-1g0m","https://hevodata.com/learn/aws-lambda-nodejs/","https://blog.appsignal.com/2022/03/23/build-serverless-apis-with-nodejs-and-aws-lambda.html","https://aws.amazon.com/premiumsupport/knowledge-center/lambda-deployment-package-nodejs/","https://claudiajs.com/","https://stackoverflow.com/questions/46513874/list-all-aws-lambda-pre-built-libraries-modules-for-nodejs","https://docs.datadoghq.com/serverless/libraries_integrations/library/","https://github.com/DataDog/datadog-lambda-js","https://www.serverless.com/blog/serverless-express-rest-api","https://github.com/awslabs/aws-serverless-express"]
+    </references>
+    
+    </knowledge-2>
+    
+
+
+    <knowledge-3>
+    <question>
+    What do Internet say about diferenças entre cálculo lambda node.js outras linguagens?
+    </question>
+    <answer>
+    A simple, clean and fast implementation of the λ-calculus on JavaScript. It has zero dependencies and only 2.65KB gzipped. It evaluates terms very efficiently by using native JS functions, which is possible thanks to a clever compile/readback algorithm based on JS semantics.; In general terms, this is an important mathematical question posed in 1928 and was known as Entscheidungsproblem (German term for “decision problem”). Years later, in 1936, Alonzo Church and Alan…; This tutorial is for those who want to understand lambda calculus without having to use the original syntax. It is based in JavaScript. You need to know Arrow Functions in JavaScript. You can try the examples in the browser console, or NodeJS REPL.; We cannot provide a description for this page right now; DSL for lambda calculus. Contribute to dankogai/js-lambda development by creating an account on GitHub.; An Android app that provides a visual interface for creating and evaluating lambda calculus expressions ... A visualiser for lambda terms as rooted maps. generator maps graphs lambda-calculus visualiser combinatorics; For convenience, I provide two functions _(x) and __(x) (single and double underscore). The first evaluates x, then suspends it; the second takes a lambda-calculus term x, transforms it, and evaluates it, returning a Javascript function with the same behavior (modulo explicit evaluation).; Most descriptions of lambda calculus ... true! You likely have an interpreter of lambda calculus on your computer: any interpreter of JavaScript. You can either open the Developer Tools in your favorite browser, or start the Node.js REPL using node in a terminal....; Lambda calculus was invented by the mathematician Alonzo Church in the 1930s, and is what is known as a ‘computational model’. By that, I mean that it is a system which can be used to encode and compute algorithmic problems.; Lambda Calculus in JavaScript . Contribute to aregee/lambdajs development by creating an account on GitHub.; We also omitted the Starling, which can be combined with the Kestrel in various ways to produce every other function. For now, we will end with an actual real-world classic math problem, calculated entirely using lambda calculus – only converted back to JS numbers at the end, purely for display ...; This last snippet highlights the fundamental concepts of λ‑calculus interpretation, both in its minimal syntax: ... You can consult the files of this small development at lambda.js and lambda-all.js.; Lambda calculus in JavaScript syntax · Evaluation strategy: · Output: · Syntax · Example · Exercise 1 · var I = function(t){ return t }; var C_I = function(s,t) { return t }; var C_r = function(s) {return r}; var K = function(r,s){ return r }; · run Exercise 1 · Exercise 2 · var T ...; The final post in a series teaching you lambda calculus fundamentals using the most deployed language in the world, Javascript.; Is it possible to run recursion logic in a language which doesn’t allow self reference in functions? Yes, it is. Lambda Calculus defined Y and Z combinators for this. Let’s see them in action using JS; Functional Programming is all based on Lambda Calculus. So, in order to understand what Functional Programming is, let’s see what Lambda Calculus looks like… but in JavaScript! Did you know that JS was built with the goal of embedding the Scheme Programming Language into the Netscape Navigator ...; In this article I will talk about Church encoding, the mechanism by which we can encode operators and data using lambda calculus. In particular I will use JavaScript to demonstrate how we can use lambda calculus to implement boolean logic and basic arithmetic.; Most descriptions of lambda calculus ... true! You likely have an interpreter of lambda calculus on your computer: any interpreter of JavaScript. You can either open the Developer Tools in your favorite browser, or start the Node.js REPL using node in a terminal....; The Lambda Calculus and The JavaScript - Download as a PDF or view online for free; Part 3 in a series to help you learn lambda calculus fundamentals using the most deployed language in the world, JavaScript.; You can run JavaScript code with Node.js in AWS Lambda. Lambda provides runtimes for Node.js that run your code to process events. Your code runs in an environment that includes the AWS SDK for JavaScript, with credentials from an AWS Identity and Access Management (IAM) role that you manage.; AWS Lambda confuses many people. So let&#x27;s talk AWS Lambda, serverless, and how to build a scalable image processing app using AWS Lambda and Node.js.; I work at a company called Intrinsic where we specialize in writing software for securing Node.js applications. We currently have a product called Intrinsic for Lambda which follows the Least Privilege model for securing applications. Our product is very powerful and is easy to implement.; The Lambda function handler is the method in your function code that processes events. When your function is invoked, Lambda runs the handler method. Your function runs until the handler returns a response, exits, or times out. The following example function logs the contents of the; You can now develop AWS Lambda functions using the Node.js 22 runtime, which is in active LTS status and ready for production use. Node.js 22 includes a number of additions to the language, including require()ing ES modules, as well as changes to the runtime implementation and the standard library.; Lambda is a serverless, event-driven compute service that lets you run code for virtually without provisioning or managing servers. Lambda runs your code on a high-availability compute infrastructure and performs all of the administration of the compute resources, including server and operating ...; Once upon a time, not so long ago, a word caught my ear. Lambda. That struck a chord, remembering the good old days of playing Half-Life as a kid. Little did I know what AWS Lambda was, and how…; Learn how to use the Camunda 8 JavaScript SDK for Node.js in an AWS Lambda function to interact with Camunda SaaS.; Effortlessly integrate Node.js with AWS Lambda to create powerful serverless applications with our practical example.; Getting started with Serverless on AWS Lambda is just a few commands away: # 1. Create a new Serverless project: $ serverless create --template aws-nodejs --path my-service # 2. Change into the newly created directory $ cd my-service # 3. Install npm dependencies $ npm install # 4.; Your AWS Lambda function’s code comprises a .js or .mjs file containing your function’s handler code, together with any additional packages and modules your code depends on. To deploy this function code to Lambda, you use a deployment package . This package may either be a .zip file archive ...; Implement CI/CD: Integrate Lambda Layers into your continuous integration and deployment (CI/CD) pipeline for streamlined updates and testing. AWS Lambda Layers are an essential tool for managing dependencies and improving the organization of serverless applications. By understanding their pros and cons and following best practices, you can effectively utilize layers in your Node.js ...; A Computer Science portal for geeks. It contains well written, well thought and well explained computer science and programming articles, quizzes and practice/competitive programming/company interview Questions.; But if you are doing “standard stuff” in Lambda that you can easily implement in any language, and (part) of your team would need to learn the chosen language either way, let’s start the discussion: Node.js or Python?; Want to get started with AWS Lambda using Node.js? Here&#x27;s how.; Learn how to create and deploy Lambda functions with Node.js and AWS SAM in this introduction to AWS Lambda.; In this hands-on walkthrough, we&#x27;ll show you how to get started and create your first Node.js AWS Lambda function. Get started &gt;&gt;; You can use Node.js 20 with Powertools for AWS Lambda (TypeScript), a developer toolkit to implement serverless best practices and increase developer velocity.; Learn about writing AWS Lambda functions in NodeJS. We’ll review both technologies before exploring local development of AWS Lambda NodeJS functions.; Lambda provides managed runtimes for new language versions only when the release reaches the long-term support (LTS) phase of the language&#x27;s release cycle. For example, for the Node.js release cycle; For example, in simply typed lambda calculus, it is a theorem that every evaluation strategy terminates for every simply typed lambda-term, whereas evaluation of untyped lambda-terms need not terminate (see below). One reason there are many different typed lambda calculi has been the desire ...; In the \(\lambda\)-calculus, however, it’s not clear at all that we should identify the two functions. Formally speaking, without the help of some other principle, we cannot show that the two \(\lambda\)-terms denote the same function. Moreover, informally speaking, on the conception of functions-as-rules, it’s not even clear that we should identify them: the two terms involve genuinely different ...; Also, \(\alpha\) conversion cannot result in a variable getting captured by a different example. For example, \[ \lambda x. (\lambda y. x) \neq _{\alpha} \lambda y. (\lambda y. y ). \] \(\alpha\) conversion is not something that happens only in the lambda calculus.; Answer (1 of 2): Lambda Calculus:- 1.Lambda calculus is a formal system for expressing computation based on function abstraction and application. 2.It is primarily used in the study of programming languages, formal logic, and theoretical computer science to understand the concept of computation...; Answer: lambda calculus isn’t a programming language. Its a small mathematical notation used to describe the concept of function and function application. For that reason it is used as the foundation of functional programming. On top of lambda calculus functional programming languages often ...; Lambda calculus (λ-calculus), originally created by Alonzo Church, is the world&#x27;s smallest programming language.; An application therefore specializes ... application in comparison to traditional programming languages is that lambda calculus allows for function definitions to be defined directly in front of function calls....; The lambda calculus isn&#x27;t necessarily obvious or natural, but it is simple. That simplicity makes certain kinds of reasoning easy (ish). Another commenter talks about Church encoding of natural numbers, but I&#x27;m going to touch on Church encoding of booleans. When you think about booleans, you essentially have three things you need: ... A way to produce different ...; What I find common between CSP and CCS is that both of them are based on the notion of &quot;process&quot; (and, by that, I mean an abstract notion of events arranged in time). The main difference between them is that CSP has two forms of choice (internal/external or nondeterministic/deterministic).; In the same way, it can be shown ... super-computers, quantum computers and even iPhones. The only differences are in practically realized memory sizes, and the number of steps necessary to reach a result....; Note that in the lambda calculus, the parentheses surround both the function and its argument, while in many modern programming languages (and in mathematical notation), the function would come first and be followed by the argument in parentheses, like this: \(f(x)\).; It&#x27;s worth mentioning that the lambdas in lambda calculus are pretty much the same lambdas that many programming languages have (including Java 8, Scala, Kotlin etc.). Some of those languages might treat them a bit differently (e.g.; Lambda calculus is a model of computation, invented by Church in the early 1930&#x27;s. Lambda calculus and Turing machines are equivalent, in the sense that any function that can be defined using one can be defined using the other.; Programming with Functions; Lambda Calculus and ML programming; Logic programming; Unification and backtracking; Search tree; Programming in Prolog;; Expressions that differ only in the names of bound variables are called alpha-equivalent. For example, ... And, as usual in abstract mathematics, we can assign a name to an expression. Here we’ll be using the equals sign ( ... Application is the operation of substituting a specific value for the parameter in the abstraction. It’s the only operation defined in the pure untyped lambda calculus...; Stack Exchange network consists of 183 Q&amp;A communities including Stack Overflow, the largest, most trusted online community for developers to learn, share their knowledge, and build their careers · Ask questions, find answers and collaborate at work with Stack Overflow for Teams; Lambda calculus (λ-calculus), originally created by Alonzo Church, is the world’s smallest programming language.; Despite the vastly different model of computation, Alan Turing proved that a Turing machine can solve exactly the same problems as \(\lambda\)-calculus. This suggests that both models encompass all of computation, a conjecture formalized in the Church-Turing thesis.; Lambda calculus is a notation for describing mathematical functions and programs. It is a mathematical system for studying the interaction of functional abstraction and functional application. It captures some of the essential, common features of a wide variety of programming languages.; Relate the lambda calculusA model of computation based on mathematical functions proposed by Alonzo Church in the 1930s. to functionalFunctional languages are built around the concept of composable functions. Such languages support higher order functions which can take other functions as arguments ...
+    </answer>
+    
+    <references>
+    ["https://www.npmjs.com/package/lambda-calculus","https://medium.com/@ahlechandre/lambda-calculus-with-javascript-897f7e81f259","https://medium.com/functional-javascript/lambda-calculus-in-javascript-part-1-28ff63824d4d","https://www.hackdoor.io/articles/q9NY0JWo/lambda-calculus-in-javascript","https://github.com/dankogai/js-lambda","https://github.com/topics/lambda-calculus?l=javascript","https://math.ucr.edu/~mike/lc2js.html","https://xebia.com/blog/lambda-calculus-through-javascript-part-1/","https://www.willtaylor.blog/an-introduction-to-lambda-calculus-explained-through-javascript/","https://github.com/aregee/lambdajs","https://glebec.github.io/lambda-talk/","https://iwilare.com/lambda-js/","https://chenyang.co/lambda/","https://xebia.com/blog/lambda-calculus-through-javascript-part-5/","https://medium.com/swlh/y-and-z-combinators-in-javascript-lambda-calculus-with-real-code-31f25be934ec","https://medium.com/openmindonline/lambda-calculus-in-javascript-1ee947cadb21","https://www.willtaylor.blog/combinators-and-church-encoding-in-javscript/","https://www.47deg.com/blog/lambda-js-1/","https://www.slideshare.net/normanrichards/the-lambda-calculus-and-the-javascript","https://www.47deg.com/blog/lambda-calculus-in-javascript-part-3/","https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html","https://stackify.com/aws-lambda-with-node-js-a-complete-getting-started-guide/","https://medium.com/intrinsic-blog/basic-node-js-lambda-function-concepts-c0d1e00d4528","https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html","https://aws.amazon.com/blogs/compute/node-js-22-runtime-now-available-in-aws-lambda/","https://centralsoft.io/en/blog/posts/using-aws-lambda-functions-on-a-nodejs-app","https://medium.com/hackernoon/getting-started-with-aws-lambda-and-node-js-4ce3259c6dfd","https://camunda.com/blog/2024/06/using-camunda-javascript-sdk-for-node-js-in-an-aws-lambda-function/","https://hevodata.com/learn/nodejs-lambda/","https://blog.risingstack.com/getting-started-with-aws-lambda-and-node-js/","https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html","https://aeontanvir.medium.com/aws-lambda-layers-a-comprehensive-guide-with-node-js-examples-c79128b52455","https://www.geeksforgeeks.org/aws-lambda-function-handler-in-nodejs/","https://betterdev.blog/aws-lambda-runtime-nodejs-python/","https://www.tsmean.com/articles/aws/the-ultimate-aws-lambda-tutorial-for-nodejs/","https://blog.appsignal.com/2022/03/23/build-serverless-apis-with-nodejs-and-aws-lambda.html","https://dashbird.io/blog/getting-started-with-aws-lambda-and-nodejs/","https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/","https://lumigo.io/learn/aws-lambda-nodejs/","https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html","https://en.wikipedia.org/wiki/Lambda_calculus","https://plato.stanford.edu/entries/lambda-calculus/","https://brilliant.org/wiki/lambda-calculus/","https://www.quora.com/What-is-the-difference-between-Lambda-calculus-and-relational-algebra","https://www.quora.com/What-is-the-difference-between-lambda-calculus-and-other-programming-languages","https://learnxinyminutes.com/lambda-calculus/","https://sookocheff.com/post/fp/introducing-lambda-calculus/","https://www.reddit.com/r/compsci/comments/87d0ur/can_someone_explain_to_me_lambda_calculus/","https://cs.stackexchange.com/questions/465/similarities-and-differences-in-major-process-algebras","http://bach.ai/lambda-calculus-for-absolute-dummies/","https://opendsa.cs.vt.edu/ODSA/Books/PL/html/Syntax.html","https://www.jrebel.com/blog/what-is-lambda-calculus","https://pages.cs.wisc.edu/~horwitz/CS704-NOTES/1.LAMBDA-CALCULUS.html","https://personal.utdallas.edu/~gupta/courses/apl/lambda.pdf","https://serokell.io/blog/untyped-lambda-calculus","https://math.stackexchange.com/questions/3720247/lambda-calculus-what-is-the-difference-between-a-lambda-term-with-and-w-o-pa","https://learnxinyminutes.com/docs/lambda-calculus/","https://eecs390.github.io/notes/theory.html","https://www.cs.cornell.edu/courses/cs3110/2008fa/recitations/rec26.html","https://tgdwyer.github.io/lambdacalculus/"]
+    </references>
+    
+    </knowledge-3>
+    
+
+
+    <knowledge-4>
+    <question>
+    Qual biblioteca npm mais usada para cálculos lambda em Node.js?
+    </question>
+    <answer>
+    A biblioteca npm mais usada para cálculos lambda em Node.js é 'aws-lambda'.
+    </answer>
+    
+    <references>
+    [{"exactQuote":"Install your function's required ... the npm install command. In this example you install the AWS X-Ray SDK for Node.js.","url":"https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html"},{"exactQuote":"For Lambda functions that use the Node.js runtime, a dependency can be any Node.js module. The Node.js runtime includes a number of common libraries, as well as a version of the AWS SDK for JavaScript.","url":"https://aws.amazon.com/blogs/compute/nodejs-packages-in-lambda/"},{"exactQuote":"The solution is to compile the modules on an EC2 instance launched from the AMI that corresponds with the Lambda Node.js runtime you're using (See this list of Lambda runtimes and their respective AMIs).","url":"https://aws.amazon.com/blogs/compute/nodejs-packages-in-lambda/"}]
+    </references>
+    
+    </knowledge-4>
+    
+
+
+    <knowledge-5>
+    <question>
+    Como os cálculos lambda em Node.js diferem dos cálculos lambda em outras linguagens de programação?
+    </question>
+    <answer>
+    Os cálculos lambda em Node.js diferem dos cálculos lambda em outras linguagens de programação principalmente na forma como são implementados e utilizados. Em Node.js, a sintaxe para cálculos lambda é idêntica à do JavaScript, que utiliza o operador '=>' ou funções anônimas. A biblioteca npm mais usada para cálculos lambda em Node.js é 'aws-lambda', embora existam outras bibliotecas como 'lambda-calculus' e 'lambdajs'. A implementação de cálculos lambda em Node.js, através do uso da AWS Lambda, permite que os programadores aproveitem a infraestrutura da AWS para processar eventos sem precisar gerenciar servidores. Esta abordagem é muito diferente das linguagens como Haskell ou Scala, onde o cálculo lambda é usado diretamente como um paradigma de programação funcional.
+    </answer>
+    
+    <references>
+    [{"exactQuote":"Em Node.js, a sintaxe correta para um cálculo lambda é a mesma usada em JavaScript. Você pode criar uma função lambda de duas maneiras principais: usando o operador '=>' ou definições anônimas de função.","url":"https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Functions/Arrow_functions"},{"exactQuote":"A biblioteca npm mais usada para cálculos lambda em Node.js é 'aws-lambda'.","url":"https://www.npmjs.com/package/aws-lambda"}]
+    </references>
+    
+    </knowledge-5>
+    
+
+
+    <knowledge-6>
+    <question>
+    Existe alguma diferença significativa na maneira como o cálculo lambda é implementado em diferentes versões do Node.js?
+    </question>
+    <answer>
+    Sim, há algumas diferenças significativas na maneira como o cálculo lambda é implementado em diferentes versões do Node.js. Embora a sintaxe para lambdas seja a mesma independentemente da versão, as bibliotecas npm utilizadas podem variar e influenciar diretamente os cálculos lambda em Node.js. A biblioteca 'aws-lambda' é amplamente utilizada e estável, mas outras bibliotecas como 'lambda-calculus', 'lambdajs' e 'node-lambda' também são opções viáveis para cálculos lambda no Node.js. As diferentes versões do Node.js podem oferecer novos recursos ou melhorias na otimização de código, que podem afetar a implementação de cálculos lambda.
+    </answer>
+    
+    <references>
+    [{"exactQuote":"Em Node.js, a sintaxe correta para um cálculo lambda é a mesma usada em JavaScript. Você pode criar uma função lambda de duas maneiras principais: usando o operador '=>' ou definições anônimas de função.","url":"https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Functions/Arrow_functions"},{"exactQuote":"A biblioteca npm mais usada para cálculos lambda em Node.js é 'aws-lambda'.","url":"https://www.npmjs.com/package/aws-lambda"}]
+    </references>
+    
+    </knowledge-6>
+    
+
+    </knowledge>
+    
+
+
+    Based on the current context, you must choose one of the following actions:
+    <actions>
+    
+    <action-visit>    
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    <url-list>
+      + "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html": "Deploy Node.js Lambda functions with .zip file archives - AWS Lambda"
+  + "https://repost.aws/knowledge-center/lambda-deployment-package-nodejs": "Build a Lambda deployment package for Node.js | AWS re:Post"
+  + "https://stackoverflow.com/questions/34437900/how-to-load-npm-modules-in-aws-lambda": "amazon web services - How to load npm modules in AWS Lambda? - Stack Overflow"
+  + "https://www.npmjs.com/package/node-lambda": "node-lambda - npm"
+  + "https://dev.splunk.com/view/event-collector/SP-CAAAE6Z": "Create a Node.js Lambda function and upload it"
+  + "https://stackify.com/aws-lambda-with-node-js-a-complete-getting-started-guide/": "AWS Lambda with Node.js: A Complete Getting Started Guide - Stackify"
+  + "https://medium.com/@anjanava.biswas/nodejs-runtime-environment-with-aws-lambda-layers-f3914613e20e": "NodeJS Runtime Environment with AWS Lambda Layers | by Anjan Biswas | Medium"
+  + "https://hackernoon.com/using-aws-lambda-to-reduce-nodejs-app-size": "Using AWS Lambda to Reduce NodeJS App Size | HackerNoon"
+  + "https://www.npmjs.com/package/aws-lambda": "aws-lambda - npm"
+  + "https://bobbyhadz.com/blog/aws-lambda-use-npm-modules": "How to use npm modules in AWS Lambda | bobbyhadz"
+  + "https://www.freecodecamp.org/news/how-to-reuse-packages-with-aws-lambda-functions-using-amplify/": "How to Reuse Node.js Packages with AWS Lambda Functions Using Amplify and Lambda Layers"
+  + "https://aws.amazon.com/blogs/compute/nodejs-packages-in-lambda/": "Using Packages and Native nodejs Modules in AWS Lambda | Amazon Web Services"
+  + "https://medium.com/underscoreindia/upload-a-npm-module-to-aws-lambda-11a06d1eb64f": "Upload a npm module to AWS lambda | by Ankita Kumari | Underscore | Medium"
+  + "http://docs.aws.amazon.com/lambda/latest/dg/nodejs-create-deployment-pkg.html": "AWS Lambda Deployment Package in Node.js"
+  + "https://hackernoon.com/package-lambda-functions-the-easy-way-with-npm-e38fc14613ba": "Package Lambda Functions The Easy Way With NPM | HackerNoon"
+  + "https://medium.com/the-apps-team/how-to-add-nodejs-library-dependencies-in-a-aws-lambda-layer-with-serverless-framework-d774cb867197": "How To Add NodeJs Library Dependencies in a AWS Lambda ..."
+  + "https://github.com/tomdale/lambda-packager": "GitHub - tomdale/lambda-packager: Builds dependencies for Node.js Lambda functions"
+  + "https://developer.aliyun.com/mirror/npm/package/node-lambda": "Package - node-lambda"
+  + "https://intellipaat.com/community/19139/which-npm-modules-are-preinstalled-in-aws-lambda-execution-environment": "Which NPM modules are preinstalled in AWS Lambda execution environment? - Intellipaat Community"
+  + "https://medium.com/the-cloud-builders-guild/how-to-add-nodejs-library-dependencies-in-a-aws-lambda-layer-with-serverless-framework-d774cb867197": "How To Add NodeJs Library Dependencies in a AWS Lambda Layer with Serverless Framework | by Yi Ai | The Cloud Builders Guild | Medium"
+  + "https://dev.to/alim1496/managing-external-libraries-in-aws-lambda-functions-1g0m": "Managing external libraries in AWS lambda functions - DEV Community"
+  + "https://hevodata.com/learn/aws-lambda-nodejs/": "What is AWS Lambda Nodejs function?"
+  + "https://blog.appsignal.com/2022/03/23/build-serverless-apis-with-nodejs-and-aws-lambda.html": "Build Serverless APIs with Node.js and AWS Lambda | AppSignal Blog"
+  + "https://aws.amazon.com/premiumsupport/knowledge-center/lambda-deployment-package-nodejs/": "How do I build a Lambda deployment package for Node.js?"
+  + "https://claudiajs.com/": "Claudia.js"
+  + "https://stackoverflow.com/questions/46513874/list-all-aws-lambda-pre-built-libraries-modules-for-nodejs": "List all aws-lambda pre-built libraries & modules for nodejs - Stack Overflow"
+  + "https://docs.datadoghq.com/serverless/libraries_integrations/library/": "Datadog Lambda Library"
+  + "https://github.com/DataDog/datadog-lambda-js": "GitHub - DataDog/datadog-lambda-js: The Datadog AWS Lambda Library for Node"
+  + "https://www.serverless.com/blog/serverless-express-rest-api": "Deploy a REST API using Serverless, Express and Node.js"
+  + "https://github.com/awslabs/aws-serverless-express": "awslabs/aws-serverless-express: Run serverless ... - GitHub"
+  + "https://www.npmjs.com/package/lambda-calculus": "lambda-calculus - npm"
+  + "https://medium.com/@ahlechandre/lambda-calculus-with-javascript-897f7e81f259": "Lambda Calculus with JavaScript"
+  + "https://medium.com/functional-javascript/lambda-calculus-in-javascript-part-1-28ff63824d4d": "Lambda Calculus in JavaScript — Part 1 | by Santosh Rajan | Functional JavaScript | Medium"
+  + "https://www.hackdoor.io/articles/q9NY0JWo/lambda-calculus-in-javascript": "Lambda Calculus in JavaScript? - HACKDOOR"
+  + "https://github.com/dankogai/js-lambda": "GitHub - dankogai/js-lambda: DSL for lambda calculus"
+  + "https://github.com/topics/lambda-calculus?l=javascript": "lambda-calculus · GitHub Topics · GitHub"
+  + "https://math.ucr.edu/~mike/lc2js.html": "Lambda calculus to Javascript source-to-source filter"
+  + "https://xebia.com/blog/lambda-calculus-through-javascript-part-1/": "Lambda Calculus Through JavaScript, Part 1 - Xebia"
+  + "https://www.willtaylor.blog/an-introduction-to-lambda-calculus-explained-through-javascript/": "An introduction to Lambda Calculus, explained through JavaScript – Will Taylor Blog"
+  + "https://github.com/aregee/lambdajs": "GitHub - aregee/lambdajs: Lambda Calculus in JavaScript"
+  + "https://glebec.github.io/lambda-talk/": "Lambda as JS, or A Flock of Functions"
+  + "https://iwilare.com/lambda-js/": "A minimal JavaScript interpreter for λ‑calculus in less than 60 characters"
+  + "https://chenyang.co/lambda/": "Lambda calculus in JS syntax"
+  + "https://xebia.com/blog/lambda-calculus-through-javascript-part-5/": "Lambda Calculus Through JavaScript, Part 5 - Xebia"
+  + "https://medium.com/swlh/y-and-z-combinators-in-javascript-lambda-calculus-with-real-code-31f25be934ec": "Y and Z combinators in Javascript — Lambda Calculus with real code | by Enrico Piccinin | The Startup | Medium"
+  + "https://medium.com/openmindonline/lambda-calculus-in-javascript-1ee947cadb21": "Lambda Calculus in JavaScript?. The foundation of Functional… | by Michele Riva | openmind | Medium"
+  + "https://www.willtaylor.blog/combinators-and-church-encoding-in-javscript/": "Lambda calculus explained through JavaScript: combinators and Church encoding – Will Taylor Blog"
+  + "https://www.47deg.com/blog/lambda-js-1/": "Lambda calculus through JavaScript, part 1 | 47 Degrees"
+  + "https://www.slideshare.net/normanrichards/the-lambda-calculus-and-the-javascript": "The Lambda Calculus and The JavaScript - SlideShare"
+  + "https://www.47deg.com/blog/lambda-calculus-in-javascript-part-3/": "Lambda calculus through JavaScript, part 3"
+  + "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html": "Building Lambda functions with Node.js - AWS Lambda"
+  + "https://medium.com/intrinsic-blog/basic-node-js-lambda-function-concepts-c0d1e00d4528": "Basic Node.js Lambda Function Concepts | by Thomas Hunter II | intrinsic | Medium"
+  + "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html": "Define Lambda function handler in Node.js - AWS Lambda"
+  + "https://aws.amazon.com/blogs/compute/node-js-22-runtime-now-available-in-aws-lambda/": "Node.js 22 runtime now available in AWS Lambda | Amazon Web Services"
+  + "https://centralsoft.io/en/blog/posts/using-aws-lambda-functions-on-a-nodejs-app": "Using AWS Lambda functions on a Node.js app | Centralsoft Blog"
+  + "https://medium.com/hackernoon/getting-started-with-aws-lambda-and-node-js-4ce3259c6dfd": "Getting Started with AWS Lambda and Node.js | by Adnan Rahić | HackerNoon.com | Medium"
+  + "https://camunda.com/blog/2024/06/using-camunda-javascript-sdk-for-node-js-in-an-aws-lambda-function/": "Using Camunda 8 JavaScript SDK for Node.js in an AWS Lambda Function | Camunda"
+  + "https://hevodata.com/learn/nodejs-lambda/": "NodeJS Lambda: Guide to Get Started 101 | Hevo"
+  + "https://blog.risingstack.com/getting-started-with-aws-lambda-and-node-js/": "Getting Started with AWS Lambda & Node.js - RisingStack Engineering"
+  + "https://aeontanvir.medium.com/aws-lambda-layers-a-comprehensive-guide-with-node-js-examples-c79128b52455": "AWS Lambda Layers: A Comprehensive Guide with Node.js Examples | by Aeon Tanvir | Medium"
+  + "https://www.geeksforgeeks.org/aws-lambda-function-handler-in-nodejs/": "AWS Lambda Function Handler in Node.js - GeeksforGeeks"
+  + "https://betterdev.blog/aws-lambda-runtime-nodejs-python/": "AWS Lambda - Node.js vs. Python for serverless | Better Dev"
+  + "https://www.tsmean.com/articles/aws/the-ultimate-aws-lambda-tutorial-for-nodejs/": "The Ultimate AWS Lambda Tutorial for Node.js"
+  + "https://dashbird.io/blog/getting-started-with-aws-lambda-and-nodejs/": "Tutorial: Getting Started with AWS Lambda and Node.js - Dashbird"
+  + "https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/": "Node.js 20.x runtime now available in AWS Lambda | Amazon Web Services"
+  + "https://lumigo.io/learn/aws-lambda-nodejs/": "AWS Lambda NodeJS: Building Functions - Lumigo"
+  + "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html": "Lambda runtimes - AWS Lambda"
+  + "https://en.wikipedia.org/wiki/Lambda_calculus": "Lambda calculus - Wikipedia"
+  + "https://plato.stanford.edu/entries/lambda-calculus/": "The Lambda Calculus (Stanford Encyclopedia of Philosophy)"
+  + "https://brilliant.org/wiki/lambda-calculus/": "Lambda Calculus | Brilliant Math & Science Wiki"
+  + "https://www.quora.com/What-is-the-difference-between-Lambda-calculus-and-relational-algebra": "What is the difference between Lambda calculus and relational algebra? - Quora"
+  + "https://www.quora.com/What-is-the-difference-between-lambda-calculus-and-other-programming-languages": "What is the difference between lambda calculus and other programming languages? - Quora"
+  + "https://learnxinyminutes.com/lambda-calculus/": "Learn Lambda Calculus in Y Minutes"
+  + "https://sookocheff.com/post/fp/introducing-lambda-calculus/": "Introducing Lambda Calculus | Kevin Sookocheff"
+  + "https://www.reddit.com/r/compsci/comments/87d0ur/can_someone_explain_to_me_lambda_calculus/": "r/compsci on Reddit: Can someone explain to me lambda calculus?"
+  + "https://cs.stackexchange.com/questions/465/similarities-and-differences-in-major-process-algebras": "logic - Similarities and differences in major process algebras - Computer Science Stack Exchange"
+  + "http://bach.ai/lambda-calculus-for-absolute-dummies/": "The Lambda Calculus for Absolute Dummies (like myself) - Joscha Bach"
+  + "https://opendsa.cs.vt.edu/ODSA/Books/PL/html/Syntax.html": "3.1. Syntax of the Lambda Calculus — Programming Languages"
+  + "https://www.jrebel.com/blog/what-is-lambda-calculus": "What Is Lambda Calculus? | JRebel by Perforce"
+  + "https://pages.cs.wisc.edu/~horwitz/CS704-NOTES/1.LAMBDA-CALCULUS.html": "Lambda Calculus"
+  + "https://personal.utdallas.edu/~gupta/courses/apl/lambda.pdf": "A Tutorial Introduction to the Lambda Calculus"
+  + "https://serokell.io/blog/untyped-lambda-calculus": "Introduction to Lambda Calculus"
+  + "https://math.stackexchange.com/questions/3720247/lambda-calculus-what-is-the-difference-between-a-lambda-term-with-and-w-o-pa": "Lambda Calculus: What is the difference between a $\lambda$ term with and w/o parenthesis? - Mathematics Stack Exchange"
+  + "https://learnxinyminutes.com/docs/lambda-calculus/": "Lambda Calculus"
+  + "https://eecs390.github.io/notes/theory.html": "Lambda Calculus — Programming Language Principles and Paradigms 0.4 documentation"
+  + "https://www.cs.cornell.edu/courses/cs3110/2008fa/recitations/rec26.html": "The Lambda Calculus"
+  + "https://tgdwyer.github.io/lambdacalculus/": "Lambda Calculus | Tim’s code stuff"
+    </url-list>
+    - When you have enough search result in the context and want to deep dive into specific URLs
+    - It allows you to access the full content behind any URLs
+
+    </action-visit>
+    
+
+
+    <action-answer>
+    - Provide final response only when 100% certain
+    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+    </action-answer>
+    
+    </actions>
+    
+
+Respond exclusively in valid JSON format matching exact JSON schema.
+
+    Critical Requirements:
+    - Include ONLY ONE action type
+    - Never add unsupported keys
+    - Exclude all non-JSON text, markdown, or explanations
+    - Maintain strict JSON syntax
+    - All text content must be in Portuguese (Brazil)
+    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)

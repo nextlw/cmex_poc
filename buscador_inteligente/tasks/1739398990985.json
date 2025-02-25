@@ -1,0 +1,23 @@
+{
+  "action": "answer",
+  "think": "Com base no conhecimento reunido, posso fornecer algumas dicas para um desenvolvedor Front-End Sênior que está aberto a novas oportunidades no LinkedIn. As dicas incluem otimizar o perfil, destacar habilidades e experiências relevantes, e criar um título de destaque.",
+  "answer": "Para um desenvolvedor Front-End Sênior aberto a novas oportunidades no LinkedIn, algumas dicas importantes incluem: otimizar o perfil com palavras-chave relevantes para a área de atuação e nível de senioridade, destacar habilidades e projetos relevantes na descrição e seção de experiência, criar um título de destaque que chame a atenção dos recrutadores, e manter o perfil atualizado com as últimas tecnologias e tendências do mercado. Além disso, é importante participar de grupos e eventos da área, compartilhar conteúdo relevante e estar aberto a novas conexões e oportunidades.",
+  "references": [
+    {
+      "exactQuote": "Aprenda a destacar suas habilidades, projetos e experiências relevantes para chamar atenção de recrutadores para vagas front-end.",
+      "url": "https://www.escoladnc.com.br/blog/como-estruturar-meu-linkedin-para-vagas-front-end/"
+    },
+    {
+      "exactQuote": "Ação: Crie um título de destaque no seu perfil. Se você é por exemplo um desenvolvedor web, seguem alguns exemplos de títulos relevantes: Desenvolvedor Front-End Senior;",
+      "url": "https://blog.geekhunter.com.br/as-melhores-dicas-para-ir-alem-do-perfil-campeao-no-linkedin/"
+    },
+    {
+      "exactQuote": "Para o nome do cargo, você precisa ser o mais completo possível, inclusive indicando o nível de senioridade. No exemplo “Desenvolvedor Backend PHP Junior”, o cargo detalha a profissão (desenvolvedor), a área (backend), a linguagem (PHP) e a senioridade (Junior).",
+      "url": "https://codamos.com.br/guia-definitivo-perfil-profissional-linkedin-passo-a-passo/"
+    },
+    {
+      "exactQuote": "Como otimizar o perfil do LinkedIn para desenvolvedor front-end. Aprenda a destacar suas habilidades e conquistar oportunidades na área. (140 characters)",
+      "url": "https://awari.com.br/como-otimizar-o-perfil-do-linkedin-para-desenvolvedor-front-end/"
+    }
+  ]
+}

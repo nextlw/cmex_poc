@@ -28,8 +28,10 @@ db_contribuicoes_vectors/
 db_ncm_vector/
 historico_jsonl/
 historico_vectors/
-
-
+buscador_inteligente/queries/
+buscador_inteligente/prompt/
+buscador_inteligente/tasks/
+buscador_inteligente/trash/
 
 
 
@@ -181,3 +183,4 @@ backend/.env
 backend/.env
 force_replace_development.sh
 yarn.lock
+start-dev.sh
