@@ -37,6 +37,8 @@ import {
   ActionListProps,
   ProcessingContentProps,
 } from "./types";
+// Importação do transformador de mensagens de streaming
+import { transformStreamMessage } from "../../utils/transformers/streamMessageTransformers";
 
 const ActionIcon: React.FC<ActionIconProps> = ({ type }) => {
   switch (type) {
@@ -459,8 +461,12 @@ const ChatPage: React.FC = () => {
       console.log("Evento recebido no cliente:", event.data);
 
       try {
-        const data = JSON.parse(event.data);
-        console.log("Dados parseados:", data);
+        const rawData = JSON.parse(event.data);
+        console.log("Dados brutos parseados:", rawData);
+        
+        // Aplicar o transformador para garantir consistência de tipos
+        const data = transformStreamMessage(rawData);
+        console.log("Dados transformados:", data);
 
         // Registra os dados brutos para depuração
         setAgentState((prev) => {

@@ -4,6 +4,9 @@ import { QueryHistoryItem, QueryHistoryProps } from "./types";
 import ConfirmationModal from "../ConfirmationModal";
 import { LogsResponse } from "../../types/index";
 import { FiX } from "react-icons/fi";
+// Importações diretas dos transformadores específicos
+import { transformQueryList } from "../../utils/transformers/queryTransformers";
+import { transformLogsResponse } from "../../utils/transformers/logsTransformers";
 
 // Adicionar interface para o evento personalizado
 interface QueryHistoryUpdateEvent extends Event {
@@ -59,14 +62,15 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
       const data = await response.json();
       const queriesArray = data.queries || [];
 
-      const formattedQueries = queriesArray.map((query: any) => ({
+      // Aplicar transformação para garantir consistência de tipos
+      const formattedQueries = transformQueryList(queriesArray.map((query: any) => ({
         id: query.id,
         title: query.title || "Consulta sem título",
         status: query.status,
         timestamp: query.timestamp,
         summary: query.summary,
         question: query.question,
-      }));
+      })));
 
       // Comparar com o estado atual para evitar atualizações desnecessárias
       const currentIds = queries.map((q: QueryHistoryItem) => q.id).sort().join(',');
@@ -108,7 +112,11 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
   useEffect(() => {
     fetch("/api/v1/logs")
       .then((res) => res.json())
-      .then((logs: LogsResponse) => setData(logs))
+      .then((logsData) => {
+        // Aplicar transformação para garantir consistência de tipos
+        const transformedLogs = transformLogsResponse(logsData.serverLogs || []);
+        setData(transformedLogs);
+      })
       .catch(console.error);
   }, []);
   
