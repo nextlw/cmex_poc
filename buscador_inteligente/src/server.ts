@@ -3,7 +3,7 @@ import express, {Request, Response, RequestHandler} from 'express';
 import cors from 'cors';
 import {EventEmitter} from 'events';
 import {getResponse} from './agent';
-import {StepAction, StreamMessage, TrackerContext} from './types';
+import {StepAction, StreamMessage, TrackerContext, AnswerAction} from './types';
 import fs from 'fs/promises';
 import path from 'path';
 import {TokenTracker} from "./utils/token-tracker";
@@ -13,6 +13,8 @@ import { specs } from './swagger';
 import chokidar from 'chokidar';
 import { Server as WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
+import { QuerySession } from './types/session';
+import { ensureModelClientInitialized } from './agent';
 
 /**
  * Interface para armazenar logs do servidor.
@@ -24,6 +26,7 @@ interface ServerLog {
   context: {
     pid: number;
     env: string;
+    requestId?: string;
   };
 }
 
@@ -83,9 +86,9 @@ const port = process.env.PORT || 3000;
  * Middleware de CORS.
  */
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Adicione a origem do seu frontend
-  methods: ['GET', 'POST'],
-  credentials: true
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 /**
  * Middleware de JSON.
@@ -131,15 +134,37 @@ app.post('/api/v1/trash-query', async (req: Request, res: Response) => {
     await fs.mkdir(trashDir, { recursive: true });
     await fs.mkdir(trashTaskPath, { recursive: true });
 
+    // Verifica se o diretório de destino na lixeira já existe
+    try {
+      await fs.access(trashPath);
+      console.log(`Diretório de destino já existe na lixeira: ${trashPath}, removendo-o primeiro`);
+      // Se existir, remove-o completamente antes de mover
+      await fs.rm(trashPath, { recursive: true, force: true });
+    } catch (error) {
+      // Se o diretório não existe, isso é esperado e não é um erro
+      console.log(`Diretório de destino não existe na lixeira, prosseguindo normalmente`);
+    }
+
     // Move a pasta da query para a lixeira
     await fs.rename(queryPath, trashPath);
 
     // Move o arquivo de task se existir
+    // Tratamento melhorado: apenas registra quando o arquivo não existe, sem afetar o fluxo
     try {
       await fs.access(taskPath);
-      await fs.rename(taskPath, path.join(trashTaskPath, `${id.toString()}.json`));
+      // Verifica se já existe um arquivo com o mesmo nome na lixeira
+      const trashTaskFilePath = path.join(trashTaskPath, `${id.toString()}.json`);
+      try {
+        await fs.access(trashTaskFilePath);
+        // Se existir, remove-o antes de mover o novo
+        await fs.unlink(trashTaskFilePath);
+      } catch {
+        // Se não existir, prossegue normalmente
+      }
+      await fs.rename(taskPath, trashTaskFilePath);
     } catch (error) {
-      console.log('Arquivo de task não encontrado:', taskPath);
+      console.log('Aviso: Arquivo de task não encontrado:', taskPath, 'Continuando exclusão normalmente.');
+      // Não trata como erro, apenas como aviso
     }
 
     res.json({ success: true, message: 'Query movida para a lixeira com sucesso' });
@@ -335,7 +360,7 @@ async function saveQueryMetadata(requestId: string, metadata: {
 }
 
 // Adicione um novo tipo para os status possíveis
-type QueryStatus = 'pending' | 'processing' | 'completed' | 'error';
+type QueryStatus = 'in_progress' | 'processing' | 'completed' | 'error';
 
 // Função para atualizar o status sem substituir outros dados
 async function updateQueryStatus(requestId: string, status: QueryStatus) {
@@ -371,6 +396,9 @@ app.post('/api/v1/query', (async (req: Request, res: Response) => {
     const question = req.body.q;
     const budget = req.body.budget;
     const maxBadAttempt = req.body.maxBadAttempt;
+    const modelName = req.body.modelo; // Captura o modelo do corpo da requisição
+    
+    console.log('Modelo solicitado:', modelName);
     
     // Validação do parâmetro obrigatório "q"
     if (!question || typeof question !== 'string' || question.trim() === '') {
@@ -410,11 +438,16 @@ app.post('/api/v1/query', (async (req: Request, res: Response) => {
     res.json({requestId});
 
     try {
-      // Inicializa com status pending
-      await updateQueryStatus(requestId, 'pending');
+      // Inicializa com status in_progress
+      await updateQueryStatus(requestId, 'in_progress');
       
       // Atualiza para processing quando começa
       await updateQueryStatus(requestId, 'processing');
+      
+      // Se um modelo foi especificado, inicializa o cliente com esse modelo
+      if (modelName) {
+        ensureModelClientInitialized(modelName);
+      }
       
       // Obtém o resultado da resposta
       const {result} = await getResponse(question, budget, maxBadAttempt, context, requestId);
@@ -446,17 +479,22 @@ app.post('/api/v1/query', (async (req: Request, res: Response) => {
       // Armazena o resultado da tarefa
       await storeTaskResult(requestId, result);
       // Emite o resultado da resposta
-      eventEmitter.emit(`progress-${requestId}`, {
-        type: 'answer',
-        data: {
-          answer: 'Resposta obtida no back-end ...',
-          ...result
-        },
-        trackers: {
-          tokenUsage: context.tokenTracker.getTotalUsage(),
-          actionState: context.actionTracker.getState()
-        }
-      });
+      if (result.action === 'answer') {
+        const answerResult = result as AnswerAction;
+        eventEmitter.emit(`progress-${requestId}`, {
+          type: 'answer',
+          data: {
+            answer: answerResult.answer,
+            think: answerResult.think,
+            references: answerResult.references,
+            reasoning: answerResult.accumulatedReasoning
+          },
+          trackers: {
+            tokenUsage: context.tokenTracker.getTotalUsage(),
+            actionState: context.actionTracker.getState()
+          }
+        });
+      }
       cleanup(requestId);
     } catch (error: any) {
       // Atualiza para error em caso de falha
@@ -515,37 +553,58 @@ app.get('/api/v1/stream/:requestId', (async (req: Request, res: StreamResponse) 
       switch(action) {
         case 'search':
           formattedData = {
-            type: 'progress',
+            type: 'search',
             data: {
               action: action,
               think: data.data.think,
-              searchQuery: data.data.searchQuery
+              searchQuery: data.data.searchQuery,
+              message: `Pesquisando informações para: "${data.data.searchQuery}"`,
+              searchResults: data.data.searchResults || []
             },
+            outputs: data.outputs || [],
             trackers: data.trackers
           };
           break;
         
         case 'answer':
           formattedData = {
-            type: 'progress',
+            type: 'answer',
             data: {
               action: action,
               think: data.data.think,
               answer: data.data.answer,
-              references: data.data.references
+              references: data.data.references,
+              reasoning: data.data.reasoning || data.data.accumulatedReasoning
             },
+            outputs: data.outputs || [],
             trackers: data.trackers
           };
           break;
         
         case 'reflect':
           formattedData = {
-            type: 'progress',
+            type: 'reflect',
             data: {
               action: action,
               think: data.data.think,
-              questionsToAnswer: data.data.questionsToAnswer
+              questionsToAnswer: data.data.questionsToAnswer,
+              message: `Refletindo sobre: ${data.data.questionsToAnswer ? data.data.questionsToAnswer.join(', ') : 'a pergunta'}`
             },
+            outputs: data.outputs || [],
+            trackers: data.trackers
+          };
+          break;
+
+        case 'visit':
+          formattedData = {
+            type: 'visit',
+            data: {
+              action: action,
+              think: data.data.think,
+              URLTargets: data.data.URLTargets,
+              message: `Visitando URLs: ${data.data.URLTargets ? data.data.URLTargets.join(', ') : ''}`
+            },
+            outputs: data.outputs || [],
             trackers: data.trackers
           };
           break;
@@ -554,6 +613,7 @@ app.get('/api/v1/stream/:requestId', (async (req: Request, res: StreamResponse) 
           formattedData = {
             type: 'progress',
             data: data.data,
+            outputs: data.outputs || [],
             trackers: data.trackers
           };
       }
@@ -561,6 +621,7 @@ app.get('/api/v1/stream/:requestId', (async (req: Request, res: StreamResponse) 
       formattedData = {
         type: data.type || 'progress',
         data: data.data,
+        outputs: data.outputs || [],
         trackers: data.trackers
       };
     }
@@ -597,6 +658,21 @@ app.get('/api/v1/stream/:requestId', (async (req: Request, res: StreamResponse) 
     } : null
   };
   res.write(`data: ${JSON.stringify(initialData)}\n\n`);
+
+  // Envia logs antigos associados a este requestId
+  const recentLogs = serverLogs
+    .filter(log => log.context?.requestId !== undefined && log.context.requestId === requestId)
+    .slice(-20);
+  
+  if (recentLogs.length > 0) {
+    const logsData = {
+      type: 'log',
+      data: `Histórico de logs recentes (${recentLogs.length}):\n${recentLogs.map(log => 
+        `[${new Date(log.timestamp).toLocaleTimeString()}] ${log.message}`).join('\n')}`,
+      trackers: null
+    };
+    res.write(`data: ${JSON.stringify(logsData)}\n\n`);
+  }
 }) as RequestHandler);
 
 /**
@@ -799,8 +875,23 @@ monitorPromptDirectory();
  *             schema:
  *               type: object
  *               properties:
+ *                 logs:
+ *                   type: array
+ *                   description: Array principal de logs (obrigatório)
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       timestamp:
+ *                         type: string
+ *                         format: date-time
+ *                       message:
+ *                         type: string
+ *                       level:
+ *                         type: string
+ *                         enum: [log, error, warn, info]
  *                 serverLogs:
  *                   type: array
+ *                   description: Mesmo conteúdo de logs, mantido para compatibilidade
  *                   items:
  *                     type: object
  *                     properties:
@@ -821,6 +912,9 @@ monitorPromptDirectory();
  *                         type: string
  *                       content:
  *                         type: string
+ *               required:
+ *                 - logs
+ *                 - serverLogs
  */
     
 /**
@@ -916,30 +1010,36 @@ app.get('/api/v1/queries', async (req: Request, res: Response) => {
           
           if (!stats.isDirectory()) return null;
           
-          // Lê o arquivo queries.json que contém os metadados
-          const queriesPath = path.join(queryPath, 'queries.json');
-          const queriesContent = await fs.readFile(queriesPath, 'utf-8').catch(() => '{}');
-          const metadata = JSON.parse(queriesContent);
-          
-          // Lista os prompts disponíveis para essa query
-          const promptFiles = (await fs.readdir(queryPath))
-            .filter(file => file.startsWith('prompt-'))
-            .sort((a, b) => {
-              const numA = parseInt(a.split('-')[1]);
-              const numB = parseInt(b.split('-')[1]);
-              return numA - numB;
-            });
-          
-          return {
-            id: queryId,
-            title: metadata.title || 'Consulta sem título',
-            timestamp: metadata.timestamp || new Date(parseInt(queryId)).toISOString(),
-            status: metadata.status || 'completed',
-            question: metadata.originalQuestion,
-            summary: metadata.summary,
-            promptCount: promptFiles.length
-          };
-          
+          // Tenta carregar a sessão primeiro
+          const sessionPath = path.join(queryPath, 'session.json');
+          try {
+            const sessionData = await fs.readFile(sessionPath, 'utf-8');
+            const session: QuerySession = JSON.parse(sessionData);
+            return {
+              id: queryId,
+              title: session.question,
+              timestamp: session.timestamp,
+              status: session.status,
+              question: session.question,
+              summary: session.summary,
+              metadata: session.metadata,
+              stepCount: session.steps.length
+            };
+          } catch {
+            // Se não encontrar a sessão, usa o formato antigo
+            const queriesPath = path.join(queryPath, 'queries.json');
+            const queriesContent = await fs.readFile(queriesPath, 'utf-8').catch(() => '{}');
+            const metadata = JSON.parse(queriesContent);
+            
+            return {
+              id: queryId,
+              title: metadata.title || 'Consulta sem título',
+              timestamp: metadata.timestamp || new Date(parseInt(queryId)).toISOString(),
+              status: metadata.status || 'completed',
+              question: metadata.originalQuestion,
+              summary: metadata.summary
+            };
+          }
         } catch (error) {
           console.error(`Erro ao processar query ${queryId}:`, error);
           return null;
@@ -949,7 +1049,7 @@ app.get('/api/v1/queries', async (req: Request, res: Response) => {
     
     const validQueries = queries
       .filter(query => query !== null)
-      .sort((a, b) => parseInt(b!.id) - parseInt(a!.id));
+      .sort((a, b) => new Date(b!.timestamp).getTime() - new Date(a!.timestamp).getTime());
     
     res.json({
       total: validQueries.length,
@@ -1062,3 +1162,95 @@ server.listen(port, () => {
  * Exporta a aplicação.
  */
 export default app;
+
+// Rota para salvar uma sessão
+app.post('/api/v1/queries/:requestId', async (req: Request, res: Response) => {
+  try {
+    const { requestId } = req.params;
+    const session: QuerySession = req.body;
+    
+    // Cria o diretório da query se não existir
+    const queryDir = path.join(process.cwd(), 'queries', requestId);
+    await fs.mkdir(queryDir, { recursive: true });
+    
+    // Salva os dados da sessão
+    await fs.writeFile(
+      path.join(queryDir, 'session.json'),
+      JSON.stringify(session, null, 2)
+    );
+
+    // Salva os metadados da query (mantém compatibilidade com o código existente)
+    await saveQueryMetadata(requestId, {
+      title: session.question,
+      originalQuestion: session.question,
+      timestamp: session.timestamp,
+      status: session.status,
+      summary: session.summary,
+      promptCount: session.steps.length,
+      question: session.question
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erro ao salvar sessão:', error);
+    res.status(500).json({ error: 'Erro ao salvar sessão' });
+  }
+});
+
+// Rota para carregar uma sessão
+app.get('/api/v1/queries/:requestId/session', async (req: Request, res: Response) => {
+  try {
+    const { requestId } = req.params;
+    const sessionPath = path.join(process.cwd(), 'queries', requestId, 'session.json');
+    
+    const sessionData = await fs.readFile(sessionPath, 'utf-8');
+    const session: QuerySession = JSON.parse(sessionData);
+    
+    res.json(session);
+  } catch (error) {
+    console.error('Erro ao carregar sessão:', error);
+    res.status(404).json({ error: 'Sessão não encontrada' });
+  }
+});
+
+// Rota para atualizar metadados de uma sessão
+app.patch('/api/v1/queries/:requestId', async (req: Request, res: Response) => {
+  try {
+    const { requestId } = req.params;
+    const updates = req.body;
+    
+    // Cria o diretório da query se não existir
+    const queryDir = path.join(process.cwd(), 'queries', requestId);
+    await fs.mkdir(queryDir, { recursive: true });
+    
+    // Carrega os metadados existentes ou cria novos
+    const metadataPath = path.join(queryDir, 'queries.json');
+    let metadata = {};
+    
+    try {
+      const existingData = await fs.readFile(metadataPath, 'utf-8');
+      metadata = JSON.parse(existingData);
+    } catch (error) {
+      // Se o arquivo não existir, cria um objeto vazio
+      console.log(`Criando novos metadados para ${requestId}`);
+    }
+    
+    // Atualiza os metadados com os novos valores
+    const updatedMetadata = {
+      ...metadata,
+      ...updates,
+      lastUpdated: new Date().toISOString()
+    };
+    
+    // Salva os metadados atualizados
+    await fs.writeFile(
+      metadataPath,
+      JSON.stringify(updatedMetadata, null, 2)
+    );
+
+    res.json({ success: true, metadata: updatedMetadata });
+  } catch (error) {
+    console.error('Erro ao atualizar metadados da sessão:', error);
+    res.status(500).json({ error: 'Erro ao atualizar metadados da sessão' });
+  }
+});

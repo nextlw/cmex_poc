@@ -1,23 +1,205 @@
 .query-history-sidebar {
-  width: 300px;
+  min-width: 330px;
+  width: 330px;
   height: calc(100vh - 80px);
   background-color: var(--color-atributos-background);
   border-radius: 8px;
   box-shadow: 0 2px 4px var(--color-shadow);
-  padding: 20px;
+  padding: 0;
   overflow: hidden;
   border: 1px solid var(--color-border);
   margin: 20px 10px;
+  box-sizing: border-box;
+}
+
+/* Estilo para o cabeçalho com checkbox */
+.query-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: nowrap;
+  width: 100%;
+  gap: 8px;
+  padding: 20px 15px 16px 15px;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-header-background, #1c2230);
+  border-radius: 6px 6px 0 0;
+}
+
+/* Definição de tokens personalizados */
+:root {
+  --color-header-background: #212836; /* Ajustado para um tom mais claro que o background padrão */
+}
+
+.query-history-title-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  max-width: calc(100% - 100px);
+}
+
+.header-checkbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  background-color: transparent;
+  cursor: pointer;
+  margin-right: 8px;
+  position: relative;
+  display: none;
+  flex-shrink: 0;
+}
+
+.header-checkbox.visible {
+  display: inline-block;
+}
+
+.header-checkbox:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.header-checkbox:checked::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.header-checkbox:indeterminate {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.header-checkbox:indeterminate::after {
+  content: "-";
+  position: absolute;
+  color: white;
+  font-size: 14px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .query-history-title {
   color: var(--text-color-accent);
   font-size: 16px;
   font-weight: 500;
-  margin-bottom: 16px;
   letter-spacing: 0.5px;
+  text-align: left;
+  padding: 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Container para os botões de ação */
+.action-buttons-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+  min-width: 95px; /* Largura mínima para acomodar ambos os botões */
+  justify-content: flex-end;
+}
+
+/* Estilo para o botão de ícone */
+.icon-button {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+/* Botão de ação */
+.action-button {
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 65px;
   text-align: center;
-  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+/* Botão de cancelar */
+.cancel-button {
+  color: var(--color-primary, #2775cf);
+  border-color: var(--color-primary, #2775cf);
+}
+
+.cancel-button.hidden {
+  visibility: hidden;
+  opacity: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.cancel-button:hover {
+  background-color: var(--color-primary, #2775cf);
+  color: white;
+}
+
+.cancel-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Botão de seleção */
+.select-button {
+  background-color: transparent;
+  color: var(--color-primary, #2775cf);
+  border: 1px solid var(--color-primary, #2775cf);
+}
+
+.select-button:hover {
+  background-color: var(--color-primary, #2775cf);
+  color: white;
+}
+
+/* Botão de exclusão */
+.delete-selected-button {
+  background-color: transparent;
+  color: var(--color-danger, #ff4444);
+  border: 1px solid var(--color-danger, #ff4444);
+}
+
+.delete-selected-button:hover:not(:disabled) {
+  background-color: var(--color-danger, #ff4444);
+  color: white;
+}
+
+.delete-selected-button:disabled {
+  color: var(--color-gray-400, #9e9e9e);
+  border-color: var(--color-gray-400, #9e9e9e);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .query-list {
@@ -25,7 +207,9 @@
   flex-direction: column;
   gap: 8px;
   overflow-y: auto;
-  height: calc(100% - 50px);
+  height: calc(100% - 70px);
+  scrollbar-gutter: stable;
+  padding: 0 15px 15px 15px;
 }
 
 .query-item {
@@ -35,11 +219,112 @@
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   border: 1px solid #34404e;
+  width: 100%;
+  position: relative;
 }
 
 .query-item:hover {
   background-color: #314c7e52;
   border: 1px solid #2775cf;
+}
+
+/* Estilos para o cabeçalho da query */
+.query-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+}
+
+/* Estilo para o checkbox da query */
+.query-checkbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  background-color: transparent;
+  cursor: pointer;
+  margin-right: 8px;
+  margin-top: 2px;
+  position: relative;
+}
+
+.query-checkbox:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.query-checkbox:checked::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Esconder o botão de exclusão por padrão */
+.delete-button {
+  visibility: hidden;
+  opacity: 0;
+  background-color: transparent;
+  border: none;
+  color: var(--color-danger, #ff4444);
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+  padding: 0 6px;
+  line-height: 1;
+}
+
+/* Mostrar o botão de exclusão apenas no hover do item */
+.query-item:hover .delete-button {
+  visibility: visible;
+  opacity: 1;
+}
+
+.delete-button:hover {
+  transform: scale(1.2);
+}
+
+.query-text {
+  margin: 0;
+  font-weight: 500;
+  font-size: 14px;
+  color: #fff;
+  flex: 1;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  max-width: 100%;
+  cursor: pointer;
+}
+
+/* Adicionar animação de exclusão */
+@keyframes puft {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.query-item.deleting {
+  animation: puft 0.5s forwards;
+  pointer-events: none;
 }
 
 .query-item:active,
@@ -61,19 +346,6 @@
 .query-item.selected {
   background-color: #1f5ca233;
   border: 1px solid #528ccf;
-}
-
-.query-text {
-  color: var(--text-color-primary);
-  font-size: var(--font-size-sm);
-  line-height: 1.4;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  margin-bottom: 8px;
 }
 
 .query-details {
@@ -128,4 +400,21 @@
   text-align: center;
   color: #666;
   font-size: 0.9rem;
+}
+
+/* Estilo para a consulta atual/ativa */
+.query-item.current-query {
+  background-color: #2775cf30;
+  border: 1px solid #2775cf;
+  position: relative;
+}
+
+.query-item.current-query::before {
+  content: "•";
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-primary, #2775cf);
+  font-size: 24px;
 } 

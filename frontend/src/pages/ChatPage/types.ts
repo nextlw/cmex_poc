@@ -4,15 +4,19 @@ export interface Reference {
   }
   
   export interface Message {
-    type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log';
+    type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log' | 'visit';
     content: string;
     isTyping?: boolean;
     data?: {
       think?: string;
       answer?: string;
+      reasoning?: string;
       references?: Reference[];
       searchQuery?: string;
       questionsToAnswer?: string[];
+      urls?: string[];
+      outputs?: any[];
+      trackers?: any;
     };
   }
 
@@ -20,7 +24,7 @@ export interface Reference {
     id: string;
     title: string;
     timestamp: string;
-    status: 'pending' | 'completed' | 'error';
+    status: 'in_progress' | 'completed' | 'error';
     question: string;
   }
   
@@ -63,3 +67,39 @@ export interface Reference {
       };
     };
   }
+
+export type StepType = string;
+
+export type MessageType = "query" | "step" | "error" | "response" | "connected" | "reflect" | "search" | "log" | "visit" | "answer";
+
+export interface ActionItem {
+  type: StepType;
+  title: string;
+  completed: boolean;
+  active: boolean;
+  status: 'waiting' | 'processing' | 'completed';
+  urls?: string[];
+}
+
+export interface ActionIconProps {
+  type: StepType;
+}
+
+export interface ActionStatusProps {
+  status: ActionItem['status'];
+}
+
+export interface ActionListProps {
+  actions: ActionItem[];
+  onActionClick: (index: number) => void;
+  startTime?: Date;
+  urlCount?: number;
+  query?: string;
+  activeActionIndex: number;
+  setActiveActionIndex: (index: number) => void;
+}
+
+export interface ProcessingContentProps {
+  step: StepType;
+  query?: string;
+}

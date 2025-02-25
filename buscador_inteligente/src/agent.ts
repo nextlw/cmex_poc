@@ -7,11 +7,11 @@ import { rewriteQuery } from "./tools/query-rewriter";
 import { dedupQueries } from "./tools/dedup";
 import { evaluateAnswer } from "./tools/evaluator";
 import { analyzeSteps } from "./tools/error-analyzer";
-import { SEARCH_PROVIDER, STEP_SLEEP, modelConfigs, LOCAL_MODEL_ENDPOINT, USE_LOCAL_MODEL } from "./config";
+import { SEARCH_PROVIDER, STEP_SLEEP, modelConfigs, LOCAL_MODEL_ENDPOINT, USE_LOCAL_MODEL, ENV } from "./config";
 import { TokenTracker } from "./utils/token-tracker";
 import { ActionTracker } from "./utils/action-tracker";
-import { StepAction, SchemaProperty, ResponseSchema, AnswerAction, VisitAction } from "./types";
-import { TrackerContext } from "./types";
+import { StepAction, SchemaProperty, ResponseSchema, AnswerAction, VisitAction, SearchAction, ReflectAction } from "./types/index";
+import { TrackerContext } from "./types/index";
 import { jinaSearch } from "./tools/jinaSearch";
 import { LocalModelClient } from "./tools/local-model-client";
 import { spawn } from 'child_process';
@@ -36,9 +36,53 @@ let activeModelClient: GoogleGenerativeAI | LocalModelClient;
 // Função para inicializar o cliente do modelo
 function initializeModelClient(modelName?: string) {
     console.log('Iniciando inicialização do cliente do modelo...');
-    console.log('Endpoint configurado:', LOCAL_MODEL_ENDPOINT);
+    console.log('Modelo solicitado:', modelName);
     
     try {
+        // Verifica se deve usar o cliente da Google para modelos Gemini
+        if (modelName && modelName.startsWith('gemini-')) {
+            console.log('Detectado modelo Gemini, usando cliente GoogleGenerativeAI');
+            
+            // Tenta obter a chave da API do Gemini de várias fontes
+            // 1. Variável de ambiente importada de config.ts
+            // 2. Variáveis de ambiente do processo
+            const geminiApiKey = ENV.GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+            
+            if (!geminiApiKey) {
+                console.error('API key para Gemini não encontrada');
+                console.log('Tentando usar valor do config.json...');
+                
+                // Buscar de config.json via JINA_API_KEY que está disponível
+                if (process.env.JINA_API_KEY) {
+                    console.log('Usando chave alternativa para autenticação com Gemini');
+                    
+                    // Inicializa o cliente da Google com chave alternativa
+                    const googleClient = new GoogleGenerativeAI(process.env.JINA_API_KEY);
+                    activeModelClient = googleClient;
+                    console.log('Cliente do modelo ativo configurado para Google API (chave alternativa)');
+                } else {
+                    throw new Error('Nenhuma API key válida encontrada para modelos Gemini');
+                }
+            } else {
+                // Inicializa o cliente da Google
+                console.log('Usando GEMINI_API_KEY para autenticação');
+                const googleClient = new GoogleGenerativeAI(geminiApiKey);
+                activeModelClient = googleClient;
+                console.log('Cliente do modelo ativo configurado para Google API');
+            }
+            
+            // Configura o modelo especificado
+            console.log('Configurando modelo específico:', modelName);
+            modelConfigs.agent.model = modelName;
+            console.log('Configuração do modelo atualizada');
+            
+            return activeModelClient;
+        }
+        
+        // Para outros modelos, usa o cliente local
+        console.log('Usando cliente local para o modelo');
+        console.log('Endpoint configurado:', LOCAL_MODEL_ENDPOINT);
+        
         // Configura o modelo local
         console.log('Criando instância do LocalModelClient...');
         const localModel = new LocalModelClient(LOCAL_MODEL_ENDPOINT);
@@ -67,11 +111,31 @@ function initializeModelClient(modelName?: string) {
 }
 
 // Função para garantir que o cliente está inicializado
-function ensureModelClientInitialized(modelName?: string) {
-    // Verifica se o cliente não está inicializado
+export function ensureModelClientInitialized(modelName?: string) {
+    // Se não temos um cliente, inicialize-o
     if (!activeModelClient) {
         // Inicializa o cliente do modelo
         initializeModelClient(modelName);
+        return;
+    }
+    
+    // Se temos um cliente e um novo modelo foi solicitado
+    if (modelName) {
+        const isCurrentClientLocal = activeModelClient instanceof LocalModelClient;
+        const isRequestingGeminiModel = modelName.startsWith('gemini-');
+        
+        // Se estamos mudando entre tipos de clientes (local/Google), reinicialize o cliente
+        if ((isCurrentClientLocal && isRequestingGeminiModel) || 
+            (!isCurrentClientLocal && !isRequestingGeminiModel)) {
+            console.log('Mudando tipo de cliente de modelo, reinicializando...');
+            // Reinicializa o cliente com o novo modelo
+            initializeModelClient(modelName);
+        } else {
+            // Apenas atualiza o nome do modelo no cliente existente
+            console.log('Atualizando modelo no cliente existente:', modelName);
+            modelConfigs.agent.model = modelName;
+            console.log('Configuração do modelo atualizada');
+        }
     }
 }
 
@@ -166,7 +230,7 @@ function getSchema(allowReflect: boolean, allowRead: boolean, allowAnswer: boole
             // Define a descrição das questões a serem respondidas
             description: "List of most important questions to fill the knowledge gaps of finding the answer to the original question",
             // Define o número máximo de itens das questões a serem respondidas
-            maxItems: 2
+            maxItems: 30
         };
     }
 
@@ -184,9 +248,9 @@ function getSchema(allowReflect: boolean, allowRead: boolean, allowAnswer: boole
                 type: SchemaType.STRING
             },
             // Define o número máximo de itens das URLs a serem visitadas
-            maxItems: 2,
+            maxItems: 30,
             // Define a descrição das URLs a serem visitadas
-            description: "Must be an array of URLs, choose up the most relevant 2 URLs to visit"
+            description: "Must be an array of URLs, choose up the most relevant 30 URLs to visit"
         };
     }
 
@@ -245,7 +309,6 @@ function getPrompt(
 ): string {
     const sections: string[] = [];
 
-
     sections.push(`Current date: ${new Date().toUTCString()}
 
     You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
@@ -255,21 +318,20 @@ function getPrompt(
     </question>
     `);
 
-        // Adiciona a seção de contexto se existir
-        if (context?.length) {
-            sections.push(`
+    // Adiciona a seção de contexto se existir
+    if (context?.length) {
+        sections.push(`
     You have conducted the following actions:
     <context>
     ${context.join('\n')}
-
     </context>
     `);
-        }
+    }
 
-        // Adiciona a seção de conhecimento se existir
-        if (knowledge?.length) {
-            const knowledgeItems = knowledge
-                .map((k, i) => `
+    // Adiciona a seção de conhecimento se existir
+    if (knowledge?.length) {
+        const knowledgeItems = knowledge
+            .map((k, i) => `
     <knowledge-${i + 1}>
     <question>
     ${k.question}
@@ -284,22 +346,20 @@ function getPrompt(
     ` : ''}
     </knowledge-${i + 1}>
     `)
-                .join('\n\n');
+            .join('\n\n');
 
-            sections.push(`
+        sections.push(`
     You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
     <knowledge>
-
     ${knowledgeItems}
-
     </knowledge>
     `);
-        }
+    }
 
-        // Adiciona a seção de contexto de tentativas anteriores se existir
-        if (badContext?.length) {
-            const attempts = badContext
-                .map((c, i) => `
+    // Adiciona a seção de contexto de tentativas anteriores se existir
+    if (badContext?.length) {
+        const attempts = badContext
+            .map((c, i) => `
     <attempt-${i + 1}>
     - Question: ${c.question}
     - Answer: ${c.answer}
@@ -308,16 +368,14 @@ function getPrompt(
     - Actions Blame: ${c.blame}
     </attempt-${i + 1}>
     `)
-                .join('\n\n');
+            .join('\n\n');
 
-            const learnedStrategy = badContext.map(c => c.improvement).join('\n');
+        const learnedStrategy = badContext.map(c => c.improvement).join('\n');
 
-            sections.push(`
+        sections.push(`
     Your have tried the following actions but failed to find the answer to the question:
     <bad-attempts>    
-
     ${attempts}
-
     </bad-attempts>
 
     Based on the failed attempts, you have learned the following strategy:
@@ -325,61 +383,71 @@ function getPrompt(
     ${learnedStrategy}
     </learned-strategy>
     `);
-      }
+    }
 
-        // Construi a seção de ações
-        const actions: string[] = [];
+    // Construi a seção de ações
+    const actions: string[] = [];
 
-        if (allURLs && Object.keys(allURLs).length > 0 && allowRead) {
-            const urlList = Object.entries(allURLs)
-                .map(([url, desc]) => `  + "${url}": "${desc}"`)
-                .join('\n');
+    if (allURLs && Object.keys(allURLs).length > 0 && allowRead) {
+        const urlList = Object.entries(allURLs)
+            .map(([url, desc]) => `  + "${url}": "${desc}"`)
+            .join('\n');
 
-            actions.push(`
+        actions.push(`
     <action-visit>    
-    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer
+    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer, explore most possible URLs to find the answer
     <url-list>
     ${urlList}
     </url-list>
     - When you have enough search result in the context and want to deep dive into specific URLs
     - It allows you to access the full content behind any URLs
-
     </action-visit>
     `);
-        }
+    }
 
-        if (allowSearch) {
-            actions.push(`
+    if (allowSearch) {
+        actions.push(`
     <action-search>    
     - Query external sources using a public search engine
     - Focus on solving one specific aspect of the question
     - Only give keywords search query, not full sentences
     </action-search>
     `);
-        }
+    }
 
-        if (allowAnswer) {
-            actions.push(`
+    if (allowAnswer) {
+        actions.push(`
     <action-answer>
-    - Provide final response only when 100% certain
+    - Provide final response only when 96% certain
     - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)${allowReflect ? '\n- If doubts remain, use <action-reflect> instead' : ''}
+    - Format your answer in markdown with the following sections:
+      - **Resposta Direta**: Uma resposta clara e concisa à pergunta ou problema, levando em consideração o contexto e o conhecimento acumulado, podendo também ser uma negativa e explicar o porque vocie acha isso e onde procurou mas nnao encontrou.
+      - **Nota Detalhada**: Explicação adicional com contexto ou raciocínio.
+      - **Referências**: Liste todas as fontes relevantes em formato [Citação Exata](URL).
+    - Use todo o conhecimento acumulado para garantir uma resposta abrangente
+    - Inclua exemplos, dados numéricos e citações quando relevante
+    - Mantenha a formatação consistente
     </action-answer>
     `);
-        }
+    }
 
-        if (beastMode) {
-            actions.push(`
+    if (beastMode) {
+        actions.push(`
     <action-answer>
     - Any answer is better than no answer
     - Partial answers are allowed, but make sure they are based on the context and knowledge you have gathered    
     - When uncertain, educated guess based on the context and knowledge is allowed and encouraged.
     - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
+    - Format your answer in markdown with the following sections:
+      - **Resposta Direta**: Uma resposta clara e concisa à pergunta.
+      - **Nota Detalhada**: Explicação adicional com contexto ou raciocínio.
+      - **Referências**: Liste todas as fontes relevantes em formato [Citação Exata](URL).
     </action-answer>
     `);
-        }
+    }
 
-        if (allowReflect) {
-            actions.push(`
+    if (allowReflect) {
+        actions.push(`
     <action-reflect>    
     - Perform critical analysis through hypothetical scenarios or systematic breakdowns
     - Identify knowledge gaps and formulate essential clarifying questions
@@ -390,22 +458,22 @@ function getPrompt(
     - Non-compound/non-complex
     </action-reflect>
     `);
-        }
+    }
 
-        sections.push(`
+    sections.push(`
     Based on the current context, you must choose one of the following actions:
     <actions>
     ${actions.join('\n\n')}
     </actions>
     `);
 
-        // Adiciona o rodapé
-        sections.push(`Respond exclusively in valid JSON format matching exact JSON schema.
+    // Adiciona o rodapé
+    sections.push(`Respond exclusively in valid JSON format matching exact JSON schema.
 
     Critical Requirements:
     - Include ONLY ONE action type
     - Never add unsupported keys
-    - Exclude all non-JSON text, markdown, or explanations
+    - Exclude all non-JSON text
     - Maintain strict JSON syntax
     - All text content must be in Portuguese (Brazil)
     - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)`);
@@ -598,22 +666,69 @@ export async function getResponse(
         );
 
         // cria o modelo gerador de conteúdo
-        const model = activeModelClient.getGenerativeModel({
-            model: modelConfigs.agent.model,
-            generationConfig: {
-                temperature: modelConfigs.agent.temperature,
-                responseMimeType: "application/json",
-                responseSchema: getSchema(allowReflect, allowRead, allowAnswer, allowSearch)
-            }
-        });
+        const isGeminiModel = modelConfigs.agent.model.startsWith('gemini-');
+        let model;
+
+        if (isGeminiModel) {
+            console.log('Usando configuração específica para modelo Gemini');
+            model = activeModelClient.getGenerativeModel({
+                model: modelConfigs.agent.model,
+                generationConfig: {
+                    temperature: modelConfigs.agent.temperature,
+                    // O Gemini não aceita responseSchema da mesma forma que o modelo local
+                    // então não enviamos essa configuração
+                }
+            });
+        } else {
+            console.log('Usando configuração para modelo local');
+            model = activeModelClient.getGenerativeModel({
+                model: modelConfigs.agent.model,
+                generationConfig: {
+                    temperature: modelConfigs.agent.temperature,
+                    responseMimeType: "application/json",
+                    responseSchema: getSchema(allowReflect, allowRead, allowAnswer, allowSearch)
+                }
+            });
+        }
 
         // gera o conteúdo
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const rawResponseText = await response.text();
-        console.log('Raw response text:', rawResponseText);
-        const usage = response.usageMetadata;
-        context.tokenTracker.trackUsage('agent', usage?.totalTokenCount || 0);
+        let result;
+        let response;
+        let rawResponseText;
+
+        try {
+            if (isGeminiModel) {
+                console.log('Gerando conteúdo com modelo Gemini');
+                // O Gemini precisa de instruções específicas para gerar JSON formatado
+                const geminiPrompt = `${prompt}\n\nIMPORTANTE: Responda APENAS com um objeto JSON válido seguindo o formato especificado. Não inclua texto adicional ou explicações fora do JSON.`;
+                result = await model.generateContent(geminiPrompt);
+            } else {
+                result = await model.generateContent(prompt);
+            }
+            
+            response = await result.response;
+            rawResponseText = await response.text();
+            console.log('Raw response text:', rawResponseText);
+            
+            // Tenta extrair JSON da resposta do Gemini, se necessário
+            if (isGeminiModel) {
+                // O Gemini pode retornar texto com markdown ou outros formatos
+                // Vamos tentar extrair apenas o JSON da resposta
+                const jsonRegex = /```json\s*([\s\S]*?)\s*```|(\{[\s\S]*\})/;
+                const match = rawResponseText.match(jsonRegex);
+                if (match) {
+                    // Usa o grupo que capturou o JSON (dentro ou fora do bloco de código)
+                    rawResponseText = match[1] || match[2];
+                    console.log('JSON extraído da resposta do Gemini:', rawResponseText);
+                }
+            }
+            
+            const usage = response.usageMetadata;
+            context.tokenTracker.trackUsage('agent', usage?.totalTokenCount || 0);
+        } catch (error: any) {
+            console.error('Erro ao gerar conteúdo:', error);
+            throw new Error(`Falha ao gerar conteúdo: ${error.message}`);
+        }
 
         // Verifica se o context.outputs existe, senão inicializa
         if (!context.outputs) {
@@ -939,6 +1054,103 @@ export async function getResponse(
             });
         }
 
+        // Após cada passo, acumule o raciocínio no diaryContext
+        if (thisStep.action !== 'answer' || !isAnswered) {
+            const reasoningStep = `
+### Passo ${totalStep}: ${thisStep.action.charAt(0).toUpperCase() + thisStep.action.slice(1)}
+- **Pensamento**: ${thisStep.think || 'Nenhum pensamento registrado'}
+- **Ação Realizada**: ${
+                thisStep.action === 'search' ? `Busca com query: "${(thisStep as SearchAction).searchQuery}"` :
+                thisStep.action === 'reflect' ? `Reflexão gerando perguntas: ${(thisStep as ReflectAction).questionsToAnswer?.join(', ') || 'Nenhuma pergunta'}` :
+                thisStep.action === 'visit' ? `Visita às URLs: ${(thisStep as VisitAction).URLTargets?.join(', ') || 'Nenhuma URL'}` :
+                'Nenhuma ação detalhada'
+            }
+${diaryContext.join('\n\n') || ''}`.trim();
+            
+            // Atualize o contexto acumulado
+            thisStep.accumulatedReasoning = (thisStep.accumulatedReasoning || '') + '\n\n' + reasoningStep;
+        }
+
+        // Quando a resposta final é gerada (action === 'answer' e isAnswered === true)
+        if (thisStep.action === 'answer' && isAnswered) {
+            const answerStep = thisStep as AnswerAction;
+            const finalPrompt = getPrompt(
+                question,
+                diaryContext,
+                allQuestions,
+                false, // Desativa reflexões para a resposta final
+                true,
+                false,
+                false,
+                badContext,
+                allKnowledge,
+                allURLs,
+                false
+            );
+
+            // Verifica se estamos usando modelo Gemini
+            const isGeminiModel = modelConfigs.agent.model.startsWith('gemini-');
+            let model;
+
+            if (isGeminiModel) {
+                console.log('Usando configuração específica para modelo Gemini na resposta final');
+                model = activeModelClient.getGenerativeModel({
+                    model: modelConfigs.agent.model,
+                    generationConfig: {
+                        temperature: modelConfigs.agent.temperature,
+                        // Sem responseSchema para Gemini
+                    }
+                });
+            } else {
+                console.log('Usando configuração para modelo local na resposta final');
+                model = activeModelClient.getGenerativeModel({
+                    model: modelConfigs.agent.model,
+                    generationConfig: {
+                        temperature: modelConfigs.agent.temperature,
+                        responseMimeType: "application/json",
+                        responseSchema: getSchema(false, false, true, false)
+                    }
+                });
+            }
+
+            // Ajuste do prompt e processamento da resposta para Gemini
+            try {
+                let result;
+                if (isGeminiModel) {
+                    const geminiPrompt = `${finalPrompt}\n\nIMPORTANTE: Responda APENAS com um objeto JSON válido seguindo o formato especificado. Não inclua texto adicional ou explicações fora do JSON.`;
+                    result = await model.generateContent(geminiPrompt);
+                } else {
+                    result = await model.generateContent(finalPrompt);
+                }
+                
+                const response = await result.response;
+                let rawResponseText = await response.text();
+                
+                // Extrai JSON da resposta do Gemini, se necessário
+                if (isGeminiModel) {
+                    const jsonRegex = /```json\s*([\s\S]*?)\s*```|(\{[\s\S]*\})/;
+                    const match = rawResponseText.match(jsonRegex);
+                    if (match) {
+                        rawResponseText = match[1] || match[2];
+                        console.log('JSON extraído da resposta final do Gemini:', rawResponseText);
+                    }
+                }
+                
+                thisStep = captureLLMOutput(rawResponseText);
+                
+                // Adicione o raciocínio acumulado à resposta final
+                thisStep.accumulatedReasoning = `
+## Processo de Raciocínio
+${thisStep.accumulatedReasoning || 'Nenhum raciocínio acumulado'}
+
+## Resposta Final
+${answerStep.answer}`;
+            } catch (error: any) {
+                console.error('Erro ao gerar resposta final:', error);
+                // Continua usando o thisStep atual no caso de erro
+            }
+        }
+
         // armazena o contexto
         await storeContext(prompt, [allContext, allKeywords, allQuestions, allKnowledge], totalStep, requestId || question);
     }
@@ -987,38 +1199,77 @@ export async function getResponse(
             allURLs,
             true
         );
-        // cria o modelo gerador de conteúdo
-        const model = activeModelClient.getGenerativeModel({
-            model: modelConfigs.agentBeastMode.model,
-            generationConfig: {
-                temperature: modelConfigs.agentBeastMode.temperature,
-                responseMimeType: "application/json",
-                responseSchema: getSchema(false, false, allowAnswer, false)
-            }
-        });
 
-        // gera o conteúdo
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const rawResponseText = await response.text();
-        console.log('Raw response text:', rawResponseText);
-        const usage = response.usageMetadata;
-        context.tokenTracker.trackUsage('agent', usage?.totalTokenCount || 0);
+        // Verifica se estamos usando modelo Gemini no modo Beast
+        const isGeminiModel = modelConfigs.agentBeastMode.model.startsWith('gemini-');
+        let model;
 
-        // Verifica se o context.outputs existe, senão inicializa
-        if (!context.outputs) {
-            context.outputs = [];
+        if (isGeminiModel) {
+            console.log('Usando configuração específica para modelo Gemini no Beast Mode');
+            model = activeModelClient.getGenerativeModel({
+                model: modelConfigs.agentBeastMode.model,
+                generationConfig: {
+                    temperature: modelConfigs.agentBeastMode.temperature,
+                    // Sem responseSchema para Gemini
+                }
+            });
+        } else {
+            console.log('Usando configuração para modelo local no Beast Mode');
+            model = activeModelClient.getGenerativeModel({
+                model: modelConfigs.agentBeastMode.model,
+                generationConfig: {
+                    temperature: modelConfigs.agentBeastMode.temperature,
+                    responseMimeType: "application/json",
+                    responseSchema: getSchema(false, false, allowAnswer, false)
+                }
+            });
         }
 
-        // Armazena o output no context.outputs
-        context.outputs.push({
-            step: totalStep,
-            rawResponseText: rawResponseText
-        });
+        // Ajuste do prompt e processamento da resposta para Gemini
+        try {
+            let result;
+            if (isGeminiModel) {
+                const geminiPrompt = `${prompt}\n\nIMPORTANTE: Responda APENAS com um objeto JSON válido seguindo o formato especificado. Não inclua texto adicional ou explicações fora do JSON.`;
+                result = await model.generateContent(geminiPrompt);
+            } else {
+                result = await model.generateContent(prompt);
+            }
+            
+            const response = await result.response;
+            let rawResponseText = await response.text();
+            
+            // Extrai JSON da resposta do Gemini, se necessário
+            if (isGeminiModel) {
+                const jsonRegex = /```json\s*([\s\S]*?)\s*```|(\{[\s\S]*\})/;
+                const match = rawResponseText.match(jsonRegex);
+                if (match) {
+                    rawResponseText = match[1] || match[2];
+                    console.log('JSON extraído da resposta do Gemini no Beast Mode:', rawResponseText);
+                }
+            }
+            
+            console.log('Raw response text:', rawResponseText);
+            const usage = response.usageMetadata;
+            context.tokenTracker.trackUsage('agent', usage?.totalTokenCount || 0);
 
-        // parseia o conteúdo
-        thisStep = captureLLMOutput(rawResponseText);
-        console.log(thisStep)
+            // Verifica se o context.outputs existe, senão inicializa
+            if (!context.outputs) {
+                context.outputs = [];
+            }
+
+            // Armazena o output no context.outputs
+            context.outputs.push({
+                step: totalStep,
+                rawResponseText: rawResponseText
+            });
+
+            // parseia o conteúdo
+            thisStep = captureLLMOutput(rawResponseText);
+            console.log(thisStep)
+        } catch (error: any) {
+            console.error('Erro ao gerar conteúdo no Beast Mode:', error);
+            // Mantém thisStep atual em caso de erro
+        }
 
         const audit = {
             logs: serverLogs,

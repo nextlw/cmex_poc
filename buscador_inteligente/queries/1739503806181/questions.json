@@ -1,3 +1,0 @@
-[
-  "Instrução: \"Sugira a criação de um novo produto com base nas avaliações de clientes de uma base de dados específica. Siga as etapas abaixo:  Analise as citações negativas para identificar um problema global ou recorrente. Pesquise os principais concorrentes do mercado e liste suas melhores funcionalidades. Identifique as falhas ou lacunas nos produtos concorrentes. Proponha um novo produto com funcionalidades inovadoras que resolvam os problemas encontrados, incorporando diferenciais competitivos. Saída esperada:  Um breve resumo do problema identificado. Uma lista das melhores funcionalidades dos concorrentes. Uma descrição detalhada do novo produto, incluindo nome, principais características e como ele resolve as falhas mencionadas.\""
-]

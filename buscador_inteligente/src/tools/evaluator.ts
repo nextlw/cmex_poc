@@ -255,7 +255,7 @@ function getPluralityPrompt(question: string, answer: string): string {
    - Identify if answer acknowledges there are more items but only provides some
 
 3. Definitiveness Rules:
-   - If question asks for multiple items but answer provides only one → NOT definitive
+   - If the question requests multiple items, but the answer provides only one → non -definitive, except if there is a justification based on concrete evidence
    - If question asks for specific number (e.g., "top 5") but answer provides fewer → NOT definitive
    - If answer clearly states it's providing a partial list → NOT definitive
    - If question asks for "all" or "every" but answer seems incomplete → NOT definitive

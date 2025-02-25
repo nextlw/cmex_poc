@@ -2,6 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Estilos globais para barras de rolagem */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  margin: 8px 0;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(120, 120, 120, 0.3);
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(120, 120, 120, 0.5);
+}
+
+/* Variações de tema para scrollbar */
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background-color: rgba(150, 150, 150, 0.3);
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(150, 150, 150, 0.5);
+}
+
+html[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.3);
+}
+
+html[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(100, 100, 100, 0.5);
+}
+
+/* Classe utilitária para elementos com scrollbar */
+.with-scrollbar {
+  scrollbar-gutter: stable;
+  padding-right: 8px !important;
+}
+
 /* Adicionar padding-top ao corpo para compensar o header fixo */
 
 .from-gray-900 {

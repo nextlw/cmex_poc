@@ -2,7 +2,7 @@ export interface Query {
   id: string;
   title: string;
   timestamp: string;
-  status: 'pending' | 'completed' | 'error';
+  status: 'in_progress' | 'completed' | 'error';
   question: string;
 }
 
@@ -11,20 +11,33 @@ export interface QueryHistoryItem {
   title: string;
   question?: string;
   summary?: string;
-  status: 'pending' | 'completed' | 'error';
+  status: 'in_progress' | 'completed' | 'error';
   timestamp: string;
   references?: Reference[];
+  isDeleting?: boolean;
 }
 
 export interface QueryHistoryProps {
   onSelectQuery: (query: QueryHistoryItem) => void;
   selectedQueryId?: string;
+  newQuery?: QueryHistoryItem;
+  onNewQueryAdded?: () => void;
 }
 
 export interface Message {
-  type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log' | 'visit';
+  type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log' | 'visit' | 'answer';
   content: string;
   isTyping?: boolean;
+  step?: number;
+  data?: {
+    think?: string;
+    answer?: string;
+    references?: Reference[];
+    searchQuery?: string;
+    questionsToAnswer?: string[];
+    reasoning?: string;
+    urls?: string[];
+  };
 }
 
 export interface AgentState {
@@ -61,5 +74,43 @@ export interface StreamMessage {
       searchQuery?: string;
       questionsToAnswer?: string[];
     };
+  };
+}
+
+export interface QueryStep {
+  id: number;
+  type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log' | 'visit' | 'answer';
+  content: string;
+  timestamp: string;
+  data?: {
+    think?: string;
+    answer?: string;
+    references?: Reference[];
+    searchQuery?: string;
+    questionsToAnswer?: string[];
+    reasoning?: string;
+    urls?: string[];
+  };
+  action?: {
+    type: string;
+    title: string;
+    status: 'waiting' | 'processing' | 'completed';
+    completed: boolean;
+    active: boolean;
+  };
+}
+
+export interface QuerySession {
+  id: string;
+  question: string;
+  timestamp: string;
+  status: 'in_progress' | 'completed' | 'error';
+  summary?: string;
+  steps: QueryStep[];
+  metadata: {
+    model: string;
+    totalTokens?: number;
+    elapsedTime?: string;
+    urlCount?: number;
   };
 }

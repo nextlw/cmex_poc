@@ -24,11 +24,13 @@ export type ResponseSchema = {
 type BaseAction = {
   action: "search" | "answer" | "reflect" | "visit" | "coding";
   think: string;
+  accumulatedReasoning?: string;
 };
 
 export type SearchAction = BaseAction & {
   action: "search";
   searchQuery: string;
+  searchResults?: SearchResult[] | QueryResult[];
 };
 
 export type AnswerAction = BaseAction & {
@@ -39,6 +41,7 @@ export type AnswerAction = BaseAction & {
     url: string;
   }>;
   isFinal?: boolean;
+  reasoning?: string;
 };
 
 export type KnowledgeItem = {
@@ -193,8 +196,9 @@ export interface StreamMessage {
     tokenTracker: TokenTracker;
     actionTracker: ActionTracker;
   };
-  type: 'progress' | 'answer' | 'error';
+  type: 'progress' | 'answer' | 'error' | 'search' | 'reflect' | 'visit' | 'log' | 'connected';
   data: string | StepAction;
+  outputs?: any[];
   step?: number;
   budget?: {
     used: number;
@@ -264,4 +268,16 @@ export interface TrackerContext {
   outputs: any[];
   tokenTracker: TokenTracker;
   actionTracker: ActionTracker;
+}
+
+// Atualização da interface ServerLog para incluir requestId
+export interface ServerLog {
+  context: { 
+    pid: number;
+    env: string;
+    requestId?: string;
+  };
+  timestamp: string;
+  message: string;
+  level: 'log' | 'error' | 'warn' | 'info';
 }
