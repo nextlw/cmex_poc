@@ -1,0 +1,25 @@
+{
+  "name": "@cmex/shared-types",
+  "version": "0.1.0",
+  "description": "Tipos compartilhados entre frontend e backend da CMEX",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "version": "npm run changelog && git add CHANGELOG.md"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0",
+    "conventional-changelog-cli": "^4.1.0"
+  },
+  "peerDependencies": {
+    "zod": "^3.x"
+  }
+} 
