@@ -420,10 +420,17 @@ Para ação de reflexão:
         // Método POST
         method: 'POST',
         // Cabeçalhos da requisição
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         // Corpo da requisição
         body: JSON.stringify(payload)
       });
+
+      // Loga a resposta completa para debug
+      console.log('Resposta do status HTTP:', response.status);
+      console.log('Resposta dos headers:', [...response.headers.entries()]);
 
       // Converte a resposta para JSON
       const data = await response.json() as ModelResponse;

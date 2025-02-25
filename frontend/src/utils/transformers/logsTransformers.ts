@@ -1,5 +1,5 @@
 /**
- * Transformadores para o tipo ServerLog
+ * Transformadores para logs do servidor
  */
 import { z } from 'zod';
 
@@ -7,25 +7,31 @@ import { z } from 'zod';
  * Interface para o tipo ServerLog do backend
  */
 export interface ServerLog {
-  context: { 
-    pid: number;
-    env: string;
+  context: {
+    pid?: number;
+    env?: string;
     requestId?: string;
+    [key: string]: any;
   };
   timestamp: string;
   message: string;
-  level: 'log' | 'error' | 'warn' | 'info';
+  level: 'debug' | 'info' | 'warn' | 'error';
+}
+
+/**
+ * Interface para o tipo FrontendLog do frontend
+ */
+export interface FrontendLog {
+  timestamp: string;
+  message: string;
+  level: 'debug' | 'info' | 'warn' | 'error';
 }
 
 /**
  * Interface para o tipo LogsResponse do frontend
  */
 export interface LogsResponse {
-  serverLogs: Array<{
-    timestamp: string;
-    message: string;
-    level: 'log' | 'error' | 'warn' | 'info';
-  }>;
+  serverLogs: FrontendLog[];
   promptContents?: Array<{
     filename: string;
     content: string;
@@ -33,17 +39,25 @@ export interface LogsResponse {
 }
 
 /**
+ * Interface para o tipo PromptContent do frontend
+ */
+export interface PromptContent {
+  filename: string;
+  content: string;
+}
+
+/**
  * Schema Zod para validação de nível de log
  */
-export const logLevelSchema = z.enum(['log', 'error', 'warn', 'info']);
+export const logLevelSchema = z.enum(['debug', 'info', 'warn', 'error']);
 
 /**
  * Schema Zod para validação de logs do servidor
  */
 export const serverLogSchema = z.object({
   context: z.object({
-    pid: z.number(),
-    env: z.string(),
+    pid: z.number().optional(),
+    env: z.string().optional(),
     requestId: z.string().optional()
   }),
   timestamp: z.string(),
@@ -67,47 +81,48 @@ export const logsResponseSchema = z.object({
 });
 
 /**
- * Transforma um objeto ServerLog do backend para o formato que o frontend espera
- * 
- * - O campo `context` é removido
+ * Transforma um log do servidor para o formato do frontend
  */
-export function transformServerLog(backendLog: any): any {
+export function transformServerLog(backendLog: ServerLog): FrontendLog {
   try {
-    // Validar o log usando o schema
-    const validatedLog = serverLogSchema.parse(backendLog);
+    // Validação simples
+    if (!backendLog || !backendLog.message) {
+      throw new Error('Log inválido');
+    }
     
-    // Extrair apenas os campos necessários
+    // Extrair apenas os campos necessários para o frontend
     return {
-      timestamp: validatedLog.timestamp,
-      message: validatedLog.message,
-      level: validatedLog.level
+      timestamp: backendLog.timestamp || new Date().toISOString(),
+      message: backendLog.message,
+      level: backendLog.level || 'error'
     };
   } catch (error) {
-    console.error('Erro ao transformar ServerLog:', error);
+    console.error('Erro ao transformar log do servidor:', error);
     
-    // Em caso de erro, retorna um log genérico
+    // Retornar um log com valores padrão seguros
     return {
-      timestamp: new Date().toISOString(),
-      message: backendLog?.message || 'Log inválido',
-      level: 'error'
+      timestamp: backendLog?.timestamp || new Date().toISOString(),
+      message: backendLog?.message || 'Mensagem de log indisponível',
+      level: backendLog?.level || 'error'
     };
   }
 }
 
 /**
- * Transforma uma lista de ServerLog do backend para o formato LogsResponse do frontend
+ * Transforma uma lista de logs do servidor para o formato do frontend
  */
 export function transformLogsResponse(
-  backendLogs: any[], 
-  promptContents?: Array<{filename: string; content: string}>
+  backendLogs?: ServerLog[] | null,
+  promptContents?: PromptContent[]
 ): LogsResponse {
   try {
-    // Transformar cada log individualmente
-    const serverLogs = Array.isArray(backendLogs) 
-      ? backendLogs.map(transformServerLog)
-      : [];
+    // Garantir que backendLogs é um array
+    const logs = Array.isArray(backendLogs) ? backendLogs : [];
     
-    // Montar a resposta
+    // Transformar cada log
+    const serverLogs = logs.map(log => transformServerLog(log));
+    
+    // Criar a resposta
     const response: LogsResponse = {
       serverLogs
     };
@@ -117,12 +132,13 @@ export function transformLogsResponse(
       response.promptContents = promptContents;
     }
     
-    // Validar a resposta
-    return logsResponseSchema.parse(response) as LogsResponse;
+    return response;
   } catch (error) {
-    console.error('Erro ao transformar LogsResponse:', error);
+    console.error('Erro ao transformar resposta de logs:', error);
     
-    // Em caso de erro, retornar uma resposta vazia mas válida
-    return { serverLogs: [] };
+    // Retornar uma resposta vazia mas válida
+    return { 
+      serverLogs: []
+    };
   }
 } 

@@ -102,6 +102,22 @@ if (env.https_proxy) {
   }
 }
 
+// Exporta as variáveis de ambiente para ser usada pelo agent.ts
+export const ENV = {
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY || ''
+};
+
+// Para encontrar facilmente a API KEY do Gemini no arquivo config.json
+try {
+  // Se tiver config.json carregado, tenta extrair
+  if (config?.env?.GEMINI_API_KEY) {
+    ENV.GEMINI_API_KEY = config.env.GEMINI_API_KEY;
+    console.log('API KEY do Gemini encontrada em config.json');
+  }
+} catch (error) {
+  console.warn('Erro ao acessar API KEY do Gemini em config.json:', error);
+}
+
 /**
  * Fornecedor de busca.
  */

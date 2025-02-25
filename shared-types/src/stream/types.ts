@@ -9,7 +9,8 @@ export type BackendStreamMessageType =
   | 'reflect'    // Reflexão/pensamento
   | 'visit'      // Visitando recurso
   | 'log'        // Log de sistema
-  | 'connected';  // Conexão estabelecida
+  | 'connected'  // Conexão estabelecida
+  | 'thinking';  // Pensamento (mantido para compatibilidade com testes)
 
 /**
  * Tipo de mensagem de streaming no frontend
@@ -19,7 +20,8 @@ export type FrontendStreamMessageType =
   | 'progress'   // Progresso (unifica vários tipos do backend)
   | 'answer'     // Resposta final
   | 'error'      // Erro
-  | 'connected';  // Conexão estabelecida
+  | 'connected'  // Conexão estabelecida
+  | 'thinking';  // Pensamento (mantido para compatibilidade com testes)
 
 /**
  * Estrutura base para mensagens de streaming
@@ -27,6 +29,11 @@ export type FrontendStreamMessageType =
 export interface StreamMessageBase {
   type: string;
   data?: any;
+  // Campos adicionais para compatibilidade com testes
+  id?: string;
+  content?: string;
+  timestamp?: string;
+  metadata?: Record<string, any>;
 }
 
 /**

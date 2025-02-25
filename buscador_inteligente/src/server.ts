@@ -14,6 +14,7 @@ import chokidar from 'chokidar';
 import { Server as WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
 import { QuerySession } from './types/session';
+import { ensureModelClientInitialized } from './agent';
 
 /**
  * Interface para armazenar logs do servidor.
@@ -85,9 +86,9 @@ const port = process.env.PORT || 3000;
  * Middleware de CORS.
  */
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Adicione a origem do seu frontend
-  methods: ['GET', 'POST'],
-  credentials: true
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 /**
  * Middleware de JSON.
@@ -133,15 +134,37 @@ app.post('/api/v1/trash-query', async (req: Request, res: Response) => {
     await fs.mkdir(trashDir, { recursive: true });
     await fs.mkdir(trashTaskPath, { recursive: true });
 
+    // Verifica se o diretório de destino na lixeira já existe
+    try {
+      await fs.access(trashPath);
+      console.log(`Diretório de destino já existe na lixeira: ${trashPath}, removendo-o primeiro`);
+      // Se existir, remove-o completamente antes de mover
+      await fs.rm(trashPath, { recursive: true, force: true });
+    } catch (error) {
+      // Se o diretório não existe, isso é esperado e não é um erro
+      console.log(`Diretório de destino não existe na lixeira, prosseguindo normalmente`);
+    }
+
     // Move a pasta da query para a lixeira
     await fs.rename(queryPath, trashPath);
 
     // Move o arquivo de task se existir
+    // Tratamento melhorado: apenas registra quando o arquivo não existe, sem afetar o fluxo
     try {
       await fs.access(taskPath);
-      await fs.rename(taskPath, path.join(trashTaskPath, `${id.toString()}.json`));
+      // Verifica se já existe um arquivo com o mesmo nome na lixeira
+      const trashTaskFilePath = path.join(trashTaskPath, `${id.toString()}.json`);
+      try {
+        await fs.access(trashTaskFilePath);
+        // Se existir, remove-o antes de mover o novo
+        await fs.unlink(trashTaskFilePath);
+      } catch {
+        // Se não existir, prossegue normalmente
+      }
+      await fs.rename(taskPath, trashTaskFilePath);
     } catch (error) {
-      console.log('Arquivo de task não encontrado:', taskPath);
+      console.log('Aviso: Arquivo de task não encontrado:', taskPath, 'Continuando exclusão normalmente.');
+      // Não trata como erro, apenas como aviso
     }
 
     res.json({ success: true, message: 'Query movida para a lixeira com sucesso' });
@@ -373,6 +396,9 @@ app.post('/api/v1/query', (async (req: Request, res: Response) => {
     const question = req.body.q;
     const budget = req.body.budget;
     const maxBadAttempt = req.body.maxBadAttempt;
+    const modelName = req.body.modelo; // Captura o modelo do corpo da requisição
+    
+    console.log('Modelo solicitado:', modelName);
     
     // Validação do parâmetro obrigatório "q"
     if (!question || typeof question !== 'string' || question.trim() === '') {
@@ -417,6 +443,11 @@ app.post('/api/v1/query', (async (req: Request, res: Response) => {
       
       // Atualiza para processing quando começa
       await updateQueryStatus(requestId, 'processing');
+      
+      // Se um modelo foi especificado, inicializa o cliente com esse modelo
+      if (modelName) {
+        ensureModelClientInitialized(modelName);
+      }
       
       // Obtém o resultado da resposta
       const {result} = await getResponse(question, budget, maxBadAttempt, context, requestId);
@@ -844,8 +875,23 @@ monitorPromptDirectory();
  *             schema:
  *               type: object
  *               properties:
+ *                 logs:
+ *                   type: array
+ *                   description: Array principal de logs (obrigatório)
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       timestamp:
+ *                         type: string
+ *                         format: date-time
+ *                       message:
+ *                         type: string
+ *                       level:
+ *                         type: string
+ *                         enum: [log, error, warn, info]
  *                 serverLogs:
  *                   type: array
+ *                   description: Mesmo conteúdo de logs, mantido para compatibilidade
  *                   items:
  *                     type: object
  *                     properties:
@@ -866,6 +912,9 @@ monitorPromptDirectory();
  *                         type: string
  *                       content:
  *                         type: string
+ *               required:
+ *                 - logs
+ *                 - serverLogs
  */
     
 /**
@@ -1161,5 +1210,47 @@ app.get('/api/v1/queries/:requestId/session', async (req: Request, res: Response
   } catch (error) {
     console.error('Erro ao carregar sessão:', error);
     res.status(404).json({ error: 'Sessão não encontrada' });
+  }
+});
+
+// Rota para atualizar metadados de uma sessão
+app.patch('/api/v1/queries/:requestId', async (req: Request, res: Response) => {
+  try {
+    const { requestId } = req.params;
+    const updates = req.body;
+    
+    // Cria o diretório da query se não existir
+    const queryDir = path.join(process.cwd(), 'queries', requestId);
+    await fs.mkdir(queryDir, { recursive: true });
+    
+    // Carrega os metadados existentes ou cria novos
+    const metadataPath = path.join(queryDir, 'queries.json');
+    let metadata = {};
+    
+    try {
+      const existingData = await fs.readFile(metadataPath, 'utf-8');
+      metadata = JSON.parse(existingData);
+    } catch (error) {
+      // Se o arquivo não existir, cria um objeto vazio
+      console.log(`Criando novos metadados para ${requestId}`);
+    }
+    
+    // Atualiza os metadados com os novos valores
+    const updatedMetadata = {
+      ...metadata,
+      ...updates,
+      lastUpdated: new Date().toISOString()
+    };
+    
+    // Salva os metadados atualizados
+    await fs.writeFile(
+      metadataPath,
+      JSON.stringify(updatedMetadata, null, 2)
+    );
+
+    res.json({ success: true, metadata: updatedMetadata });
+  } catch (error) {
+    console.error('Erro ao atualizar metadados da sessão:', error);
+    res.status(500).json({ error: 'Erro ao atualizar metadados da sessão' });
   }
 });

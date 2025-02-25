@@ -1,25 +1,39 @@
 {
   "name": "@cmex/shared-types",
-  "version": "0.1.0",
-  "description": "Tipos compartilhados entre frontend e backend da CMEX",
+  "version": "1.0.0",
+  "description": "Definições de tipos compartilhados, schemas Zod e transformadores para o projeto CMEX",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
-    "test": "vitest run",
-    "prepublishOnly": "npm run build",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "version": "npm run changelog && git add CHANGELOG.md"
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
+    "test:coverage": "vitest run --coverage --config vitest.config.ts",
+    "lint": "eslint . --ext .ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "types",
+    "schemas",
+    "transformers",
+    "zod"
+  ],
+  "author": "CMEX",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "eslint": "^8.38.0",
+    "typescript": "^5.0.4",
+    "vitest": "^0.31.0",
+    "@vitest/coverage-c8": "^0.31.0"
   },
   "dependencies": {
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "typescript": "^5.3.3",
-    "vitest": "^1.1.0",
-    "conventional-changelog-cli": "^4.1.0"
-  },
-  "peerDependencies": {
-    "zod": "^3.x"
+    "zod": "^3.21.4"
   }
 } 

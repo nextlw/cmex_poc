@@ -9,6 +9,12 @@ export interface ChatMessageProps {
     urls?: string[];
     outputs?: any[];
     trackers?: any;
+    questionsToAnswer?: string[];
+    url?: string;
+    query?: string;
+    searchQuery?: string;
+    content?: string;
+    action?: string;
   };
   step: number;
 }
@@ -18,4 +24,10 @@ export interface ChatMessageData {
   references?: any[];
   think?: string;
   urls?: string[];
+  questionsToAnswer?: string[];
+  url?: string;
+  query?: string;
+  searchQuery?: string;
+  content?: string;
+  action?: string;
 } 

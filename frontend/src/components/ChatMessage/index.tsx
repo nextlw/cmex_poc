@@ -85,6 +85,88 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isTyping, data
               )}
             </div>
           </>
+        ) : type === "reflect" ? (
+          <div className="reflect-content">
+            <ReactMarkdown>{content}</ReactMarkdown>
+            
+            {data?.questionsToAnswer && data.questionsToAnswer.length > 0 && (
+              <div className="questions-section">
+                <h4>Questões para investigar:</h4>
+                <ul>
+                  {data.questionsToAnswer.map((question: string, idx: number) => (
+                    <li key={idx}>{question}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
+            {process.env.NODE_ENV === 'development' && (
+              <div className="debug-section">
+                <button 
+                  className="toggle-debug-btn" 
+                  onClick={() => setShowDebug(!showDebug)}
+                >
+                  {showDebug ? "Esconder" : "Mostrar"} dados completos
+                </button>
+                
+                {showDebug && (
+                  <pre className="debug-info">
+                    {JSON.stringify(data, null, 2)}
+                  </pre>
+                )}
+              </div>
+            )}
+          </div>
+        ) : type === "search" ? (
+          <div className="search-content">
+            <ReactMarkdown>{content}</ReactMarkdown>
+            
+            {process.env.NODE_ENV === 'development' && (
+              <div className="debug-section">
+                <button 
+                  className="toggle-debug-btn" 
+                  onClick={() => setShowDebug(!showDebug)}
+                >
+                  {showDebug ? "Esconder" : "Mostrar"} dados completos
+                </button>
+                
+                {showDebug && (
+                  <pre className="debug-info">
+                    {JSON.stringify(data, null, 2)}
+                  </pre>
+                )}
+              </div>
+            )}
+          </div>
+        ) : type === "visit" ? (
+          <div className="visit-content">
+            <ReactMarkdown>{content}</ReactMarkdown>
+            
+            {data?.url && (
+              <div className="url-section">
+                <a href={data.url} target="_blank" rel="noopener noreferrer">
+                  {data.url}
+                </a>
+              </div>
+            )}
+            
+            {process.env.NODE_ENV === 'development' && (
+              <div className="debug-section">
+                <button 
+                  className="toggle-debug-btn" 
+                  onClick={() => setShowDebug(!showDebug)}
+                >
+                  {showDebug ? "Esconder" : "Mostrar"} dados completos
+                </button>
+                
+                {showDebug && (
+                  <pre className="debug-info">
+                    {JSON.stringify(data, null, 2)}
+                  </pre>
+                )}
+              </div>
+            )}
+          </div>
         ) : (
           <>
             <ReactMarkdown>{content}</ReactMarkdown>

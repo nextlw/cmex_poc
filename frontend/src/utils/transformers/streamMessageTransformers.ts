@@ -10,7 +10,8 @@ export type BackendStreamMessageType =
   'reflect' | 'visit' | 'log' | 'connected';
 
 export type FrontendStreamMessageType = 
-  'progress' | 'answer' | 'error' | 'connected';
+  'progress' | 'answer' | 'error' | 'connected' |
+  'search' | 'reflect' | 'visit'; // Adicionando esses tipos para permitir tratamento específico
 
 // Schema Zod para validação de tipos de mensagem do backend
 export const backendStreamMessageTypeSchema = z.enum([
@@ -20,13 +21,15 @@ export const backendStreamMessageTypeSchema = z.enum([
 
 // Schema Zod para validação de tipos de mensagem do frontend
 export const frontendStreamMessageTypeSchema = z.enum([
-  'progress', 'answer', 'error', 'connected'
+  'progress', 'answer', 'error', 'connected',
+  'search', 'reflect', 'visit' // Adicionando os mesmos tipos
 ]);
 
 /**
  * Transforma um tipo de mensagem do backend para o formato do frontend
  * 
- * - 'search', 'reflect', 'visit', 'log' são mapeados para 'progress'
+ * - Mantém os tipos search, reflect, visit para processamento específico
+ * - 'log' é mapeado para 'progress'
  * - outros valores são mantidos se compatíveis com o frontend
  */
 export function transformStreamMessageType(
@@ -40,9 +43,9 @@ export function transformStreamMessageType(
     progress: 'progress',
     answer: 'answer',
     error: 'error',
-    search: 'progress',
-    reflect: 'progress',
-    visit: 'progress',
+    search: 'search', // Agora mantém o tipo original
+    reflect: 'reflect', // Agora mantém o tipo original
+    visit: 'visit', // Agora mantém o tipo original
     log: 'progress',
     connected: 'connected'
   };
@@ -52,6 +55,7 @@ export function transformStreamMessageType(
 
 /**
  * Transforma o campo 'data' de uma StreamMessage do backend para o formato do frontend
+ * Preserva os dados originais para tipos específicos
  */
 export function transformStreamMessageData(type: BackendStreamMessageType, data: any): any {
   // Para tipos diretos como 'error' e 'connected', mantém o mesmo formato
@@ -67,26 +71,66 @@ export function transformStreamMessageData(type: BackendStreamMessageType, data:
     };
   }
   
-  // Para 'search', extrai a consulta de busca
+  // Para 'search', preserva os dados originais
   if (type === 'search') {
+    if (typeof data === 'string') {
+      return { 
+        action: 'search',
+        searchQuery: data
+      };
+    }
+    // Se for um objeto, preservar sua estrutura
     return { 
       action: 'search',
-      searchQuery: typeof data === 'string' ? data : data.query || JSON.stringify(data)
+      ...data, // Manter todos os campos originais
+      searchQuery: data.query || data.searchQuery || JSON.stringify(data)
     };
   }
   
-  // Para 'reflect', extrai o pensamento
+  // Para 'reflect', preserva os dados originais
   if (type === 'reflect') {
+    if (typeof data === 'string') {
+      return { 
+        action: 'reflect',
+        think: data
+      };
+    }
+    // Se for um objeto, preservar sua estrutura
     return { 
       action: 'reflect',
-      think: typeof data === 'string' ? data : data.thought || JSON.stringify(data)
+      ...data, // Manter todos os campos originais
+      think: data.thought || data.think || JSON.stringify(data)
     };
   }
   
-  // Para outros tipos, tenta extrair dados úteis ou converte para string
+  // Para 'visit', preserva os dados originais
+  if (type === 'visit') {
+    if (typeof data === 'string') {
+      return { 
+        action: 'visit',
+        url: data
+      };
+    }
+    // Se for um objeto, preservar sua estrutura
+    return { 
+      action: 'visit',
+      ...data, // Manter todos os campos originais
+      url: data.url || JSON.stringify(data)
+    };
+  }
+  
+  // Para outros tipos, preserva os dados o máximo possível
+  if (typeof data === 'string') {
+    return { 
+      action: type,
+      think: data
+    };
+  }
+  
   return { 
     action: type,
-    think: typeof data === 'string' ? data : JSON.stringify(data)
+    ...data, // Incluir todos os campos originais
+    think: data.thought || data.think || JSON.stringify(data)
   };
 }
 
@@ -97,6 +141,9 @@ export function transformStreamMessage(backendMessage: any): any {
   if (!backendMessage) return null;
   
   try {
+    // Preservar o campo 'action' original se existir
+    const originalAction = backendMessage.action;
+    
     // Transforma o tipo da mensagem
     const type = transformStreamMessageType(
       backendMessage.type as BackendStreamMessageType
@@ -105,15 +152,21 @@ export function transformStreamMessage(backendMessage: any): any {
     // Transforma os dados com base no tipo
     const data = transformStreamMessageData(
       backendMessage.type as BackendStreamMessageType, 
-      backendMessage.data
+      backendMessage.data || backendMessage
     );
+    
+    // Se temos um 'action' original, garantir que ele seja preservado nos dados
+    if (originalAction && data) {
+      data.action = originalAction;
+    }
     
     // Transforma os trackers se existirem
     const trackers = backendMessage.trackers ? {
       tokenTracker: backendMessage.trackers.tokenTracker 
         ? transformTokenTracker(backendMessage.trackers.tokenTracker)
         : undefined,
-      actionTracker: backendMessage.trackers.actionTracker || undefined
+      actionTracker: backendMessage.trackers.actionTracker || undefined,
+      actionState: backendMessage.trackers.actionState || undefined // Preservar o actionState
     } : undefined;
     
     // Retorna a mensagem transformada
@@ -121,7 +174,9 @@ export function transformStreamMessage(backendMessage: any): any {
       type,
       data,
       trackers,
-      // Não inclui campos como 'outputs', 'step' e 'budget' que são internos do backend
+      // Incluir quaisquer outros campos relevantes do backend
+      outputs: backendMessage.outputs,
+      rawMessage: process.env.NODE_ENV === 'development' ? backendMessage : undefined
     };
   } catch (error) {
     console.error('Erro ao transformar StreamMessage:', error);
@@ -130,7 +185,8 @@ export function transformStreamMessage(backendMessage: any): any {
     return {
       type: 'error',
       data: {
-        error: 'Erro ao processar a mensagem do servidor'
+        error: 'Erro ao processar a mensagem do servidor',
+        originalError: String(error)
       }
     };
   }

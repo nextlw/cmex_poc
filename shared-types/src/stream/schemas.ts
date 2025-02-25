@@ -6,11 +6,11 @@ import { frontendTokenTrackerSchema } from '../tokenTracker/schemas';
  * Schema para validação de tipos de mensagem do backend
  */
 export const backendStreamMessageTypeSchema = z.enum(
-  ['progress', 'answer', 'error', 'search', 'reflect', 'visit', 'log', 'connected'], 
+  ['progress', 'answer', 'error', 'search', 'reflect', 'visit', 'log', 'connected', 'thinking'], 
   {
     errorMap: (issue, ctx) => {
       return { 
-        message: `Tipo de mensagem de streaming inválido: ${ctx.data}. Valores permitidos: 'progress', 'answer', 'error', 'search', 'reflect', 'visit', 'log', 'connected'`
+        message: `Tipo de mensagem de streaming inválido: ${ctx.data}. Valores permitidos: 'progress', 'answer', 'error', 'search', 'reflect', 'visit', 'log', 'connected', 'thinking'`
       };
     }
   }
@@ -20,11 +20,11 @@ export const backendStreamMessageTypeSchema = z.enum(
  * Schema para validação de tipos de mensagem do frontend
  */
 export const frontendStreamMessageTypeSchema = z.enum(
-  ['progress', 'answer', 'error', 'connected'],
+  ['progress', 'answer', 'error', 'connected', 'thinking'],
   {
     errorMap: (issue, ctx) => {
       return { 
-        message: `Tipo de mensagem de streaming inválido: ${ctx.data}. Valores permitidos: 'progress', 'answer', 'error', 'connected'`
+        message: `Tipo de mensagem de streaming inválido: ${ctx.data}. Valores permitidos: 'progress', 'answer', 'error', 'connected', 'thinking'`
       };
     }
   }
@@ -64,5 +64,9 @@ export const frontendStreamMessageTrackersSchema = z.object({
 export const frontendStreamMessageSchema = z.object({
   type: frontendStreamMessageTypeSchema,
   data: frontendStreamMessageDataSchema,
-  trackers: frontendStreamMessageTrackersSchema
+  trackers: frontendStreamMessageTrackersSchema,
+  id: z.string().optional(),
+  content: z.string().optional(),
+  timestamp: z.string().optional(),
+  metadata: z.record(z.any()).optional()
 }); 

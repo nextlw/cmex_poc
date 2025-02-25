@@ -1,206 +1,156 @@
-<<<<<<< HEAD
-# DeepResearch
+# CMEX Backend (Buscador Inteligente)
 
-Keep searching, reading webpages, reasoning until it finds the answer (or exceeding the token budget).
+Serviço de backend para a plataforma CMEX que implementa o buscador inteligente.
 
-```mermaid
----
-config:
-  theme: mc
-  look: handDrawn
----
-flowchart LR
- subgraph Loop["until budget exceed"]
-    direction LR
-        Search["Search"]
-        Read["Read"]
-        Reason["Reason"]
-  end
-    Query(["Query"]) --> Loop
-    Search --> Read
-    Read --> Reason
-    Reason --> Search
-    Loop --> Answer(["Answer"])
-
-```
-
-## Install
-
-We use gemini for llm, [jina reader](https://jina.ai/reader) for searching and reading webpages. 
+## Instalação
 
 ```bash
-export GEMINI_API_KEY=...  # for gemini api, ask han
-export JINA_API_KEY=jina_...  # free jina api key, get from https://jina.ai/reader
-
-git clone https://github.com/jina-ai/node-DeepResearch.git
-cd node-DeepResearch
 npm install
 ```
 
-
-## Usage
+## Execução
 
 ```bash
-npm run dev $QUERY
+npm run dev
 ```
 
-## Demo
-Query: `"what is the latest blog post's title from jina ai?"`
-3 steps; answer is correct!
-![demo1](demo.gif)
+## Build
 
-Query: `"what is the context length of readerlm-v2?"`
-2 steps; answer is correct!
-![demo1](demo3.gif)
-
-Query: `"list all employees from jina ai that u can find, as many as possible"` 
-11 steps; partially correct! but im not in the list :(
-![demo1](demo2.gif)
-
-Query: `"who will be the biggest competitor of Jina AI"` 
-42 steps; future prediction kind, so it's arguably correct! atm Im not seeing `weaviate` as a competitor, but im open for the future "i told you so" moment.
-![demo1](demo4.gif)
-
-More examples:
-
-```
-# example: no tool calling 
-npm run dev "1+1="
-npm run dev "what is the capital of France?"
-
-# example: 2-step
-npm run dev "what is the latest news from Jina AI?"
-
-# example: 3-step
-npm run dev "what is the twitter account of jina ai's founder"
-
-# example: 13-step, ambiguious question (no def of "big")
-npm run dev "who is bigger? cohere, jina ai, voyage?"
-
-# example: open question, research-like, long chain of thoughts
-npm run dev "who will be president of US in 2028?"
-npm run dev "what should be jina ai strategy for 2025?"
-```
-
-## Web Server API
-
-Start the server:
 ```bash
-npm run serve
+npm run build
 ```
 
-The server will start on http://localhost:3000 with the following endpoints:
+## Docker
 
-### POST /api/v1/query
-Submit a query to be answered:
+### Build Docker Image
 ```bash
-curl -X POST http://localhost:3000/api/v1/query \
-  -H "Content-Type: application/json" \
-  -d '{
-    "q": "what is the capital of France?",
-    "budget": 1000000,
-    "maxBadAttempt": 3
-  }'
+docker build -t cmex-backend:latest .
 ```
 
-Response:
+### Run Docker Container
+```bash
+docker run -p 3000:3000 --env-file .env cmex-backend:latest
+```
+
+### Docker Compose
+```bash
+docker-compose up
+```
+
+## APIs Disponíveis
+
+### API de Consultas
+
+#### Criação de consulta
+```
+POST /api/v1/query
+{
+    "question": "O que é TypeScript?",
+    "title": "Consulta sobre TypeScript"
+}
+```
+
+Resposta:
 ```json
 {
   "requestId": "1234567890"
 }
 ```
 
-### GET /api/v1/stream/:requestId
-Connect to the Server-Sent Events stream to receive progress updates and the final answer:
-```bash
-curl -N http://localhost:3000/api/v1/stream/1234567890
+#### Obtenção de consultas
+```
+GET /api/v1/queries
 ```
 
-The server will emit the following event types:
-- Progress updates: Step number and budget usage
-- Final answer with complete response data
-- Error messages if something goes wrong
-
-Example events:
-```
-data: {"type":"progress","trackers":{"tokenUsage":74950,"tokenBreakdown":{"agent":64631,"read":10319},"actionState":{"action":"search","think":"The provided text mentions several investors in Jina AI but doesn't specify ownership percentages.  A direct search for ownership percentages is needed to answer the question definitively.","URLTargets":[],"answer":"","questionsToAnswer":[],"references":[],"searchQuery":"Jina AI investor ownership percentages"},"step":7,"badAttempts":0,"gaps":[]}}
-
-data: {"type":"progress","trackers":{"tokenUsage":74950,"tokenBreakdown":{"agent":64631,"read":10319},"actionState":{"action":"search","think":"The provided text mentions several investors in Jina AI's funding rounds but doesn't specify ownership percentages.  A search focusing on equity stakes and ownership percentages held by each investor will provide the necessary information to answer the main question.","URLTargets":[],"answer":"","questionsToAnswer":[],"references":[],"searchQuery":"Jina AI investor equity percentage ownership stake"},"step":8,"badAttempts":0,"gaps":[]}}
-
-data: {"type":"progress","trackers":{"tokenUsage":88096,"tokenBreakdown":{"agent":77777,"read":10319},"actionState":{"action":"search","think":"The provided text mentions several investors in Jina AI's funding rounds but doesn't specify ownership percentages.  A search focusing on equity stakes and ownership percentages held by each investor will provide the necessary information to answer the main question.","URLTargets":[],"answer":"","questionsToAnswer":[],"references":[],"searchQuery":"Jina AI investor equity percentage ownership stake"},"step":8,"badAttempts":0,"gaps":[]}}
-```
-
-## Docker
-
-### Build Docker Image
-To build the Docker image for the application, run the following command:
-```bash
-docker build -t deepresearch:latest .
+Resposta:
+```json
+[
+  {
+    "id": "1234567890",
+    "title": "Consulta sobre TypeScript",
+    "question": "O que é TypeScript?",
+    "timestamp": "2023-02-25T12:00:00Z",
+    "status": "completed"
+  }
+]
 ```
 
-### Run Docker Container
-To run the Docker container, use the following command:
-```bash
-docker run -p 3000:3000 --env GEMINI_API_KEY=your_gemini_api_key --env JINA_API_KEY=your_jina_api_key --env BRAVE_API_KEY=your_brave_api_key deepresearch:latest
+#### Streaming de resultados
+```
+GET /api/v1/stream/:requestId
 ```
 
-### Docker Compose
-You can also use Docker Compose to manage multi-container applications. To start the application with Docker Compose, run:
-```bash
-docker-compose up
+### API de Logs
+
+#### GET /api/v1/logs
+Retorna os logs do servidor com opções de filtragem.
+
+**Parâmetros de consulta:**
+- `level`: Filtrar por nível de log (opcional)
+- `since`: Filtrar logs a partir de uma data (opcional)
+- `limit`: Limitar número de logs retornados (padrão: 100)
+
+**Exemplo de resposta:**
+```json
+{
+  "logs": [
+    {
+      "timestamp": "2023-02-25T12:00:00Z",
+      "message": "Servidor iniciado",
+      "level": "info"
+    }
+  ],
+  "serverLogs": [
+    {
+      "timestamp": "2023-02-25T12:00:00Z",
+      "message": "Servidor iniciado",
+      "level": "info"
+    }
+  ],
+  "count": 1,
+  "total": 100
+}
 ```
 
-## How Does it Work?
+**Observação:** A partir da versão 1.0.1 do pacote `@cmex/shared-types`, o campo `logs` é obrigatório e contém o mesmo conteúdo que `serverLogs` para manter compatibilidade com diferentes implementações.
 
-Not sure a flowchart helps, but here it is:
+## Pacote @cmex/shared-types
 
-```mermaid
-flowchart TD
-    Start([Start]) --> Init[Initialize context & variables]
-    Init --> CheckBudget{Token budget<br/>exceeded?}
-    CheckBudget -->|No| GetQuestion[Get current question<br/>from gaps]
-    CheckBudget -->|Yes| BeastMode[Enter Beast Mode]
+O projeto está em processo de migração para utilizar o pacote `@cmex/shared-types` para compartilhar tipos e validações entre frontend e backend. Este pacote oferece:
 
-    GetQuestion --> GenPrompt[Generate prompt]
-    GenPrompt --> ModelGen[Generate response<br/>using Gemini]
-    ModelGen --> ActionCheck{Check action<br/>type}
+1. Centralização das definições de tipos
+2. Validação de dados com Zod
+3. Transformadores padronizados
 
-    ActionCheck -->|answer| AnswerCheck{Is original<br/>question?}
-    AnswerCheck -->|Yes| EvalAnswer[Evaluate answer]
-    EvalAnswer --> IsGoodAnswer{Is answer<br/>definitive?}
-    IsGoodAnswer -->|Yes| HasRefs{Has<br/>references?}
-    HasRefs -->|Yes| End([End])
-    HasRefs -->|No| GetQuestion
-    IsGoodAnswer -->|No| StoreBad[Store bad attempt<br/>Reset context]
-    StoreBad --> GetQuestion
+### Histórico de Alterações
 
-    AnswerCheck -->|No| StoreKnowledge[Store as intermediate<br/>knowledge]
-    StoreKnowledge --> GetQuestion
+**v1.0.1 (25/02/2025)**
+- Alteração na interface `LogsResponse`: o campo `logs` agora é obrigatório em vez de opcional
+- Modificada a função `transformLogsResponse` para garantir que o campo `logs` sempre seja definido
+- A API `/api/v1/logs` foi atualizada para retornar sempre os campos `logs` e `serverLogs`
 
-    ActionCheck -->|reflect| ProcessQuestions[Process new<br/>sub-questions]
-    ProcessQuestions --> DedupQuestions{New unique<br/>questions?}
-    DedupQuestions -->|Yes| AddGaps[Add to gaps queue]
-    DedupQuestions -->|No| DisableReflect[Disable reflect<br/>for next step]
-    AddGaps --> GetQuestion
-    DisableReflect --> GetQuestion
+### Compatibilidade
 
-    ActionCheck -->|search| SearchQuery[Execute search]
-    SearchQuery --> NewURLs{New URLs<br/>found?}
-    NewURLs -->|Yes| StoreURLs[Store URLs for<br/>future visits]
-    NewURLs -->|No| DisableSearch[Disable search<br/>for next step]
-    StoreURLs --> GetQuestion
-    DisableSearch --> GetQuestion
+Estamos mantendo compatibilidade com implementações anteriores durante a transição:
+- O campo `logs` na resposta da API `/api/v1/logs` agora é obrigatório
+- O conteúdo dos campos `logs` e `serverLogs` é idêntico para garantir compatibilidade
 
-    ActionCheck -->|visit| VisitURLs[Visit URLs]
-    VisitURLs --> NewContent{New content<br/>found?}
-    NewContent -->|Yes| StoreContent[Store content as<br/>knowledge]
-    NewContent -->|No| DisableVisit[Disable visit<br/>for next step]
-    StoreContent --> GetQuestion
-    DisableVisit --> GetQuestion
+## Estrutura do Projeto
 
-    BeastMode --> FinalAnswer[Generate final answer] --> End
 ```
-=======
-# deep
-busca profunda
->>>>>>> e4a701cc6924355091b7fc5794f74657fd165afa
+buscador_inteligente/
+├── src/
+│   ├── server.ts               # Servidor Express
+│   ├── agent.ts                # Agente de busca inteligente
+│   ├── types.ts                # Tipos e interfaces
+│   ├── utils/                  # Utilitários
+│   ├── tools/                  # Ferramentas do agente
+│   └── types/                  # Tipos específicos
+├── queries/                    # Armazenamento de consultas
+├── public/                     # Arquivos estáticos
+└── docs/                       # Documentação
+```
+
+## Documentação Adicional
+
+Para mais informações sobre o funcionamento do buscador inteligente, consulte a documentação completa na pasta `docs/`. 
