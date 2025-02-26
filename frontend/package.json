@@ -32,7 +32,8 @@
     "react-markdown": "^10.0.0",
     "react-router-dom": "^7.0.2",
     "react-spinners": "^0.15.0",
-    "styled-components": "^6.1.13"
+    "styled-components": "^6.1.13",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@babel/core": "^7.26.9",
@@ -47,6 +48,7 @@
     "@types/jest": "^29.5.14",
     "@types/lodash": "^4.17.13",
     "@types/lodash.debounce": "^4.0.9",
+    "@types/node": "^22.13.5",
     "@types/papaparse": "^5.3.15",
     "@types/react-icons": "^2.2.7",
     "@types/styled-components": "^5.1.34",

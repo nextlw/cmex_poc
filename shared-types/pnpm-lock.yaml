@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       zod:
-        specifier: ^3.21.4
+        specifier: ^3.24.2
         version: 3.24.2
     devDependencies:
       '@types/node':
-        specifier: ^18.15.11
+        specifier: ^18.19.76
         version: 18.19.76
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.57.1
