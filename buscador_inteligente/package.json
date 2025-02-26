@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "npx ts-node src/agent.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
     "search": "npx ts-node src/test-duck.ts",
     "rewrite": "npx ts-node src/tools/query-rewriter.ts",
     "lint": "eslint . --ext .ts",

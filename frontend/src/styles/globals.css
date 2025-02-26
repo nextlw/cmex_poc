@@ -71,3 +71,228 @@ body {
   background-color: var(--color-background);
   color: var(--color-text-primary) !important;
 }
+
+/* Estilos para o visualizador de documentação Markdown */
+.doc-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.doc-viewer-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  gap: 1rem;
+}
+
+.doc-viewer-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex-grow: 1;
+}
+
+.doc-viewer-back {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.doc-viewer-back:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-background-secondary);
+}
+
+.doc-viewer-content {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+/* Estilos para os elementos do Markdown */
+.markdown-content {
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  max-width: 100%;
+}
+
+/* Títulos */
+.doc-h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 2rem 0 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.doc-h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 1.5rem 0 1rem;
+  padding-bottom: 0.3rem;
+  color: var(--color-text-primary);
+}
+
+.doc-h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1.2rem 0 0.8rem;
+  color: var(--color-text-primary);
+}
+
+.doc-h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1rem 0 0.6rem;
+  color: var(--color-text-primary);
+}
+
+.doc-h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0.8rem 0 0.5rem;
+  color: var(--color-text-primary);
+}
+
+.doc-h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.6rem 0 0.4rem;
+  color: var(--color-text-primary);
+}
+
+/* Parágrafos e listas */
+.doc-p {
+  margin-bottom: 1rem;
+}
+
+.doc-ul, .doc-ol {
+  margin: 0.5rem 0 1.5rem 1.5rem;
+}
+
+.doc-ul {
+  list-style-type: disc;
+}
+
+.doc-ol {
+  list-style-type: decimal;
+}
+
+.doc-li {
+  margin-bottom: 0.5rem;
+}
+
+.doc-li .doc-p {
+  margin-bottom: 0.5rem;
+}
+
+/* Citações */
+.doc-blockquote {
+  border-left: 4px solid var(--color-primary);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* Tabelas */
+.doc-table {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: collapse;
+  border: 1px solid var(--color-border);
+}
+
+.doc-thead {
+  background-color: var(--color-background-secondary);
+}
+
+.doc-th, .doc-td {
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.doc-th {
+  font-weight: 600;
+}
+
+/* Código */
+.doc-pre {
+  background-color: var(--color-background-secondary);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.doc-code {
+  font-family: monospace;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.2rem;
+  font-size: 0.9em;
+}
+
+.doc-pre .doc-code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Links */
+.doc-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.doc-link:hover {
+  text-decoration: underline;
+  color: var(--color-primary-dark);
+}
+
+/* Imagens */
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  border-radius: 0.25rem;
+}
+
+/* Separador horizontal */
+.doc-hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: 2rem 0;
+}
+
+/* Formatação de texto */
+.doc-em {
+  font-style: italic;
+}
+
+.doc-strong {
+  font-weight: 600;
+}
+
+/* Mensagem de erro */
+.error-message {
+  color: var(--color-error);
+  padding: 1rem;
+  border: 1px solid var(--color-error);
+  border-radius: 0.25rem;
+  margin: 1rem 0;
+  background-color: rgba(220, 38, 38, 0.05);
+}

@@ -7,7 +7,7 @@ Este documento fornece uma visão geral das estruturas de tipos utilizadas no si
 ### 1. Query (Consulta)
 
 #### Backend
-```typescript
+```typescript style="background-color: #161921"
 export interface Query {
   id: string;
   title: string;
@@ -24,7 +24,7 @@ export interface Query {
 ```
 
 #### Frontend
-```typescript
+```typescript style="background-color: #161921"
 export interface Query {
   id: string;
   title: string;
@@ -39,7 +39,7 @@ export interface Query {
 ### 2. Stream Messages (Mensagens de Streaming)
 
 #### Backend
-```typescript
+```typescript style="background-color: #161921"
 export interface StreamMessage {
   type: 'progress' | 'answer' | 'error' | 'search' | 'reflect' | 'visit' | 'log' | 'connected';
   data: any;
@@ -54,7 +54,7 @@ export interface StreamMessage {
 ```
 
 #### Frontend
-```typescript
+```typescript style="background-color: #161921"
 export interface StreamMessage {
   type: 'progress' | 'answer' | 'error' | 'connected';
   data: {
@@ -74,7 +74,7 @@ export interface StreamMessage {
 ### 3. Token Tracking
 
 #### Backend
-```typescript
+```typescript style="background-color: #161921"
 export class TokenTracker {
   usages: TokenUsage[];
   budget: number;
@@ -96,7 +96,7 @@ export interface TokenUsage {
 ```
 
 #### Frontend
-```typescript
+```typescript style="background-color: #161921"
 export interface FrontendTokenTracker {
   usage: Array<{
     tool: string;
@@ -109,7 +109,7 @@ export interface FrontendTokenTracker {
 ### 4. Logs
 
 #### Backend
-```typescript
+```typescript style="background-color: #161921"
 export interface ServerLog {
   context: {
     pid: number;
@@ -131,7 +131,7 @@ export interface LogsResponse {
 ```
 
 #### Frontend
-```typescript
+```typescript style="background-color: #161921"
 export interface FrontendLog {
   timestamp: string;
   message: string;
@@ -150,7 +150,7 @@ export interface LogsResponse {
 ## Sessão e Estado
 
 ### Backend
-```typescript
+```typescript style="background-color: #161921"
 export interface QuerySession {
   id: string;
   query: Query;
@@ -164,7 +164,7 @@ export interface QuerySession {
 ```
 
 ### Frontend
-```typescript
+```typescript style="background-color: #161921"
 export interface QuerySession {
   id: string;
   query: Query;
@@ -178,7 +178,7 @@ export interface QuerySession {
 ## Histórico
 
 ### Backend
-```typescript
+```typescript style="background-color: #161921"
 export interface QueryHistoryItem {
   id: string;
   title: string;
@@ -190,7 +190,7 @@ export interface QueryHistoryItem {
 ```
 
 ### Frontend
-```typescript
+```typescript style="background-color: #161921"
 export interface QueryHistoryItem {
   id: string;
   title: string;
@@ -264,7 +264,7 @@ Todos os tipos são validados usando schemas Zod. Consulte o documento `transfor
 #### 1. Interface `Reference`
 
 **Frontend:** 
-```typescript
+```typescript style="background-color: #161921"
 export interface Reference {
   exactQuote: string;
   url: string;
@@ -272,7 +272,7 @@ export interface Reference {
 ```
 
 **Backend:**
-```typescript
+```typescript style="background-color: #161921"
 export interface Reference {
   exactQuote: string;
   url: string;
@@ -284,7 +284,7 @@ export interface Reference {
 #### 2. Interface `StreamMessage` (Versão Antiga)
 
 **Frontend (ChatPage):**
-```typescript
+```typescript style="background-color: #161921"
 export interface StreamMessage {
   type: 'progress' | 'answer' | 'error' | 'connected';
   data?: {
@@ -311,7 +311,7 @@ export interface StreamMessage {
 ```
 
 **Backend:**
-```typescript
+```typescript style="background-color: #161921"
 export interface StreamMessage {
   trackers: {
     tokenTracker: TokenTracker;
@@ -341,7 +341,7 @@ export interface StreamMessage {
 #### 3. Interface `QuerySession` e `QueryStep` (Versão Antiga)
 
 **Frontend (QueryHistory):**
-```typescript
+```typescript style="background-color: #161921"
 export interface QuerySession {
   id: string;
   question: string;
@@ -359,7 +359,7 @@ export interface QuerySession {
 ```
 
 **Backend:**
-```typescript
+```typescript style="background-color: #161921"
 export interface QuerySession {
   id: string;
   question: string;
@@ -381,7 +381,7 @@ export interface QuerySession {
 #### 4. Interface `Query` (Versão Antiga)
 
 **Frontend (ChatPage):**
-```typescript
+```typescript style="background-color: #161921"
 export interface Query {
   id: string;
   title: string;
@@ -392,7 +392,7 @@ export interface Query {
 ```
 
 **Frontend (QueryHistory):**
-```typescript
+```typescript style="background-color: #161921"
 export interface Query {
   id: string;
   title: string;

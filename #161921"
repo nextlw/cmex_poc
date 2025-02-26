@@ -1,0 +1,10 @@
+{
+  "logs": [
+    {
+      "timestamp": "2023-02-25T12:00:00Z",
+      "message": "Servidor iniciado",
+      "level": "info"
+    }
+  ],
+  ...
+} 

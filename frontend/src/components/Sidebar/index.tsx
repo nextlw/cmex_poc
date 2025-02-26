@@ -44,8 +44,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const isLinkActive = (link: string): boolean => {
-    const path = getLinkPath(link);
-    return location.pathname === path;
+    switch (link) {
+      case "Início":
+        return location.pathname === "/";
+      case "Histórico":
+        return location.pathname === "/historico";
+      case "Busca":
+        return location.pathname === "/busca";
+      case "Chat":
+        return location.pathname === "/chat";
+      case "Configurações":
+        return location.pathname.startsWith("/configuracoes");
+      default:
+        return false;
+    }
   };
 
   const handleModelChange = (novoModelo: string | null) => {
@@ -60,16 +72,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             <Link
               key={link}
               to={getLinkPath(link)}
-              className={`sidebar-link ${isLinkActive(link) ? "active" : ""} ${
-                link === "Configurações" ? "disabled" : ""
-              }`}
-              onClick={(e) => {
-                if (link === "Configurações") {
-                  e.preventDefault();
-                } else {
-                  onClose();
-                }
-              }}
+              className={`sidebar-link ${isLinkActive(link) ? "active" : ""}`}
+              onClick={() => onClose()}
             >
               {link}
             </Link>

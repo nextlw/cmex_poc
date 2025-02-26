@@ -14,6 +14,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./auth/AuthContext";
 import BuscaPage from "./pages/BuscaPage";
 import ChatPage from "./pages/ChatPage";
+import ConfigPage from "./pages/ConfigPage";
 
 function App() {
   return (
@@ -55,6 +56,22 @@ function App() {
               element={
                 <PrivateRoute>
                   <ChatPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/configuracoes"
+              element={
+                <PrivateRoute>
+                  <ConfigPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/configuracoes/doc/:docPath"
+              element={
+                <PrivateRoute>
+                  <ConfigPage />
                 </PrivateRoute>
               }
             />
