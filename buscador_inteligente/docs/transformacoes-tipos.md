@@ -7,12 +7,12 @@ Este documento descreve como os tipos são transformados entre o backend (`busca
 ### 1. `Query` → Status
 
 **Backend (fonte da verdade):**
-```typescript
+```typescript style="background-color: #161921"
 type QueryStatus = 'in_progress' | 'processing' | 'completed' | 'error';
 ```
 
 **Frontend:**
-```typescript
+```typescript style="background-color: #161921"
 // Em todos os componentes/arquivos
 status: 'in_progress' | 'completed' | 'error';
 ```
@@ -25,7 +25,7 @@ status: 'in_progress' | 'completed' | 'error';
 ### 2. `ServerLog` → `LogsResponse`
 
 **Backend (fonte da verdade):**
-```typescript
+```typescript style="background-color: #161921"
 export interface ServerLog {
   context: { 
     pid: number;
@@ -39,7 +39,7 @@ export interface ServerLog {
 ```
 
 **Frontend:**
-```typescript
+```typescript style="background-color: #161921"
 export interface LogsResponse {
   serverLogs: Array<{
     timestamp: string;
@@ -61,7 +61,7 @@ export interface LogsResponse {
 ### 3. `TokenTracker` (Classe) → Objeto Simples
 
 **Backend (fonte da verdade):**
-```typescript
+```typescript style="background-color: #161921"
 export class TokenTracker extends EventEmitter {
   private usages: TokenUsage[] = [];
   private budget?: number;
@@ -71,7 +71,7 @@ export class TokenTracker extends EventEmitter {
 ```
 
 **Frontend:**
-```typescript
+```typescript style="background-color: #161921"
 tokenTracker: {
   usage: Array<{tool: string; tokens: number}>;
   totalTokens: number;
@@ -87,7 +87,7 @@ tokenTracker: {
 ### 4. `StreamMessage`
 
 **Backend (fonte da verdade):**
-```typescript
+```typescript style="background-color: #161921"
 export interface StreamMessage {
   trackers: {
     tokenTracker: TokenTracker;
@@ -106,7 +106,7 @@ export interface StreamMessage {
 ```
 
 **Frontend:**
-```typescript
+```typescript style="background-color: #161921"
 export interface StreamMessage {
   type: 'progress' | 'answer' | 'error' | 'connected';
   data?: {

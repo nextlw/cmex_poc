@@ -19,6 +19,7 @@
   --color-gemini: #4285f4;
   --color-gpt4: #10a37f;
   --color-claude: #7c3aed;
+  --color-nex: #2775cf;
   
   /* Cores do scrollbar */
   --scrollbar-track-color: #2d2d2d;
@@ -66,6 +67,7 @@
   --color-badge-gemini: #4285f4;
   --color-badge-gpt4: #10a37f;
   --color-badge-claude: #7c3aed;
+  --color-badge-nex: #2775cf;
   --color-gray-700: #374151;
   --color-blue-500: #3b82f6;
   --color-blue-600: #2563eb;
@@ -135,10 +137,31 @@
   --color-info: #0288d1;
   --color-info-dark: #0277bd;
   --color-info-darker: #01579b;
+  
+  /* Variáveis para documentação */
+  --primary-color: #2775cf;
+  --primary-color-light: rgba(39, 117, 207, 0.1);
+  --primary-color-dark: #1c5aa0;
+  
+  --bg-primary: var(--background-color-primary);
+  --bg-secondary: var(--background-color-secondary);
+  --bg-tertiary: var(--background-color-tertiary);
+  
+  --text-primary: var(--text-color-primary);
+  --text-secondary: var(--text-color-secondary);
+  
+  --border-color: var(--border-color-primary);
+  --hover-color: var(--background-color-hover);
+  
+  --error-color: var(--color-error);
+  --error-bg: rgba(244, 67, 54, 0.1);
+  
+  --code-bg: #161616;
 }
 
 /* Tema Light */
-:root[data-theme="light"] {/* Cores padrão (tema light) */
+:root[data-theme="light"] {
+  /* Cores padrão (tema light) */
 
   --color-gray-300: rgb(96, 110, 130); /* Mantém igual */
   --color-gray-400: rgb(75, 86, 106); /* Mantém igual */
@@ -172,6 +195,7 @@
   --color-badge-gemini: #4285f4; /* Mantém igual */
   --color-badge-gpt4: #10a37f; /* Mantém igual */
   --color-badge-claude: #7c3aed; /* Mantém igual */
+  --color-badge-nex: #2775cf; /* Mantém igual */
   --color-gray-700: #e5e7eb; /* Cinza claro */
   --color-blue-500: #3b82f6; /* Mantém igual */
   --color-blue-600: #2563eb; /* Mantém igual */
@@ -220,17 +244,37 @@
   --color-border-gray: #7687a0;
   --color-text-gray-400: #6b7280;
   --color-text-gray-100: #232d43;
+  
+  /* Variáveis para documentação no tema claro */
+  --primary-color: #2775cf;
+  --primary-color-light: rgba(58, 139, 230, 0.2);
+  --primary-color-dark: #1c5aa0;
+  
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fc;
+  --bg-tertiary: #edf2f7;
+  
+  --text-primary: rgb(0, 0, 0);
+  --text-secondary: rgb(55, 65, 81);
+  
+  --border-color: rgba(71, 131, 208, 0.7);
+  --hover-color: #f3f4f6;
+  
+  --error-bg: rgba(244, 67, 54, 0.2);
+  
+  --code-bg: #f1f1f1;
 }
-  /* Tokens de Fontes */
-  :root {
-    --font-family-primary: 'Roboto', sans-serif;
-    --font-size-base: 1rem;
-    --font-size-small: 0.875rem;
-    --font-size-large: 1.25rem;
-    --font-weight-normal: 400;
-    --font-weight-medium: 500;
-    --font-weight-semibold: 600;
-    --font-weight-bold: bold;
+
+/* Tokens de Fontes */
+:root {
+  --font-family-primary: 'Roboto', sans-serif;
+  --font-size-base: 1rem;
+  --font-size-small: 0.875rem;
+  --font-size-large: 1.25rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: bold;
 }
 
 /* Espaçamentos */
@@ -314,4 +358,11 @@
   --color-border-gray: #4b5563;
   --color-text-gray-400: #9ca3af;
   --color-text-gray-100: #f3f4f6;
+}
+
+/* Tamanhos */
+:root {
+  --size-header-height: 68px;
+  --size-sidebar-width: 280px;
+  --size-topbar-height: 48px;
 }

@@ -33,6 +33,8 @@ const HeaderLinks: React.FC<HeaderLinksProps> = ({ links }) => {
         return location.pathname === "/busca";
       case "Chat":
         return location.pathname === "/chat";
+      case "Configurações":
+        return location.pathname.startsWith("/configuracoes");
       default:
         return false;
     }
@@ -44,14 +46,7 @@ const HeaderLinks: React.FC<HeaderLinksProps> = ({ links }) => {
         <Link
           key={link}
           to={getLinkPath(link)}
-          className={`header-link ${isLinkActive(link) ? "active" : ""} ${
-            link === "Configurações" ? "disabled" : ""
-          }`}
-          onClick={(e) => {
-            if (link === "Configurações") {
-              e.preventDefault();
-            }
-          }}
+          className={`header-link ${isLinkActive(link) ? "active" : ""}`}
         >
           {link}
         </Link>
