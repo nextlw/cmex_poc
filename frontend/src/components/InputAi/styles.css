@@ -195,8 +195,8 @@
   position: absolute;
   top: calc(100% + 5px);
   z-index: 9999;
-  background-color: white;
-  color: black;
+  background-color: var(--color-background-dark);
+  color: var(--color-text-primary);
   box-sizing: border-box;
   padding: .5rem;
   white-space: normal;

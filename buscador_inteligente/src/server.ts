@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import express, {Request, Response, RequestHandler} from 'express';
+import express, { Request, Response, NextFunction, Application, RequestHandler } from 'express';
 import cors from 'cors';
 import {EventEmitter} from 'events';
 import {getResponse} from './agent';
@@ -76,7 +76,7 @@ const logEventEmitter = new EventEmitter();
 /**
  * Aplicação Express.
  */
-const app = express();
+const app: express.Application = express();
 /**
  * Porta da aplicação.
  */
@@ -384,6 +384,25 @@ async function updateQueryStatus(requestId: string, status: QueryStatus) {
     });
   } catch (error) {
     console.error('Erro ao atualizar status:', error);
+  }
+}
+
+/**
+ * Função para obter metadados da query
+ */
+async function getQueryMetadata(requestId: string) {
+  const queryPath = path.join(process.cwd(), 'queries', requestId);
+  const queriesPath = path.join(queryPath, 'queries.json');
+  
+  try {
+    // Verifica se o arquivo existe
+    await fs.access(queriesPath);
+    // Lê e retorna os metadados
+    const data = await fs.readFile(queriesPath, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Erro ao ler metadados da query:', error);
+    return null; // Retorna null se os metadados não existirem
   }
 }
 
@@ -1254,3 +1273,210 @@ app.patch('/api/v1/queries/:requestId', async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Erro ao atualizar metadados da sessão' });
   }
 });
+
+/**
+ * Rota para verificar o status de uma tarefa.
+ * Esta rota é importante para acompanhar o progresso de análises do DeepResearch
+ */
+app.get('/api/v1/task-status/:requestId', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { requestId } = req.params;
+    
+    if (!requestId) {
+      res.status(400).json({ error: 'ID da tarefa é obrigatório' });
+      return;
+    }
+    
+    console.log(`Verificando status da tarefa: ${requestId}`);
+    
+    // Verifica se temos rastreadores para esta requisição
+    const trackerContext = trackers.get(requestId);
+    
+    if (!trackerContext) {
+      // Verifica metadados salvos para determinar o status final
+      try {
+        const metadata = await getQueryMetadata(requestId);
+        if (metadata) {
+          // A tarefa existe mas não está mais em processamento ativo
+          res.json({
+            requestId,
+            completed: true,
+            status: metadata.status,
+            step: 5, // Último passo
+            currentAction: "Processamento concluído"
+          });
+          return;
+        } else {
+          res.status(404).json({ error: 'Tarefa não encontrada' });
+          return;
+        }
+      } catch (error) {
+        console.error(`Erro ao buscar metadados da tarefa ${requestId}:`, error);
+        res.status(404).json({ error: 'Tarefa não encontrada' });
+        return;
+      }
+    }
+    
+    // Obtém informações atuais
+    const { actionTracker } = trackerContext;
+    
+    // Determina o passo atual baseado nas ações registradas
+    const currentState = actionTracker.getState();
+    const actions: string[] = []; // Não conseguimos acessar diretamente o histórico
+    
+    // Usamos o estado atual para inferir o progresso
+    const step = Math.min(currentState.totalStep, 5);
+    let currentAction = "Iniciando análise...";
+    
+    // Se temos um estado atual, podemos usar sua descrição
+    if (currentState.thisStep && currentState.thisStep.think) {
+      currentAction = currentState.thisStep.think.substring(0, 100);
+    }
+    
+    // Prepara resposta com o status atual
+    const response = {
+      requestId,
+      completed: false, // Em processamento
+      step,
+      currentAction
+    };
+    
+    res.json(response);
+    return;
+    
+  } catch (error) {
+    console.error('Erro ao verificar status da tarefa:', error);
+    res.status(500).json({ error: 'Erro interno ao verificar status da tarefa' });
+    return;
+  }
+});
+
+interface DeepResearchResultado {
+  status: string;
+  mensagem: string;
+  cor?: string;
+  sugestao_original: any[];
+}
+
+async function validar_com_deepresearch(consulta: string, modelo: string, sugestao_ncm: any[]) {
+  try {
+    const url = "http://localhost:3000/api/v1/query";
+    
+    const ncm_sugerido = sugestao_ncm[0]?.ncm || "";
+    const descricao = sugestao_ncm[0]?.descricao || "";
+    
+    const pergunta = `
+    Valide se o NCM ${ncm_sugerido} (${descricao}) está correto para o produto: ${consulta}.
+    
+    Durante sua análise, informe cada etapa que está realizando:
+    1. Quais fontes oficiais você está consultando
+    2. Quais tabelas ou regras está verificando
+    3. Se encontrou menções deste produto com esta NCM
+    
+    Finalize sua resposta com 'confirmado', 'negado' ou 'sugestão alternativa' seguido pela justificativa detalhada.
+    `;
+    
+    const payload = {
+      q: pergunta,
+      modelo: modelo,
+      productName: consulta,
+      ncmCode: ncm_sugerido,
+      returnPartialResults: true
+    };
+    
+    console.log("[DeepResearch] Iniciando validação para:", consulta);
+    console.log("[DeepResearch] Payload:", payload);
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    const data = await response.json();
+    const request_id = data.requestId;
+    
+    if (!request_id) {
+      console.log("[DeepResearch] Falha ao obter requestId");
+      return {
+        status: "erro",
+        mensagem: "Falha ao iniciar validação DeepResearch",
+        sugestao_original: sugestao_ncm
+      } as DeepResearchResultado;
+    }
+    
+    console.log("[DeepResearch] Request ID:", request_id);
+    
+    // Aguarda a conclusão da tarefa
+    const task_url = `http://localhost:3000/api/v1/task/${request_id}`;
+    
+    // Função para verificar o status da tarefa
+    const checkTaskStatus = async (): Promise<any> => {
+      try {
+        const task_response = await fetch(task_url);
+        
+        if (task_response.status === 200) {
+          const task_data = await task_response.json();
+          console.log("[DeepResearch] Status da tarefa:", task_data.action || "desconhecido");
+          
+          if (task_data.action === "answer") {
+            const resposta = task_data.answer || "";
+            console.log("[DeepResearch] Resposta recebida:", resposta.substring(0, 100), "...");
+            
+            const resultado: DeepResearchResultado = {
+              status: "pendente",
+              mensagem: resposta,
+              sugestao_original: sugestao_ncm
+            };
+            
+            if (resposta.toLowerCase().includes("confirmado")) {
+              resultado.status = "confirmado";
+              resultado.cor = "verde";
+            } else if (resposta.toLowerCase().includes("negado")) {
+              resultado.status = "negado";
+              resultado.cor = "vermelho";
+            } else if (resposta.toLowerCase().includes("sugestão alternativa") || 
+                     resposta.toLowerCase().includes("sugestao alternativa")) {
+              resultado.status = "sugestao";
+              resultado.cor = "amarelo";
+            }
+            
+            console.log("[DeepResearch] Status da validação:", resultado.status);
+            
+            for (const item of sugestao_ncm) {
+              item.validacao_deepresearch = resultado;
+            }
+            
+            return sugestao_ncm;
+          }
+        }
+        
+        // Se não tiver resposta ainda, aguarda e tenta novamente
+        await new Promise(resolve => setTimeout(resolve, 6000));
+        return await checkTaskStatus();
+        
+      } catch (error) {
+        console.log("[DeepResearch] Erro ao verificar tarefa:", error);
+        // Em caso de erro, aguarda e tenta novamente
+        await new Promise(resolve => setTimeout(resolve, 6000));
+        return await checkTaskStatus();
+      }
+    };
+    
+    // Inicia a verificação recursiva
+    return await checkTaskStatus();
+    
+  } catch (error) {
+    console.error("Erro no DeepResearch:", error);
+    for (const item of sugestao_ncm) {
+      item.validacao_deepresearch = {
+        status: "erro",
+        mensagem: `Erro ao processar DeepResearch: ${error}`,
+        cor: "cinza",
+        sugestao_original: sugestao_ncm
+      } as DeepResearchResultado;
+    }
+    return sugestao_ncm;
+  }
+}

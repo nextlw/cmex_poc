@@ -122,6 +122,13 @@ export interface ClassificacaoTributaria {
   cst_saida: string;
 }
 
+export interface ValidationDeepResearch {
+  status: 'confirmado' | 'negado' | 'sugestao' | 'erro' | 'timeout' | 'pendente';
+  mensagem: string;
+  cor: 'verde' | 'vermelho' | 'amarelo' | 'cinza';
+  sugestao_original?: any;
+}
+
 export interface SugerirNCM {
   ncm: string;
   descricao: string;
@@ -129,6 +136,7 @@ export interface SugerirNCM {
   atributos_tipi: string[];
   valores_de_impostos: ValoresdeImpostos;
   classificacao_tributaria: ClassificacaoTributaria;
+  validacao_deepresearch?: ValidationDeepResearch;
 }
 
 export interface ProdutodaPesquisa {

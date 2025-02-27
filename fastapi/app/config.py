@@ -8,7 +8,7 @@ from supabase import create_client, Client
 load_dotenv()
 
 # Ambiente
-ENV = os.getenv("ENV")
+ENV = os.getenv("ENV", "dev")  # Valor padrão: "dev"
 
 # Configurações do cliente Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -46,25 +46,16 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 10000
 
-    # Configurações de CORS
-    if ENV == "dev":
-        BACKEND_CORS_ORIGINS: list[str] = [
-            "http://localhost:5173",
-            "http://localhost:10000",
-            "http://localhost:3000"
-        ]
-    elif ENV == "prod":
-        BACKEND_CORS_ORIGINS: list[str] = [
-            "https://app.nexcode.live"
-        ]
-    elif ENV == "staging":
-        BACKEND_CORS_ORIGINS: list[str] = [
-            "https://dev.app.nexcode.live"
-        ]
-    elif ENV == "homolog":
-        BACKEND_CORS_ORIGINS: list[str] = [
-            "https://beta.app.nexcode.live"
-        ]
+    # Configurações de CORS - Permitindo acesso de qualquer origem em desenvolvimento
+    # Independentemente do valor de ENV, sempre permita localhost:5173
+    BACKEND_CORS_ORIGINS: list[str] = [
+        "http://localhost:5173",
+        "http://localhost:10000",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:10000",
+        "http://127.0.0.1:3000"
+    ]
         
     CORS_ALLOW_CREDENTIALS: bool = True
     CORS_ALLOW_METHODS: list[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]

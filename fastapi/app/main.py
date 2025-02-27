@@ -21,17 +21,22 @@ app = FastAPI(
     title=SETTINGS.PROJECT_NAME, openapi_url=f"{SETTINGS.API_V1_STR}/openapi.json"
 )
 
-# Configurações de CORS
+# Configurações de CORS - Permitindo TODOS os origens para teste
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=SETTINGS.BACKEND_CORS_ORIGINS,
-    allow_credentials=SETTINGS.CORS_ALLOW_CREDENTIALS,
-    allow_methods=SETTINGS.CORS_ALLOW_METHODS,
-    allow_headers=SETTINGS.CORS_ALLOW_HEADERS,
-    expose_headers=SETTINGS.CORS_EXPOSE_HEADERS,
-    max_age=SETTINGS.CORS_MAX_AGE,
+    allow_origins=["*"],  # Temporariamente permitindo qualquer origem
+    allow_credentials=True,
+    allow_methods=["*"],  # Permitindo todos os métodos
+    allow_headers=["*"],  # Permitindo todos os headers
+    expose_headers=["*"],
 )
 
+# Middleware para aumentar o timeout das respostas
+@app.middleware("http")
+async def add_timeout_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Keep-Alive"] = "timeout=600"  # 10 minutos
+    return response
 
 # Middleware de autenticação
 app.add_middleware(AuthMiddleware)
