@@ -66,7 +66,8 @@ class Settings(BaseSettings):
         "Origin",
         "X-Requested-With",
         "Access-Control-Request-Method",
-        "Access-Control-Request-Headers"
+        "Access-Control-Request-Headers",
+        "content-type"  # Adicionando explicitamente
     ]
     CORS_EXPOSE_HEADERS: list[str] = ["*"]
     CORS_MAX_AGE: int = 600  # 10 minutos em segundos
@@ -183,16 +184,10 @@ MODEL_MAPPING = {
         "max_tokens": 700,
         "temperature": 1.3,
     },
-    
-    "Qwen2.5-7b-instruct-1m": {
+    "qwen2.5-7b-instruct-1m": {
         "model_name": SETTINGS.LOCAL_MODEL,
         "max_tokens": 10000,
         "temperature": 0.7,
-    },
-    "Qwen": {
-        "model_name": "qwen2.5-7b-instruct-1m",
-        "temperature": 0.7,
-        "max_tokens": 2000
     }
 }
 

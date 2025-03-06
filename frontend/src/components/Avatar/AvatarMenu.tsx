@@ -2,16 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '../../auth/SessionContext';
 import { supabase } from '../../auth/SupabaseClient';
-import { FaSignOutAlt } from 'react-icons/fa';
+import { FaSignOutAlt, FaTrash } from 'react-icons/fa';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import Avatar from './index';
 import './AvatarMenu.css';
 
 interface AvatarMenuProps {
   name: string;
+  onClearStorage: () => void;
 }
 
-const AvatarMenu: React.FC<AvatarMenuProps> = ({ name }) => {
+const AvatarMenu: React.FC<AvatarMenuProps> = ({ name, onClearStorage }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { setSession } = useSession();
@@ -68,6 +69,13 @@ const AvatarMenu: React.FC<AvatarMenuProps> = ({ name }) => {
       </div>
       {isOpen && (
         <ul className="avatar-dropdown-menu">
+          <li 
+            className="avatar-dropdown-item" 
+            onClick={onClearStorage}
+          >
+            <FaTrash className="avatar-dropdown-icon" />
+            Limpar Dados
+          </li>
           <li 
             className="avatar-dropdown-item" 
             onClick={handleLogout}

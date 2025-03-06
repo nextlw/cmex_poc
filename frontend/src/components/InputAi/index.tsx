@@ -45,13 +45,13 @@ const InputAi: React.FC<InputAiProps> = ({
   onKeyPress,
   onBlur,
   isLoading = false,
-  onButtonClick = () => { }, // Função vazia, o botão eu implementei dentro do input de forma opcional.
+  onButtonClick = () => {}, // Função vazia, o botão eu implementei dentro do input de forma opcional.
   style,
   showAutoComplete,
   autoCompleteData = [],
   handleAutocompleteClick,
   isAutocompleteLoading,
-  onClickOutside
+  onClickOutside,
 }): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -67,41 +67,50 @@ const InputAi: React.FC<InputAiProps> = ({
         ref: overlayRef,
         loadingClasses: ["sobreposicao-gradiente-carregando"],
         removeClasses: ["sobreposicao-gradiente-focado"],
-        animation: "moverGradiente 2s linear infinite"
+        animation: "moverGradiente 2s linear infinite",
       },
       {
         ref: containerRef,
-        animation: "bordaBrilhante 4s ease-in-out infinite"
+        animation: "bordaBrilhante 4s ease-in-out infinite",
       },
       {
         ref: inputWrapperRef,
-        loadingClasses: ["envoltorio-input-carregando"]
+        loadingClasses: ["envoltorio-input-carregando"],
       },
       {
         ref: iconRef,
         loadingClasses: ["icone-carregando-carregando"],
-        animation: "moverGradiente 2s linear infinite"
-      }
+        animation: "moverGradiente 2s linear infinite",
+      },
     ];
 
     // Função helper pra manipular as classes e animações
     const updateElement = (config: any, isLoading: boolean) => {
-      const { ref, loadingClasses = [], removeClasses = [], animation } = config;
+      const {
+        ref,
+        loadingClasses = [],
+        removeClasses = [],
+        animation,
+      } = config;
 
       if (!ref.current) return;
 
       if (isLoading) {
-        removeClasses.forEach((cls: string) => ref.current.classList.remove(cls));
+        removeClasses.forEach((cls: string) =>
+          ref.current.classList.remove(cls)
+        );
         loadingClasses.forEach((cls: string) => ref.current.classList.add(cls));
         if (animation) ref.current.style.animation = animation;
       } else {
-        loadingClasses.forEach((cls: string) => ref.current.classList.remove(cls));
-        if (animation) ref.current.style.animation = 'none';
+        loadingClasses.forEach((cls: string) =>
+          ref.current.classList.remove(cls)
+        );
+        if (animation) ref.current.style.animation = "none";
       }
     };
 
     // Aplica as configurações em todos os elementos
-    loadingConfig.forEach(config => updateElement(config, isLoading));
+    loadingConfig.forEach((config) => updateElement(config, isLoading));
   }, [isLoading]);
 
   useEffect(() => {
@@ -135,7 +144,7 @@ const InputAi: React.FC<InputAiProps> = ({
   const handleBlur = () => {
     // Esse array guarda todos os elementos que precisam ter suas classes removidas
     // quando o usuário tira o foco do input. Funciona assim:
-    // 
+    //
     // - Cada objeto no array tem:
     //   * ref: referência pro elemento DOM que queremos modificar
     //   * classes: array com os nomes das classes CSS que precisam ser removidas
@@ -148,7 +157,10 @@ const InputAi: React.FC<InputAiProps> = ({
     const elements = [
       { ref: overlayRef, classes: ["sobreposicao-gradiente-focado"] },
       { ref: inputWrapperRef, classes: ["envoltorio-input-focado"] },
-      { ref: iconRef, classes: ["icone-carregando-focado", "icone-carregando-carregando"] },
+      {
+        ref: iconRef,
+        classes: ["icone-carregando-focado", "icone-carregando-carregando"],
+      },
     ];
 
     elements.forEach(({ ref, classes }) => {
@@ -251,25 +263,29 @@ const InputAi: React.FC<InputAiProps> = ({
         */}
         <div className="sobreposicao-gradiente" ref={overlayRef}></div>
 
-        {showAutoComplete &&
+        {showAutoComplete && (
           <div className="autocomplete rounded-xl flex flex-col gap-1">
-            {isAutocompleteLoading &&
+            {isAutocompleteLoading && (
               <div className="h-[48px]">
                 <Spinner classes="left-[50%] top-[20px]" />
               </div>
-            }
-            {autoCompleteData.map((item) =>
-            (
-              <button key={item.id}
+            )}
+            {autoCompleteData.map((item) => (
+              <button
+                key={item.id}
                 className="autocomplete__item rounded-md hover:bg-gray-100 flex flex-row gap-2 items-center justify-between py-4 px-3"
                 onClick={() => handleAutocompleteClick(item)}
               >
-                <span className="text-gray-700 font-semibold break-keep">{item.resultado[0].ncm}</span>
-                <span className="text-gray-500 break-keep leading-none flex-1 text-left">{item.resultado[0].descricao}</span>
+                <span className="text-gray-700 font-semibold break-keep">
+                  {item.resultado[0].ncm}
+                </span>
+                <span className="text-gray-500 break-keep leading-none flex-1 text-left">
+                  {item.resultado[0].descricao}
+                </span>
               </button>
-            )
-            )}
-          </div>}
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

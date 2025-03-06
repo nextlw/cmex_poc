@@ -51,93 +51,111 @@ import DeepResearchStatus from "../../components/DeepResearchStatus";
 const HomePage: React.FC = () => {
   // Recupera o estado inicial do localStorage ou usa o valor padrão
   const [pesquisa, setPesquisa] = useState(() => {
-    const saved = localStorage.getItem('lastSearch');
+    const saved = localStorage.getItem("lastSearch");
     return saved ? JSON.parse(saved) : "";
   });
 
   const [selectedModel, setSelectedModel] = useState<string | null>(() => {
-    const saved = localStorage.getItem('selectedModel');
+    const saved = localStorage.getItem("selectedModel");
     return saved ? JSON.parse(saved) : "Nex-0.5-Preview-2025";
   });
 
-  const [dropdownSelection, setDropdownSelection] = useState<SelectionData | null>(() => {
-    const saved = localStorage.getItem('dropdownSelection');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [dropdownSelection, setDropdownSelection] =
+    useState<SelectionData | null>(() => {
+      const saved = localStorage.getItem("dropdownSelection");
+      return saved ? JSON.parse(saved) : null;
+    });
 
   const [sugerirNCM, setSugerirNCM] = useState<SugerirNCM[]>(() => {
-    const saved = localStorage.getItem('sugerirNCM');
-    return saved ? JSON.parse(saved) : [{
-      ncm: "",
-      descricao: "",
-      atributos: [],
-      atributos_tipi: [],
-      classificacao_tributaria: {
-        ipi_entrada: "",
-        ipi_saida: "",
-        pis_entrada: "",
-        pis_saida: "",
-        cofins_entrada: "",
-        cofins_saida: "",
-        cst_entrada: "",
-        cst_saida: "",
-      },
-      valores_de_impostos: {
-        ipi: "",
-        icms: {},
-        pis: "",
-        cofins: "",
-      },
-    }];
+    const saved = localStorage.getItem("sugerirNCM");
+    return saved
+      ? JSON.parse(saved)
+      : [
+          {
+            ncm: "",
+            descricao: "",
+            atributos: [],
+            atributos_tipi: [],
+            classificacao_tributaria: {
+              ipi_entrada: "",
+              ipi_saida: "",
+              pis_entrada: "",
+              pis_saida: "",
+              cofins_entrada: "",
+              cofins_saida: "",
+              cst_entrada: "",
+              cst_saida: "",
+            },
+            valores_de_impostos: {
+              ipi: "",
+              icms: {},
+              pis: "",
+              cofins: "",
+            },
+          },
+        ];
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [buscarValor, setBuscarValor] = useState("");
   const [isTabelaICMSOpen, setIsTabelaICMSOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  
+
   const [useDeepResearch, setUseDeepResearch] = useState(() => {
-    const saved = localStorage.getItem('useDeepResearch');
+    const saved = localStorage.getItem("useDeepResearch");
     return saved ? JSON.parse(saved) : false;
   });
 
-  const [deepResearchRequestId, setDeepResearchRequestId] = useState<string | null>(() => {
-    const saved = localStorage.getItem('deepResearchRequestId');
+  const [deepResearchRequestId, setDeepResearchRequestId] = useState<
+    string | null
+  >(() => {
+    const saved = localStorage.getItem("deepResearchRequestId");
     return saved ? JSON.parse(saved) : null;
   });
 
-  const [isDeepResearchProcessing, setIsDeepResearchProcessing] = useState(() => {
-    const saved = localStorage.getItem('isDeepResearchProcessing');
-    return saved ? JSON.parse(saved) : false;
-  });
+  const [isDeepResearchProcessing, setIsDeepResearchProcessing] = useState(
+    () => {
+      const saved = localStorage.getItem("isDeepResearchProcessing");
+      return saved ? JSON.parse(saved) : false;
+    }
+  );
 
   // Salva os estados no localStorage quando mudam
   useEffect(() => {
-    localStorage.setItem('lastSearch', JSON.stringify(pesquisa));
+    localStorage.setItem("lastSearch", JSON.stringify(pesquisa));
   }, [pesquisa]);
 
   useEffect(() => {
-    localStorage.setItem('selectedModel', JSON.stringify(selectedModel));
+    localStorage.setItem("selectedModel", JSON.stringify(selectedModel));
   }, [selectedModel]);
 
   useEffect(() => {
-    localStorage.setItem('dropdownSelection', JSON.stringify(dropdownSelection));
+    localStorage.setItem(
+      "dropdownSelection",
+      JSON.stringify(dropdownSelection)
+    );
   }, [dropdownSelection]);
 
   useEffect(() => {
-    localStorage.setItem('sugerirNCM', JSON.stringify(sugerirNCM));
+    localStorage.setItem("sugerirNCM", JSON.stringify(sugerirNCM));
   }, [sugerirNCM]);
 
   useEffect(() => {
-    localStorage.setItem('useDeepResearch', JSON.stringify(useDeepResearch));
+    localStorage.setItem("useDeepResearch", JSON.stringify(useDeepResearch));
   }, [useDeepResearch]);
 
   useEffect(() => {
-    localStorage.setItem('deepResearchRequestId', JSON.stringify(deepResearchRequestId));
+    localStorage.setItem(
+      "deepResearchRequestId",
+      JSON.stringify(deepResearchRequestId)
+    );
   }, [deepResearchRequestId]);
 
   useEffect(() => {
-    localStorage.setItem('isDeepResearchProcessing', JSON.stringify(isDeepResearchProcessing));
+    localStorage.setItem(
+      "isDeepResearchProcessing",
+      JSON.stringify(isDeepResearchProcessing)
+    );
   }, [isDeepResearchProcessing]);
 
   // Se houver um DeepResearch em andamento ao carregar a página, retoma o monitoramento
@@ -145,46 +163,61 @@ const HomePage: React.FC = () => {
     if (isDeepResearchProcessing && deepResearchRequestId) {
       const checkStatus = async () => {
         try {
-          const response = await axiosInstance.get(`/task-status/${deepResearchRequestId}`);
-          
+          const response = await axiosInstance.get(
+            `/task-status/${deepResearchRequestId}`
+          );
+
           // Se a tarefa foi concluída
           if (response.data.completed) {
             setIsDeepResearchProcessing(false);
             setDeepResearchRequestId(null);
-            
+
             // Atualiza os resultados
             const updatedNCM = [...sugerirNCM];
             for (const item of updatedNCM) {
-              if (item.validacao_deepresearch?.requestId === deepResearchRequestId) {
+              if (
+                item.validacao_deepresearch?.requestId === deepResearchRequestId
+              ) {
                 item.validacao_deepresearch = {
                   ...item.validacao_deepresearch,
                   status: response.data.status,
                   mensagem: response.data.currentAction,
-                  cor: response.data.status === 'completed' ? 'verde' : 'cinza'
+                  cor: response.data.status === "completed" ? "verde" : "cinza",
                 };
               }
             }
             setSugerirNCM(updatedNCM);
           } else if (response.data.error) {
             // Se houve um erro no servidor
-            console.error("Erro de conexão com DeepResearch:", response.data.error);
-            
+            console.error(
+              "Erro de conexão com DeepResearch:",
+              response.data.error
+            );
+
             // Tenta novamente após 10 segundos para erros de conexão
-            if (response.data.error === 'connect_error' || response.data.error === 'timeout') {
+            if (
+              response.data.error === "connect_error" ||
+              response.data.error === "timeout"
+            ) {
               setTimeout(checkStatus, 10000);
             } else {
               // Para outros erros, atualiza o status mas mantém o processamento
               const updatedNCM = [...sugerirNCM];
               for (const item of updatedNCM) {
-                if (item.validacao_deepresearch?.requestId === deepResearchRequestId) {
+                if (
+                  item.validacao_deepresearch?.requestId ===
+                  deepResearchRequestId
+                ) {
                   item.validacao_deepresearch = {
                     ...item.validacao_deepresearch,
-                    mensagem: response.data.currentAction || 'Erro de conexão com o serviço DeepResearch'
+                    mensagem:
+                      response.data.currentAction ||
+                      "Erro de conexão com o serviço DeepResearch",
                   };
                 }
               }
               setSugerirNCM(updatedNCM);
-              
+
               // Continua tentando
               setTimeout(checkStatus, 6000);
             }
@@ -192,21 +225,24 @@ const HomePage: React.FC = () => {
             // Se ainda está em processamento, atualiza a mensagem de status
             const updatedNCM = [...sugerirNCM];
             for (const item of updatedNCM) {
-              if (item.validacao_deepresearch?.requestId === deepResearchRequestId) {
+              if (
+                item.validacao_deepresearch?.requestId === deepResearchRequestId
+              ) {
                 item.validacao_deepresearch = {
                   ...item.validacao_deepresearch,
-                  mensagem: response.data.currentAction || 'Análise em andamento...'
+                  mensagem:
+                    response.data.currentAction || "Análise em andamento...",
                 };
               }
             }
             setSugerirNCM(updatedNCM);
-            
+
             // Continua verificando
             setTimeout(checkStatus, 6000);
           }
         } catch (error) {
           console.error("Erro ao verificar status do DeepResearch:", error);
-          
+
           // Em caso de erro de rede, retenta após 10 segundos
           setTimeout(checkStatus, 10000);
         }
@@ -246,11 +282,11 @@ const HomePage: React.FC = () => {
     }
 
     setIsLoading(true);
-    
+
     // Se DeepResearch está ativado, já mostra o status de loading
     if (useDeepResearch) {
       setIsDeepResearchProcessing(true);
-      setDeepResearchRequestId('loading'); // Usamos um ID temporário para loading
+      setDeepResearchRequestId("loading"); // Usamos um ID temporário para loading
     }
 
     try {
@@ -264,7 +300,7 @@ const HomePage: React.FC = () => {
         consulta: consulta,
         autocomplete: autocomplete,
         modelo: modeloUsado,
-        useDeepResearch: useDeepResearch,
+        ...(useDeepResearch ? { useDeepResearch: true } : {}),
         ...dropdownSelection,
       };
 
@@ -273,20 +309,25 @@ const HomePage: React.FC = () => {
       response = await axiosInstance.post("/queries", requestData);
 
       console.log("Resposta do backend:", response.data);
-      
+
       // Se DeepResearch está ativado, verifica se há requestId na resposta
-      if (useDeepResearch && response.data && Array.isArray(response.data) && response.data.length > 0) {
+      if (
+        useDeepResearch &&
+        response.data &&
+        Array.isArray(response.data) &&
+        response.data.length > 0
+      ) {
         const hasDeepResearchPending = response.data.some(
-          (item: any) => item.validacao_deepresearch?.status === 'pendente'
+          (item: any) => item.validacao_deepresearch?.status === "pendente"
         );
-        
+
         if (hasDeepResearchPending) {
           setIsDeepResearchProcessing(true);
           // Pega o requestId do primeiro item que tiver
           const requestId = response.data.find(
             (item: any) => item.validacao_deepresearch?.requestId
           )?.validacao_deepresearch?.requestId;
-          
+
           if (requestId) {
             setDeepResearchRequestId(requestId);
             console.log("ID da tarefa DeepResearch:", requestId);
@@ -295,7 +336,7 @@ const HomePage: React.FC = () => {
           setIsDeepResearchProcessing(false);
           setDeepResearchRequestId(null);
         }
-        
+
         setSugerirNCM(response.data);
       } else if (response.data && Array.isArray(response.data)) {
         // Resposta normal sem DeepResearch
@@ -308,21 +349,25 @@ const HomePage: React.FC = () => {
       } else {
         // Resposta inesperada
         console.error("Resposta inesperada do servidor:", response.data);
-        setErrorMessage("Erro inesperado ao processar a consulta. Tente novamente.");
+        setErrorMessage(
+          "Erro inesperado ao processar a consulta. Tente novamente."
+        );
         setSugerirNCM([]);
       }
     } catch (error: any) {
       console.error("Erro ao buscar sugestões:", error);
-      
+
       // Mensagem de erro mais detalhada
       if (error.response && error.response.data && error.response.data.error) {
         setErrorMessage(`Erro: ${error.response.data.error}`);
       } else if (error.message === "Network Error") {
-        setErrorMessage("Erro de conexão. Verifique se o servidor está disponível.");
+        setErrorMessage(
+          "Erro de conexão. Verifique se o servidor está disponível."
+        );
       } else {
         setErrorMessage("Erro ao buscar informações. Tente novamente.");
       }
-      
+
       setIsDeepResearchProcessing(false);
       setDeepResearchRequestId(null);
       setSugerirNCM([]);
@@ -352,8 +397,11 @@ const HomePage: React.FC = () => {
 
   // Controla o estado do balão de Autocomplete
   const [showAutoComplete, setShowAutoComplete] = useState<Boolean>(false);
-  const [autoCompleteData, setAutoCompleteData] = useState<Array<AutocompleteType>>([]);
-  const [isAutocompleteLoading, setIsAutocompleteLoading] = useState<Boolean>(false);
+  const [autoCompleteData, setAutoCompleteData] = useState<
+    Array<AutocompleteType>
+  >([]);
+  const [isAutocompleteLoading, setIsAutocompleteLoading] =
+    useState<Boolean>(false);
 
   // Comportamento ao clicar em uma sugestão do autocomplete
   const handleAutocompleteClick = (value: AutocompleteType) => {
@@ -449,7 +497,10 @@ const HomePage: React.FC = () => {
                     <div className="flex-grow">
                       <DropdownMenu onSelectionChange={handleDropdownChange} />
                     </div>
-                    <div className="flex-shrink-0 ml-auto" style={{ minWidth: '180px' }}>
+                    <div
+                      className="flex-shrink-0 ml-auto"
+                      style={{ minWidth: "180px" }}
+                    >
                       <DeepResearchToggle
                         enabled={useDeepResearch}
                         onChange={setUseDeepResearch}
@@ -465,70 +516,137 @@ const HomePage: React.FC = () => {
             <div className="gap-4 space-y-4">
               {/* Indicador de DeepResearch em processamento */}
               {useDeepResearch && (isLoading || isDeepResearchProcessing) && (
-                <DeepResearchStatus 
-                  requestId={deepResearchRequestId || 'loading'}
+                <DeepResearchStatus
+                  requestId={deepResearchRequestId || "loading"}
                   productName={pesquisa}
                   ncmCode={sugerirNCM.length > 0 ? sugerirNCM[0].ncm : ""}
                 />
               )}
-              
+
               {/* Indicador de DeepResearch ativo (apenas quando não está processando) */}
-              {useDeepResearch && sugerirNCM.length > 0 && !isLoading && !isDeepResearchProcessing && (
-                <div className="px-4 py-2 bg-blue-900/30 border border-blue-700/50 rounded-md text-blue-200 font-medium text-sm flex items-center">
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                  Modo DeepResearch ativado
-                </div>
-              )}
-            
+              {useDeepResearch &&
+                sugerirNCM.length > 0 &&
+                !isLoading &&
+                !isDeepResearchProcessing && (
+                  <div className="px-4 py-2 bg-blue-900/30 border border-blue-700/50 rounded-md text-blue-200 font-medium text-sm flex items-center">
+                    <svg
+                      className="w-5 h-5 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                      />
+                    </svg>
+                    Modo DeepResearch ativado
+                  </div>
+                )}
+
               {sugerirNCM.map((item, index) => (
                 <div key={index} className="box-page">
                   {/* Resultado do DeepResearch se disponível */}
                   {useDeepResearch && item.validacao_deepresearch && (
-                    <div className={`px-4 py-3 mb-4 rounded-md text-sm font-medium flex items-start ${
-                      item.validacao_deepresearch.cor === 'verde' 
-                        ? 'bg-green-100 border border-green-300 text-green-800' 
-                        : item.validacao_deepresearch.cor === 'vermelho'
-                          ? 'bg-red-100 border border-red-300 text-red-800'
-                          : item.validacao_deepresearch.cor === 'amarelo'
-                            ? 'bg-yellow-100 border border-yellow-300 text-yellow-800'
-                            : 'bg-gray-100 border border-gray-300 text-gray-800'
-                    }`}>
+                    <div
+                      className={`px-4 py-3 mb-4 rounded-md text-sm font-medium flex items-start break-words whitespace-normal ${
+                        item.validacao_deepresearch.cor === "verde"
+                          ? "bg-green-100 border border-green-300 text-green-800"
+                          : item.validacao_deepresearch.cor === "vermelho"
+                          ? "bg-red-100 border border-red-300 text-red-800"
+                          : item.validacao_deepresearch.cor === "amarelo"
+                          ? "bg-yellow-100 border border-yellow-300 text-yellow-800"
+                          : "bg-gray-100 border border-gray-300 text-gray-800"
+                      }`}
+                    >
                       <div className="flex-shrink-0 mt-0.5">
-                        {item.validacao_deepresearch.cor === 'verde' && (
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        {item.validacao_deepresearch.cor === "verde" && (
+                          <svg
+                            className="w-5 h-5 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
                           </svg>
                         )}
-                        {item.validacao_deepresearch.cor === 'vermelho' && (
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        {item.validacao_deepresearch.cor === "vermelho" && (
+                          <svg
+                            className="w-5 h-5 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
                           </svg>
                         )}
-                        {item.validacao_deepresearch.cor === 'amarelo' && (
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        {item.validacao_deepresearch.cor === "amarelo" && (
+                          <svg
+                            className="w-5 h-5 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            />
                           </svg>
                         )}
-                        {item.validacao_deepresearch.cor === 'cinza' && (
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        {item.validacao_deepresearch.cor === "cinza" && (
+                          <svg
+                            className="w-5 h-5 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
                           </svg>
                         )}
                       </div>
-                      <div>
+                      <div className="flex-grow">
                         <div className="font-semibold mb-1">
-                          {item.validacao_deepresearch.status === 'confirmado' && 'NCM Confirmado por DeepResearch'}
-                          {item.validacao_deepresearch.status === 'negado' && 'NCM Contestado por DeepResearch'}
-                          {item.validacao_deepresearch.status === 'sugestao' && 'Sugestão Alternativa por DeepResearch'}
-                          {(item.validacao_deepresearch.status === 'erro' || item.validacao_deepresearch.status === 'timeout') && 'Validação DeepResearch Indisponível'}
+                          {item.validacao_deepresearch.status ===
+                            "confirmado" && "NCM Confirmado por DeepResearch"}
+                          {item.validacao_deepresearch.status === "negado" &&
+                            "NCM Contestado por DeepResearch"}
+                          {item.validacao_deepresearch.status === "sugestao" &&
+                            "Sugestão Alternativa por DeepResearch"}
+                          {(item.validacao_deepresearch.status === "erro" ||
+                            item.validacao_deepresearch.status === "timeout") &&
+                            "Validação DeepResearch Indisponível"}
                         </div>
-                        <p className="text-sm font-normal">{item.validacao_deepresearch.mensagem}</p>
+                        <p className="text-sm font-normal break-words whitespace-normal">
+                          {item.validacao_deepresearch.mensagem}
+                        </p>
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="box-page grid-container-inner">
                     <div className="page-item col-span-6 mobile-col-span-4 w-full">
                       {isLoading ? (

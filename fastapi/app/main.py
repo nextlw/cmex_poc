@@ -24,11 +24,12 @@ app = FastAPI(
 # Configurações de CORS - Permitindo TODOS os origens para teste
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Temporariamente permitindo qualquer origem
+    allow_origins=SETTINGS.BACKEND_CORS_ORIGINS,  # Usando as origens definidas nas configurações
     allow_credentials=True,
-    allow_methods=["*"],  # Permitindo todos os métodos
-    allow_headers=["*"],  # Permitindo todos os headers
-    expose_headers=["*"],
+    allow_methods=SETTINGS.CORS_ALLOW_METHODS,  # Usando os métodos definidos nas configurações
+    allow_headers=SETTINGS.CORS_ALLOW_HEADERS,  # Usando os headers definidos nas configurações
+    expose_headers=SETTINGS.CORS_EXPOSE_HEADERS,  # Usando os headers de exposição definidos nas configurações
+    max_age=SETTINGS.CORS_MAX_AGE,  # Usando o tempo máximo definido nas configurações
 )
 
 # Middleware para aumentar o timeout das respostas

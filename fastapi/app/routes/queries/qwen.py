@@ -14,7 +14,7 @@ async def obter_sugestoes_qwen(consulta_produto: ConsultaProduto):
     """Obtém sugestões de NCM usando o modelo Qwen local."""
     try:
         # Configuração do modelo
-        model_config = MODEL_MAPPING["Qwen"]
+        model_config = MODEL_MAPPING["qwen2.5-7b-instruct-1m"]
         
         # Preparação do prompt
         prompt = PROMPT_TEMPLATE(consulta_produto)
@@ -28,7 +28,7 @@ async def obter_sugestoes_qwen(consulta_produto: ConsultaProduto):
                     "messages": [
                         {
                             "role": "system",
-                            "content": "Você é um assistente especializado em classificação fiscal. Responda sempre em JSON válido seguindo exatamente a estrutura solicitada."
+                            "content": "Você é um assistente especializado em classificação fiscal. Responda sempre em JSON válido seguindo exatamente a estrutura solicitada. Não inclua texto adicional ou explicações fora do JSON."
                         },
                         {
                             "role": "user",

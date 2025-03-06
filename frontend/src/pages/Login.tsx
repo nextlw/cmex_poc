@@ -25,8 +25,6 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    
-    
     // Atualiza a sessão no contexto
     supabase.auth.getSession().then(({ data: { session } }) => {
       setLocalSession(session);
@@ -37,6 +35,26 @@ const Login = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setLocalSession(session);
       setSession(session);
+
+      // Se o usuário acabou de fazer login, limpa o localStorage
+      if (session) {
+        // Mantém apenas os dados essenciais
+        const essentialData = {
+          'sb-qrfxqaovpddcziulqflw-auth-token': localStorage.getItem('sb-qrfxqaovpddcziulqflw-auth-token'),
+          'theme': localStorage.getItem('theme')
+        };
+        
+        // Limpa todo o localStorage
+        localStorage.clear();
+        
+        // Restaura os dados essenciais
+        Object.entries(essentialData).forEach(([key, value]) => {
+          if (value) localStorage.setItem(key, value);
+        });
+
+        // Garante que o token da sessão atual seja salvo
+        localStorage.setItem('sb-qrfxqaovpddcziulqflw-auth-token', JSON.stringify(session));
+      }
     });
 
     // Limpa a inscrição quando o componente é desmontado

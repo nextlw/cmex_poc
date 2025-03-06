@@ -13,7 +13,6 @@ const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 // Função para ler o localStorage
 const loadAndValidateSession = async (): Promise<Session | null> => {
-
     // Chave do localStorage
     const localStorageKey = `sb-qrfxqaovpddcziulqflw-auth-token`
 
@@ -23,23 +22,35 @@ const loadAndValidateSession = async (): Promise<Session | null> => {
     // Caso encontre uma sessão, valida ela com o Supabase
     if (storedSession) {
         try {
-
             // Valida o token com o Supabase
             const session: Session = JSON.parse(storedSession);
             const { data, error } = await supabase.auth.getSession();
 
-            // Caso o token não seja válido, remove do localStorage
-            if (error || !data?.session || data.session.access_token !== session.access_token) {
-                localStorage.removeItem(localStorageKey);
-                return null;
+            // Se houver erro ou não houver sessão, tenta restaurar a sessão
+            if (error || !data?.session) {
+                const { data: { session: restoredSession }, error: restoreError } = 
+                    await supabase.auth.setSession({
+                        access_token: session.access_token,
+                        refresh_token: session.refresh_token
+                    });
+
+                if (restoreError || !restoredSession) {
+                    localStorage.removeItem(localStorageKey);
+                    return null;
+                }
+
+                return restoredSession;
             }
 
-            // Retorne a sessão se o token for válido
-            return session;
+            // Se a sessão atual é diferente da armazenada, atualiza o localStorage
+            if (data.session.access_token !== session.access_token) {
+                localStorage.setItem(localStorageKey, JSON.stringify(data.session));
+            }
+
+            return data.session;
             
         } catch (error) {
-
-            // Caso ocorra erro, remova o item do localStorage e retorne null
+            console.error('Erro ao validar sessão:', error);
             localStorage.removeItem(localStorageKey);
             return null;
         }
