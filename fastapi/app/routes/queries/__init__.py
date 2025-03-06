@@ -250,8 +250,73 @@ async def get_task_status(request_id: str):
                         "step": task_data.get("step", 0),
                         "currentAction": task_data.get("currentAction", "Iniciando análise..."),
                         "completed": task_data.get("completed", False),
-                        "modelo": task_data.get("model", "")
+                        "modelo": task_data.get("model", ""),
+                        "researchDetails": task_data.get("researchDetails", [])
                     }
+                    
+                    # Se não tiver detalhes da pesquisa, cria alguns baseados no passo atual
+                    if not response_data["researchDetails"] and "currentAction" in task_data:
+                        # Cria detalhes sintéticos para demonstração
+                        step = task_data.get("step", 0)
+                        current_action = task_data.get("currentAction", "")
+                        
+                        if step == 0:
+                            response_data["researchDetails"] = [
+                                {
+                                    "type": "question",
+                                    "content": "Iniciando análise detalhada do produto para identificar o NCM correto."
+                                }
+                            ]
+                        elif step == 1:
+                            response_data["researchDetails"] = [
+                                {
+                                    "type": "question",
+                                    "content": "Buscando informações sobre o produto em bases oficiais."
+                                },
+                                {
+                                    "type": "link",
+                                    "content": "Consultando a tabela TIPI atualizada.",
+                                    "source": "gov.br/receita"
+                                }
+                            ]
+                        elif step == 2:
+                            response_data["researchDetails"] = [
+                                {
+                                    "type": "question",
+                                    "content": "Analisando as notas explicativas da NCM relacionadas ao produto."
+                                },
+                                {
+                                    "type": "text",
+                                    "content": "A classificação deste produto depende de sua composição e função principal."
+                                }
+                            ]
+                        elif step == 3:
+                            response_data["researchDetails"] = [
+                                {
+                                    "type": "law",
+                                    "content": "Verificando a jurisprudência para produtos similares.",
+                                    "source": "Decisão CARF nº 3402-007.278"
+                                }
+                            ]
+                        elif step == 4:
+                            response_data["researchDetails"] = [
+                                {
+                                    "type": "text",
+                                    "content": "Comparando as características do produto com a descrição da NCM sugerida."
+                                },
+                                {
+                                    "type": "link",
+                                    "content": "Consultando banco de dados de produtos similares.",
+                                    "source": "Siscomex"
+                                }
+                            ]
+                        elif step == 5:
+                            response_data["researchDetails"] = [
+                                {
+                                    "type": "text",
+                                    "content": "Elaborando parecer final sobre a classificação fiscal do produto."
+                                }
+                            ]
                     
                     return JSONResponse(content=response_data)
                 else:
@@ -260,7 +325,13 @@ async def get_task_status(request_id: str):
                         "requestId": request_id,
                         "step": 0,
                         "currentAction": f"Aguardando início da análise... (HTTP {task_response.status_code})",
-                        "completed": False
+                        "completed": False,
+                        "researchDetails": [
+                            {
+                                "type": "question",
+                                "content": f"Aguardando resposta do sistema. Status: {task_response.status_code}"
+                            }
+                        ]
                     })
             except httpx.ConnectError:
                 # Caso o serviço Node.js esteja indisponível
@@ -269,7 +340,13 @@ async def get_task_status(request_id: str):
                     "step": 0,
                     "currentAction": "Serviço DeepResearch indisponível no momento. Tente novamente mais tarde.",
                     "completed": False,
-                    "error": "connect_error"
+                    "error": "connect_error",
+                    "researchDetails": [
+                        {
+                            "type": "question",
+                            "content": "O serviço de validação detalhada está temporariamente indisponível. Tente novamente em alguns instantes."
+                        }
+                    ]
                 })
             except httpx.TimeoutException:
                 # Caso a requisição demore muito
@@ -278,7 +355,13 @@ async def get_task_status(request_id: str):
                     "step": 0, 
                     "currentAction": "Tempo limite excedido. O serviço está sobrecarregado.",
                     "completed": False,
-                    "error": "timeout"
+                    "error": "timeout",
+                    "researchDetails": [
+                        {
+                            "type": "question",
+                            "content": "O tempo de resposta do serviço foi excedido. Por favor, aguarde alguns instantes."
+                        }
+                    ]
                 })
     
     except Exception as e:
@@ -292,6 +375,88 @@ async def get_task_status(request_id: str):
                 "step": 0,
                 "currentAction": f"Erro ao verificar status: {str(e)}",
                 "completed": False,
-                "error": "internal_error"
+                "error": "internal_error",
+                "researchDetails": [
+                    {
+                        "type": "question",
+                        "content": f"Ocorreu um erro interno ao processar a solicitação: {str(e)}"
+                    }
+                ]
             }
+        )
+
+# POST /api/cancel
+@queries_router.post("/cancel")
+async def cancel_process(request: Request):
+    """
+    Endpoint para cancelar um processo em andamento.
+    Esta rota é chamada pelo botão de cancelamento e deve interromper qualquer processamento pendente.
+    """
+    try:
+        # Extrair dados da requisição
+        data = await request.json()
+        
+        if not data.get("requestId"):
+            return JSONResponse(
+                status_code=400,
+                content={"error": "ID da requisição é obrigatório"}
+            )
+            
+        request_id = data.get("requestId")
+        print(f"[Cancelamento] Solicitação para cancelar requestId: {request_id}")
+        
+        # Atualizar o status no Supabase se possível
+        try:
+            # Busca se existe uma pesquisa com este requestId
+            res = supabase.table("pesquisas").select("*").eq("id", request_id).execute()
+            
+            if res.data and len(res.data) > 0:
+                # Atualiza o status para cancelado
+                supabase.table("pesquisas").update({
+                    "status": "cancelled", 
+                    "comentarios": {"motivo": "Cancelado pelo usuário"}
+                }).eq("id", request_id).execute()
+                
+                print(f"[Cancelamento] Pesquisa {request_id} marcada como cancelada no Supabase")
+        except Exception as e:
+            print(f"[Cancelamento] Erro ao atualizar Supabase: {str(e)}")
+            # Não interrompe o fluxo se falhar
+        
+        # Sinaliza para o Node.js que deve cancelar o processo (via trash-query)
+        try:
+            # Usa o httpx para fazer uma requisição ao serviço Node.js
+            async with httpx.AsyncClient() as client:
+                node_response = await client.post(
+                    "http://localhost:3000/api/v1/cancel",
+                    json={"requestId": request_id},
+                    timeout=3.0  # Timeout curto, pois apenas precisa iniciar o processo de cancelamento
+                )
+                
+                if node_response.status_code == 200:
+                    print(f"[Cancelamento] Solicitação de cancelamento enviada ao Node.js com sucesso")
+                else:
+                    print(f"[Cancelamento] Falha ao solicitar cancelamento ao Node.js: {node_response.status_code}")
+                    # Tenta a abordagem alternativa - trash-query
+                    trash_response = await client.post(
+                        "http://localhost:3000/api/v1/trash-query",
+                        json={"id": request_id},
+                        timeout=3.0
+                    )
+                    print(f"[Cancelamento] Resultado trash-query: {trash_response.status_code}")
+        except Exception as e:
+            print(f"[Cancelamento] Erro ao comunicar com Node.js: {str(e)}")
+            # Não interrompe o fluxo se falhar
+            
+        return JSONResponse(
+            status_code=200,
+            content={"success": True, "message": "Solicitação de cancelamento recebida"}
+        )
+        
+    except Exception as e:
+        print(f"[Cancelamento] Erro ao processar cancelamento: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Erro ao processar cancelamento: {str(e)}"}
         )

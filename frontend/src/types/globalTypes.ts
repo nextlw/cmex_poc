@@ -1,17 +1,17 @@
 /**
  * ARQUIVO CENTRALIZADO DE TIPOS DO FRONTEND
- * 
+ *
  * Este arquivo contém todos os tipos globais usados no frontend.
  * Anteriormente os tipos estavam espalhados em vários arquivos,
  * mas foram consolidados aqui para facilitar a manutenção.
- * 
+ *
  * Ao adicionar novos tipos globais, adicione-os a este arquivo.
  * Tipos específicos de componentes devem permanecer em seus
  * próprios arquivos junto aos componentes.
  */
 
-import { z } from 'zod';
-import { ReactNode, ChangeEvent, KeyboardEvent } from 'react';
+import { z } from "zod";
+import { ReactNode, ChangeEvent, KeyboardEvent } from "react";
 
 // Tipos básicos de referência
 export interface Reference {
@@ -56,39 +56,49 @@ export interface LogsResponse {
 // Schemas Zod para validação
 export const QueryResponseSchema = z.object({
   requestId: z.string(),
-  error: z.string().optional()
+  error: z.string().optional(),
 });
 
 export const SSEMessageSchema = z.object({
-  type: z.enum(['progress', 'answer', 'error', 'connected', 'status']),
-  data: z.object({
-    think: z.string().optional(),
-    answer: z.string().optional(),
-    references: z.array(z.object({
-      exactQuote: z.string(),
-      url: z.string()
-    })).optional(),
-    questionsToAnswer: z.array(z.string()).optional(),
-    status: z.enum(['error', 'completed', 'in_progress']).optional(),
-    reasoning: z.string().optional(),
-    urls: z.array(z.string()).optional()
-  }).optional(),
-  trackers: z.object({
-    tokenTracker: z.object({
-      usage: z.array(z.object({
-        tool: z.string(),
-        tokens: z.number()
-      })),
-      totalTokens: z.number()
-    }),
-    actionState: z.object({
-      think: z.string(),
-      action: z.string(),
-      searchQuery: z.string().optional(),
+  type: z.enum(["progress", "answer", "error", "connected", "status"]),
+  data: z
+    .object({
+      think: z.string().optional(),
+      answer: z.string().optional(),
+      references: z
+        .array(
+          z.object({
+            exactQuote: z.string(),
+            url: z.string(),
+          })
+        )
+        .optional(),
       questionsToAnswer: z.array(z.string()).optional(),
-      accumulatedReasoning: z.string().optional()
+      status: z.enum(["error", "completed", "in_progress"]).optional(),
+      reasoning: z.string().optional(),
+      urls: z.array(z.string()).optional(),
     })
-  }).optional()
+    .optional(),
+  trackers: z
+    .object({
+      tokenTracker: z.object({
+        usage: z.array(
+          z.object({
+            tool: z.string(),
+            tokens: z.number(),
+          })
+        ),
+        totalTokens: z.number(),
+      }),
+      actionState: z.object({
+        think: z.string(),
+        action: z.string(),
+        searchQuery: z.string().optional(),
+        questionsToAnswer: z.array(z.string()).optional(),
+        accumulatedReasoning: z.string().optional(),
+      }),
+    })
+    .optional(),
 });
 
 // Tipos de imposto
@@ -123,9 +133,15 @@ export interface ClassificacaoTributaria {
 }
 
 export interface ValidationDeepResearch {
-  status: 'confirmado' | 'negado' | 'sugestao' | 'erro' | 'timeout' | 'pendente';
+  status:
+    | "confirmado"
+    | "negado"
+    | "sugestao"
+    | "erro"
+    | "timeout"
+    | "pendente";
   mensagem: string;
-  cor: 'verde' | 'vermelho' | 'amarelo' | 'cinza';
+  cor: "verde" | "vermelho" | "amarelo" | "cinza";
   sugestao_original?: any;
 }
 
@@ -414,7 +430,7 @@ export interface QueryHistoryItem {
   id: string;
   question: string;
   timestamp: string;
-  status: 'success' | 'error' | 'in_progress';
+  status: "success" | "error" | "in_progress";
   answer?: string;
   model?: string;
-} 
+}

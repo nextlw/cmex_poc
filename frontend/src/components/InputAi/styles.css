@@ -198,12 +198,12 @@
   background-color: var(--color-background-dark);
   color: var(--color-text-primary);
   box-sizing: border-box;
-  padding: .5rem;
+  padding: 0.5rem;
   white-space: normal;
   word-break: break-word;
 }
 
 .autocomplete__item {
   width: 100%;
-  transition: .5s;
-} 
+  transition: 0.5s;
+}

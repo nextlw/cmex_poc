@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./styles.css";
 import { InputAiProps } from "./types";
 import Button from "../Button";
@@ -58,6 +58,7 @@ const InputAi: React.FC<InputAiProps> = ({
   const overlayRef = useRef<HTMLDivElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLElement>(null);
+  const [inputValue, setInputValue] = useState<string>("");
 
   useEffect(() => {
     // Objeto que mapeia os elementos e suas configurações de loading

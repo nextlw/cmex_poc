@@ -25,7 +25,7 @@ import {
   FiActivity,
   FiCompass,
   FiCheckCircle,
-  FiX
+  FiX,
 } from "react-icons/fi";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -62,7 +62,11 @@ const ActionIcon: React.FC<ActionIconProps> = ({ type }) => {
 
 const ActionStatus: React.FC<ActionStatusProps> = ({ status }) => {
   if (status === "completed") {
-    return <span className="action-status completed" data-testid="action-status">✓</span>;
+    return (
+      <span className="action-status completed" data-testid="action-status">
+        ✓
+      </span>
+    );
   }
   if (status === "processing") {
     return (
@@ -171,14 +175,14 @@ const ActionsList: React.FC<ActionListProps> = ({
 }) => {
   // Garante que actions é sempre um array válido
   const safeActions = Array.isArray(actions) ? actions : [];
-  
+
   // Verifica se startTime é uma data válida
   const isValidDate = startTime && !isNaN(new Date(startTime).getTime());
-  
+
   const elapsedTime = isValidDate
     ? formatDistanceToNow(new Date(startTime), { locale: ptBR })
     : "0";
-    
+
   const hasMultipleSteps =
     safeActions.filter((a) => a.status !== "waiting").length > 1;
   const mainSteps = safeActions.filter((action) =>
@@ -210,7 +214,7 @@ const ActionsList: React.FC<ActionListProps> = ({
           <div className="stat-item">
             <FiClock />
             <span>
-              {typeof elapsedTime === 'string' 
+              {typeof elapsedTime === "string"
                 ? elapsedTime.replace(" segundos", "").replace(" minutos", "m")
                 : "0s"}
             </span>
@@ -279,7 +283,9 @@ const ChatPage: React.FC = () => {
   const [urlCount, setUrlCount] = useState(0);
   const [defaultSteps, setDefaultSteps] = useState<ActionItem[]>(DEFAULT_STEPS);
   const [processingStep, setProcessingStep] = useState<string | null>(null);
-  const [currentSession, setCurrentSession] = useState<QuerySession | null>(null);
+  const [currentSession, setCurrentSession] = useState<QuerySession | null>(
+    null
+  );
   const [newQuery, setNewQuery] = useState<QueryHistoryItem | null>(null);
 
   // Sobrescrever console.log para capturar eventos
@@ -298,18 +304,20 @@ const ChatPage: React.FC = () => {
               {
                 type: "step",
                 content: `🔄 Progresso: ${
-                  eventData.trackers?.actionState?.think || 
-                  eventData.data?.think || 
+                  eventData.trackers?.actionState?.think ||
+                  eventData.data?.think ||
                   "Atualizando..."
                 }`,
                 isTyping: false,
                 data: {
-                  reasoning: eventData.trackers?.actionState?.accumulatedReasoning,
+                  reasoning:
+                    eventData.trackers?.actionState?.accumulatedReasoning,
                   searchQuery: eventData.trackers?.actionState?.searchQuery,
-                  questionsToAnswer: eventData.trackers?.actionState?.questionsToAnswer,
+                  questionsToAnswer:
+                    eventData.trackers?.actionState?.questionsToAnswer,
                   urls: eventData.trackers?.actionState?.urlsToVisit,
-                  outputs: eventData.outputs || []
-                }
+                  outputs: eventData.outputs || [],
+                },
               },
             ],
           }));
@@ -326,24 +334,25 @@ const ChatPage: React.FC = () => {
       eventSourceRef.current.close();
       eventSourceRef.current = null;
     }
-    
+
     // Limpar o localStorage
-    localStorage.removeItem('currentQueryId');
-    
+    localStorage.removeItem("currentQueryId");
+
     // Criar uma nova pesquisa padrão no histórico
     try {
-      const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
-      
+      const API_URL =
+        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+
       // Gerar um ID único para a nova pesquisa
       const newQueryId = `new-${Date.now()}`;
-      
+
       // Criar objeto de nova pesquisa
       const newQueryObj = {
         id: newQueryId,
         title: "Nova pesquisa",
         timestamp: new Date().toISOString(),
         status: "in_progress" as const,
-        question: ""
+        question: "",
       };
 
       // Salvar no backend
@@ -356,20 +365,20 @@ const ChatPage: React.FC = () => {
       });
 
       // Salvar o ID da consulta atual no localStorage
-      localStorage.setItem('currentQueryId', newQueryId);
-      
+      localStorage.setItem("currentQueryId", newQueryId);
+
       // Disparar um evento personalizado para notificar o componente QueryHistory
-      const customEvent = new CustomEvent('queryHistoryUpdated', { 
-        detail: { newQuery: newQueryObj } 
+      const customEvent = new CustomEvent("queryHistoryUpdated", {
+        detail: { newQuery: newQueryObj },
       });
       window.dispatchEvent(customEvent);
-      
+
       // Definir a nova query no estado para ser passada ao componente QueryHistory
       setNewQuery(newQueryObj);
     } catch (error) {
       console.error("Erro ao criar nova pesquisa:", error);
     }
-    
+
     // Reiniciar todos os estados
     setAgentState({
       question: "",
@@ -472,59 +481,82 @@ const ChatPage: React.FC = () => {
 
       try {
         // Verifica se o evento contém dados válidos antes de processar
-        if (!event.data || typeof event.data !== 'string' || event.data.trim() === '') {
+        if (
+          !event.data ||
+          typeof event.data !== "string" ||
+          event.data.trim() === ""
+        ) {
           console.warn("Evento recebido com dados vazios ou inválidos.");
           return;
         }
-        
+
         // Verifica se não é um HTML (resposta de erro)
-        if (event.data.trim().startsWith('<!DOCTYPE') || event.data.trim().startsWith('<html')) {
-          console.error("Recebido HTML em vez de JSON:", event.data.substring(0, 100) + "...");
-          
+        if (
+          event.data.trim().startsWith("<!DOCTYPE") ||
+          event.data.trim().startsWith("<html")
+        ) {
+          console.error(
+            "Recebido HTML em vez de JSON:",
+            event.data.substring(0, 100) + "..."
+          );
+
           setAgentState((prev) => ({
             ...prev,
             messages: [
               ...prev.messages,
               {
                 type: "error",
-                content: "❌ Erro de comunicação com o servidor. Tente novamente mais tarde.",
+                content:
+                  "❌ Erro de comunicação com o servidor. Tente novamente mais tarde.",
                 isTyping: false,
                 step: prev.messages.length + 1,
               },
             ],
           }));
-          
+
           return;
         }
 
         const rawData = JSON.parse(event.data);
         console.log("Dados brutos parseados:", rawData);
-        
+
         // Verificar se temos uma resposta direta com informações úteis antes de transformar
-        if (rawData.action === "reflect" || rawData.action === "search" || rawData.action === "visit") {
+        if (
+          rawData.action === "reflect" ||
+          rawData.action === "search" ||
+          rawData.action === "visit"
+        ) {
           // Processar diretamente o formato raw quando contiver informações úteis
           setAgentState((prev) => {
             const messages = [...prev.messages];
             let content = "";
-            
+
             if (rawData.action === "reflect") {
               content = `💭 Pensando: ${rawData.think || "..."}\n`;
-              
-              if (rawData.questionsToAnswer && Array.isArray(rawData.questionsToAnswer)) {
+
+              if (
+                rawData.questionsToAnswer &&
+                Array.isArray(rawData.questionsToAnswer)
+              ) {
                 content += "\n❓ Questões para investigar:\n";
                 rawData.questionsToAnswer.forEach((q: string) => {
                   content += `- ${q}\n`;
                 });
               }
             } else if (rawData.action === "search") {
-              content = `🔍 Buscando: "${rawData.query || rawData.searchQuery || "..."}"`;
+              content = `🔍 Buscando: "${
+                rawData.query || rawData.searchQuery || "..."
+              }"`;
             } else if (rawData.action === "visit") {
               content = `🌐 Visitando: ${rawData.url || "..."}\n`;
               if (rawData.content) {
-                content += `📄 Conteúdo: ${rawData.content.substring(0, 100)}...`;
+                content += `📄 Conteúdo: ${rawData.content.substring(
+                  0,
+                  100
+                )}...`;
               }
             }
-            
+
             messages.push({
               type: rawData.action,
               content: content,
@@ -532,16 +564,16 @@ const ChatPage: React.FC = () => {
               data: rawData,
               step: prev.messages.length + 1,
             });
-            
+
             return {
               ...prev,
-              messages: messages
+              messages: messages,
             };
           });
-          
+
           return; // Sair após processar diretamente
         }
-        
+
         // Aplicar o transformador para outros tipos de mensagens
         const data = transformStreamMessage(rawData);
         console.log("Dados transformados:", data);
@@ -552,10 +584,14 @@ const ChatPage: React.FC = () => {
           let messages = [...prev.messages];
 
           // Salva os dados brutos como um log para depuração se necessário
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NODE_ENV === "development") {
             messages.push({
               type: "log",
-              content: `Debug - Dados brutos SSE: ${JSON.stringify(data, null, 2)}`,
+              content: `Debug - Dados brutos SSE: ${JSON.stringify(
+                data,
+                null,
+                2
+              )}`,
               isTyping: false,
               step: prev.messages.length + 1,
             });
@@ -609,7 +645,7 @@ const ChatPage: React.FC = () => {
                 if (data.outputs && data.outputs.length > 0) {
                   content += "\n📋 Saídas adicionais:\n";
                   data.outputs.forEach((output: any, idx: number) => {
-                    content += `Output ${idx+1}: ${JSON.stringify(output)}\n`;
+                    content += `Output ${idx + 1}: ${JSON.stringify(output)}\n`;
                   });
                 }
 
@@ -621,41 +657,47 @@ const ChatPage: React.FC = () => {
                     reasoning: accumulatedReasoning,
                     urls: urlsToVisit,
                     outputs: data.outputs,
-                    trackers: data.trackers
+                    trackers: data.trackers,
                   },
                 });
               } else if (data.data) {
                 // Caso o actionState não esteja disponível, tenta usar os dados diretos
                 let content = "";
-                
+
                 // Tentar extrair informações úteis dos dados
                 if (typeof data.data === "object") {
                   if (data.data.think) content += `💭 ${data.data.think}\n`;
-                  if (data.data.query || data.data.searchQuery) 
-                    content += `🔍 Buscando: "${data.data.query || data.data.searchQuery}"\n`;
-                  if (data.data.questionsToAnswer && Array.isArray(data.data.questionsToAnswer)) {
+                  if (data.data.query || data.data.searchQuery)
+                    content += `🔍 Buscando: "${
+                      data.data.query || data.data.searchQuery
+                    }"\n`;
+                  if (
+                    data.data.questionsToAnswer &&
+                    Array.isArray(data.data.questionsToAnswer)
+                  ) {
                     content += "❓ Questões para investigar:\n";
                     data.data.questionsToAnswer.forEach((q: string) => {
                       content += `- ${q}\n`;
                     });
                   }
                 }
-                
+
                 // Se não conseguiu extrair nada útil, usa a mensagem genérica
                 if (!content.trim()) {
-                  content = typeof data.data === "string" 
-                    ? data.data 
-                    : `🔄 ${data.data.message || JSON.stringify(data.data)}`;
+                  content =
+                    typeof data.data === "string"
+                      ? data.data
+                      : `🔄 ${data.data.message || JSON.stringify(data.data)}`;
                 }
-                
+
                 addMessage({
                   type: "step",
                   content: content,
                   isTyping: false,
                   data: {
                     ...data.data,
-                    trackers: data.trackers
-                  }
+                    trackers: data.trackers,
+                  },
                 });
               }
               break;
@@ -669,7 +711,7 @@ const ChatPage: React.FC = () => {
                   data: {
                     reasoning: data.data.think,
                     references: data.data.references,
-                    trackers: data.trackers
+                    trackers: data.trackers,
                   },
                 });
               }
@@ -688,33 +730,52 @@ const ChatPage: React.FC = () => {
             case "visit":
               // Processar mensagens de outros tipos de ação
               let actionContent = "";
-              
-              if (data.type === "reflect" && data.data && typeof data.data === "object") {
-                if (data.data.think) actionContent += `💭 Pensando: ${data.data.think}\n`;
-                if (data.data.questionsToAnswer && Array.isArray(data.data.questionsToAnswer)) {
+
+              if (
+                data.type === "reflect" &&
+                data.data &&
+                typeof data.data === "object"
+              ) {
+                if (data.data.think)
+                  actionContent += `💭 Pensando: ${data.data.think}\n`;
+                if (
+                  data.data.questionsToAnswer &&
+                  Array.isArray(data.data.questionsToAnswer)
+                ) {
                   actionContent += "\n❓ Questões para investigar:\n";
                   data.data.questionsToAnswer.forEach((q: string) => {
                     actionContent += `- ${q}\n`;
                   });
                 }
-              } else if (data.type === "search" && data.data && typeof data.data === "object") {
-                actionContent = `🔍 Buscando: "${data.data.query || data.data.searchQuery || "..."}"`;
-              } else if (data.type === "visit" && data.data && typeof data.data === "object") {
+              } else if (
+                data.type === "search" &&
+                data.data &&
+                typeof data.data === "object"
+              ) {
+                actionContent = `🔍 Buscando: "${
+                  data.data.query || data.data.searchQuery || "..."
+                }"`;
+              } else if (
+                data.type === "visit" &&
+                data.data &&
+                typeof data.data === "object"
+              ) {
                 actionContent = `🌐 Visitando: ${data.data.url || "..."}\n`;
               } else {
-                actionContent = typeof data.data === "string" 
-                  ? data.data 
-                  : `🔍 ${data.data.message || JSON.stringify(data.data)}`;
+                actionContent =
+                  typeof data.data === "string"
+                    ? data.data
+                    : `🔍 ${data.data.message || JSON.stringify(data.data)}`;
               }
-              
+
               addMessage({
                 type: data.type,
                 content: actionContent,
                 isTyping: false,
                 data: {
                   ...data.data,
-                  trackers: data.trackers
-                }
+                  trackers: data.trackers,
+                },
               });
               break;
 
@@ -881,7 +942,7 @@ const ChatPage: React.FC = () => {
       const currentActions = [...actions];
       const currentUrlCount = urlCount;
       const currentStartTime = startTime;
-      
+
       const session: QuerySession = {
         id: requestId,
         question: inputValue,
@@ -905,7 +966,8 @@ const ChatPage: React.FC = () => {
         },
       };
 
-      const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+      const API_URL =
+        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
       const response = await fetch(`${API_URL}/api/v1/queries/${requestId}`, {
         method: "POST",
         headers: {
@@ -929,9 +991,12 @@ const ChatPage: React.FC = () => {
   // Função para carregar uma sessão de consulta existente
   const loadSession = async (requestId: string) => {
     try {
-      const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
-      const response = await fetch(`${API_URL}/api/v1/queries/${requestId}/session`);
-      
+      const API_URL =
+        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+      const response = await fetch(
+        `${API_URL}/api/v1/queries/${requestId}/session`
+      );
+
       if (!response.ok) {
         throw new Error(`Sessão não encontrada: ${response.statusText}`);
       }
@@ -940,37 +1005,37 @@ const ChatPage: React.FC = () => {
 
       // Validar dados essenciais da sessão
       if (!session || !session.id || !session.question) {
-        throw new Error('Dados da sessão inválidos ou incompletos');
+        throw new Error("Dados da sessão inválidos ou incompletos");
       }
 
       // Validar e processar os steps
       if (!Array.isArray(session.steps)) {
-        throw new Error('Formato inválido dos steps da sessão');
+        throw new Error("Formato inválido dos steps da sessão");
       }
 
       // Restaurar o estado do agente com validação
       setAgentState((prev) => ({
         ...prev,
         question: session.question,
-        messages: session.steps.map(step => ({
+        messages: session.steps.map((step) => ({
           type: step.type,
-          content: step.content || '',
+          content: step.content || "",
           isTyping: false,
           data: step.data || {},
-          step: step.id
-        }))
+          step: step.id,
+        })),
       }));
 
       // Restaurar o valor do input e interface
       setInputValue(session.question || "");
       setShowWelcome(false);
-      
+
       // Restaurar as ações com validação
       if (session.steps && session.steps.length > 0) {
         const validActions = session.steps
-          .filter(step => step.action && typeof step.action === 'object')
-          .map(step => step.action!);
-        
+          .filter((step) => step.action && typeof step.action === "object")
+          .map((step) => step.action!);
+
         if (validActions.length > 0) {
           setActions(validActions);
         }
@@ -978,19 +1043,19 @@ const ChatPage: React.FC = () => {
 
       // Restaurar os metadados com validação
       if (session.metadata) {
-        if (typeof session.metadata.urlCount === 'number') {
+        if (typeof session.metadata.urlCount === "number") {
           setUrlCount(session.metadata.urlCount);
         }
-        
+
         if (session.metadata.elapsedTime) {
           try {
             const now = new Date();
-            const elapsed = session.metadata.elapsedTime.replace(/[^0-9]/g, '');
+            const elapsed = session.metadata.elapsedTime.replace(/[^0-9]/g, "");
             const elapsedMs = parseInt(elapsed) * 60 * 1000;
             const startTimeDate = new Date(now.getTime() - elapsedMs);
             setStartTime(startTimeDate);
           } catch (error) {
-            console.error('Erro ao processar tempo decorrido:', error);
+            console.error("Erro ao processar tempo decorrido:", error);
           }
         }
       }
@@ -999,12 +1064,12 @@ const ChatPage: React.FC = () => {
       if (session.status === "in_progress") {
         await startEventStream(requestId);
       }
-      
+
       return true;
     } catch (error) {
-      console.error('Erro ao carregar sessão:', error);
+      console.error("Erro ao carregar sessão:", error);
       // Limpar o localStorage se a sessão não foi encontrada
-      localStorage.removeItem('currentQueryId');
+      localStorage.removeItem("currentQueryId");
       return false;
     }
   };
@@ -1038,20 +1103,20 @@ const ChatPage: React.FC = () => {
     try {
       // Sempre criar uma nova query
       const requestId = await sendQuestion(inputValue);
-      
+
       if (requestId) {
         // Salva o ID da consulta atual no localStorage
-        localStorage.setItem('currentQueryId', requestId);
-        
+        localStorage.setItem("currentQueryId", requestId);
+
         await saveSession(requestId); // Salva a sessão inicial
         await startEventStream(requestId);
         setInputValue("");
         setShowWelcome(false);
       } else {
-        throw new Error('Falha ao criar nova query');
+        throw new Error("Falha ao criar nova query");
       }
     } catch (error) {
-      console.error('Erro ao processar query:', error);
+      console.error("Erro ao processar query:", error);
       setIsLoading(false);
       // Adicionar notificação de erro ao usuário aqui se necessário
     }
@@ -1116,7 +1181,7 @@ const ChatPage: React.FC = () => {
     const totalActions = [...defaultSteps, ...actions].filter(
       (action) => action.status !== "waiting"
     ).length;
-    
+
     if (totalActions > 0) {
       setActiveActionIndex(totalActions - 1);
     }
@@ -1126,7 +1191,9 @@ const ChatPage: React.FC = () => {
   useEffect(() => {
     if (agentState.messages.length > 0) {
       // Encontra o último elemento de mensagem
-      const lastMessageElement = document.querySelector(`[data-message-id="message-${agentState.messages.length}"]`);
+      const lastMessageElement = document.querySelector(
+        `[data-message-id="message-${agentState.messages.length}"]`
+      );
       if (lastMessageElement) {
         lastMessageElement.scrollIntoView({ behavior: "smooth", block: "end" });
       }
@@ -1142,27 +1209,28 @@ const ChatPage: React.FC = () => {
 
   // Efeito para verificar e restaurar uma sessão em andamento
   useEffect(() => {
-    const currentQueryId = localStorage.getItem('currentQueryId');
+    const currentQueryId = localStorage.getItem("currentQueryId");
     if (currentQueryId) {
-      console.log('Restaurando sessão:', currentQueryId);
+      console.log("Restaurando sessão:", currentQueryId);
       // Indicar que está carregando enquanto restaura a sessão
       setIsLoading(true);
-      
+
       // Tentar carregar a sessão do servidor
-      loadSession(currentQueryId).then(success => {
+      loadSession(currentQueryId).then((success) => {
         if (success) {
           // Adicionar mensagem informando sobre a restauração da sessão
-          setAgentState(prev => ({
+          setAgentState((prev) => ({
             ...prev,
             messages: [
               ...prev.messages,
               {
                 type: "connected",
-                content: "🔄 Sessão restaurada automaticamente. Continuando de onde parou.",
+                content:
+                  "🔄 Sessão restaurada automaticamente. Continuando de onde parou.",
                 isTyping: false,
                 step: prev.messages.length + 1,
-              }
-            ]
+              },
+            ],
           }));
         } else {
           // Se não foi possível restaurar a sessão, limpar o estado
@@ -1176,14 +1244,14 @@ const ChatPage: React.FC = () => {
   // Adicionar um useEffect para criar uma nova pesquisa quando a página carregar
   useEffect(() => {
     const createDefaultQuery = async () => {
-      const currentQueryId = localStorage.getItem('currentQueryId');
-      
+      const currentQueryId = localStorage.getItem("currentQueryId");
+
       // Se não houver consulta atual no localStorage, criar uma nova
       if (!currentQueryId) {
         handleClear();
       }
     };
-    
+
     createDefaultQuery();
   }, []); // Executar apenas uma vez na montagem do componente
 
@@ -1196,37 +1264,75 @@ const ChatPage: React.FC = () => {
     }
 
     // Obtém o ID da consulta atual do localStorage
-    const currentQueryId = localStorage.getItem('currentQueryId');
-    
+    const currentQueryId = localStorage.getItem("currentQueryId");
+
     if (currentQueryId) {
       try {
-        // Primeiro tenta usar a rota trash-query para remover completamente a consulta
-        const trashResponse = await fetch(`${import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000"}/api/v1/trash-query`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ id: currentQueryId }),
-        });
-        
-        // Se a rota trash-query falhar, atualiza o status para cancelled
-        if (!trashResponse.ok) {
-          console.log('Falha ao excluir a consulta, atualizando status para cancelled');
-          await fetch(`${import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000"}/api/v1/queries/${currentQueryId}`, {
-            method: 'PATCH',
+        const API_URL =
+          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+        const API_FASTAPI =
+          import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+
+        // Tenta cancelar via FastAPI primeiro, para interromper qualquer processamento no backend Python
+        try {
+          await fetch(`${API_FASTAPI}/cancel`, {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Adiciona token se autenticado
             },
-            body: JSON.stringify({
-              status: 'cancelled',
-              cancelledAt: new Date().toISOString(),
-            }),
+            body: JSON.stringify({ requestId: currentQueryId }),
           });
+          console.log("Solicitação de cancelamento enviada ao FastAPI");
+        } catch (error) {
+          console.error("Erro ao cancelar via FastAPI:", error);
+        }
+
+        // Depois tenta usar a rota de cancelamento direta do serviço Node.js
+        const cancelResponse = await fetch(`${API_URL}/api/v1/cancel`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ requestId: currentQueryId }),
+        });
+
+        if (cancelResponse.ok) {
+          console.log("Pesquisa cancelada com sucesso no Node.js");
         } else {
-          console.log('Consulta movida para a lixeira com sucesso');
+          // Se a rota de cancelamento falhar, tenta mover para a lixeira
+          console.log(
+            "Falha ao cancelar a consulta, tentando outras abordagens"
+          );
+          const trashResponse = await fetch(`${API_URL}/api/v1/trash-query`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: currentQueryId }),
+          });
+
+          // Se a rota trash-query falhar, atualiza o status para cancelled
+          if (!trashResponse.ok) {
+            console.log(
+              "Falha ao excluir a consulta, atualizando status para cancelled"
+            );
+            await fetch(`${API_URL}/api/v1/queries/${currentQueryId}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                status: "cancelled",
+                cancelledAt: new Date().toISOString(),
+              }),
+            });
+          } else {
+            console.log("Consulta movida para a lixeira com sucesso");
+          }
         }
       } catch (error) {
-        console.error('Erro ao cancelar a consulta:', error);
+        console.error("Erro ao cancelar a consulta:", error);
       }
     }
 
@@ -1236,17 +1342,15 @@ const ChatPage: React.FC = () => {
       messages: [
         ...prev.messages,
         {
-          type: 'error',
-          content: 'A pesquisa foi cancelada pelo usuário.',
+          type: "error",
+          content: "A pesquisa foi cancelada pelo usuário.",
           timestamp: new Date().toISOString(),
         },
       ],
     }));
 
-    // Atualiza os estados
+    // Marca como não carregando mais
     setIsLoading(false);
-    setDefaultSteps([]);
-    setProcessingStep('');
   };
 
   return (
@@ -1323,16 +1427,14 @@ const ChatPage: React.FC = () => {
               onClickOutside={() => {}}
             />
           </div>
-          
+
           {/* Título da pergunta atual */}
           {agentState.question && !showWelcome && (
             <div className="query-title-container">
-              <h1 className="query-title">
-                {agentState.question}
-              </h1>
+              <h1 className="query-title">{agentState.question}</h1>
               {isLoading && (
-                <button 
-                  className="cancel-search-button" 
+                <button
+                  className="cancel-search-button"
                   onClick={handleCancelSearch}
                   title="Cancelar esta pesquisa"
                 >
@@ -1341,11 +1443,15 @@ const ChatPage: React.FC = () => {
               )}
             </div>
           )}
-          
+
           <div className="chat-content">
             <div className="chat-messages" data-testid="chat-messages">
               <ActionsList
-                actions={actions && actions.length ? [...defaultSteps, ...actions] : defaultSteps}
+                actions={
+                  actions && actions.length
+                    ? [...defaultSteps, ...actions]
+                    : defaultSteps
+                }
                 onActionClick={handleActionClick}
                 startTime={startTime}
                 urlCount={urlCount}
@@ -1360,7 +1466,9 @@ const ChatPage: React.FC = () => {
                 )}
                 {!showWelcome && agentState.messages.length === 0 && (
                   <div className="empty-state-message">
-                    <p>Nenhuma mensagem para exibir. Tente fazer uma pergunta.</p>
+                    <p>
+                      Nenhuma mensagem para exibir. Tente fazer uma pergunta.
+                    </p>
                   </div>
                 )}
                 {processingStep && (

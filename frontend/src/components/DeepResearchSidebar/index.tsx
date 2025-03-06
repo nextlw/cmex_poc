@@ -1,0 +1,1410 @@
+import React, { useState, useEffect, useRef } from "react";
+import api from "../../axiosConfig";
+import "./styles.css";
+
+interface DeepResearchSidebarProps {
+  isOpen: boolean;
+  requestId: string | null;
+  productName: string;
+  ncmCode?: string;
+  isProcessing?: boolean; // Indica se está em processamento (para sincronizar com o InputAI)
+  onCancelRequest?: () => void; // Callback para cancelar a consulta
+}
+
+interface ResearchStep {
+  id: number;
+  title: string;
+  content: string;
+  status: "waiting" | "processing" | "completed" | "error";
+  details?: ResearchDetail[];
+  iterations?: number;
+  minimized?: boolean;
+  hidden?: boolean;
+}
+
+interface ResearchDetail {
+  type: "link" | "text" | "law" | "question";
+  content: string;
+  source?: string;
+  timestamp: Date;
+}
+
+interface ValidationResult {
+  isValid: boolean;
+  suggestedNCM?: string;
+  originalNCM: string;
+  reason?: string;
+}
+
+// Interface para o relatório final
+interface FinalReport {
+  conclusion: string;
+  evidences: Array<{
+    source: string;
+    content: string;
+    type: "law" | "jurisprudence" | "technical" | "example";
+  }>;
+  alternativeCases: Array<{
+    scenario: string;
+    impact: string;
+    suggestedNCM?: string;
+  }>;
+  ncmCode: string;
+  ncmDescription: string;
+  taxationDetails?: {
+    ipi?: string;
+    icms?: string;
+    pis?: string;
+    cofins?: string;
+    importTax?: string;
+  };
+  attributes?: Record<string, string>;
+}
+
+// Mensagens pré-definidas para cada etapa do processo
+const PROGRESS_MESSAGES = [
+  "Iniciando análise avançada com IA...",
+  "Buscando dados sobre {produto} em fontes oficiais e bases governamentais...",
+  "Consultando legislação e tabelas TIPI para NCM {ncm}...",
+  "Analisando regulamentações específicas e notas explicativas...",
+  "Verificando jurisprudência e decisões administrativas relacionadas...",
+  "Validando classificação com base em critérios técnicos...",
+  "Finalizando análise e preparando parecer detalhado...",
+];
+
+/**
+ * Componente de sidebar para exibir a análise detalhada do DeepResearch
+ *
+ * @param props Propriedades do componente
+ * @returns Componente JSX
+ */
+const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
+  isOpen,
+  requestId,
+  productName,
+  ncmCode = "",
+  isProcessing,
+  onCancelRequest,
+}) => {
+  const [steps, setSteps] = useState<ResearchStep[]>([
+    {
+      id: 1,
+      title: "Iniciando pesquisa",
+      content: "Preparando análise detalhada do produto",
+      status: "waiting",
+      iterations: 0,
+      minimized: true,
+      hidden: false,
+    },
+    {
+      id: 2,
+      title: "Pesquisa de fontes oficiais",
+      content: "Buscando informações em bases governamentais",
+      status: "waiting",
+      iterations: 0,
+      minimized: true,
+      hidden: false,
+    },
+    {
+      id: 3,
+      title: "Consulta à legislação",
+      content: "Verificando notas explicativas da NCM",
+      status: "waiting",
+      iterations: 0,
+      minimized: true,
+      hidden: false,
+    },
+    {
+      id: 4,
+      title: "Análise de jurisprudência",
+      content: "Buscando decisões administrativas relacionadas",
+      status: "waiting",
+      iterations: 0,
+      minimized: true,
+      hidden: false,
+    },
+    {
+      id: 5,
+      title: "Validação técnica",
+      content: "Comparando características do produto com a classificação",
+      status: "waiting",
+      iterations: 0,
+      minimized: true,
+      hidden: false,
+    },
+    {
+      id: 6,
+      title: "Conclusão",
+      content: "Finalizando análise e preparando parecer",
+      status: "waiting",
+      iterations: 0,
+      minimized: true,
+      hidden: false,
+    },
+  ]);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [prevStepIndex, setPrevStepIndex] = useState(-1);
+  const [validationResult, setValidationResult] =
+    useState<ValidationResult | null>(null);
+  const [sidebarStatus, setSidebarStatus] = useState<
+    "empty" | "processing" | "completed" | "error" | null
+  >("empty"); // Adicionado estado "empty" para o estado inicial
+  const [statusMessage, setStatusMessage] = useState(PROGRESS_MESSAGES[0]);
+  const [researchInfo, setResearchInfo] = useState<ResearchDetail[]>([]);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const stepsContainerRef = useRef<HTMLUListElement>(null);
+
+  // Estado para controlar a visibilidade do relatório vs passos
+  const [showDetailedSteps, setShowDetailedSteps] = useState(false);
+
+  // Estado para o relatório final
+  const [finalReport, setFinalReport] = useState<FinalReport | null>(null);
+
+  // Efeito para sincronizar o estado de processamento com o InputAI
+  useEffect(() => {
+    if (isProcessing) {
+      setSidebarStatus("processing");
+    } else if (!isProcessing && !requestId) {
+      setSidebarStatus("empty");
+    }
+  }, [isProcessing, requestId]);
+
+  // Limpa o controlador de abort quando o componente é desmontado ou quando requestId muda
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+    };
+  }, [requestId]);
+
+  // Efeito para verificar o status da tarefa quando o requestId muda
+  useEffect(() => {
+    if (!requestId) {
+      // Caso não tenhamos um requestId, mostramos o estado vazio
+      setSidebarStatus("empty");
+      return;
+    }
+
+    // Se estiver no estado inicial/loading
+    if (requestId === "loading") {
+      setStatusMessage("Iniciando análise avançada com IA...");
+      setCurrentStepIndex(0);
+
+      // Garante que apenas o primeiro passo esteja expandido (se estiver ativo)
+      const updatedSteps = [...steps];
+      updatedSteps.forEach((step, index) => {
+        // O primeiro passo só será expandido se estiver ativo
+        step.minimized = index !== 0;
+      });
+      setSteps(updatedSteps);
+
+      setResearchInfo([
+        {
+          type: "question",
+          content: `Iniciando análise detalhada do produto: ${productName}`,
+          timestamp: new Date(),
+        },
+      ]);
+      return;
+    }
+
+    let isMounted = true;
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    const checkStatus = async () => {
+      try {
+        // Verifica se há token no localStorage
+        const session = localStorage.getItem(
+          "sb-qrfxqaovpddcziulqflw-auth-token"
+        );
+        if (!session) {
+          throw new Error("Sessão não encontrada");
+        }
+
+        const response = await api.get(`/task-status/${requestId}`, {
+          signal: controller.signal,
+          headers: {
+            Authorization: `Bearer ${JSON.parse(session).access_token}`,
+          },
+        });
+
+        if (isMounted && response.data) {
+          setHasError(false);
+          const stepIndex =
+            response.data.step !== undefined ? response.data.step : 0;
+          const step = Math.min(stepIndex, PROGRESS_MESSAGES.length - 1);
+
+          // Se o passo mudou, minimiza os passos anteriores
+          if (step > currentStepIndex) {
+            const updatedSteps = [...steps];
+            // Minimiza todos os passos anteriores
+            for (let i = 0; i < step; i++) {
+              updatedSteps[i].minimized = true;
+            }
+            setSteps(updatedSteps);
+          }
+
+          setCurrentStepIndex(step);
+
+          // Atualiza a mensagem principal
+          if (response.data.currentAction) {
+            setStatusMessage(response.data.currentAction);
+          } else {
+            let message = PROGRESS_MESSAGES[step]
+              .replace("{produto}", productName)
+              .replace("{ncm}", ncmCode);
+            setStatusMessage(message);
+          }
+
+          // Atualiza o status dos passos
+          if (step > 0) {
+            const updatedSteps = [...steps];
+            // Todos os passos anteriores estão completos
+            for (let i = 0; i < step; i++) {
+              updatedSteps[i].status = "completed";
+              updatedSteps[i].minimized = true; // Sempre minimiza passos anteriores
+            }
+            // O passo atual está em processamento
+            updatedSteps[step].status = "processing";
+            updatedSteps[step].minimized = false; // Garante que o passo atual está expandido
+
+            // Garante que todos os passos futuros também estão minimizados
+            for (let i = step + 1; i < updatedSteps.length; i++) {
+              updatedSteps[i].minimized = true;
+            }
+
+            // Atualiza o conteúdo do passo atual com a mensagem de status
+            updatedSteps[step].content = statusMessage;
+
+            // Adiciona os detalhes da pesquisa ao passo atual
+            if (
+              response.data.researchDetails &&
+              response.data.researchDetails.length > 0
+            ) {
+              const newDetails = response.data.researchDetails.map(
+                (detail: any) => ({
+                  type: detail.type,
+                  content: detail.content,
+                  source: detail.source,
+                  timestamp: new Date(),
+                })
+              );
+
+              // Adiciona os novos detalhes apenas se não existirem já
+              if (!updatedSteps[step].details) {
+                updatedSteps[step].details = newDetails;
+              } else {
+                // Verifica se já temos esses detalhes para evitar duplicação
+                const existingContents =
+                  updatedSteps[step].details?.map((d) => d.content) || [];
+                const uniqueNewDetails = newDetails.filter(
+                  (detail: ResearchDetail) =>
+                    !existingContents.includes(detail.content)
+                );
+
+                if (uniqueNewDetails.length > 0) {
+                  updatedSteps[step].details = [
+                    ...(updatedSteps[step].details || []),
+                    ...uniqueNewDetails,
+                  ];
+                }
+
+                // Incrementa a iteração apenas quando novos detalhes são adicionados
+                if (uniqueNewDetails.length > 0) {
+                  updatedSteps[step].iterations =
+                    (updatedSteps[step].iterations || 0) + 1;
+                }
+              }
+            }
+
+            setSteps(updatedSteps);
+          }
+
+          // Adiciona novas informações de pesquisa se disponíveis
+          if (response.data.researchDetails) {
+            const newDetails = response.data.researchDetails.map(
+              (detail: any) => ({
+                type: detail.type,
+                content: detail.content,
+                source: detail.source,
+                timestamp: new Date(),
+              })
+            );
+
+            // Verifica se já temos esses detalhes para evitar duplicação
+            const existingContents = researchInfo.map((info) => info.content);
+            const uniqueNewDetails = newDetails.filter(
+              (detail: ResearchDetail) =>
+                !existingContents.includes(detail.content)
+            );
+
+            if (uniqueNewDetails.length > 0) {
+              setResearchInfo((prevInfo) => [...prevInfo, ...uniqueNewDetails]);
+            }
+          }
+
+          if (!response.data.completed) {
+            setSidebarStatus("processing");
+            setTimeout(checkStatus, 2000);
+          } else {
+            setSidebarStatus("completed");
+            setIsLoading(false);
+
+            // Se completou, expande a última etapa e minimiza todas as outras
+            const finalStepIndex = step;
+            const finalUpdatedSteps = [...steps];
+
+            finalUpdatedSteps.forEach((s, idx) => {
+              s.minimized = idx !== finalStepIndex;
+              s.status = idx <= finalStepIndex ? "completed" : "waiting";
+            });
+
+            setSteps(finalUpdatedSteps);
+
+            // Gerar relatório final com as informações coletadas
+            const detailsCollected = researchInfo.filter(
+              (info) => info.type !== "question"
+            );
+
+            // Exemplo de construção do relatório final
+            const report: FinalReport = {
+              conclusion: `Após análise detalhada, concluímos que o produto "${productName}" está corretamente classificado com o NCM ${
+                response.data.finalNcm || ncmCode
+              }.`,
+              evidences: detailsCollected
+                .filter((detail) => detail.source && detail.content)
+                .map((detail) => ({
+                  source: detail.source || "Fonte não especificada",
+                  content: detail.content,
+                  type:
+                    detail.content.includes("Lei") ||
+                    detail.content.includes("Decreto")
+                      ? "law"
+                      : detail.content.includes("tribunal") ||
+                        detail.content.includes("decisão")
+                      ? "jurisprudence"
+                      : "technical",
+                })),
+              alternativeCases: [
+                {
+                  scenario:
+                    "Se o produto tiver funcionalidade principal distinta",
+                  impact:
+                    "A classificação poderia mudar para outro capítulo da NCM",
+                  suggestedNCM: response.data.alternativeNcm || undefined,
+                },
+                {
+                  scenario:
+                    "Se o produto apresentar composição material diferente",
+                  impact:
+                    "Poderia haver alteração na alíquota tributária aplicável",
+                },
+              ],
+              ncmCode: response.data.finalNcm || ncmCode,
+              ncmDescription:
+                response.data.ncmDescription || "Descrição não disponível",
+              taxationDetails: response.data.taxationDetails || {
+                ipi: "Conforme tabela TIPI",
+                icms: "Conforme regulamentação estadual",
+                pis: "Regime normal",
+                cofins: "Regime normal",
+                importTax: "Consultar tabela vigente",
+              },
+              attributes: response.data.attributes || {},
+            };
+
+            setFinalReport(report);
+            // Inicialmente, mostra o resumo (não os passos detalhados)
+            setShowDetailedSteps(false);
+          }
+        }
+      } catch (error: any) {
+        console.error("Erro ao verificar status da tarefa:", error);
+
+        // Se for erro de autenticação, tenta recarregar a página
+        if (error.response?.status === 401) {
+          setHasError(true);
+          setSidebarStatus("error");
+          setStatusMessage("Erro de autenticação. Tentando reconectar...");
+          // Aguarda 5 segundos antes de tentar novamente
+          setTimeout(checkStatus, 5000);
+        } else if (isMounted) {
+          setHasError(true);
+          setSidebarStatus("error");
+          setStatusMessage("Erro ao verificar status. Tentando novamente...");
+          setTimeout(checkStatus, 3000);
+        }
+      }
+    };
+
+    checkStatus();
+
+    return () => {
+      isMounted = false;
+      if (controller) controller.abort();
+    };
+  }, [requestId, productName, ncmCode, steps]);
+
+  // Função de cancelamento
+  const handleCancelRequest = () => {
+    // Aborta qualquer requisição em andamento
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Chama o endpoint de cancelamento se tivermos um requestId
+    if (requestId) {
+      const API_URL =
+        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+
+      fetch(`${API_URL}/api/v1/cancel`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ requestId }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log(`Requisição cancelada com sucesso: ${requestId}`);
+          } else {
+            console.error(`Falha ao cancelar requisição: ${requestId}`);
+          }
+        })
+        .catch((error) => {
+          console.error(`Erro ao cancelar requisição: ${error}`);
+        });
+    }
+
+    // Chama o callback de cancelamento (se fornecido)
+    if (onCancelRequest) {
+      onCancelRequest();
+    }
+  };
+
+  // Renderiza o estado vazio (empty state)
+  const renderEmptyState = () => (
+    <div className="deep-research-empty-state">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
+        <path d="M11 8a1 1 0 0 1 2 0v4a1 1 0 0 1-2 0V8z" />
+        <path d="M11 16a1 1 0 1 1 2 0 1 1 0 0 1-2 0z" />
+      </svg>
+      <h3>Pesquisa Profunda</h3>
+      <p>
+        A análise aprofundada validará as informações em fontes oficiais e bases
+        governamentais para garantir a precisão da classificação.
+      </p>
+    </div>
+  );
+
+  // Efeito para ajustar o conteúdo baseado no espaço disponível
+  useEffect(() => {
+    if (!isOpen || !sidebarRef.current || !stepsContainerRef.current) return;
+
+    const checkAndAdjustContent = () => {
+      const sidebarHeight = sidebarRef.current?.clientHeight || 0;
+      const headerHeight =
+        sidebarRef.current?.querySelector(".deep-research-sidebar-header")
+          ?.clientHeight || 0;
+      const contentMaxHeight = sidebarHeight - headerHeight - 40; // 40px para margem de segurança
+
+      const stepsContainer = stepsContainerRef.current;
+      if (!stepsContainer) return;
+
+      // Clonar os passos para trabalhar
+      const updatedSteps = [...steps];
+      let minimizedCount = 0;
+      let hiddenCount = 0;
+      let needsAdjustment = stepsContainer.scrollHeight > contentMaxHeight;
+
+      if (needsAdjustment) {
+        // Começamos minimizando os passos completos mais antigos
+        for (let i = 0; i < currentStepIndex && needsAdjustment; i++) {
+          if (
+            updatedSteps[i].status === "completed" &&
+            !updatedSteps[i].minimized
+          ) {
+            updatedSteps[i].minimized = true;
+            minimizedCount++;
+
+            // Verificar se ainda precisa de ajuste após minimizar
+            const wouldBeHeight = calculateHeightAfterAdjustment(updatedSteps);
+            needsAdjustment = wouldBeHeight > contentMaxHeight;
+          }
+        }
+
+        // Se ainda precisar de ajuste, começar a esconder os mais antigos
+        if (needsAdjustment) {
+          for (let i = 0; i < currentStepIndex - 1 && needsAdjustment; i++) {
+            if (!updatedSteps[i].hidden) {
+              updatedSteps[i].hidden = true;
+              hiddenCount++;
+
+              // Verificar se ainda precisa de ajuste após esconder
+              const wouldBeHeight =
+                calculateHeightAfterAdjustment(updatedSteps);
+              needsAdjustment = wouldBeHeight > contentMaxHeight;
+            }
+          }
+        }
+
+        // Atualizar os passos se fizemos alguma alteração
+        if (minimizedCount > 0 || hiddenCount > 0) {
+          setSteps(updatedSteps);
+        }
+      } else {
+        // Agora, só restauramos a visibilidade dos itens, não expandimos automaticamente
+        // já que queremos seguir a regra de apenas um expandido por vez
+        let anyRestored = false;
+
+        // Só tentamos mostrar itens ocultos, sem expandir
+        for (let i = currentStepIndex - 2; i >= 0; i--) {
+          if (updatedSteps[i].hidden) {
+            // Testar se remover o hidden causaria overflow
+            const testSteps = [...updatedSteps];
+            testSteps[i].hidden = false;
+            // Mantemos ele minimizado
+            testSteps[i].minimized = true;
+
+            const wouldBeHeight = calculateHeightAfterAdjustment(testSteps);
+            if (wouldBeHeight <= contentMaxHeight) {
+              updatedSteps[i].hidden = false;
+              // Mantemos ele minimizado
+              updatedSteps[i].minimized = true;
+              anyRestored = true;
+            } else {
+              break; // Se não couber, não tente mais
+            }
+          }
+        }
+
+        // Atualizar os passos se restauramos algum
+        if (anyRestored) {
+          setSteps(updatedSteps);
+        }
+      }
+    };
+
+    // Função auxiliar para estimar a altura após ajustes
+    const calculateHeightAfterAdjustment = (adjustedSteps: ResearchStep[]) => {
+      // Cria uma aproximação da altura baseada no número de itens visíveis e seus estados
+      const visibleSteps = adjustedSteps.filter((step) => !step.hidden);
+
+      // Aproximação de altura para cada tipo de item
+      const minimizedItemHeight = 50; // altura aproximada do item minimizado (só título)
+      const normalItemHeight = 100; // altura base para um item normal
+      const detailsMultiplier = 50; // multiplicador para cada detail
+
+      let totalHeight = 0;
+
+      visibleSteps.forEach((step) => {
+        if (step.minimized) {
+          totalHeight += minimizedItemHeight;
+        } else {
+          let itemHeight = normalItemHeight;
+
+          // Adiciona altura extra para detalhes, se existirem
+          if (step.details && step.details.length > 0) {
+            itemHeight += step.details.length * detailsMultiplier;
+          }
+
+          totalHeight += itemHeight;
+        }
+      });
+
+      return totalHeight;
+    };
+
+    // Executar verificação quando os passos mudam ou quando o tamanho da janela muda
+    checkAndAdjustContent();
+
+    const handleResize = () => {
+      checkAndAdjustContent();
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [steps, currentStepIndex, isOpen]);
+
+  // Renderiza o relatório final
+  const renderFinalReport = () => {
+    if (!finalReport) return null;
+
+    return (
+      <div className="deep-research-final-report">
+        <div className="final-report-header">
+          <div className="final-report-title">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Análise Concluída
+          </div>
+        </div>
+
+        <div className="final-report-content">
+          <div className="final-classification">
+            <div className="classification-header">
+              <h3>Classificação Tributária</h3>
+            </div>
+            <div className="classification-data">
+              <div className="ncm-box">
+                <div className="label">NCM Validado</div>
+                <div className="value">{finalReport.ncmCode}</div>
+              </div>
+              <div className="description-box">
+                <div className="label">Descrição</div>
+                <div className="value">{finalReport.ncmDescription}</div>
+              </div>
+            </div>
+
+            {finalReport.taxationDetails && (
+              <div className="taxation-details">
+                <h4>Detalhes Tributários</h4>
+                <div className="taxation-grid">
+                  {Object.entries(finalReport.taxationDetails).map(
+                    ([key, value]) => (
+                      <div key={key} className="taxation-item">
+                        <div className="tax-label">{key.toUpperCase()}</div>
+                        <div className="tax-value">{value}</div>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
+
+            {finalReport.attributes &&
+              Object.keys(finalReport.attributes).length > 0 && (
+                <div className="product-attributes">
+                  <h4>Atributos do Produto</h4>
+                  <div className="attributes-grid">
+                    {Object.entries(finalReport.attributes).map(
+                      ([key, value]) => (
+                        <div key={key} className="attribute-item">
+                          <div className="attribute-label">{key}</div>
+                          <div className="attribute-value">{value}</div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+          </div>
+
+          <div className="conclusion-section">
+            <h3>Conclusão da Análise</h3>
+            <p>{finalReport.conclusion}</p>
+          </div>
+
+          <div className="evidences-section">
+            <h3>Evidências Principais</h3>
+            <div className="evidence-list">
+              {finalReport.evidences.slice(0, 3).map((evidence, index) => (
+                <div key={index} className={`evidence-item ${evidence.type}`}>
+                  <div className="evidence-icon">
+                    {evidence.type === "law" && (
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6"></path>
+                        <path d="M19 10v11"></path>
+                        <path d="M5 10v11"></path>
+                        <path d="M5 4h14"></path>
+                        <path d="M5 10h14"></path>
+                      </svg>
+                    )}
+                    {evidence.type === "jurisprudence" && (
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                    )}
+                    {evidence.type === "technical" && (
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                      </svg>
+                    )}
+                  </div>
+                  <div className="evidence-content">
+                    <div className="evidence-text">{evidence.content}</div>
+                    <div className="evidence-source">{evidence.source}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="alternative-cases">
+            <h3>Cenários Alternativos</h3>
+            <div className="case-list">
+              {finalReport.alternativeCases.map((altCase, index) => (
+                <div key={index} className="case-item">
+                  <div className="case-header">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <h4>{altCase.scenario}</h4>
+                  </div>
+                  <div className="case-impact">{altCase.impact}</div>
+                  {altCase.suggestedNCM && (
+                    <div className="case-ncm">
+                      NCM Alternativo: {altCase.suggestedNCM}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            className="view-steps-button"
+            onClick={() => setShowDetailedSteps(true)}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+            Ver Passos da Pesquisa (
+            {steps.filter((s) => s.status === "completed").length})
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // Renderiza os passos com cabeçalho personalizados
+  const renderDetailedSteps = () => {
+    return (
+      <div className="detailed-steps-container">
+        <div className="detailed-steps-header">
+          <button
+            className="back-to-summary-button"
+            onClick={() => setShowDetailedSteps(false)}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+            Voltar ao Resumo
+          </button>
+          <h3>
+            Passos da Pesquisa (
+            {steps.filter((s) => s.status === "completed").length})
+          </h3>
+        </div>
+
+        <ul className="deep-research-steps" ref={stepsContainerRef}>
+          {steps.map((step, index) =>
+            step.hidden ? null : (
+              <li
+                key={step.id}
+                className={`deep-research-step ${step.status} ${
+                  index === currentStepIndex ? "active" : ""
+                } ${step.minimized ? "minimized" : ""}`}
+              >
+                <div
+                  className="deep-research-step-header"
+                  onClick={() => {
+                    // Toggle minimizado apenas para passos concluídos ou anteriores ao atual
+                    if (
+                      step.status === "completed" ||
+                      index < currentStepIndex
+                    ) {
+                      const newSteps = [...steps];
+
+                      // Se vamos expandir um passo, minimiza todos os outros
+                      if (newSteps[index].minimized) {
+                        // Minimiza todos os passos
+                        newSteps.forEach((s, i) => {
+                          s.minimized = true;
+                        });
+                        // Expande apenas o passo clicado
+                        newSteps[index].minimized = false;
+                      } else {
+                        // Se estamos minimizando, apenas minimiza o atual
+                        newSteps[index].minimized = true;
+                      }
+
+                      setSteps(newSteps);
+                    }
+                  }}
+                >
+                  <div className="deep-research-step-indicator">
+                    {step.status === "waiting" && step.id}
+                    {step.status === "processing" && (
+                      <div className="deep-research-step-loading"></div>
+                    )}
+                    {step.status === "completed" && (
+                      <svg
+                        className="deep-research-step-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    {step.status === "error" && (
+                      <svg
+                        className="deep-research-step-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="deep-research-step-title">
+                    {step.title}
+                    {step.iterations && step.iterations > 0 ? (
+                      <span className="deep-research-iterations-count">
+                        {step.iterations}
+                      </span>
+                    ) : null}
+                    <button
+                      className="deep-research-toggle-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const newSteps = [...steps];
+
+                        // Se vamos expandir um passo, minimiza todos os outros
+                        if (newSteps[index].minimized) {
+                          // Minimiza todos os passos
+                          newSteps.forEach((s, i) => {
+                            s.minimized = true;
+                          });
+                          // Expande apenas o passo clicado
+                          newSteps[index].minimized = false;
+                        } else {
+                          // Se estamos minimizando, apenas minimiza o atual
+                          newSteps[index].minimized = true;
+                        }
+
+                        setSteps(newSteps);
+                      }}
+                    >
+                      {step.minimized ? "+" : "−"}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="deep-research-step-content">
+                  <p>{step.content}</p>
+
+                  {step.details && step.details.length > 0 && (
+                    <div className="deep-research-step-details">
+                      {step.details.map((detail, detailIndex) => (
+                        <div
+                          key={`${step.id}-${detailIndex}`}
+                          className="deep-research-detail"
+                        >
+                          <div className="deep-research-detail-content">
+                            {detail.type === "link" && (
+                              <svg
+                                className="deep-research-detail-icon"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                                />
+                              </svg>
+                            )}
+
+                            {detail.type === "text" && (
+                              <svg
+                                className="deep-research-detail-icon"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                />
+                              </svg>
+                            )}
+
+                            {detail.type === "law" && (
+                              <svg
+                                className="deep-research-detail-icon"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                                />
+                              </svg>
+                            )}
+
+                            {detail.type === "question" && (
+                              <svg
+                                className="deep-research-detail-icon"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                            )}
+
+                            <span className="deep-research-detail-text">
+                              {detail.content}
+                            </span>
+                          </div>
+                          {detail.source && (
+                            <div className="deep-research-detail-source">
+                              {detail.source}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Validação para o último passo */}
+                  {step.id === 6 &&
+                    step.status === "completed" &&
+                    validationResult && (
+                      <div className="validation-comparison">
+                        <div className="validation-item validation-original">
+                          <div className="validation-header">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            <span>NCM Original</span>
+                            <span className="validation-tag original">
+                              {validationResult.originalNCM}
+                            </span>
+                          </div>
+                          {validationResult.reason && (
+                            <p>{validationResult.reason}</p>
+                          )}
+                        </div>
+
+                        {validationResult.suggestedNCM &&
+                          validationResult.suggestedNCM !==
+                            validationResult.originalNCM && (
+                            <div className="validation-item validation-corrected">
+                              <div className="validation-header">
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M9 12l2 2 4-4" />
+                                  <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+                                </svg>
+                                <span>NCM Sugerido</span>
+                                <span className="validation-tag corrected">
+                                  {validationResult.suggestedNCM}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                      </div>
+                    )}
+                </div>
+              </li>
+            )
+          )}
+        </ul>
+      </div>
+    );
+  };
+
+  // Retorna a estrutura visual do componente
+  return (
+    <aside
+      ref={sidebarRef}
+      className={`deep-research-sidebar ${sidebarStatus || ""}`}
+    >
+      <div className="deep-research-sidebar-header">
+        <div className="deep-research-sidebar-title">
+          <svg
+            className="deep-research-sidebar-title-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M9 3v18m0 0h6m-6 0H3m6-18h6m-6 0H3m18 0v18h-6" />
+          </svg>
+          Pesquisa Profunda
+          {/* Botão de cancelamento - mostrado apenas quando está processando */}
+          {(sidebarStatus === "processing" || isProcessing) && (
+            <button
+              className="deep-research-cancel-btn"
+              onClick={handleCancelRequest}
+              title="Cancelar pesquisa"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+              Cancelar
+            </button>
+          )}
+        </div>
+        <div className="deep-research-sidebar-subtitle">
+          Análise detalhada do produto: {productName}
+        </div>
+      </div>
+
+      <div className="deep-research-sidebar-content">
+        {sidebarStatus === "empty" ? (
+          renderEmptyState()
+        ) : sidebarStatus === "completed" &&
+          finalReport &&
+          !showDetailedSteps ? (
+          renderFinalReport()
+        ) : sidebarStatus === "completed" &&
+          finalReport &&
+          showDetailedSteps ? (
+          renderDetailedSteps()
+        ) : (
+          <ul className="deep-research-steps" ref={stepsContainerRef}>
+            {steps.map((step, index) =>
+              step.hidden ? null : (
+                <li
+                  key={step.id}
+                  className={`deep-research-step ${step.status} ${
+                    index === currentStepIndex ? "active" : ""
+                  } ${step.minimized ? "minimized" : ""}`}
+                >
+                  <div
+                    className="deep-research-step-header"
+                    onClick={() => {
+                      // Toggle minimizado apenas para passos concluídos ou anteriores ao atual
+                      if (
+                        step.status === "completed" ||
+                        index < currentStepIndex
+                      ) {
+                        const newSteps = [...steps];
+
+                        // Se vamos expandir um passo, minimiza todos os outros
+                        if (newSteps[index].minimized) {
+                          // Minimiza todos os passos
+                          newSteps.forEach((s, i) => {
+                            s.minimized = true;
+                          });
+                          // Expande apenas o passo clicado
+                          newSteps[index].minimized = false;
+                        } else {
+                          // Se estamos minimizando, apenas minimiza o atual
+                          newSteps[index].minimized = true;
+                        }
+
+                        setSteps(newSteps);
+                      }
+                    }}
+                  >
+                    <div className="deep-research-step-indicator">
+                      {step.status === "waiting" && step.id}
+                      {step.status === "processing" && (
+                        <div className="deep-research-step-loading"></div>
+                      )}
+                      {step.status === "completed" && (
+                        <svg
+                          className="deep-research-step-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                      {step.status === "error" && (
+                        <svg
+                          className="deep-research-step-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                      )}
+                    </div>
+                    <div className="deep-research-step-title">
+                      {step.title}
+                      {step.iterations && step.iterations > 0 ? (
+                        <span className="deep-research-iterations-count">
+                          {step.iterations}
+                        </span>
+                      ) : null}
+                      <button
+                        className="deep-research-toggle-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const newSteps = [...steps];
+
+                          // Se vamos expandir um passo, minimiza todos os outros
+                          if (newSteps[index].minimized) {
+                            // Minimiza todos os passos
+                            newSteps.forEach((s, i) => {
+                              s.minimized = true;
+                            });
+                            // Expande apenas o passo clicado
+                            newSteps[index].minimized = false;
+                          } else {
+                            // Se estamos minimizando, apenas minimiza o atual
+                            newSteps[index].minimized = true;
+                          }
+
+                          setSteps(newSteps);
+                        }}
+                      >
+                        {step.minimized ? "+" : "−"}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="deep-research-step-content">
+                    <p>{step.content}</p>
+
+                    {step.details && step.details.length > 0 && (
+                      <div className="deep-research-step-details">
+                        {step.details.map((detail, detailIndex) => (
+                          <div
+                            key={`${step.id}-${detailIndex}`}
+                            className="deep-research-detail"
+                          >
+                            <div className="deep-research-detail-content">
+                              {detail.type === "link" && (
+                                <svg
+                                  className="deep-research-detail-icon"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                                  />
+                                </svg>
+                              )}
+
+                              {detail.type === "text" && (
+                                <svg
+                                  className="deep-research-detail-icon"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                  />
+                                </svg>
+                              )}
+
+                              {detail.type === "law" && (
+                                <svg
+                                  className="deep-research-detail-icon"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                                  />
+                                </svg>
+                              )}
+
+                              {detail.type === "question" && (
+                                <svg
+                                  className="deep-research-detail-icon"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                              )}
+
+                              <span className="deep-research-detail-text">
+                                {detail.content}
+                              </span>
+                            </div>
+                            {detail.source && (
+                              <div className="deep-research-detail-source">
+                                {detail.source}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Validação para o último passo */}
+                    {step.id === 6 &&
+                      step.status === "completed" &&
+                      validationResult && (
+                        <div className="validation-comparison">
+                          <div className="validation-item validation-original">
+                            <div className="validation-header">
+                              <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                              </svg>
+                              <span>NCM Original</span>
+                              <span className="validation-tag original">
+                                {validationResult.originalNCM}
+                              </span>
+                            </div>
+                            {validationResult.reason && (
+                              <p>{validationResult.reason}</p>
+                            )}
+                          </div>
+
+                          {validationResult.suggestedNCM &&
+                            validationResult.suggestedNCM !==
+                              validationResult.originalNCM && (
+                              <div className="validation-item validation-corrected">
+                                <div className="validation-header">
+                                  <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <path d="M9 12l2 2 4-4" />
+                                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+                                  </svg>
+                                  <span>NCM Sugerido</span>
+                                  <span className="validation-tag corrected">
+                                    {validationResult.suggestedNCM}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                        </div>
+                      )}
+                  </div>
+                </li>
+              )
+            )}
+          </ul>
+        )}
+      </div>
+    </aside>
+  );
+};
+
+export default DeepResearchSidebar;
