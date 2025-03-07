@@ -65,12 +65,6 @@ importers:
       undici:
         specifier: ^7.3.0
         version: 7.3.0
-      uuid:
-        specifier: ^11.1.0
-        version: 11.1.0
-      ws:
-        specifier: ^8.18.0
-        version: 8.18.0
       yamljs:
         specifier: ^0.3.0
         version: 0.3.0
@@ -126,6 +120,12 @@ importers:
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
+      uuid:
+        specifier: ^11.1.0
+        version: 11.1.0
+      ws:
+        specifier: ^8.18.0
+        version: 8.18.0
 
 packages:
 
