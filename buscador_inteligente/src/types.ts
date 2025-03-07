@@ -1,7 +1,7 @@
 import { CoreAssistantMessage, CoreUserMessage, LanguageModelUsage } from "ai";
 import { TokenTracker } from "./utils/token-tracker";
 import { ActionTracker } from "./utils/action-tracker";
-import { SchemaType } from "@google/generative-ai";
+import { Schema as GoogleSchema, SchemaType } from "@google/generative-ai";
 
 export type SchemaProperty = {
   type: SchemaType;
@@ -14,11 +14,66 @@ export type SchemaProperty = {
   minItems?: number;
 };
 
+// Re-exportando os tipos da biblioteca
+export { SchemaType };
+export type Schema = GoogleSchema;
+
+// Definição correta de ResponseSchema para ser compatível com @google/generative-ai
 export type ResponseSchema = {
-  type?: SchemaType;
-  properties: Record<string, SchemaProperty>;
+  type: SchemaType.OBJECT;
+  properties: Record<string, Schema>;
   required?: string[];
 };
+
+// Tipos de Bloco de Conteúdo
+export interface ContentBlock {
+  type: string;
+  content: string;
+}
+
+export interface TextBlock extends ContentBlock {
+  type: "text";
+}
+
+export interface CodeBlock extends ContentBlock {
+  type: "code";
+  language?: string;
+}
+
+export interface HeadingBlock extends ContentBlock {
+  type: "heading";
+  level: number;
+}
+
+export interface ListItem {
+  content: string;
+  items?: ListItem[];
+}
+
+export interface ListOrderedBlock extends ContentBlock {
+  type: "list-ordered";
+  items: ListItem[];
+}
+
+export interface ListUnorderedBlock extends ContentBlock {
+  type: "list-unordered";
+  items: ListItem[];
+}
+
+export interface TableBlock extends ContentBlock {
+  type: "table";
+  headers: string[];
+  rows: string[][];
+}
+
+export interface QuoteBlock extends ContentBlock {
+  type: "quote";
+}
+
+export interface AlertBlock extends ContentBlock {
+  type: "alert";
+  variant: "info" | "warning" | "error" | "success";
+}
 
 // Tipos de Ação
 type BaseAction = {
@@ -45,15 +100,17 @@ export type AnswerAction = BaseAction & {
 };
 
 export type KnowledgeItem = {
-  question: string,
-  answer: string,
-  references?: Array<{
-    exactQuote: string;
-    url: string;
-  }> | Array<any>;
-  type: 'qa' | 'side-info' | 'chat-history' | 'url' | 'coding',
-  updated: string,
-}
+  question: string;
+  answer: string;
+  references?:
+    | Array<{
+        exactQuote: string;
+        url: string;
+      }>
+    | Array<any>;
+  type: "qa" | "side-info" | "chat-history" | "url" | "coding";
+  updated: string;
+};
 
 export type ReflectAction = BaseAction & {
   action: "reflect";
@@ -70,9 +127,18 @@ export type CodingAction = BaseAction & {
   codingIssue: string;
 };
 
-export type StepAction = SearchAction | AnswerAction | ReflectAction | VisitAction | CodingAction;
+export type StepAction =
+  | SearchAction
+  | AnswerAction
+  | ReflectAction
+  | VisitAction
+  | CodingAction;
 
-export type EvaluationType = 'definitive' | 'freshness' | 'plurality' | 'attribution';
+export type EvaluationType =
+  | "definitive"
+  | "freshness"
+  | "plurality"
+  | "attribution";
 export type EvaluationCriteria = {
   types: EvaluationType[];
   languageStyle: string;
@@ -98,7 +164,7 @@ export interface SearchResponse {
     description: string;
     url: string;
     content: string;
-    usage: { tokens: number; };
+    usage: { tokens: number };
   }> | null;
   name?: string;
   message?: string;
@@ -128,7 +194,7 @@ export interface ReadResponse {
     description: string;
     url: string;
     content: string;
-    usage: { tokens: number; };
+    usage: { tokens: number };
   };
   name?: string;
   message?: string;
@@ -139,7 +205,7 @@ export type EvaluationResponse = {
   pass: boolean;
   think: string;
   tokens?: number;
-  type?: 'definitive' | 'freshness' | 'plurality' | 'attribution';
+  type?: "definitive" | "freshness" | "plurality" | "attribution";
   freshness_analysis?: {
     likely_outdated: boolean;
     dates_mentioned: string[];
@@ -196,7 +262,15 @@ export interface StreamMessage {
     tokenTracker: TokenTracker;
     actionTracker: ActionTracker;
   };
-  type: 'progress' | 'answer' | 'error' | 'search' | 'reflect' | 'visit' | 'log' | 'connected';
+  type:
+    | "progress"
+    | "answer"
+    | "error"
+    | "search"
+    | "reflect"
+    | "visit"
+    | "log"
+    | "connected";
   data: string | StepAction;
   outputs?: any[];
   step?: number;
@@ -210,7 +284,7 @@ export interface StreamMessage {
 // Tipos da API OpenAI
 export interface Model {
   id: string;
-  object: 'model';
+  object: "model";
   created: number;
   owned_by: string;
 }
@@ -219,24 +293,24 @@ export interface ChatCompletionRequest {
   model: string;
   messages: Array<CoreUserMessage | CoreAssistantMessage>;
   stream?: boolean;
-  reasoning_effort?: 'low' | 'medium' | 'high' | null;
+  reasoning_effort?: "low" | "medium" | "high" | null;
   max_completion_tokens?: number | null;
 }
 
 export interface ChatCompletionResponse {
   id: string;
-  object: 'chat.completion';
+  object: "chat.completion";
   created: number;
   model: string;
   system_fingerprint: string;
   choices: Array<{
     index: number;
     message: {
-      role: 'assistant';
+      role: "assistant";
       content: string;
     };
     logprobs: null;
-    finish_reason: 'stop';
+    finish_reason: "stop";
   }>;
   usage: {
     prompt_tokens: number;
@@ -247,18 +321,18 @@ export interface ChatCompletionResponse {
 
 export interface ChatCompletionChunk {
   id: string;
-  object: 'chat.completion.chunk';
+  object: "chat.completion.chunk";
   created: number;
   model: string;
   system_fingerprint: string;
   choices: Array<{
     index: number;
     delta: {
-      role?: 'assistant';
+      role?: "assistant";
       content?: string;
     };
     logprobs: null;
-    finish_reason: null | 'stop';
+    finish_reason: null | "stop";
   }>;
   usage?: any;
 }
@@ -272,12 +346,12 @@ export interface TrackerContext {
 
 // Atualização da interface ServerLog para incluir requestId
 export interface ServerLog {
-  context: { 
+  context: {
     pid: number;
     env: string;
     requestId?: string;
   };
   timestamp: string;
   message: string;
-  level: 'log' | 'error' | 'warn' | 'info';
+  level: "log" | "error" | "warn" | "info";
 }

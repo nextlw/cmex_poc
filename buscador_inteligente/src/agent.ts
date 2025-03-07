@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI, Schema, SchemaType } from "@google/generative-ai";
 import { readUrl } from "./tools/read";
 import fs from "fs/promises";
 import { SafeSearchType, search as duckSearch } from "duck-duck-scrape";
@@ -177,32 +177,34 @@ function getSchema(
   allowRead: boolean,
   allowAnswer: boolean,
   allowSearch: boolean
-): ResponseSchema {
+): Schema {
   // Define as ações possíveis
   const actions: string[] = [];
-  // Define as propriedades do schema
-  const properties: Record<string, SchemaProperty> = {
-    // Define o tipo da ação
-    action: {
-      type: SchemaType.STRING,
-      // Define as opções da ação
-      enum: actions,
-      // Define a descrição da ação
-      description: "Must match exactly one action type",
-    },
-    think: {
-      type: SchemaType.STRING,
-      // Define a descrição do pensamento
-      description:
-        "Explain why choose this action, what's the thought process behind choosing this action",
-    },
+
+  // Schema para o tipo de ação
+  const actionSchema: Schema = {
+    type: SchemaType.STRING,
+    format: "enum",
+    enum: actions, // Será atualizado abaixo
+    description: "Must match exactly one action type",
+  };
+
+  // Schema para o pensamento
+  const thinkSchema: Schema = {
+    type: SchemaType.STRING,
+    description:
+      "Explain why choose this action, what's the thought process behind choosing this action",
+  };
+
+  // Define as propriedades do schema principal
+  const properties: Record<string, Schema> = {
+    action: actionSchema,
+    think: thinkSchema,
   };
 
   // Verifica se a busca é permitida
   if (allowSearch) {
-    // Adiciona a ação de busca
     actions.push("search");
-    // Define a descrição da busca
     properties.searchQuery = {
       type: SchemaType.STRING,
       description:
@@ -212,21 +214,16 @@ function getSchema(
 
   // Verifica se a resposta é permitida
   if (allowAnswer) {
-    // Adiciona a ação de resposta
     actions.push("answer");
-    // Define a descrição da resposta
     properties.answer = {
       type: SchemaType.STRING,
       description:
         "Only required when choosing 'answer' action, must be the final answer in natural language",
     };
-    // Define a descrição das referências
+
     properties.references = {
-      // Define o tipo das referências
       type: SchemaType.ARRAY,
-      // Define o tipo dos itens das referências
       items: {
-        // Define o tipo do item das referências
         type: SchemaType.OBJECT,
         properties: {
           exactQuote: {
@@ -248,54 +245,38 @@ function getSchema(
 
   // Verifica se a reflexão é permitida
   if (allowReflect) {
-    // Adiciona a ação de reflexão
     actions.push("reflect");
-    // Define a descrição das questões a serem respondidas
     properties.questionsToAnswer = {
       type: SchemaType.ARRAY,
-      // Define o tipo dos itens das questões a serem respondidas
       items: {
-        // Define o tipo do item das questões a serem respondidas
         type: SchemaType.STRING,
-        // Define a descrição do item das questões a serem respondidas
         description:
           "each question must be a single line, concise and clear. not composite or compound, less than 20 words.",
       },
-      // Define a descrição das questões a serem respondidas
       description:
         "List of most important questions to fill the knowledge gaps of finding the answer to the original question",
-      // Define o número máximo de itens das questões a serem respondidas
-      maxItems: 30,
     };
   }
 
   // Verifica se a leitura é permitida
   if (allowRead) {
-    // Adiciona a ação de visita
     actions.push("visit");
-    // Define a descrição das URLs a serem visitadas
     properties.URLTargets = {
-      // Define o tipo das URLs a serem visitadas
       type: SchemaType.ARRAY,
-      // Define o tipo dos itens das URLs a serem visitadas
       items: {
-        // Define o tipo do item das URLs a serem visitadas
         type: SchemaType.STRING,
       },
-      // Define o número máximo de itens das URLs a serem visitadas
-      maxItems: 30,
-      // Define a descrição das URLs a serem visitadas
       description:
         "Must be an array of URLs, choose up the most relevant 30 URLs to visit",
     };
   }
 
   // Atualiza os valores do enum após coletar todas as ações
-  properties.action.enum = actions;
+  (actionSchema as any).enum = actions;
 
   // Retorna o schema
   return {
-    type: SchemaType.OBJECT as const,
+    type: SchemaType.OBJECT,
     properties,
     required: ["action", "think"],
   };

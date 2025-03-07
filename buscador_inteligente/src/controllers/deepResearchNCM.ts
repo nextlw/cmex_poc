@@ -12,6 +12,11 @@ import { StepResult, ResearchContext } from "../modules/deepResearch";
 import { DeepResearch } from "../modules/deepResearch";
 import { SchemaType } from "@google/generative-ai";
 
+// Interface personalizada para estender o Request do Express
+interface CustomRequest extends Request {
+  fastApiResult?: FastApiNCMResult | null;
+}
+
 // Classe base com funcionalidades comuns
 abstract class BaseDeepResearch extends DeepResearch {
   /**
@@ -260,10 +265,24 @@ class DeepResearchGemini extends BaseDeepResearch {
       const responseSchema = {
         type: SchemaType.OBJECT,
         properties: {
-          action: { type: SchemaType.STRING },
-          think: { type: SchemaType.STRING },
-          searchQuery: { type: SchemaType.STRING },
-          answer: { type: SchemaType.STRING },
+          action: {
+            type: SchemaType.STRING,
+            format: "enum",
+            enum: ["search", "answer", "reflect", "visit"],
+            description: "Tipo de ação a ser executada",
+          },
+          think: {
+            type: SchemaType.STRING,
+            description: "Raciocínio sobre a próxima ação",
+          },
+          searchQuery: {
+            type: SchemaType.STRING,
+            description: "Consulta de busca quando a ação é 'search'",
+          },
+          answer: {
+            type: SchemaType.STRING,
+            description: "Resposta final quando a ação é 'answer'",
+          },
           references: {
             type: SchemaType.ARRAY,
             items: {
@@ -272,17 +291,28 @@ class DeepResearchGemini extends BaseDeepResearch {
                 exactQuote: { type: SchemaType.STRING },
                 url: { type: SchemaType.STRING },
               },
+              required: ["exactQuote", "url"],
             },
+            description: "Referências que suportam a resposta",
           },
           questionsToAnswer: {
             type: SchemaType.ARRAY,
             items: { type: SchemaType.STRING },
+            description:
+              "Lista de questões importantes para preencher lacunas de conhecimento",
           },
-          ncm: { type: SchemaType.STRING },
-          descricao: { type: SchemaType.STRING },
+          ncm: {
+            type: SchemaType.STRING,
+            description: "Código NCM identificado",
+          },
+          descricao: {
+            type: SchemaType.STRING,
+            description: "Descrição do produto",
+          },
           atributos: {
             type: SchemaType.ARRAY,
             items: { type: SchemaType.STRING },
+            description: "Atributos do produto",
           },
           impostos: {
             type: SchemaType.OBJECT,
@@ -295,6 +325,7 @@ class DeepResearchGemini extends BaseDeepResearch {
               pis: { type: SchemaType.STRING },
               cofins: { type: SchemaType.STRING },
             },
+            description: "Informações sobre impostos",
           },
         },
         required: ["action", "think"],
@@ -306,7 +337,7 @@ class DeepResearchGemini extends BaseDeepResearch {
           temperature: 0.2,
           maxOutputTokens: 4096,
           responseMimeType: "application/json",
-          responseSchema: responseSchema,
+          responseSchema: responseSchema as any,
         },
       });
 
@@ -419,7 +450,7 @@ export const modelFactory = (
  * @param res Resposta Express
  */
 export async function processarDeepResearch(
-  req: Request,
+  req: CustomRequest,
   res: Response
 ): Promise<void> {
   const startTime = Date.now();

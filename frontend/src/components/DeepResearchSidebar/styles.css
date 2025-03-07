@@ -266,7 +266,7 @@
   font-size: 0.875rem;
   transition: all 0.3s ease;
   max-height: 1000px;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .deep-research-step.active .deep-research-step-content {
@@ -437,7 +437,7 @@
 
 /* Ajustes quando o item está escondido */
 .deep-research-step.hidden {
-  display: none;
+  display: flex;
 }
 
 .deep-research-empty-state {
@@ -914,7 +914,7 @@
 .deep-research-sidebar.skeleton-loading .evidences-section,
 .deep-research-sidebar.skeleton-loading .alternative-cases {
   position: relative;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .deep-research-sidebar.skeleton-loading .final-classification::before,

@@ -6,6 +6,12 @@ import axios from "axios";
 import { TokenTracker } from "../utils/token-tracker";
 import httpClient from "../utils/http-client";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { FastApiNCMResult } from "../types/ncm";
+
+// Interface personalizada para estender o Request do Express
+interface CustomRequest extends Request {
+  fastApiResult?: FastApiNCMResult | null;
+}
 
 // Criação de uma instância compartilhada do TokenTracker
 const tokenTracker = new TokenTracker();
@@ -485,11 +491,12 @@ funcoes_modelos["Gemini-2.0-flash"] = obterSugestoesGemini;
 funcoes_modelos["Nexcode-0.1-BETA"] = obterSugestoesGemini;
 
 /**
- * Handler para a rota de consulta de NCM
- * @param req Requisição
- * @param res Resposta
+ * Controlador para consulta de NCM
  */
-export async function consultarNCM(req: Request, res: Response): Promise<void> {
+export async function consultarNCM(
+  req: CustomRequest,
+  res: Response
+): Promise<void> {
   const startTime = Date.now();
 
   try {
@@ -579,13 +586,10 @@ export async function consultarNCM(req: Request, res: Response): Promise<void> {
 }
 
 /**
- * Middleware para rotear consultas NCM com base no parâmetro useDeepResearch
- * @param req Requisição Express
- * @param res Resposta Express
- * @param next Função next do middleware
+ * Router para consultas NCM
  */
 export async function ncmRouter(
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> {
