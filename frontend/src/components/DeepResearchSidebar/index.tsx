@@ -61,6 +61,15 @@ interface FinalReport {
   attributes?: Record<string, string>;
 }
 
+// Interface para controlar quais campos estão em validação
+interface ValidationStatus {
+  ncmCode: boolean;
+  ncmDescription: boolean;
+  taxationDetails: boolean;
+  attributes: boolean;
+  conclusion: boolean;
+}
+
 // Mensagens pré-definidas para cada etapa do processo
 const PROGRESS_MESSAGES = [
   "Iniciando análise avançada com IA...",
@@ -163,6 +172,26 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
   // Estado para o relatório final
   const [finalReport, setFinalReport] = useState<FinalReport | null>(null);
 
+  // Estado para controlar quais campos estão em processo de validação
+  const [validationStatus, setValidationStatus] = useState<ValidationStatus>({
+    ncmCode: true,
+    ncmDescription: true,
+    taxationDetails: true,
+    attributes: true,
+    conclusion: true,
+  });
+
+  // Estado para armazenar informações parciais durante o processamento
+  const [partialInfo, setPartialInfo] = useState({
+    ncmCode: ncmCode,
+    ncmDescription: "",
+    taxationDetails: {} as any,
+    attributes: {} as Record<string, string>,
+  });
+
+  // Flag para remover o skeleton após receber a primeira resposta
+  const [hasInitialData, setHasInitialData] = useState(false);
+
   // Efeito para sincronizar o estado de processamento com o InputAI
   useEffect(() => {
     if (isProcessing) {
@@ -236,6 +265,28 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
 
         if (isMounted && response.data) {
           setHasError(false);
+
+          // Se recebemos dados pela primeira vez, removemos o skeleton
+          if (!hasInitialData) {
+            setHasInitialData(true);
+          }
+
+          // Atualiza informações parciais se disponíveis na resposta
+          if (response.data.partialInfo) {
+            setPartialInfo((prev) => ({
+              ...prev,
+              ...response.data.partialInfo,
+            }));
+
+            // Atualiza o estado de validação se fornecido
+            if (response.data.validationStatus) {
+              setValidationStatus((prev) => ({
+                ...prev,
+                ...response.data.validationStatus,
+              }));
+            }
+          }
+
           const stepIndex =
             response.data.step !== undefined ? response.data.step : 0;
           const step = Math.min(stepIndex, PROGRESS_MESSAGES.length - 1);
@@ -422,6 +473,15 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
             setFinalReport(report);
             // Inicialmente, mostra o resumo (não os passos detalhados)
             setShowDetailedSteps(false);
+
+            // Define todos os estados de validação como concluídos
+            setValidationStatus({
+              ncmCode: false,
+              ncmDescription: false,
+              taxationDetails: false,
+              attributes: false,
+              conclusion: false,
+            });
           }
         }
       } catch (error: any) {
@@ -670,51 +730,91 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
             </div>
             <div className="classification-data">
               <div className="ncm-box">
-                <div className="label">NCM Validado</div>
-                <div className="value">{finalReport.ncmCode}</div>
+                <div className="label">
+                  NCM Validado
+                  {validationStatus.ncmCode && (
+                    <span className="validation-spinner"></span>
+                  )}
+                </div>
+                <div className="value">
+                  {hasInitialData
+                    ? partialInfo.ncmCode || finalReport.ncmCode
+                    : "Carregando..."}
+                </div>
               </div>
               <div className="description-box">
-                <div className="label">Descrição</div>
-                <div className="value">{finalReport.ncmDescription}</div>
+                <div className="label">
+                  Descrição
+                  {validationStatus.ncmDescription && (
+                    <span className="validation-spinner"></span>
+                  )}
+                </div>
+                <div className="value">
+                  {hasInitialData
+                    ? partialInfo.ncmDescription || finalReport.ncmDescription
+                    : "Carregando..."}
+                </div>
               </div>
             </div>
 
-            {finalReport.taxationDetails && (
+            {(finalReport.taxationDetails ||
+              Object.keys(partialInfo.taxationDetails).length > 0) && (
               <div className="taxation-details">
-                <h4>Detalhes Tributários</h4>
-                <div className="taxation-grid">
-                  {Object.entries(finalReport.taxationDetails).map(
-                    ([key, value]) => (
-                      <div key={key} className="taxation-item">
-                        <div className="tax-label">{key.toUpperCase()}</div>
-                        <div className="tax-value">{value}</div>
-                      </div>
-                    )
+                <h4>
+                  Detalhes Tributários
+                  {validationStatus.taxationDetails && (
+                    <span className="validation-spinner"></span>
                   )}
+                </h4>
+                <div className="taxation-grid">
+                  {Object.entries(
+                    hasInitialData
+                      ? partialInfo.taxationDetails ||
+                          finalReport.taxationDetails ||
+                          {}
+                      : {}
+                  ).map(([key, value]) => (
+                    <div key={key} className="taxation-item">
+                      <div className="tax-label">{key.toUpperCase()}</div>
+                      <div className="tax-value">{String(value)}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-            {finalReport.attributes &&
-              Object.keys(finalReport.attributes).length > 0 && (
-                <div className="product-attributes">
-                  <h4>Atributos do Produto</h4>
-                  <div className="attributes-grid">
-                    {Object.entries(finalReport.attributes).map(
-                      ([key, value]) => (
-                        <div key={key} className="attribute-item">
-                          <div className="attribute-label">{key}</div>
-                          <div className="attribute-value">{value}</div>
-                        </div>
-                      )
-                    )}
-                  </div>
+            {(finalReport.attributes ||
+              Object.keys(partialInfo.attributes).length > 0) && (
+              <div className="product-attributes">
+                <h4>
+                  Atributos do Produto
+                  {validationStatus.attributes && (
+                    <span className="validation-spinner"></span>
+                  )}
+                </h4>
+                <div className="attributes-grid">
+                  {Object.entries(
+                    hasInitialData
+                      ? partialInfo.attributes || finalReport.attributes || {}
+                      : {}
+                  ).map(([key, value]) => (
+                    <div key={key} className="attribute-item">
+                      <div className="attribute-label">{key}</div>
+                      <div className="attribute-value">{value}</div>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
           </div>
 
           <div className="conclusion-section">
-            <h3>Conclusão da Análise</h3>
+            <h3>
+              Conclusão da Análise
+              {validationStatus.conclusion && (
+                <span className="validation-spinner"></span>
+              )}
+            </h3>
             <p>{finalReport.conclusion}</p>
           </div>
 
@@ -1098,7 +1198,11 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
   return (
     <aside
       ref={sidebarRef}
-      className={`deep-research-sidebar ${sidebarStatus || ""}`}
+      className={`deep-research-sidebar ${sidebarStatus || ""} ${
+        !hasInitialData && sidebarStatus === "processing"
+          ? "skeleton-loading"
+          : ""
+      }`}
     >
       <div className="deep-research-sidebar-header">
         <div className="deep-research-sidebar-title">

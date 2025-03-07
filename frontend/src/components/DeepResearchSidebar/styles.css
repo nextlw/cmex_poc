@@ -894,3 +894,93 @@
     padding: 10px;
   }
 }
+
+/* Estilo para o spinner de validação */
+.validation-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(66, 153, 225, 0.3);
+  border-top-color: #4299e1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Estado de skeleton loading */
+.deep-research-sidebar.skeleton-loading .final-classification,
+.deep-research-sidebar.skeleton-loading .conclusion-section,
+.deep-research-sidebar.skeleton-loading .evidences-section,
+.deep-research-sidebar.skeleton-loading .alternative-cases {
+  position: relative;
+  overflow: hidden;
+}
+
+.deep-research-sidebar.skeleton-loading .final-classification::before,
+.deep-research-sidebar.skeleton-loading .conclusion-section::before,
+.deep-research-sidebar.skeleton-loading .evidences-section::before,
+.deep-research-sidebar.skeleton-loading .alternative-cases::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 40%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  animation: shimmer 1.5s infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Ajustes para quando os itens estão sendo validados */
+.deep-research-sidebar .label,
+.deep-research-sidebar h4 {
+  display: flex;
+  align-items: center;
+}
+
+.deep-research-sidebar .value,
+.deep-research-sidebar .tax-value,
+.deep-research-sidebar .attribute-value {
+  position: relative;
+}
+
+.deep-research-sidebar .value::after,
+.deep-research-sidebar .tax-value::after,
+.deep-research-sidebar .attribute-value::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(66, 153, 225, 0),
+    rgba(66, 153, 225, 0.5),
+    rgba(66, 153, 225, 0)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.deep-research-sidebar.processing .value::after,
+.deep-research-sidebar.processing .tax-value::after,
+.deep-research-sidebar.processing .attribute-value::after {
+  opacity: 1;
+}

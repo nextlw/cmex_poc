@@ -1,0 +1,11 @@
+Regras de implementação no projeto de desenvolvimento
+1. tipos dever sempre ser organizados e servidos pelo shared-type  
+2. componente novos sempre precisam seguir a mesma formatação dos já existentes  
+3. qualquer implementação node só pode acontecer no buscador_inteligente  
+4. qualquer implementação python só pode ocorrer na pasta fastapi  
+5. Qualquer implementação de front só pode ocorrer na pasta frontend  
+6. Estilos só podem consumir exclusivamente tokens.css  
+7. sempre ler a documentação antes da implementação  
+8. Essa implementação deve ocorrer completa e caso algum erro no código se apresente precisa ser corrigido antes do término da tarefa  
+9. você não pode fazer alterações ou escrever qualquer coisa sem antes entender a lógica do projeto como um todo.
+10. Rode sempre os comando usando o pnpm

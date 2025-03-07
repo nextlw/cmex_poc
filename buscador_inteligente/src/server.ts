@@ -26,6 +26,8 @@ import { Server as WebSocketServer, WebSocket } from "ws";
 import http from "http";
 import { QuerySession } from "./types/session";
 import { ensureModelClientInitialized } from "./agent";
+import { ncmRouter } from "./controllers/ncm";
+import { processarDeepResearch } from "./controllers/deepResearchNCM";
 
 /**
  * Interface para armazenar logs do servidor.
@@ -302,7 +304,7 @@ function cleanup(requestId: string) {
 function emitTrackerUpdate(requestId: string, context: TrackerContext) {
   const trackerData = {
     tokenUsage: context.tokenTracker.getTotalUsage(),
-    tokenBreakdown: context.tokenTracker.getUsageBreakdown(),
+    tokenBreakdown: context.tokenTracker.getUsageByModel(),
     actionState: context.actionTracker.getState().thisStep,
     step: context.actionTracker.getState().totalStep,
     badAttempts: context.actionTracker.getState().badAttempts,
@@ -1435,6 +1437,19 @@ app.get(
                   content: "Análise detalhada concluída com sucesso.",
                 },
               ],
+              // Adiciona informações finais, se disponíveis
+              partialInfo: metadata.finalResults || {
+                ncmCode: metadata.ncmCode || "",
+                ncmDescription: metadata.description || "",
+              },
+              // Todos os campos já validados
+              validationStatus: {
+                ncmCode: false,
+                ncmDescription: false,
+                taxationDetails: false,
+                attributes: false,
+                conclusion: false,
+              },
             });
             return;
           } else {
@@ -1470,6 +1485,28 @@ app.get(
       // Lógica para gerar os detalhes da pesquisa com base nos passos
       const researchDetails = generateResearchDetails(step, currentState);
 
+      // Preparando informações parciais com base no progresso atual
+      // Extrair dados do estado atual, mensagens e análises anteriores
+      const extractedInfo = extractPartialInfo(
+        currentState,
+        step,
+        researchDetails
+      );
+
+      // Status de validação baseado no passo atual
+      const validationStatus = {
+        // Passo 1-2: Validando NCM
+        ncmCode: step <= 2,
+        // Passo 2-3: Validando descrição
+        ncmDescription: step <= 3,
+        // Passo 3-4: Validando tributação
+        taxationDetails: step <= 4,
+        // Passo 4-5: Validando atributos
+        attributes: step <= 5,
+        // Passo 5: Validando conclusão
+        conclusion: step <= 5,
+      };
+
       // Prepara resposta com o status atual
       const response = {
         requestId,
@@ -1477,6 +1514,10 @@ app.get(
         step,
         currentAction,
         researchDetails,
+        // Adiciona as informações parciais extraídas
+        partialInfo: extractedInfo,
+        // Adiciona o status de validação
+        validationStatus,
       };
 
       res.json(response);
@@ -1496,6 +1537,96 @@ app.get(
     }
   }
 );
+
+/**
+ * Função auxiliar para extrair informações parciais dos dados disponíveis
+ */
+function extractPartialInfo(
+  currentState: any,
+  step: number,
+  researchDetails: any[]
+): any {
+  // Valor padrão para retorno
+  const defaultInfo = {
+    ncmCode: "",
+    ncmDescription: "",
+    taxationDetails: {
+      ipi: "",
+      icms: "",
+      pis: "",
+      cofins: "",
+      importTax: "",
+    },
+    attributes: {},
+  };
+
+  try {
+    // Procura por menções de NCM no texto
+    const ncmRegex = /\b\d{4}\.\d{2}\.\d{2}\b/;
+    const ncmMatch =
+      currentState.thisStep?.think?.match(ncmRegex) ||
+      currentState.accumulatedReasoning?.match(ncmRegex);
+
+    if (ncmMatch) {
+      defaultInfo.ncmCode = ncmMatch[0];
+    }
+
+    // Procura por descrições
+    if (step >= 3) {
+      // Extrai descrições de produtos dos detalhes da pesquisa
+      for (const detail of researchDetails) {
+        if (
+          detail.content &&
+          (detail.content.includes("descrição") ||
+            detail.content.includes("Descrição"))
+        ) {
+          const description = detail.content
+            .substring(detail.content.indexOf(":") + 1)
+            .trim();
+          if (description && description.length > 10) {
+            defaultInfo.ncmDescription = description;
+            break;
+          }
+        }
+      }
+    }
+
+    // Extrai informações tributárias se estamos em um estágio avançado
+    if (step >= 4) {
+      // Procura por menções de IPI, ICMS, etc.
+      for (const detail of researchDetails) {
+        if (detail.content) {
+          if (detail.content.includes("IPI")) {
+            defaultInfo.taxationDetails.ipi = "Conforme tabela TIPI";
+          }
+          if (detail.content.includes("ICMS")) {
+            defaultInfo.taxationDetails.icms =
+              "Conforme regulamentação estadual";
+          }
+          if (detail.content.includes("PIS")) {
+            defaultInfo.taxationDetails.pis = "Regime normal";
+          }
+          if (detail.content.includes("COFINS")) {
+            defaultInfo.taxationDetails.cofins = "Regime normal";
+          }
+        }
+      }
+    }
+
+    // Procura por atributos do produto
+    if (step >= 5) {
+      defaultInfo.attributes = {
+        Composição: "Conforme especificação do produto",
+        Finalidade: "Uso conforme descrição",
+      };
+    }
+
+    return defaultInfo;
+  } catch (error) {
+    console.error("Erro ao extrair informações parciais:", error);
+    return defaultInfo;
+  }
+}
 
 /**
  * Rota para cancelar explicitamente o processamento de uma tarefa
@@ -1733,3 +1864,11 @@ function generateResearchDetails(
 
   return details;
 }
+
+// Rota para consulta de NCM
+app.post("/api/v1/ncm", (req, res, next) => {
+  ncmRouter(req, res, next).catch(next);
+});
+
+// Middleware para processamento DeepResearch
+app.use("/api/v1/ncm", processarDeepResearch);

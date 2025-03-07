@@ -13,7 +13,13 @@
     "server": "ts-node src/server.ts",
     "test": "jest",
     "test:watch": "jest --watch",
-    "generate-docs": "swagger-jsdoc -d src/swagger.yaml -o docs/swagger.json"
+    "generate-docs": "swagger-jsdoc -d src/swagger.yaml -o docs/swagger.json",
+    "test:models": "node scripts/run-model-tests.js",
+    "test:single-model": "node scripts/test-single-model.js",
+    "test:local-model": "node scripts/test-local-model.js",
+    "test:google-api": "node scripts/test-google-api.js",
+    "test:gemini-simplified": "node scripts/test-gemini-simplified.js",
+    "build:test": "tsc -p tsconfig.test.json"
   },
   "keywords": [],
   "author": "",
@@ -22,7 +28,7 @@
   "dependencies": {
     "@ai-sdk/google": "^1.1.14",
     "@ai-sdk/openai": "^1.1.12",
-    "@google/generative-ai": "^0.21.0",
+    "@google/generative-ai": "^0.24.0",
     "@types/capture-console": "^1.0.5",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
