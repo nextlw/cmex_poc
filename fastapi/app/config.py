@@ -8,7 +8,7 @@ from supabase import create_client, Client
 load_dotenv()
 
 # Ambiente
-ENV = os.getenv("ENV")
+ENV = os.getenv("ENV", "dev")  # Valor padrão: "dev"
 
 # Configurações do cliente Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -46,25 +46,16 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 10000
 
-    # Configurações de CORS
-    if ENV == "dev":
-        BACKEND_CORS_ORIGINS: list[str] = [
-            "http://localhost:5173",
-            "http://localhost:10000",
-            "http://localhost:3000"
-        ]
-    elif ENV == "prod":
-        BACKEND_CORS_ORIGINS: list[str] = [
-            "https://app.nexcode.live"
-        ]
-    elif ENV == "staging":
-        BACKEND_CORS_ORIGINS: list[str] = [
-            "https://dev.app.nexcode.live"
-        ]
-    elif ENV == "homolog":
-        BACKEND_CORS_ORIGINS: list[str] = [
-            "https://beta.app.nexcode.live"
-        ]
+    # Configurações de CORS - Permitindo acesso de qualquer origem em desenvolvimento
+    # Independentemente do valor de ENV, sempre permita localhost:5173
+    BACKEND_CORS_ORIGINS: list[str] = [
+        "http://localhost:5173",
+        "http://localhost:10000",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:10000",
+        "http://127.0.0.1:3000"
+    ]
         
     CORS_ALLOW_CREDENTIALS: bool = True
     CORS_ALLOW_METHODS: list[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
@@ -75,7 +66,8 @@ class Settings(BaseSettings):
         "Origin",
         "X-Requested-With",
         "Access-Control-Request-Method",
-        "Access-Control-Request-Headers"
+        "Access-Control-Request-Headers",
+        "content-type"  # Adicionando explicitamente
     ]
     CORS_EXPOSE_HEADERS: list[str] = ["*"]
     CORS_MAX_AGE: int = 600  # 10 minutos em segundos
@@ -192,16 +184,10 @@ MODEL_MAPPING = {
         "max_tokens": 700,
         "temperature": 1.3,
     },
-    
-    "Qwen2.5-7b-instruct-1m": {
+    "qwen2.5-7b-instruct-1m": {
         "model_name": SETTINGS.LOCAL_MODEL,
         "max_tokens": 10000,
         "temperature": 0.7,
-    },
-    "Qwen": {
-        "model_name": "qwen2.5-7b-instruct-1m",
-        "temperature": 0.7,
-        "max_tokens": 2000
     }
 }
 

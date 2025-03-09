@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../components/Header";
-import PageHeader from "../../components/PageHeader";
+import { Header, PageHeader } from "../../components";
 import { PiListStarFill } from "react-icons/pi";
 import "./styles.css";
-import { HistoricoItem } from "./types";
+import { HistoricoItemTratado } from "../../types";
 import axiosInstance from "../../axiosConfig";
-import { AxiosResponse, AxiosError } from 'axios'
+import { AxiosResponse, AxiosError } from "axios";
 
 const HistoricoPage: React.FC = () => {
-  const [historico, setHistorico] = useState<HistoricoItem[]>([]);
+  const [historico, setHistorico] = useState<HistoricoItemTratado[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | null>(
     "Nex-0.3-Preview-2024"
   );
@@ -19,58 +18,54 @@ const HistoricoPage: React.FC = () => {
   }, []);
 
   const fetchHistorico = async () => {
-
     // Chama o endpoint de pesquisas
-    axiosInstance.get("/queries")
+    axiosInstance
+      .get("/queries")
       .then((response: AxiosResponse) => {
-
         console.log("GET /queries :: response ::", response);
 
         // Pega os dados
         if (response?.data?.data) {
-
           // Recupera o histórico
-          const historicoBruto = response.data.data
+          const historicoBruto = response.data.data;
 
           // Trata os dados
-          let historicoTratado = historicoBruto.map((item) => {
-
+          let historicoTratado = historicoBruto.map((item: any) => {
             // Monta o item
-            const novoItem = {
+            const novoItem: HistoricoItemTratado = {
               id: item.id,
               modelo: String(item.modelo),
               criado_em: item.criado_em,
-              ncm: item.resultado[0]?.ncm,
-              descricao: item.resultado[0]?.descricao,
-              atributos: item.resultado[0]?.atributos,
-              atributos_tipi: item.resultado[0]?.atributos_tipi,
-              valores_de_impostos: item.resultado[0]?.valores_de_impostos
-            }
+              ncm: item.resultado?.[0]?.ncm,
+              descricao: item.resultado?.[0]?.descricao,
+              atributos: item.resultado?.[0]?.atributos,
+              atributos_tipi: item.resultado?.[0]?.atributos_tipi,
+              valores_de_impostos: item.resultado?.[0]?.valores_de_impostos,
+            };
 
             // Adiciona o item no historicoTratado
-            return novoItem
-          })
+            return novoItem;
+          });
 
           console.log("HISTÓRICO TRATADO -->", historicoTratado);
 
-          setHistorico(historicoTratado)
-
-        } else {
-          setHistorico([]);
+          setHistorico(historicoTratado);
         }
-      })
-      .catch((reason: AxiosError) => {
-        console.error("GET /queries :: Erro ::", reason);
-        setHistorico([]);
-      })
-      .finally(() => {
-        setIsLoading(false)
-      });
 
+        // Remove o loading
+        setIsLoading(false);
+      })
+      .catch((error: AxiosError) => {
+        console.error("Error fetching histórico:", error);
+        setIsLoading(false);
+      });
   };
 
   return (
-    <div className="flex flex-col min-h-screen w-full" style={{ backgroundColor: 'var(--background-color-primary)' }}>
+    <div
+      className="flex flex-col min-h-screen w-full"
+      style={{ backgroundColor: "var(--background-color-primary)" }}
+    >
       <Header
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
@@ -113,13 +108,17 @@ const HistoricoPage: React.FC = () => {
                   <tr>
                     <td colSpan={11} className="text-center">
                       <div className="loading-spinner"></div>
-                      <span style={{ color: 'var(--text-color-primary)' }}>Carregando histórico...</span>
+                      <span style={{ color: "var(--text-color-primary)" }}>
+                        Carregando histórico...
+                      </span>
                     </td>
                   </tr>
                 ) : historico.length === 0 ? (
                   <tr>
                     <td colSpan={11} className="text-center">
-                      <span style={{ color: 'var(--text-color-muted)' }}>Nenhum registro encontrado</span>
+                      <span style={{ color: "var(--text-color-muted)" }}>
+                        Nenhum registro encontrado
+                      </span>
                     </td>
                   </tr>
                 ) : (
@@ -134,7 +133,10 @@ const HistoricoPage: React.FC = () => {
                         </span>
                       </td>
                       <td>{new Date(item.criado_em).toLocaleString()}</td>
-                      <td className="truncate-cell" data-full-text={item.descricao}>
+                      <td
+                        className="truncate-cell"
+                        data-full-text={item.descricao}
+                      >
                         {item.descricao}
                       </td>
                       <td>{item.ncm}</td>

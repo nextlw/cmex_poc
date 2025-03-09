@@ -13,6 +13,7 @@ import { RiAiGenerate2 } from "react-icons/ri";
 import ThemeToggle from "../ThemeToggle";
 import AvatarMenu from "../Avatar/AvatarMenu";
 import Sidebar from "../Sidebar";
+import { useNavigate } from "react-router-dom";
 
 const Header: React.FC<HeaderProps> = ({
   modeloSelecionado,
@@ -20,11 +21,12 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const { session } = useSession();
   const userEmail = session?.user?.email || "Usuário";
-  const userName = userEmail.split('@')[0] || 'Usuário';
+  const userName = userEmail.split("@")[0] || "Usuário";
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState({
     isMobile: window.innerWidth <= 720,
-    isIntermediate: window.innerWidth > 720 && window.innerWidth <= 1280
+    isIntermediate: window.innerWidth > 720 && window.innerWidth <= 1280,
   });
 
   useEffect(() => {
@@ -32,24 +34,24 @@ const Header: React.FC<HeaderProps> = ({
       const width = window.innerWidth;
       setScreenSize({
         isMobile: width <= 720,
-        isIntermediate: width > 720 && width <= 1280
+        isIntermediate: width > 720 && width <= 1280,
       });
-      
+
       if (width > 1280 && isSidebarOpen) {
-        document.body.classList.add('sidebar-open');
+        document.body.classList.add("sidebar-open");
       } else {
-        document.body.classList.remove('sidebar-open');
+        document.body.classList.remove("sidebar-open");
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [isSidebarOpen]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
     if (!screenSize.isMobile) {
-      document.body.classList.toggle('sidebar-open');
+      document.body.classList.toggle("sidebar-open");
     }
   };
 
@@ -57,18 +59,40 @@ const Header: React.FC<HeaderProps> = ({
     aoMudarModelo(novoModelo);
   };
 
+  const handleClearStorage = () => {
+    // Mantém apenas os dados essenciais
+    const essentialData = {
+      "sb-qrfxqaovpddcziulqflw-auth-token": localStorage.getItem(
+        "sb-qrfxqaovpddcziulqflw-auth-token"
+      ),
+      theme: localStorage.getItem("theme"),
+      selectedModel: localStorage.getItem("selectedModel"),
+      useDeepResearch: localStorage.getItem("useDeepResearch"),
+    };
+
+    // Limpa todo o localStorage
+    localStorage.clear();
+
+    // Restaura os dados essenciais
+    Object.entries(essentialData).forEach(([key, value]) => {
+      if (value) localStorage.setItem(key, value);
+    });
+
+    // Recarrega a página para aplicar as mudanças
+    window.location.reload();
+  };
+
   return (
     <>
       <header className="bg-header shadow-header">
         <div className="section-header">
-          <Hamburger
-            onClick={toggleSidebar}
-            reactIcon={<AiOutlineMenu />}
-          />
+          <Hamburger onClick={toggleSidebar} reactIcon={<AiOutlineMenu />} />
 
           <Logo />
           {!screenSize.isMobile && !screenSize.isIntermediate && (
-            <HeaderLinks links={["Início", "Histórico", "Busca", "Chat", "Configurações"]} />
+            <HeaderLinks
+              links={["Início", "Histórico", "Busca", "Chat", "Configurações"]}
+            />
           )}
         </div>
 
@@ -96,7 +120,7 @@ const Header: React.FC<HeaderProps> = ({
             <ThemeToggle />
             <span className="user-name">{userEmail}</span>
             {session && (
-              <AvatarMenu name={userName} />
+              <AvatarMenu name={userName} onClearStorage={handleClearStorage} />
             )}
           </div>
         )}
@@ -106,7 +130,7 @@ const Header: React.FC<HeaderProps> = ({
         isOpen={isSidebarOpen}
         onClose={() => {
           setIsSidebarOpen(false);
-          document.body.classList.remove('sidebar-open');
+          document.body.classList.remove("sidebar-open");
         }}
         modeloSelecionado={modeloSelecionado}
         aoMudarModelo={aoMudarModelo}

@@ -1,0 +1,48 @@
+/* Estilos para o componente DeepResearchToggle */
+.deep-research-toggle {
+    margin: 0.5rem 0;
+    font-family: var(--font-family-primary, system-ui, -apple-system, sans-serif);
+}
+
+.toggle-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.toggle-label {
+    font-size: var(--font-size-sm, 0.9rem);
+    font-weight: var(--font-weight-medium, 500);
+    color: var(--color-text-primary, #fff);
+}
+
+.toggle-button {
+    background-color: var(--color-background-secondary, #2a2a2a);
+    color: var(--color-text-secondary, #ccc);
+    border: 1px solid var(--color-border, #444);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-size: var(--font-size-xs, 0.8rem);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    box-shadow: 0 1px 2px var(--color-shadow, rgba(0, 0, 0, 0.2));
+}
+
+.toggle-button.toggle-active {
+    background-color: var(--color-primary, #2775cf);
+    color: var(--color-white, #fff);
+    border: 1px solid var(--color-primary, #2775cf);
+}
+
+.toggle-button.toggle-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.toggle-help {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: var(--font-size-xs, 0.75rem);
+    color: var(--color-text-secondary, #aaa);
+}

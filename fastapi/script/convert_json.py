@@ -81,8 +81,8 @@ def process_directory(input_dir: str, output_dir: str) -> None:
 
 if __name__ == "__main__":
     # Diretórios de entrada e saída
-    input_dir = "/Users/williamduarte/Documents/Empresa/Projeto/nexcode/cmex_poc/backend/script"
-    output_dir = "/Users/williamduarte/Documents/Empresa/Projeto/nexcode/cmex_poc/backend/data/db_ncm_vector"
+    input_dir = "/Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente/src/regras/rulles.txt"
+    output_dir = "/Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente/src/regras"
     
     print("Iniciando conversão de arquivos JSON para JSONL...")
     process_directory(input_dir, output_dir)

@@ -1,10 +1,10 @@
 /**
  * ARQUIVO CENTRALIZADO DE TIPOS DO BACKEND
- * 
+ *
  * Este arquivo contém todos os tipos globais usados no backend.
  * Anteriormente os tipos estavam espalhados em vários arquivos,
  * mas foram consolidados aqui para facilitar a manutenção.
- * 
+ *
  * Ao adicionar novos tipos globais, adicione-os a este arquivo.
  * Tipos específicos de componentes devem permanecer em seus
  * próprios arquivos junto aos componentes.
@@ -13,7 +13,11 @@
 import { CoreAssistantMessage, CoreUserMessage, LanguageModelUsage } from "ai";
 import { TokenTracker } from "../utils/token-tracker";
 import { ActionTracker } from "../utils/action-tracker";
-import { SchemaType } from "@google/generative-ai";
+import { Schema as GoogleSchema, SchemaType } from "@google/generative-ai";
+
+// Re-exportando os tipos da biblioteca
+export { SchemaType };
+export type Schema = GoogleSchema;
 
 // Tipos Schema
 export type SchemaProperty = {
@@ -27,9 +31,10 @@ export type SchemaProperty = {
   minItems?: number;
 };
 
+// Definição correta de ResponseSchema para ser compatível com @google/generative-ai
 export type ResponseSchema = {
-  type?: SchemaType;
-  properties: Record<string, SchemaProperty>;
+  type: SchemaType.OBJECT;
+  properties: Record<string, Schema>;
   required?: string[];
 };
 
@@ -61,12 +66,12 @@ export type AnswerAction = BaseAction & {
 };
 
 export type KnowledgeItem = {
-  question: string,
-  answer: string,
+  question: string;
+  answer: string;
   references?: Reference[] | Array<any>;
-  type: 'qa' | 'side-info' | 'chat-history' | 'url' | 'coding',
-  updated: string,
-}
+  type: "qa" | "side-info" | "chat-history" | "url" | "coding";
+  updated: string;
+};
 
 export type ReflectAction = BaseAction & {
   action: "reflect";
@@ -83,10 +88,19 @@ export type CodingAction = BaseAction & {
   codingIssue: string;
 };
 
-export type StepAction = SearchAction | AnswerAction | ReflectAction | VisitAction | CodingAction;
+export type StepAction =
+  | SearchAction
+  | AnswerAction
+  | ReflectAction
+  | VisitAction
+  | CodingAction;
 
 // Tipos de Avaliação
-export type EvaluationType = 'definitive' | 'freshness' | 'plurality' | 'attribution';
+export type EvaluationType =
+  | "definitive"
+  | "freshness"
+  | "plurality"
+  | "attribution";
 export type EvaluationCriteria = {
   types: EvaluationType[];
   languageStyle: string;
@@ -112,7 +126,7 @@ export interface SearchResponse {
     description: string;
     url: string;
     content: string;
-    usage: { tokens: number; };
+    usage: { tokens: number };
   }> | null;
   name?: string;
   message?: string;
@@ -142,7 +156,7 @@ export interface ReadResponse {
     description: string;
     url: string;
     content: string;
-    usage: { tokens: number; };
+    usage: { tokens: number };
   };
   name?: string;
   message?: string;
@@ -154,7 +168,7 @@ export type EvaluationResponse = {
   pass: boolean;
   think: string;
   tokens?: number;
-  type?: 'definitive' | 'freshness' | 'plurality' | 'attribution';
+  type?: "definitive" | "freshness" | "plurality" | "attribution";
   freshness_analysis?: {
     likely_outdated: boolean;
     dates_mentioned: string[];
@@ -213,7 +227,15 @@ export interface StreamMessage {
     tokenTracker: TokenTracker;
     actionTracker: ActionTracker;
   };
-  type: 'progress' | 'answer' | 'error' | 'search' | 'reflect' | 'visit' | 'log' | 'connected';
+  type:
+    | "progress"
+    | "answer"
+    | "error"
+    | "search"
+    | "reflect"
+    | "visit"
+    | "log"
+    | "connected";
   data: string | StepAction;
   outputs?: any[];
   step?: number;
@@ -233,20 +255,20 @@ export interface TrackerContext {
 
 // Interfaces de Log do Servidor
 export interface ServerLog {
-  context: { 
+  context: {
     pid: number;
     env: string;
     requestId?: string;
   };
   timestamp: string;
   message: string;
-  level: 'log' | 'error' | 'warn' | 'info';
+  level: "log" | "error" | "warn" | "info";
 }
 
 // Tipos da API OpenAI
 export interface Model {
   id: string;
-  object: 'model';
+  object: "model";
   created: number;
   owned_by: string;
 }
@@ -255,24 +277,24 @@ export interface ChatCompletionRequest {
   model: string;
   messages: Array<CoreUserMessage | CoreAssistantMessage>;
   stream?: boolean;
-  reasoning_effort?: 'low' | 'medium' | 'high' | null;
+  reasoning_effort?: "low" | "medium" | "high" | null;
   max_completion_tokens?: number | null;
 }
 
 export interface ChatCompletionResponse {
   id: string;
-  object: 'chat.completion';
+  object: "chat.completion";
   created: number;
   model: string;
   system_fingerprint: string;
   choices: Array<{
     index: number;
     message: {
-      role: 'assistant';
+      role: "assistant";
       content: string;
     };
     logprobs: null;
-    finish_reason: 'stop';
+    finish_reason: "stop";
   }>;
   usage: {
     prompt_tokens: number;
@@ -283,18 +305,18 @@ export interface ChatCompletionResponse {
 
 export interface ChatCompletionChunk {
   id: string;
-  object: 'chat.completion.chunk';
+  object: "chat.completion.chunk";
   created: number;
   model: string;
   system_fingerprint: string;
   choices: Array<{
     index: number;
     delta: {
-      role?: 'assistant';
+      role?: "assistant";
       content?: string;
     };
     logprobs: null;
-    finish_reason: null | 'stop';
+    finish_reason: null | "stop";
   }>;
   usage?: any;
 }
@@ -302,7 +324,17 @@ export interface ChatCompletionChunk {
 // Tipos de Sessão e Etapas
 export interface QueryStep {
   id: number;
-  type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log' | 'visit' | 'answer';
+  type:
+    | "query"
+    | "step"
+    | "response"
+    | "error"
+    | "connected"
+    | "reflect"
+    | "search"
+    | "log"
+    | "visit"
+    | "answer";
   content: string;
   timestamp: string;
   data?: {
@@ -317,7 +349,7 @@ export interface QueryStep {
   action?: {
     type: string;
     title: string;
-    status: 'waiting' | 'processing' | 'completed';
+    status: "waiting" | "processing" | "completed";
     completed: boolean;
     active: boolean;
   };
@@ -327,7 +359,7 @@ export interface QuerySession {
   id: string;
   question: string;
   timestamp: string;
-  status: 'in_progress' | 'completed' | 'error';
+  status: "in_progress" | "completed" | "error";
   summary?: string;
   steps: QueryStep[];
   metadata: {
@@ -336,4 +368,4 @@ export interface QuerySession {
     elapsedTime?: string;
     urlCount?: number;
   };
-} 
+}
