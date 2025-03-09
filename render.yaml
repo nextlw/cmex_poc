@@ -19,3 +19,83 @@ services:
   previews:
     generation: automatic
 version: "1"
+
+# Serviço Node.js
+- type: web
+  name: buscador-node
+  env: node
+  buildCommand: cd buscador_inteligente && pnpm install && pnpm build
+  startCommand: cd buscador_inteligente && pnpm start
+  envVars:
+    - key: NODE_ENV
+      value: production
+    - key: PORT
+      value: 3000
+    - key: REDIS_HOST
+      fromService:
+        type: redis
+        name: buscador-redis
+        property: host
+    - key: REDIS_PORT
+      fromService:
+        type: redis
+        name: buscador-redis
+        property: port
+    - key: REDIS_PASSWORD
+      fromService:
+        type: redis
+        name: buscador-redis
+        property: password
+    - key: REDIS_TLS
+      value: true
+    # Outras variáveis de ambiente necessárias
+    # ...
+
+# Serviço FastAPI (já existente, apenas atualizando variáveis)
+- type: web
+  name: buscador-fastapi
+  env: python
+  buildCommand: cd fastapi && pip install -r requirements.txt
+  startCommand: cd fastapi && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+  envVars:
+    - key: REDIS_HOST
+      fromService:
+        type: redis
+        name: buscador-redis
+        property: host
+    - key: REDIS_PORT
+      fromService:
+        type: redis
+        name: buscador-redis
+        property: port
+    - key: REDIS_PASSWORD
+      fromService:
+        type: redis
+        name: buscador-redis
+        property: password
+    - key: REDIS_TLS
+      value: true
+    - key: NODE_API_URL
+      value: https://buscador-node.onrender.com
+    # Outras variáveis de ambiente necessárias
+    # ...
+
+# Serviço Frontend (já existente, apenas atualizando variáveis)
+- type: web
+  name: buscador-frontend
+  env: static
+  buildCommand: cd frontend && npm install && npm run build
+  staticPublishPath: ./frontend/build
+  envVars:
+    - key: REACT_APP_API_URL
+      value: https://buscador-fastapi.onrender.com
+    - key: REACT_APP_NODE_API_URL
+      value: https://buscador-node.onrender.com
+    # Outras variáveis de ambiente necessárias
+    # ...
+
+# Serviço Redis
+- type: redis
+  name: buscador-redis
+  ipAllowList: []
+  plan: free

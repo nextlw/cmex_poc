@@ -1,0 +1,121 @@
+import Redis from "ioredis";
+import { EventEmitter } from "events";
+
+// Canais Redis
+export const CHANNELS = {
+  NODE_TASK_UPDATES: "node:task_updates",
+  FASTAPI_TASK_UPDATES: "fastapi:task_updates",
+  MODEL_SELECTION: "model:selection",
+  QUERY_RESULTS: "query:results",
+};
+
+// Configuração do Redis
+const redisConfig = {
+  host: process.env.REDIS_HOST || "localhost",
+  port: Number(process.env.REDIS_PORT) || 6379,
+  password: process.env.REDIS_PASSWORD,
+  tls: process.env.REDIS_TLS === "true" ? {} : undefined,
+};
+
+// Clientes Redis
+export const publisher = new Redis(redisConfig);
+export const subscriber = new Redis(redisConfig);
+
+// Inicializar assinaturas
+export function initializeRedisSubscriptions(eventEmitter: EventEmitter) {
+  // Assinar aos canais relevantes
+  subscriber.subscribe(
+    CHANNELS.FASTAPI_TASK_UPDATES,
+    CHANNELS.MODEL_SELECTION,
+    (err: Error | null) => {
+      if (err) {
+        console.error("Erro ao assinar canais Redis:", err);
+        return;
+      }
+      console.log("Assinado nos canais Redis com sucesso");
+    }
+  );
+
+  // Manipular mensagens recebidas
+  subscriber.on("message", (channel: string, message: string) => {
+    try {
+      const data = JSON.parse(message);
+
+      if (channel === CHANNELS.FASTAPI_TASK_UPDATES && data.requestId) {
+        console.log(
+          `Atualização recebida via Redis para tarefa ${data.requestId}`
+        );
+
+        // Emitir evento para clientes conectados
+        eventEmitter.emit(`progress-${data.requestId}`, {
+          type: data.type || "progress",
+          data: data.payload,
+        });
+      } else if (channel === CHANNELS.MODEL_SELECTION && data.requestId) {
+        console.log(
+          `Seleção de modelo recebida: ${data.model} para ${data.requestId}`
+        );
+
+        // Processar a seleção do modelo
+        processModelSelection(data.requestId, data.model, data.query);
+      }
+    } catch (error) {
+      console.error("Erro ao processar mensagem Redis:", error);
+    }
+  });
+}
+
+// Publicar atualização de tarefa
+export function publishTaskUpdate(
+  requestId: string,
+  updateType: string,
+  payload: any
+) {
+  publisher.publish(
+    CHANNELS.NODE_TASK_UPDATES,
+    JSON.stringify({
+      requestId,
+      type: updateType,
+      payload,
+      timestamp: new Date().toISOString(),
+    })
+  );
+}
+
+// Publicar resultados de consulta
+export function publishQueryResults(requestId: string, results: any) {
+  publisher.publish(
+    CHANNELS.QUERY_RESULTS,
+    JSON.stringify({
+      requestId,
+      results,
+      timestamp: new Date().toISOString(),
+    })
+  );
+}
+
+// Processar seleção de modelo
+async function processModelSelection(
+  requestId: string,
+  modelName: string,
+  query: string
+) {
+  // Implementar lógica para usar o modelo selecionado
+  // Esta função deve iniciar o processamento com o modelo correto
+  console.log(
+    `Iniciando processamento para ${requestId} com modelo ${modelName}`
+  );
+
+  // Aqui você deve implementar a lógica para iniciar o processamento
+  // com o modelo selecionado, integrando com seu sistema existente
+
+  // Exemplo:
+  // const result = await startProcessingWithModel(requestId, query, modelName);
+  // publishQueryResults(requestId, result);
+}
+
+// Função para encerrar conexões Redis
+export function closeRedisConnections() {
+  publisher.quit();
+  subscriber.quit();
+}

@@ -29,6 +29,14 @@ import { ensureModelClientInitialized } from "./agent";
 import { ncmRouter } from "./controllers/ncm";
 import { processarDeepResearch } from "./controllers/deepResearchNCM";
 
+// Importar serviço Redis
+import {
+  initializeRedisSubscriptions,
+  publishTaskUpdate,
+  publishQueryResults,
+  closeRedisConnections,
+} from "./services/redis-service";
+
 /**
  * Interface para armazenar logs do servidor.
  */
@@ -210,6 +218,9 @@ app.post("/api/v1/trash-query", async (req: Request, res: Response) => {
  */
 const eventEmitter = new EventEmitter();
 
+// Inicializar Redis na inicialização do servidor
+initializeRedisSubscriptions(eventEmitter);
+
 /**
  * Interface de resposta de stream.
  */
@@ -246,6 +257,12 @@ function captureLLMOutput(requestId: string, type: string, data: any) {
       data,
     });
   }
+
+  // Adicionar publicação via Redis
+  publishTaskUpdate(requestId, "llm_output", {
+    type,
+    data,
+  });
 }
 
 /**
@@ -299,26 +316,24 @@ function cleanup(requestId: string) {
 /**
  * Emite o update do rastreador.
  * @param requestId ID da requisição.
- * @param context Contexto.
+ * @param context Contexto do rastreador.
  */
 function emitTrackerUpdate(requestId: string, context: TrackerContext) {
-  const trackerData = {
-    tokenUsage: context.tokenTracker.getTotalUsage(),
-    tokenBreakdown: context.tokenTracker.getUsageByModel(),
-    actionState: context.actionTracker.getState().thisStep,
-    step: context.actionTracker.getState().totalStep,
-    badAttempts: context.actionTracker.getState().badAttempts,
-    gaps: context.actionTracker.getState().gaps,
-  };
+  const state = context.actionTracker.getState();
+  const tokenUsage = context.tokenTracker.getTotalUsage();
 
-  // Inclua os outputs adicionais aqui
-  const outputs = context.outputs || [];
-
-  // Emite o evento incluindo os outputs
   eventEmitter.emit(`progress-${requestId}`, {
     type: "progress",
-    trackers: trackerData,
-    outputs: outputs,
+    data: {
+      state,
+      tokenUsage,
+    },
+  });
+
+  // Adicionar publicação via Redis
+  publishTaskUpdate(requestId, "tracker_update", {
+    state: context.actionTracker.getState(),
+    tokenUsage: context.tokenTracker.getTotalUsage(),
   });
 }
 
@@ -1907,3 +1922,164 @@ function cleanupCompletedTasks() {
 
 // Executa a limpeza a cada 30 minutos
 setInterval(cleanupCompletedTasks, 30 * 60 * 1000);
+
+// Adicionar manipulador para encerrar conexões Redis ao fechar o servidor
+process.on("SIGTERM", () => {
+  console.log("Encerrando servidor...");
+  closeRedisConnections();
+  // Outros procedimentos de encerramento
+  // ...
+});
+
+process.on("SIGINT", () => {
+  console.log("Encerrando servidor...");
+  closeRedisConnections();
+  process.exit(0);
+});
+
+// Rota para processar consulta com modelo específico
+app.post("/api/v1/process-with-model", async (req, res) => {
+  try {
+    const { query, model, requestId } = req.body;
+
+    if (!query || !model || !requestId) {
+      return res.status(400).json({ error: "Parâmetros incompletos" });
+    }
+
+    console.log(`Processando consulta com modelo ${model} para ${requestId}`);
+
+    // Iniciar processamento com o modelo selecionado
+    const context = await startProcessingWithModel(requestId, query, model);
+
+    return res.status(200).json({
+      success: true,
+      message: "Processamento iniciado",
+      requestId,
+    });
+  } catch (error) {
+    console.error("Erro ao processar consulta:", error);
+    return res.status(500).json({ error: "Erro interno do servidor" });
+  }
+});
+
+// Função para iniciar processamento com modelo específico
+async function startProcessingWithModel(
+  requestId: string,
+  query: string,
+  modelName: string
+) {
+  // Criar contexto de rastreamento
+  const tokenTracker = new TokenTracker();
+  const actionTracker = new ActionTracker();
+
+  const context: TrackerContext = {
+    tokenTracker,
+    actionTracker,
+  };
+
+  // Registrar o contexto
+  trackers.set(requestId, context);
+
+  // Inicializar saídas da LLM
+  llmOutputsByRequest.set(requestId, []);
+
+  // Configurar listeners para rastreamento
+  context.actionTracker.on("action", () => {
+    emitTrackerUpdate(requestId, context);
+  });
+
+  // Iniciar processamento em background
+  setTimeout(async () => {
+    try {
+      // Aqui você deve implementar a lógica para usar o modelo selecionado
+      // Exemplo: chamar getResponse com o modelo específico
+      const result = await getResponse(query, {
+        model: modelName,
+        requestId,
+        tokenTracker,
+        actionTracker,
+      });
+
+      // Publicar resultados
+      publishQueryResults(requestId, result);
+
+      // Salvar metadados da consulta
+      await saveQueryMetadata(requestId, {
+        title: result.title || query.substring(0, 50),
+        originalQuestion: query,
+        timestamp: new Date().toISOString(),
+        status: "completed",
+        summary: result.answer,
+        promptCount: tokenTracker.getTotalPrompts(),
+        question: query,
+      });
+
+      // Atualizar status
+      await updateQueryStatus(requestId, "completed");
+    } catch (error) {
+      console.error(`Erro ao processar consulta ${requestId}:`, error);
+
+      // Publicar erro
+      publishTaskUpdate(requestId, "error", {
+        message: "Erro ao processar consulta",
+        error: String(error),
+      });
+
+      // Atualizar status
+      await updateQueryStatus(requestId, "error");
+    }
+  }, 0);
+
+  return context;
+}
+
+// Rota para chat direto
+app.post("/api/v1/chat", async (req, res) => {
+  try {
+    const { message, model } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ error: "Mensagem não fornecida" });
+    }
+
+    // Usar o modelo especificado ou padrão
+    const modelToUse = model || "gpt4";
+
+    // Processar mensagem com o modelo selecionado
+    const response = await processChat(message, modelToUse);
+
+    return res.status(200).json({
+      success: true,
+      response,
+    });
+  } catch (error) {
+    console.error("Erro ao processar mensagem de chat:", error);
+    return res.status(500).json({ error: "Erro interno do servidor" });
+  }
+});
+
+// Função para processar chat com modelo específico
+async function processChat(message: string, modelName: string) {
+  // Implementar lógica para usar o modelo selecionado
+  // Esta função deve processar a mensagem com o modelo correto
+
+  // Exemplo simples (substitua pela sua implementação real):
+  const tokenTracker = new TokenTracker();
+  const actionTracker = new ActionTracker();
+
+  try {
+    // Aqui você deve implementar a lógica para usar o modelo selecionado
+    // Exemplo: chamar getResponse com o modelo específico
+    const result = await getResponse(message, {
+      model: modelName,
+      requestId: `chat-${Date.now()}`,
+      tokenTracker,
+      actionTracker,
+    });
+
+    return result.answer || "Não foi possível processar a mensagem";
+  } catch (error) {
+    console.error("Erro ao processar chat:", error);
+    throw error;
+  }
+}
