@@ -1,0 +1,206 @@
+# Teste E2E - Camisa Polo - Caso com Detalhes Específicos
+
+## Data: 2025-03-07
+
+### Configuração do Teste
+- **Modelo Selecionado:** gemini-1.5-pro
+- **Query:** "Camisa polo masculina, tecido piqué 100% algodão, manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta."
+
+### Resultado
+- **NCM Esperado:** 6105.10.00
+- **NCM Obtido:** 6105.10.00
+- **Resultado:** ✅ Correto
+- **Tempo de Processamento Total:** 27.63 segundos
+- **Confiança:** 0.95
+
+## Processo de Análise Profunda (Deep Research)
+
+### Resumo
+- **Total de Etapas:** 5
+- **Etapas Concluídas com Sucesso:** 5
+- **Tempo Total de Processamento:** 27.63 segundos
+- **Total de Retentativas:** 5
+
+### Detalhes das Etapas
+
+#### Etapa 1: Identificação do código NCM
+
+- **Status:** ✅ Sucesso
+- **Tempo de Processamento:** 1.77 segundos
+- **Tentativas Realizadas:** 3
+
+**Prompt Enviado:**
+```
+Analise o produto: "Camisa polo masculina, tecido piqué 100% algodão, manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta."
+
+Identifique o código NCM mais apropriado para este produto. Forneça o código e uma breve justificativa.
+```
+
+**Resposta JSON:**
+```json
+{
+  "ncm_code": "6105.10.00",
+  "description": "Camisas de malha, de algodão, para homens ou meninos"
+}
+```
+
+#### Etapa 2: Análise de características do produto
+
+- **Status:** ✅ Sucesso
+- **Tempo de Processamento:** 2.45 segundos
+
+**Prompt Enviado:**
+```
+Analise o produto: "Camisa polo masculina, tecido piqué 100% algodão, manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta."
+
+Descreva detalhadamente as características do produto que justificam sua classificação no NCM identificado.
+```
+
+**Resposta JSON:**
+```json
+{
+  "ncm": "61051000",
+  "attributes": {
+    "material": "100% algodão",
+    "tipo": "Camisa polo masculina",
+    "uso": "Vestuário",
+    "outras_caracteristicas": "Manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta, tecido piqué.  A combinação dessas características a classifica como camisa tipo polo, diferenciando-a de camisetas e outras camisas."
+  }
+}
+```
+
+#### Etapa 3: Cálculo de tributação aplicável
+
+- **Status:** ✅ Sucesso
+- **Tempo de Processamento:** 1.86 segundos
+- **Tentativas Realizadas:** 2
+
+**Prompt Enviado:**
+```
+Analise o produto: "Camisa polo masculina, tecido piqué 100% algodão, manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta."
+
+Detalhe a tributação aplicável a este produto (IPI, ICMS, PIS, COFINS).
+```
+
+**Resposta JSON:**
+```json
+{
+  "ncm": "61051000",
+  "taxation": {
+    "ipi": 7,
+    "icms": 17,
+    "pis": 1.65,
+    "cofins": 7.6,
+    "import_tax": 16
+  }
+}
+```
+
+#### Etapa 4: Identificação de atributos específicos
+
+- **Status:** ✅ Sucesso
+- **Tempo de Processamento:** 3.02 segundos
+- **Tentativas Realizadas:** 3
+
+**Prompt Enviado:**
+```
+Analise o produto: "Camisa polo masculina, tecido piqué 100% algodão, manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta."
+
+Identifique atributos específicos do produto que possam impactar sua classificação fiscal.
+```
+
+**Resposta JSON:**
+```json
+{
+  "attributes": {
+    "tipo_produto": "vestuário",
+    "genero": "masculino",
+    "categoria": "camisa",
+    "modelo": "polo",
+    "material": "100% algodão",
+    "tipo_tecido": "piqué",
+    "comprimento_manga": "curta",
+    "tipo_gola": "canelada com listras",
+    "tipo_fechamento": "botões",
+    "numero_botoes": "3",
+    "material_botoes": "perola",
+    "decoracao": "logotipo bordado",
+    "tipo_barra": "reta",
+    "detalhes": "fenda lateral"
+  }
+}
+```
+
+#### Etapa 5: Conclusão e nível de confiança
+
+- **Status:** ✅ Sucesso
+- **Tempo de Processamento:** 3.24 segundos
+
+**Prompt Enviado:**
+```
+Analise o produto: "Camisa polo masculina, tecido piqué 100% algodão, manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta."
+
+Forneça uma conclusão final sobre a classificação, incluindo recomendações e observações importantes.
+```
+
+**Resposta JSON:**
+```json
+{
+  "conclusion": "A classificação mais provável para 'Camisa polo masculina, tecido piqué 100% algodão, manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta' é **6105.10.00 - Camisas de malha, de algodão, para homens ou meninos**.  A descrição detalhada do produto, com a menção específica de 'tecido piqué 100% algodão', 'manga curta' e 'gola canelada', corrobora essa classificação.  A presença de detalhes como botões perolizados e logotipo bordado não altera a classificação NCM.",
+  "confidence": 0.95
+}
+```
+
+### Resultado Consolidado
+```json
+{
+  "ncm_code": "6105.10.00",
+  "description": "Camisas de malha, de algodão, para homens ou meninos",
+  "attributes": {
+    "material": "100% algodão",
+    "tipo": "Camisa polo masculina",
+    "uso": "Vestuário",
+    "outras_caracteristicas": "Manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta, tecido piqué.  A combinação dessas características a classifica como camisa tipo polo, diferenciando-a de camisetas e outras camisas.",
+    "tipo_produto": "vestuário",
+    "genero": "masculino",
+    "categoria": "camisa",
+    "modelo": "polo",
+    "tipo_tecido": "piqué",
+    "comprimento_manga": "curta",
+    "tipo_gola": "canelada com listras",
+    "tipo_fechamento": "botões",
+    "numero_botoes": "3",
+    "material_botoes": "perola",
+    "decoracao": "logotipo bordado",
+    "tipo_barra": "reta",
+    "detalhes": "fenda lateral"
+  },
+  "taxation": {
+    "ipi": 7,
+    "icms": 17,
+    "pis": 1.65,
+    "cofins": 7.6,
+    "import_tax": 16
+  },
+  "conclusion": "A classificação mais provável para 'Camisa polo masculina, tecido piqué 100% algodão, manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta' é **6105.10.00 - Camisas de malha, de algodão, para homens ou meninos**.  A descrição detalhada do produto, com a menção específica de 'tecido piqué 100% algodão', 'manga curta' e 'gola canelada', corrobora essa classificação.  A presença de detalhes como botões perolizados e logotipo bordado não altera a classificação NCM.",
+  "confidence": 0.95,
+  "model_used": "gemini-1.5-pro",
+  "processing_time": 0
+}
+```
+
+### Análise de Tokens
+```json
+{}
+```
+
+### Conclusão
+O modelo gemini-1.5-pro classificou corretamente o produto no código NCM esperado. 
+
+Conclusão do modelo:
+A classificação mais provável para 'Camisa polo masculina, tecido piqué 100% algodão, manga curta, gola canelada com listras, 3 botões frontais perolizados, logotipo bordado no peito, fenda lateral, barra reta' é **6105.10.00 - Camisas de malha, de algodão, para homens ou meninos**.  A descrição detalhada do produto, com a menção específica de 'tecido piqué 100% algodão', 'manga curta' e 'gola canelada', corrobora essa classificação.  A presença de detalhes como botões perolizados e logotipo bordado não altera a classificação NCM.
+
+### Observações
+- Tempo de resposta total: 27.63 segundos
+- Taxa de confiança: 0.95
+- Nenhum erro encontrado durante o processamento

@@ -4,8 +4,8 @@ export interface Option {
 }
 
 export const Modelos: Option[] = [
-  { label: "qwen2.5-7b-instruct-1m", value: "qwen2.5-7b-instruct-1m" },
-  { label: "gemini-2.0-flash", value: "gemini-2.0-flash" },
+  { label: "Qwen2.5-7b-instruct-1m", value: "qwen2.5-7b-instruct-1m" },
+  { label: "Gemini-2.0-flash", value: "Gemini-2.0-flash" },
   { label: "Nex-0.5-Preview-2025", value: "Nex-0.5-Preview-2025" },
   { label: "Nex-0.3-Preview-2024", value: "Nex-0.3-Preview-2024" },
   { label: "Nexcode-0.1-BETA", value: "Nexcode-0.1-BETA" },

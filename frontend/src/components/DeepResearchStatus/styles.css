@@ -1,0 +1,185 @@
+/* Estilos para o componente DeepResearchStatus */
+.space-y-4>*+* {
+    margin-top: 1rem;
+}
+
+.p-4 {
+    padding: 1rem;
+}
+
+.border-l-4 {
+    border-left-width: 4px;
+}
+
+.border-l-primary {
+    border-left-color: var(--color-primary, #2775cf);
+}
+
+.bg-background {
+    background-color: var(--color-background, #fff);
+}
+
+.border {
+    border-width: 1px;
+    border-style: solid;
+}
+
+.border-border {
+    border-color: var(--color-border, #e5e7eb);
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.flex {
+    display: flex;
+}
+
+.items-start {
+    align-items: flex-start;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.break-words {
+    overflow-wrap: break-word;
+}
+
+.whitespace-normal {
+    white-space: normal;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.w-5 {
+    width: 1.25rem;
+}
+
+.h-5 {
+    height: 1.25rem;
+}
+
+.text-primary {
+    color: var(--color-primary, #2775cf);
+}
+
+.mt-0\.5 {
+    margin-top: 0.125rem;
+}
+
+.flex-shrink-0 {
+    flex-shrink: 0;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.text-text-primary {
+    color: var(--color-text-primary, #333);
+}
+
+.text-xs {
+    font-size: 0.75rem;
+}
+
+.text-text-secondary {
+    color: var(--color-text-secondary, #666);
+}
+
+.mt-1 {
+    margin-top: 0.25rem;
+}
+
+.flex-items-center {
+    align-items: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.w-full {
+    width: 100%;
+}
+
+.bg-border\/50 {
+    background-color: rgba(var(--color-border-rgb, 229, 231, 235), 0.5);
+}
+
+.h-2 {
+    height: 0.5rem;
+}
+
+.mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.rounded-full {
+    border-radius: 9999px;
+}
+
+.h-2 {
+    height: 0.5rem;
+}
+
+.bg-yellow-500 {
+    background-color: #eab308;
+}
+
+.bg-primary {
+    background-color: var(--color-primary, #2775cf);
+}
+
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}

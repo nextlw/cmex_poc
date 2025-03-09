@@ -18,20 +18,31 @@ from .routes.autocomplete import autocomplete_router
 # Inicializa uma instância do FastAPI.
 # Todas as rotas com prefixo /api
 app = FastAPI(
-    title=SETTINGS.PROJECT_NAME, openapi_url=f"{SETTINGS.API_V1_STR}/openapi.json"
+    title=SETTINGS.PROJECT_NAME, 
+    description="API para consulta e gerenciamento de NCM utilizando IA",
+    version="1.0.0",
+    openapi_url=f"{SETTINGS.API_V1_STR}/openapi.json",
+    docs_url=f"{SETTINGS.API_V1_STR}/docs",
+    redoc_url=f"{SETTINGS.API_V1_STR}/redoc"
 )
 
-# Configurações de CORS
+# Configurações de CORS - Permitindo TODOS os origens para teste
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=SETTINGS.BACKEND_CORS_ORIGINS,
-    allow_credentials=SETTINGS.CORS_ALLOW_CREDENTIALS,
-    allow_methods=SETTINGS.CORS_ALLOW_METHODS,
-    allow_headers=SETTINGS.CORS_ALLOW_HEADERS,
-    expose_headers=SETTINGS.CORS_EXPOSE_HEADERS,
-    max_age=SETTINGS.CORS_MAX_AGE,
+    allow_origins=SETTINGS.BACKEND_CORS_ORIGINS,  # Usando as origens definidas nas configurações
+    allow_credentials=True,
+    allow_methods=SETTINGS.CORS_ALLOW_METHODS,  # Usando os métodos definidos nas configurações
+    allow_headers=SETTINGS.CORS_ALLOW_HEADERS,  # Usando os headers definidos nas configurações
+    expose_headers=SETTINGS.CORS_EXPOSE_HEADERS,  # Usando os headers de exposição definidos nas configurações
+    max_age=SETTINGS.CORS_MAX_AGE,  # Usando o tempo máximo definido nas configurações
 )
 
+# Middleware para aumentar o timeout das respostas
+@app.middleware("http")
+async def add_timeout_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Keep-Alive"] = "timeout=600"  # 10 minutos
+    return response
 
 # Middleware de autenticação
 app.add_middleware(AuthMiddleware)

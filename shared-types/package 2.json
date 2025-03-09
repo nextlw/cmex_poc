@@ -1,0 +1,39 @@
+{
+  "name": "@cmex/shared-types",
+  "version": "1.0.0",
+  "description": "Definições de tipos compartilhados, schemas Zod e transformadores para o projeto CMEX",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
+    "test:coverage": "vitest run --coverage --config vitest.config.ts",
+    "lint": "eslint . --ext .ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "types",
+    "schemas",
+    "transformers",
+    "zod"
+  ],
+  "author": "CMEX",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^18.19.76",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "@vitest/coverage-c8": "^0.31.0",
+    "eslint": "^8.38.0",
+    "typescript": "^5.0.4",
+    "vitest": "^0.31.0"
+  },
+  "dependencies": {
+    "zod": "^3.24.2"
+  }
+}

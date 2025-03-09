@@ -90,6 +90,12 @@ def processar_resposta_modelo(content: str) -> list:
         # Remove delimitadores de código markdown se presentes
         content = content.replace('```json', '').replace('```', '').strip()
         
+        # Remove qualquer texto antes do primeiro {
+        content = content[content.find('{'):]
+        
+        # Remove qualquer texto após o último }
+        content = content[:content.rfind('}')+1]
+        
         # Tenta fazer o parse do JSON
         data = json.loads(content)
         

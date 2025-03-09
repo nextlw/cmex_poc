@@ -26,9 +26,9 @@ export interface InputAiProps {
   readOnly?: boolean;
   onButtonClick?: () => void;
   style?: React.CSSProperties;
-  showAutoComplete: Boolean
-  autoCompleteData?: Array<AutocompleteType>
-  handleAutocompleteClick: (value: AutocompleteType) => void
-  isAutocompleteLoading: Boolean
-  onClickOutside: () => void
+  showAutoComplete: Boolean;
+  autoCompleteData?: Array<AutocompleteType>;
+  handleAutocompleteClick: (value: AutocompleteType) => void;
+  isAutocompleteLoading: Boolean;
+  onClickOutside: () => void;
 }
