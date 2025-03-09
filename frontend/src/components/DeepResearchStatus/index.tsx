@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
-import api from "../axiosConfig";
-
-// Interface para o componente seguindo o mesmo padrão do DeepResearchToggle
-interface DeepResearchStatusProps {
-  requestId: string | null;
-  productName: string;
-  ncmCode?: string;
-}
+import api from "../../axiosConfig";
+import { DeepResearchStatusProps, ResearchInfo } from "./types";
+import "./styles.css";
 
 // Mensagens pré-definidas para cada etapa do processo
 const PROGRESS_MESSAGES = [
@@ -18,13 +13,6 @@ const PROGRESS_MESSAGES = [
   "Validando classificação com base em critérios técnicos...",
   "Finalizando análise e preparando parecer detalhado...",
 ];
-
-interface ResearchInfo {
-  type: "link" | "text" | "law" | "question";
-  content: string;
-  source?: string;
-  timestamp: Date;
-}
 
 /**
  * Componente para exibir o status atual do processo DeepResearch
@@ -42,8 +30,25 @@ const DeepResearchStatus: React.FC<DeepResearchStatusProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [researchInfo, setResearchInfo] = useState<ResearchInfo[]>([]);
   const [hasError, setHasError] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
+    // Verifica se já está concluído no localStorage
+    const completedRequestsStr = localStorage.getItem(
+      "completedDeepResearchRequests"
+    );
+    const completedRequests = completedRequestsStr
+      ? JSON.parse(completedRequestsStr)
+      : [];
+
+    // Se esse requestId já estiver marcado como concluído, não fazemos mais verificações
+    if (requestId && completedRequests.includes(requestId)) {
+      setIsLoading(false);
+      setIsCompleted(true);
+      setStatusMessage("Análise concluída com sucesso!");
+      return;
+    }
+
     if (!requestId) return;
 
     let isMounted = true;
@@ -116,6 +121,23 @@ const DeepResearchStatus: React.FC<DeepResearchStatusProps> = ({
             setTimeout(checkStatus, 2000);
           } else {
             setIsLoading(false);
+            setIsCompleted(true);
+
+            // Salva o requestId como concluído no localStorage
+            const completedRequestsStr = localStorage.getItem(
+              "completedDeepResearchRequests"
+            );
+            const completedRequests = completedRequestsStr
+              ? JSON.parse(completedRequestsStr)
+              : [];
+
+            if (!completedRequests.includes(requestId)) {
+              completedRequests.push(requestId);
+              localStorage.setItem(
+                "completedDeepResearchRequests",
+                JSON.stringify(completedRequests)
+              );
+            }
           }
         }
       } catch (error: any) {
@@ -252,23 +274,55 @@ const DeepResearchStatus: React.FC<DeepResearchStatusProps> = ({
                     d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <div className="flex-grow">
-                  <p className="text-sm text-text-primary break-words whitespace-normal">
-                    {info.content}
-                  </p>
-                  {index === researchInfo.length - 1 && isLoading && (
-                    <p className="text-xs text-primary mt-1 font-medium break-words whitespace-normal">
-                      {statusMessage}
-                    </p>
-                  )}
-                </div>
-                {index === researchInfo.length - 1 && isLoading && (
-                  <div className="ml-2 w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin flex-shrink-0" />
-                )}
+                <p className="text-sm text-text-primary break-words whitespace-normal flex-grow">
+                  {info.content}
+                </p>
               </>
             )}
           </div>
         ))}
+      </div>
+
+      {/* Barra de Progresso Fixa no Topo */}
+      <div className="bg-background border border-border rounded-lg p-4 shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-sm font-medium text-text-primary">
+            {hasError ? "Reconectando..." : statusMessage}
+          </h3>
+          {isLoading && (
+            <div className="flex-shrink-0">
+              <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-primary"></div>
+            </div>
+          )}
+        </div>
+
+        <div className="w-full bg-border/50 rounded-full h-2 mb-1">
+          <div
+            className={`h-2 rounded-full ${
+              hasError ? "bg-yellow-500" : "bg-primary"
+            } transition-all ${isLoading ? "animate-pulse" : ""}`}
+            style={{
+              width: `${
+                hasError
+                  ? "100"
+                  : isLoading
+                  ? Math.min(
+                      ((currentStep + 1) / PROGRESS_MESSAGES.length) * 100,
+                      95
+                    )
+                  : "100"
+              }%`,
+            }}
+          ></div>
+        </div>
+
+        <p className="text-xs text-text-secondary">
+          {hasError
+            ? "Tentando reconectar ao servidor..."
+            : isLoading
+            ? `Etapa ${currentStep + 1} de ${PROGRESS_MESSAGES.length}`
+            : "Análise concluída!"}
+        </p>
       </div>
     </div>
   );

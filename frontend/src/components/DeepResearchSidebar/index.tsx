@@ -1,15 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import api from "../../axiosConfig";
+import { DeepResearchSidebarProps } from "./types";
 import "./styles.css";
-
-interface DeepResearchSidebarProps {
-  isOpen: boolean;
-  requestId: string | null;
-  productName: string;
-  ncmCode?: string;
-  isProcessing?: boolean; // Indica se está em processamento (para sincronizar com o InputAI)
-  onCancelRequest?: () => void; // Callback para cancelar a consulta
-}
 
 interface ResearchStep {
   id: number;

@@ -18,7 +18,12 @@ from .routes.autocomplete import autocomplete_router
 # Inicializa uma instância do FastAPI.
 # Todas as rotas com prefixo /api
 app = FastAPI(
-    title=SETTINGS.PROJECT_NAME, openapi_url=f"{SETTINGS.API_V1_STR}/openapi.json"
+    title=SETTINGS.PROJECT_NAME, 
+    description="API para consulta e gerenciamento de NCM utilizando IA",
+    version="1.0.0",
+    openapi_url=f"{SETTINGS.API_V1_STR}/openapi.json",
+    docs_url=f"{SETTINGS.API_V1_STR}/docs",
+    redoc_url=f"{SETTINGS.API_V1_STR}/redoc"
 )
 
 # Configurações de CORS - Permitindo TODOS os origens para teste

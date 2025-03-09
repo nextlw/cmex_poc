@@ -1872,3 +1872,38 @@ app.post("/api/v1/ncm", (req, res, next) => {
 
 // Middleware para processamento DeepResearch
 app.use("/api/v1/ncm", processarDeepResearch);
+
+/**
+ * Mapa para armazenar as tarefas completadas e seus timestamps
+ * Isso permite limpar periodicamente tarefas antigas
+ */
+const completedTasks = new Map<string, number>();
+
+/**
+ * Mapa para armazenar os resultados das tarefas
+ */
+const taskResults = new Map<string, any>();
+
+/**
+ * Limpa tarefas concluídas antigas (mais de 2 horas)
+ */
+function cleanupCompletedTasks() {
+  const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000; // 2 horas em milissegundos
+
+  for (const [requestId, timestamp] of completedTasks.entries()) {
+    if (timestamp < twoHoursAgo) {
+      // Remove do mapa de tarefas concluídas
+      completedTasks.delete(requestId);
+
+      // Remove também dos outros mapas/caches se existirem
+      taskResults.delete(requestId);
+      llmOutputsByRequest.delete(requestId);
+      trackers.delete(requestId);
+
+      console.log(`Limpeza: Tarefa ${requestId} removida por inatividade.`);
+    }
+  }
+}
+
+// Executa a limpeza a cada 30 minutos
+setInterval(cleanupCompletedTasks, 30 * 60 * 1000);

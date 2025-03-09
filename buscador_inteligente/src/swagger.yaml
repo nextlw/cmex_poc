@@ -1,159 +1,232 @@
 openapi: 3.0.0
 info:
-  title: API de Busca Inteligente
+  title: API de Busca Inteligente NCM
+  description: API para consulta de NCM utilizando modelos de IA
   version: 1.0.0
-  description: API para realizar buscas inteligentes usando LLM
+  contact:
+    name: Equipe CMEX
 servers:
-  - url: http://localhost:3000
-    description: Servidor de Desenvolvimento
-
+  - url: /api/v1
+    description: Servidor de desenvolvimento
+tags:
+  - name: NCM
+    description: Operações relacionadas à consulta de NCM
+  - name: DeepResearch
+    description: Operações relacionadas à análise profunda de NCM
+paths:
+  /ncm:
+    post:
+      tags:
+        - NCM
+      summary: Consulta a classificação fiscal (NCM) de produtos
+      description: Retorna a classificação fiscal (NCM) de um produto com base na descrição fornecida
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NCMRequest"
+      responses:
+        "200":
+          description: Consulta realizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NCMResponse"
+        "400":
+          description: Parâmetros inválidos
+        "500":
+          description: Erro interno do servidor
+  /ncm/deep-research:
+    post:
+      tags:
+        - DeepResearch
+      summary: Inicia uma análise profunda de NCM
+      description: Inicia um processo de análise profunda para validar a classificação fiscal (NCM) de um produto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeepResearchRequest"
+      responses:
+        "202":
+          description: Análise iniciada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requestId:
+                    type: string
+                    description: ID da requisição para acompanhamento
+                  message:
+                    type: string
+                    description: Mensagem de status
+        "400":
+          description: Parâmetros inválidos
+        "500":
+          description: Erro interno do servidor
+  /ncm/deep-research/{requestId}:
+    get:
+      tags:
+        - DeepResearch
+      summary: Obtém o status de uma análise profunda
+      description: Retorna o status atual de uma análise profunda em andamento
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID da requisição de análise profunda
+      responses:
+        "200":
+          description: Status obtido com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeepResearchStatus"
+        "404":
+          description: Análise não encontrada
+        "500":
+          description: Erro interno do servidor
 components:
   schemas:
-    Query:
+    NCMRequest:
       type: object
       required:
-        - q
+        - consulta
+        - estadoOrigem
+        - modelo
       properties:
-        q:
+        consulta:
           type: string
-          description: Pergunta a ser respondida pela LLM
-        budget:
-          type: number
-          description: Orçamento máximo de tokens (padrão 1.000.000)
-        maxBadAttempt:
-          type: number
-          description: Número máximo de tentativas ruins permitidas (padrão 3)
-        model:
+          description: Descrição do produto
+          example: "Smartphone com tela de 6.5 polegadas, 128GB de armazenamento"
+        estadoOrigem:
           type: string
-          description: |
-            Modelo a ser usado. Se não especificado, usa:
-            - qwen2.5-7b-instruct-1m (quando USE_LOCAL_MODEL=true)
-            - gemini-2.0-flash (quando USE_LOCAL_MODEL=false)
-          enum:
-            - qwen2.5-7b-instruct-1m
-            - gemini-2.0-flash
-    
-    LLMOutput:
+          description: Estado de origem (sigla)
+          example: "SP"
+        operacao:
+          type: string
+          description: Tipo de operação
+          example: "venda"
+        regimeTributario:
+          type: string
+          description: Regime tributário
+          example: "simples"
+        tributacao:
+          type: string
+          description: Tipo de tributação
+          example: "normal"
+        modelo:
+          type: string
+          description: Modelo de IA a ser utilizado
+          example: "gemini-2.0-flash"
+        useDeepResearch:
+          type: boolean
+          description: Ativa o modo de análise profunda
+          default: false
+    NCMResponse:
       type: object
       properties:
-        timestamp:
+        ncm:
           type: string
-          format: date-time
-          description: Data e hora da saída
-        type:
+          description: Código NCM
+          example: "8517.12.31"
+        descricao:
           type: string
-          enum: [progress, final_answer, error]
-          description: Tipo da saída da LLM
-        data:
-          type: object
-          description: Dados da saída (varia conforme o tipo)
-
-    TaskResult:
-      type: object
-      properties:
-        action:
-          type: string
-          description: Ação executada pela LLM
-        answer:
-          type: string
-          description: Resposta gerada
-        references:
-          type: array
-          items:
-            type: object
-            properties:
-              exactQuote:
-                type: string
-              url:
-                type: string
-        think:
-          type: string
-          description: Raciocínio da LLM
-
-    ServerLog:
-      type: object
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        message:
-          type: string
-        level:
-          type: string
-          enum: [log, error, warn, info]
-
-    PromptContent:
-      type: object
-      properties:
-        filename:
-          type: string
-        content:
-          type: string
-
-    LogsResponse:
-      type: object
-      properties:
-        serverLogs:
-          type: array
-          items:
-            $ref: '#/components/schemas/ServerLog'
-        promptContents:
-          type: array
-          items:
-            $ref: '#/components/schemas/PromptContent'
-
-    SearchAction:
-      type: object
-      properties:
-        action:
-          type: string
-          enum: [search]
-        think:
-          type: string
-        searchQuery:
-          type: string
-      required: [action, think, searchQuery]
-
-    AnswerAction:
-      type: object
-      properties:
-        action:
-          type: string
-          enum: [answer]
-        think:
-          type: string
-        answer:
-          type: string
-        references:
-          type: array
-          items:
-            $ref: '#/components/schemas/Reference'
-      required: [action, think, answer, references]
-
-    ReflectAction:
-      type: object
-      properties:
-        action:
-          type: string
-          enum: [reflect]
-        think:
-          type: string
-        questionsToAnswer:
+          description: Descrição do NCM
+          example: "Telefones móveis (smartphones)"
+        atributos:
           type: array
           items:
             type: string
-      required: [action, think, questionsToAnswer]
-
-    Reference:
+          description: Atributos do produto
+          example: ["Comunicação sem fio", "Tela touchscreen"]
+        atributos_tipi:
+          type: array
+          items:
+            type: string
+          description: Atributos específicos da TIPI
+          example: ["Ex 01 - Smartphones"]
+        valores_de_impostos:
+          type: object
+          properties:
+            ipi:
+              type: string
+              description: Valor do IPI
+              example: "15%"
+            icms:
+              type: object
+              additionalProperties:
+                type: string
+              description: Valores de ICMS por estado
+              example: { "SP": "18%", "RJ": "20%" }
+            pis:
+              type: string
+              description: Valor do PIS
+              example: "1.65%"
+            cofins:
+              type: string
+              description: Valor do COFINS
+              example: "7.6%"
+    DeepResearchRequest:
+      type: object
+      required:
+        - ncm
+        - descricao
+        - consulta
+      properties:
+        ncm:
+          type: string
+          description: Código NCM a ser validado
+          example: "8517.12.31"
+        descricao:
+          type: string
+          description: Descrição do NCM
+          example: "Telefones móveis (smartphones)"
+        consulta:
+          type: string
+          description: Descrição do produto
+          example: "Smartphone com tela de 6.5 polegadas, 128GB de armazenamento"
+    DeepResearchStatus:
       type: object
       properties:
-        exactQuote:
+        requestId:
           type: string
-        url:
+          description: ID da requisição
+          example: "dr-123456"
+        status:
           type: string
-      required: [exactQuote, url]
+          enum: ["pending", "processing", "completed", "error"]
+          description: Status atual da análise
+          example: "processing"
+        progress:
+          type: number
+          description: Progresso da análise (0-100)
+          example: 65
+        result:
+          type: object
+          properties:
+            isValid:
+              type: boolean
+              description: Indica se o NCM é válido para o produto
+              example: true
+            confidence:
+              type: number
+              description: Nível de confiança da validação (0-100)
+              example: 95
+            suggestedNCM:
+              type: string
+              description: NCM sugerido (se diferente do original)
+              example: "8517.12.31"
+            reason:
+              type: string
+              description: Justificativa da validação
+              example: "O produto descrito corresponde à classificação de smartphones conforme a TIPI"
 
-paths:
   /api/v1/query:
     post:
       summary: Inicia uma nova consulta à LLM
@@ -164,9 +237,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Query'
+              $ref: "#/components/schemas/Query"
       responses:
-        '200':
+        "200":
           description: ID da requisição gerado com sucesso
           content:
             application/json:
@@ -175,7 +248,7 @@ paths:
                 properties:
                   requestId:
                     type: string
-        '400':
+        "400":
           description: Parâmetros inválidos
           content:
             application/json:
@@ -191,14 +264,14 @@ paths:
       tags:
         - Monitoramento
       responses:
-        '200':
+        "200":
           description: Lista de todas as saídas da LLM
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/LLMOutput'
+                  $ref: "#/components/schemas/LLMOutput"
 
   /api/v1/task/{requestId}:
     get:
@@ -213,13 +286,13 @@ paths:
             type: string
           description: ID da requisição
       responses:
-        '200':
+        "200":
           description: Resultado da tarefa encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskResult'
-        '404':
+                $ref: "#/components/schemas/TaskResult"
+        "404":
           description: Tarefa não encontrada
           content:
             application/json:
@@ -242,7 +315,7 @@ paths:
             type: string
           description: ID da requisição
       responses:
-        '200':
+        "200":
           description: Stream de eventos SSE estabelecido
           content:
             text/event-stream:
@@ -272,12 +345,12 @@ paths:
       tags:
         - Logs
       responses:
-        '200':
+        "200":
           description: Logs do servidor e conteúdos dos prompts
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LogsResponse'
+                $ref: "#/components/schemas/LogsResponse"
 
   /api-docs:
     get:
@@ -285,5 +358,5 @@ paths:
       tags:
         - Documentation
       responses:
-        '200':
-          description: Documentação da API 
+        "200":
+          description: Documentação da API

@@ -1,13 +1,12 @@
-import Header from "../../components/Header";
-import PageHeader from "../../components/PageHeader";
+import { Header, PageHeader, InputAi } from "../../components";
 import React, {
   useState,
   ChangeEvent,
   KeyboardEvent,
   useEffect,
   useRef,
+  useCallback,
 } from "react";
-import InputAi from "../../components/InputAi";
 import "./styles.css";
 import { PiListStarFill } from "react-icons/pi";
 import QueryHistory from "../../components/QueryHistory";
@@ -934,59 +933,70 @@ const ChatPage: React.FC = () => {
     return () => clearInterval(sequenceInterval);
   };
 
-  // Atualizar a função saveSession
-  const saveSession = async (requestId: string) => {
-    try {
-      // Criar uma cópia do estado atual para evitar problemas de concorrência
-      const currentMessages = [...agentState.messages];
-      const currentActions = [...actions];
-      const currentUrlCount = urlCount;
-      const currentStartTime = startTime;
+  // Atualizar a função saveSession usando useCallback
+  const saveSession = useCallback(
+    async (requestId: string) => {
+      try {
+        // Criar uma cópia do estado atual para evitar problemas de concorrência
+        const currentMessages = [...agentState.messages];
+        const currentActions = [...actions];
+        const currentUrlCount = urlCount;
+        const currentStartTime = startTime;
 
-      const session: QuerySession = {
-        id: requestId,
-        question: inputValue,
-        timestamp: new Date().toISOString(),
-        status: "in_progress",
-        steps: currentMessages.map((message, index) => ({
-          id: index + 1,
-          type: message.type,
-          content: message.content,
+        const session: QuerySession = {
+          id: requestId,
+          question: inputValue,
           timestamp: new Date().toISOString(),
-          data: message.data,
-          action: currentActions[index] || defaultSteps[index],
-        })),
-        metadata: {
-          model: selectedModel,
-          totalTokens: 0,
-          elapsedTime: currentStartTime
-            ? formatDistanceToNow(currentStartTime, { locale: ptBR })
-            : "0",
-          urlCount: currentUrlCount,
-        },
-      };
+          status: "in_progress",
+          steps: currentMessages.map((message, index) => ({
+            id: index + 1,
+            type: message.type,
+            content: message.content,
+            timestamp: new Date().toISOString(),
+            data: message.data,
+            action: currentActions[index] || defaultSteps[index],
+          })),
+          metadata: {
+            model: selectedModel,
+            totalTokens: 0,
+            elapsedTime: currentStartTime
+              ? formatDistanceToNow(currentStartTime, { locale: ptBR })
+              : "0",
+            urlCount: currentUrlCount,
+          },
+        };
 
-      const API_URL =
-        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
-      const response = await fetch(`${API_URL}/api/v1/queries/${requestId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(session),
-      });
+        const API_URL =
+          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+        const response = await fetch(`${API_URL}/api/v1/queries/${requestId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(session),
+        });
 
-      if (!response.ok) {
-        throw new Error(`Erro ao salvar sessão: ${response.statusText}`);
+        if (!response.ok) {
+          throw new Error(`Erro ao salvar sessão: ${response.statusText}`);
+        }
+
+        return true;
+      } catch (error) {
+        console.error("Erro ao salvar sessão:", error);
+        // Aqui poderíamos implementar uma lógica de retry ou notificação ao usuário
+        return false;
       }
-
-      return true;
-    } catch (error) {
-      console.error("Erro ao salvar sessão:", error);
-      // Aqui poderíamos implementar uma lógica de retry ou notificação ao usuário
-      return false;
-    }
-  };
+    },
+    [
+      agentState.messages,
+      actions,
+      urlCount,
+      defaultSteps,
+      inputValue,
+      selectedModel,
+      startTime,
+    ]
+  );
 
   // Função para carregar uma sessão de consulta existente
   const loadSession = async (requestId: string) => {
@@ -1138,7 +1148,7 @@ const ChatPage: React.FC = () => {
     }
   };
 
-  // Atualiza o useEffect para salvar a sessão quando houver mudanças
+  // Efeito para atualizar a mensagem quando o agente muda de estado
   useEffect(() => {
     if (currentSession && agentState.messages.length > 0) {
       const session: QuerySession = {
@@ -1173,7 +1183,18 @@ const ChatPage: React.FC = () => {
         setActiveActionIndex(steps.length - 1);
       }
     }
-  }, [agentState.messages, actions, urlCount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    agentState.messages,
+    actions,
+    urlCount,
+    currentSession,
+    defaultSteps,
+    inputValue,
+    saveSession,
+    selectedModel,
+    startTime,
+  ]);
 
   // Efeito para atualizar o activeActionIndex quando novas ações são adicionadas
   useEffect(() => {
@@ -1205,7 +1226,7 @@ const ChatPage: React.FC = () => {
     return () => {
       console.log = originalConsoleLog;
     };
-  }, []);
+  }, [originalConsoleLog]);
 
   // Efeito para verificar e restaurar uma sessão em andamento
   useEffect(() => {

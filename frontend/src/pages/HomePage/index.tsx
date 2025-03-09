@@ -1,51 +1,37 @@
 // Importa o React e os hooks necessários
-import React, {
-  useState,
-  useMemo,
-  useEffect,
-  useCallback,
-  useRef,
-} from "react";
-// Importa o tipo SugerirNCM do arquivo types centralizado
-import { SugerirNCM } from "../../types/index";
+import React, { useState, useEffect, useRef } from "react";
+// Importa tipos do arquivo types centralizado
+import { SugerirNCM } from "../../types";
 // Importa a instância do axios configurada
 import axiosInstance from "../../axiosConfig";
-// Importa o componente InputAi
-import InputAi from "../../components/InputAi";
-// Importa o componente BoxdeImpostos
-import BoxdeImpostos from "../../components/BoxdeImpostos";
-// Importa o componente InputField
-import InputField from "../../components/InputField";
-// Importa o ícone BiUser da biblioteca react-icons
-import { BiUser } from "react-icons/bi";
-// Importa o componente TabelaICMS
-import TabelaICMS from "../../components/TabelaICMS";
-// Importa os ícones BiChevronDown e BiChevronRight da biblioteca react-icons
-import { BiChevronDown, BiChevronRight } from "react-icons/bi";
+// Importa os componentes necessários do barrel
+import {
+  InputAi,
+  BoxdeImpostos,
+  InputField,
+  TabelaICMS,
+  InfoBasicas,
+  Atributos,
+  DropdownMenu,
+  Header,
+  PageHeader,
+  DeepResearchToggle,
+  DeepResearchSidebar,
+  SelectionData,
+  AutocompleteType,
+} from "../../components";
+// Importa os ícones necessários
+import { BiUser, BiChevronDown, BiChevronRight } from "react-icons/bi";
+import { AiFillCodeSandboxCircle } from "react-icons/ai";
 // Importa a função debounce da biblioteca lodash.debounce
 import debounce from "lodash.debounce";
-// Importa o componente InfoBasicas
-import InfoBasicas from "../../components/InfoBasicas";
-// Importa o componente Atributos
-import Atributos from "../../components/Atributos";
 // Importa os estilos CSS
 import "./styles.css";
-// Importa o componente DropdownMenu
-import DropdownMenu from "../../components/DropdownMenu";
-// Importa o tipo SelectionData do DropdownMenu
-import { SelectionData } from "../../components/DropdownMenu/types";
-import Header from "../../components/Header";
-import PageHeader from "../../components/PageHeader";
-import { AiFillCodeSandboxCircle } from "react-icons/ai";
 import "../../styles/grid.css";
+// Importa os componentes de skeleton
 import InfoBasicasSkeleton from "../../components/InfoBasicas/InfoBasicasSkeleton";
 import BoxdeImpostosSkeleton from "../../components/BoxdeImpostos/BoxdeImpostosSkeleton";
 import AtributosSkeleton from "../../components/Atributos/AtributosSkeleton";
-import { AutocompleteType } from "../../components/InputAi/types";
-// Importa o componente DeepResearchToggle
-import DeepResearchToggle from "../../components/DeepResearchToggle";
-// Importa o novo componente de status
-import DeepResearchSidebar from "../../components/DeepResearchSidebar";
 
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
@@ -101,9 +87,15 @@ const HomePage: React.FC = () => {
   const [isTabelaICMSOpen, setIsTabelaICMSOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const [useDeepResearch, setUseDeepResearch] = useState(() => {
-    const saved = localStorage.getItem("useDeepResearch");
-    return saved ? JSON.parse(saved) : false;
+  const [useDeepResearch, setUseDeepResearch] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem("useDeepResearch");
+      // Se não existir valor no localStorage ou se o valor for null/undefined, retorna false
+      return saved ? JSON.parse(saved) : false;
+    } catch {
+      // Se houver qualquer erro ao ler do localStorage, retorna false
+      return false;
+    }
   });
 
   const [deepResearchRequestId, setDeepResearchRequestId] = useState<
@@ -291,6 +283,23 @@ const HomePage: React.FC = () => {
   const handleCancelDeepResearch = async () => {
     // Cancelar o processo em andamento
     setIsDeepResearchProcessing(false);
+
+    // Remover da lista de requisições concluídas no localStorage
+    if (deepResearchRequestId) {
+      const completedRequestsStr = localStorage.getItem(
+        "completedDeepResearchRequests"
+      );
+      if (completedRequestsStr) {
+        const completedRequests = JSON.parse(completedRequestsStr);
+        const updatedRequests = completedRequests.filter(
+          (id: string) => id !== deepResearchRequestId
+        );
+        localStorage.setItem(
+          "completedDeepResearchRequests",
+          JSON.stringify(updatedRequests)
+        );
+      }
+    }
 
     // Cancelar via nova API se tivermos um requestId
     if (deepResearchRequestId) {
