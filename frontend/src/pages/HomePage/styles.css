@@ -96,11 +96,11 @@
   display: flex;
   width: 100%;
   min-height: 100vh;
-  overflow: visible;
   position: relative;
   justify-content: center;
   padding: 16px;
   transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+  overflow-y: auto;
 }
 
 .page.with-sidebar {
@@ -113,8 +113,6 @@
   max-width: 1440px;
   width: 100%;
   transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
-  overflow-y: auto;
-  min-height: 100vh;
   position: relative;
   z-index: 1;
 }
