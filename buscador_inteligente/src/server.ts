@@ -28,6 +28,7 @@ import { QuerySession } from "./types/session";
 import { ensureModelClientInitialized } from "./agent";
 import { ncmRouter } from "./controllers/ncm";
 import { processarDeepResearch } from "./controllers/deepResearchNCM";
+import { modelRouter } from "./controllers/modelController";
 
 // Importar serviço Redis
 import {
@@ -1643,9 +1644,7 @@ function extractPartialInfo(
   }
 }
 
-/**
- * Rota para cancelar explicitamente o processamento de uma tarefa
- */
+// Rota para cancelar explicitamente o processamento de uma tarefa
 app.post(
   "/api/v1/cancel",
   async (req: Request, res: Response): Promise<void> => {
@@ -1937,149 +1936,12 @@ process.on("SIGINT", () => {
   process.exit(0);
 });
 
-// Rota para processar consulta com modelo específico
-app.post("/api/v1/process-with-model", async (req, res) => {
-  try {
-    const { query, model, requestId } = req.body;
+// Adicionar o modelRouter como middleware para processar as rotas relacionadas a modelos
+// O código existente para as rotas /api/v1/process-with-model e /api/v1/chat
+// deve ser removido, pois agora será tratado pelo modelRouter
 
-    if (!query || !model || !requestId) {
-      return res.status(400).json({ error: "Parâmetros incompletos" });
-    }
-
-    console.log(`Processando consulta com modelo ${model} para ${requestId}`);
-
-    // Iniciar processamento com o modelo selecionado
-    const context = await startProcessingWithModel(requestId, query, model);
-
-    return res.status(200).json({
-      success: true,
-      message: "Processamento iniciado",
-      requestId,
-    });
-  } catch (error) {
-    console.error("Erro ao processar consulta:", error);
-    return res.status(500).json({ error: "Erro interno do servidor" });
-  }
+// Adicionar nas configurações de middleware, próximo de onde outros roteadores são adicionados
+app.use("/api/v1", async (req, res, next) => {
+  // Passa para o modelRouter
+  await modelRouter(req, res, next);
 });
-
-// Função para iniciar processamento com modelo específico
-async function startProcessingWithModel(
-  requestId: string,
-  query: string,
-  modelName: string
-) {
-  // Criar contexto de rastreamento
-  const tokenTracker = new TokenTracker();
-  const actionTracker = new ActionTracker();
-
-  const context: TrackerContext = {
-    tokenTracker,
-    actionTracker,
-  };
-
-  // Registrar o contexto
-  trackers.set(requestId, context);
-
-  // Inicializar saídas da LLM
-  llmOutputsByRequest.set(requestId, []);
-
-  // Configurar listeners para rastreamento
-  context.actionTracker.on("action", () => {
-    emitTrackerUpdate(requestId, context);
-  });
-
-  // Iniciar processamento em background
-  setTimeout(async () => {
-    try {
-      // Aqui você deve implementar a lógica para usar o modelo selecionado
-      // Exemplo: chamar getResponse com o modelo específico
-      const result = await getResponse(query, {
-        model: modelName,
-        requestId,
-        tokenTracker,
-        actionTracker,
-      });
-
-      // Publicar resultados
-      publishQueryResults(requestId, result);
-
-      // Salvar metadados da consulta
-      await saveQueryMetadata(requestId, {
-        title: result.title || query.substring(0, 50),
-        originalQuestion: query,
-        timestamp: new Date().toISOString(),
-        status: "completed",
-        summary: result.answer,
-        promptCount: tokenTracker.getTotalPrompts(),
-        question: query,
-      });
-
-      // Atualizar status
-      await updateQueryStatus(requestId, "completed");
-    } catch (error) {
-      console.error(`Erro ao processar consulta ${requestId}:`, error);
-
-      // Publicar erro
-      publishTaskUpdate(requestId, "error", {
-        message: "Erro ao processar consulta",
-        error: String(error),
-      });
-
-      // Atualizar status
-      await updateQueryStatus(requestId, "error");
-    }
-  }, 0);
-
-  return context;
-}
-
-// Rota para chat direto
-app.post("/api/v1/chat", async (req, res) => {
-  try {
-    const { message, model } = req.body;
-
-    if (!message) {
-      return res.status(400).json({ error: "Mensagem não fornecida" });
-    }
-
-    // Usar o modelo especificado ou padrão
-    const modelToUse = model || "gpt4";
-
-    // Processar mensagem com o modelo selecionado
-    const response = await processChat(message, modelToUse);
-
-    return res.status(200).json({
-      success: true,
-      response,
-    });
-  } catch (error) {
-    console.error("Erro ao processar mensagem de chat:", error);
-    return res.status(500).json({ error: "Erro interno do servidor" });
-  }
-});
-
-// Função para processar chat com modelo específico
-async function processChat(message: string, modelName: string) {
-  // Implementar lógica para usar o modelo selecionado
-  // Esta função deve processar a mensagem com o modelo correto
-
-  // Exemplo simples (substitua pela sua implementação real):
-  const tokenTracker = new TokenTracker();
-  const actionTracker = new ActionTracker();
-
-  try {
-    // Aqui você deve implementar a lógica para usar o modelo selecionado
-    // Exemplo: chamar getResponse com o modelo específico
-    const result = await getResponse(message, {
-      model: modelName,
-      requestId: `chat-${Date.now()}`,
-      tokenTracker,
-      actionTracker,
-    });
-
-    return result.answer || "Não foi possível processar a mensagem";
-  } catch (error) {
-    console.error("Erro ao processar chat:", error);
-    throw error;
-  }
-}

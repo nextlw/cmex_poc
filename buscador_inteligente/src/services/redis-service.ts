@@ -7,6 +7,8 @@ export const CHANNELS = {
   FASTAPI_TASK_UPDATES: "fastapi:task_updates",
   MODEL_SELECTION: "model:selection",
   QUERY_RESULTS: "query:results",
+  NCM_REQUEST: "ncm:request",
+  NCM_RESPONSE: "ncm:response",
 };
 
 // Configuração do Redis
@@ -23,18 +25,19 @@ export const subscriber = new Redis(redisConfig);
 
 // Inicializar assinaturas
 export function initializeRedisSubscriptions(eventEmitter: EventEmitter) {
-  // Assinar aos canais relevantes
-  subscriber.subscribe(
-    CHANNELS.FASTAPI_TASK_UPDATES,
-    CHANNELS.MODEL_SELECTION,
-    (err: Error | null) => {
-      if (err) {
-        console.error("Erro ao assinar canais Redis:", err);
-        return;
-      }
+  // Assinar aos canais relevantes usando Promise em vez de callback
+  subscriber
+    .subscribe(
+      CHANNELS.FASTAPI_TASK_UPDATES,
+      CHANNELS.MODEL_SELECTION,
+      CHANNELS.NCM_REQUEST
+    )
+    .then(() => {
       console.log("Assinado nos canais Redis com sucesso");
-    }
-  );
+    })
+    .catch((err) => {
+      console.error("Erro ao assinar canais Redis:", err);
+    });
 
   // Manipular mensagens recebidas
   subscriber.on("message", (channel: string, message: string) => {
@@ -58,6 +61,11 @@ export function initializeRedisSubscriptions(eventEmitter: EventEmitter) {
 
         // Processar a seleção do modelo
         processModelSelection(data.requestId, data.model, data.query);
+      } else if (channel === CHANNELS.NCM_REQUEST && data.requestId) {
+        console.log(`Requisição NCM recebida: ${data.requestId}`);
+
+        // Responder à solicitação de teste de integração
+        processNcmRequest(data.requestId, data.query);
       }
     } catch (error) {
       console.error("Erro ao processar mensagem Redis:", error);
@@ -112,6 +120,25 @@ async function processModelSelection(
   // Exemplo:
   // const result = await startProcessingWithModel(requestId, query, modelName);
   // publishQueryResults(requestId, result);
+}
+
+// Processar requisição NCM (para teste de integração)
+async function processNcmRequest(requestId: string, query: string) {
+  console.log(`Processando requisição NCM: ${requestId} - Query: ${query}`);
+
+  // Simular processamento
+  setTimeout(() => {
+    // Enviar resposta
+    publisher.publish(
+      CHANNELS.NCM_RESPONSE,
+      JSON.stringify({
+        requestId,
+        response: `Resposta do Node.js para query: ${query}`,
+        timestamp: new Date().toISOString(),
+      })
+    );
+    console.log(`Resposta enviada para ${requestId}`);
+  }, 1000); // Atraso de 1 segundo para simular processamento
 }
 
 // Função para encerrar conexões Redis

@@ -11,6 +11,8 @@ CHANNELS = {
     "FASTAPI_TASK_UPDATES": "fastapi:task_updates",
     "MODEL_SELECTION": "model:selection",
     "QUERY_RESULTS": "query:results",
+    "NCM_REQUEST": "ncm:request",
+    "NCM_RESPONSE": "ncm:response",
 }
 
 # Configuração do Redis
@@ -34,7 +36,11 @@ redis_client = redis.Redis(
 # Processar mensagens em thread separada
 def redis_listener():
     pubsub = redis_client.pubsub()
-    pubsub.subscribe(CHANNELS["NODE_TASK_UPDATES"], CHANNELS["QUERY_RESULTS"])
+    pubsub.subscribe(
+        CHANNELS["NODE_TASK_UPDATES"], 
+        CHANNELS["QUERY_RESULTS"],
+        CHANNELS["NCM_RESPONSE"]
+    )
     
     for message in pubsub.listen():
         if message["type"] == "message":
@@ -56,6 +62,10 @@ def redis_listener():
                     elif channel == CHANNELS["QUERY_RESULTS"]:
                         task_cache[request_id]["results"] = data.get("results")
                         print(f"Resultados recebidos para: {request_id}")
+                    
+                    elif channel == CHANNELS["NCM_RESPONSE"]:
+                        print(f"Resposta NCM recebida para: {request_id}")
+                        print(json.dumps(data, indent=2))
                         
                         # Limpar cache após um tempo ou implementar LRU cache
                         # TODO: Implementar limpeza de cache
@@ -70,6 +80,17 @@ def publish_model_selection(request_id: str, model: str, query: str):
         json.dumps({
             "requestId": request_id,
             "model": model,
+            "query": query,
+            "timestamp": datetime.now().isoformat()
+        })
+    )
+
+# Publicar requisição NCM
+def publish_ncm_request(request_id: str, query: str):
+    redis_client.publish(
+        CHANNELS["NCM_REQUEST"],
+        json.dumps({
+            "requestId": request_id,
             "query": query,
             "timestamp": datetime.now().isoformat()
         })

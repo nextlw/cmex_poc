@@ -22,7 +22,8 @@ from app.services.redis_service import (
     start_redis_listener,
     publish_model_selection,
     get_task_updates,
-    get_query_results
+    get_query_results,
+    publish_ncm_request,
 )
 
 # Inicializa uma instância do FastAPI.
@@ -155,6 +156,21 @@ async def get_query_status(request_id: str):
             "updates": updates.get("updates", [])[-5:]  # Retornar apenas as 5 últimas atualizações
         }
     )
+
+# Endpoints para testes
+@app.get("/api/test/redis-integration")
+async def test_redis_integration(query: str = "Teste de integração"):
+    request_id = str(uuid.uuid4())
+    
+    # Publicar mensagem para o Node.js
+    publish_ncm_request(request_id, query)
+    
+    return {
+        "status": "success",
+        "message": "Requisição de teste enviada",
+        "requestId": request_id,
+        "query": query
+    }
 
 # Inclui os roteadores no app
 app.include_router(queries_router, prefix=SETTINGS.API_V1_STR)
