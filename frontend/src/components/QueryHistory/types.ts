@@ -2,7 +2,7 @@ export interface Query {
   id: string;
   title: string;
   timestamp: string;
-  status: 'in_progress' | 'completed' | 'error';
+  status: "in_progress" | "completed" | "error";
   question: string;
 }
 
@@ -11,7 +11,7 @@ export interface QueryHistoryItem {
   title: string;
   question?: string;
   summary?: string;
-  status: 'in_progress' | 'completed' | 'error';
+  status: "in_progress" | "completed" | "error";
   timestamp: string;
   references?: Reference[];
   isDeleting?: boolean;
@@ -25,7 +25,19 @@ export interface QueryHistoryProps {
 }
 
 export interface Message {
-  type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log' | 'visit' | 'answer';
+  type:
+    | "query"
+    | "step"
+    | "response"
+    | "error"
+    | "connected"
+    | "reflect"
+    | "search"
+    | "log"
+    | "visit"
+    | "answer"
+    | "progress"
+    | "thinking";
   content: string;
   isTyping?: boolean;
   step?: number;
@@ -53,19 +65,19 @@ export interface Reference {
 }
 
 export interface StreamMessage {
-  type: 'progress' | 'answer' | 'error' | 'connected' | 'status';
+  type: "progress" | "answer" | "error" | "connected" | "status";
   data?: {
-    action?: 'search' | 'answer' | 'reflect';
+    action?: "search" | "answer" | "reflect";
     think?: string;
     answer?: string;
     searchQuery?: string;
     references?: Reference[];
     questionsToAnswer?: string[];
-    status?: 'error' | 'completed';
+    status?: "error" | "completed";
   };
   trackers?: {
     tokenTracker: {
-      usage: Array<{tool: string; tokens: number}>;
+      usage: Array<{ tool: string; tokens: number }>;
       totalTokens: number;
     };
     actionState: {
@@ -79,7 +91,19 @@ export interface StreamMessage {
 
 export interface QueryStep {
   id: number;
-  type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log' | 'visit' | 'answer';
+  type:
+    | "query"
+    | "step"
+    | "response"
+    | "error"
+    | "connected"
+    | "reflect"
+    | "search"
+    | "log"
+    | "visit"
+    | "answer"
+    | "progress"
+    | "thinking";
   content: string;
   timestamp: string;
   data?: {
@@ -94,7 +118,7 @@ export interface QueryStep {
   action?: {
     type: string;
     title: string;
-    status: 'waiting' | 'processing' | 'completed';
+    status: "waiting" | "processing" | "completed";
     completed: boolean;
     active: boolean;
   };
@@ -104,7 +128,7 @@ export interface QuerySession {
   id: string;
   question: string;
   timestamp: string;
-  status: 'in_progress' | 'completed' | 'error';
+  status: "in_progress" | "completed" | "error";
   summary?: string;
   steps: QueryStep[];
   metadata: {

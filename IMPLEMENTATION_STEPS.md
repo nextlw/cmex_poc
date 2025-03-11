@@ -356,6 +356,80 @@
 4. **Estilização Consistente**: Cada tipo de mensagem tem estilos visuais distintos, mantendo a consistência com o design system.
 5. **Tratamento de Progresso**: Adicionado suporte para mensagens de tipo "progress", importantes para feedback durante operações longas.
 
+### 4.1.4 Sistema Avançado de Organização e Exibição de Mensagens no Chat
+
+```typescript
+// A ser implementado em frontend/src/pages/ChatPage/index.tsx, frontend/src/components/ChatMessage/index.tsx e novos componentes específicos
+```
+
+- [ ] Desenvolver um sistema para filtrar mensagens técnicas e de debug
+- [ ] Implementar agrupamento inteligente de mensagens por contexto e tipo
+- [ ] Criar componentes especializados para cada categoria de mensagem (pensamento, resposta, erro, etc.)
+- [ ] Implementar tratamento robusto de erros para evitar exposição de falhas técnicas ao usuário
+- [ ] Desenvolver um sistema de formatação avançada para conteúdo JSON e markdown
+- [ ] Adicionar controles de visualização para alternar entre modos (técnico, simplificado)
+
+**Review Point 4.1.4**:
+
+- [ ] Mensagens técnicas e de sistema são filtradas ou agrupadas separadamente
+- [ ] Diferentes tipos de respostas (pensamento, reflexão, resposta final) são claramente separados
+- [ ] Conteúdo JSON é processado e exibido de forma amigável ao usuário
+- [ ] Erros são tratados elegantemente sem expor detalhes técnicos
+- [ ] Mensagens de progresso são agrupadas logicamente
+- [ ] Interface oferece opções para visualizar detalhes técnicos quando necessário
+
+**Implementação em Etapas**:
+
+1. **Identificação e Categorização de Mensagens**:
+
+   - Analisar todos os possíveis tipos de mensagens recebidas da API
+   - Classificar em categorias principais: sistema, progresso, pensamento, resposta, erro
+   - Definir hierarquia de exibição e regras de agrupamento
+
+2. **Filtro Inteligente de Mensagens**:
+
+   - Implementar sistema para filtrar mensagens técnicas e de debug
+   - Criar regras para determinar quais mensagens devem ser exibidas ao usuário
+   - Desenvolver método para agrupar mensagens relacionadas (ex: várias etapas de pensamento)
+
+3. **Componentes Especializados**:
+
+   - Criar ChatMessageGroup para agrupar mensagens relacionadas
+   - Desenvolver ThoughtSequence para mostrar sequência de pensamentos
+   - Implementar JsonViewer para formatação amigável de dados JSON
+   - Criar ErrorMessage para exibição elegante de erros
+
+4. **Tratamento de Erros**:
+
+   - Implementar sistema robusto para capturar e processar erros
+   - Criar mensagens de erro amigáveis ao usuário
+   - Adicionar opção para ver detalhes técnicos quando necessário
+
+5. **Processamento de Formato**:
+
+   - Melhorar processamento de markdown nas mensagens
+   - Implementar formatação específica para estruturas JSON
+   - Adicionar suporte para syntax highlighting em blocos de código
+
+6. **Controles de Visualização**:
+   - Adicionar toggles para alternar entre modos de visualização (técnico, simplificado)
+   - Implementar controles para expandir/colapsar grupos de mensagens
+   - Criar opções de filtragem para focar em tipos específicos de mensagens
+
+**Status Atual**:
+
+- [ ] Análise inicial dos problemas e necessidades
+- [ ] Planejamento da arquitetura de componentes
+- [ ] Definição de categorias de mensagens
+
+**Próximos Passos**:
+
+1. Realizar análise detalhada das mensagens nos logs existentes
+2. Definir estrutura de componentes e hierarquia
+3. Implementar filtro inicial de mensagens de sistema e técnicas
+4. Criar protótipo de ChatMessageGroup
+5. Testar com dados reais do sistema
+
 ### 4.2 HomePage - Melhorias
 
 ```typescript
@@ -603,6 +677,259 @@ Identificamos que ainda existe um erro persistente no arquivo `agent.ts` na linh
 2. Realizar testes para verificar se o erro foi resolvido
 3. Analisar logs do servidor para identificar possíveis problemas no formato de prompts
 4. Atualizar a documentação com as soluções implementadas
+
+### 5.4 Melhoria no Tratamento de Mensagens SSE
+
+**Objetivo**: Simplificar e padronizar o formato das mensagens SSE entre backend e frontend.
+
+#### 5.4.1 Diagnóstico do Problema
+
+**Situação Atual**:
+
+```typescript
+// Formato atual recebido do backend
+event: answer
+data: {
+  "state": {
+    "thisStep": {
+      "answer": "Esta é uma resposta de teste para verificar o middleware.",
+      "references": [
+        {
+          "url": "https://exemplo.com/teste",
+          "exactQuote": "Citação de exemplo para teste"
+        }
+      ]
+    }
+  }
+}
+
+// Formato desejado no frontend
+{
+  "type": "answer",
+  "content": "Esta é uma resposta de teste para verificar o middleware.",
+  "references": [
+    {
+      "url": "https://exemplo.com/teste",
+      "quote": "Citação de exemplo para teste"
+    }
+  ]
+}
+```
+
+#### 5.4.2 Plano de Implementação
+
+1. **Padronização de Tipos**:
+
+   ```typescript
+   // shared-types/src/stream/types.ts
+   export interface StreamMessageBase {
+     type: StreamMessageType;
+     content: string;
+     references?: Reference[];
+     metadata?: {
+       model?: string;
+       timestamp?: string;
+       confidence?: number;
+     };
+   }
+
+   export interface Reference {
+     url: string;
+     quote: string;
+     title?: string;
+   }
+
+   export type StreamMessageType =
+     | "answer"
+     | "thinking"
+     | "progress"
+     | "error"
+     | "search"
+     | "visit";
+   ```
+
+2. **Transformador de Mensagens**:
+
+   ```typescript
+   // shared-types/src/stream/transformers.ts
+   export function transformStreamMessage(message: any): StreamMessageBase {
+     // Validar tipo da mensagem
+     if (!message || !message.type) {
+       throw new Error("Mensagem inválida: tipo não especificado");
+     }
+
+     // Extrair conteúdo baseado no tipo
+     let content = "";
+     let references: Reference[] = [];
+
+     switch (message.type) {
+       case "answer":
+         content = message.state?.thisStep?.answer || "";
+         references = transformReferences(message.state?.thisStep?.references);
+         break;
+       case "thinking":
+         content = message.state?.thisStep?.thought || "";
+         break;
+       case "progress":
+         content = message.state?.thisStep?.status || "";
+         break;
+       // ... outros casos
+     }
+
+     return {
+       type: message.type,
+       content,
+       references,
+       metadata: {
+         timestamp: new Date().toISOString(),
+         model: message.metadata?.model,
+       },
+     };
+   }
+   ```
+
+3. **Middleware no Backend**:
+
+   ```typescript
+   // buscador_inteligente/src/middleware/streamMessageFormatter.ts
+   export function formatStreamMessage(type: string, data: any) {
+     return {
+       type,
+       content: extractContent(type, data),
+       references: extractReferences(data),
+       metadata: {
+         timestamp: new Date().toISOString(),
+         model: data.metadata?.model,
+       },
+     };
+   }
+   ```
+
+4. **Atualização do Componente ChatMessage**:
+   ```typescript
+   // frontend/src/components/ChatMessage/types.ts
+   export interface ChatMessageProps {
+     type: StreamMessageType;
+     content: string;
+     references?: Reference[];
+     metadata?: {
+       model?: string;
+       timestamp?: string;
+     };
+   }
+   ```
+
+#### 5.4.3 Etapas de Implementação
+
+1. **Fase 1: Preparação**
+
+   - [ ] Criar branch `feature/stream-message-format`
+   - [ ] Atualizar documentação de tipos
+   - [ ] Criar testes unitários para novos transformadores
+
+2. **Fase 2: Backend**
+
+   - [ ] Implementar middleware de formatação
+   - [ ] Atualizar serviços que emitem eventos SSE
+   - [ ] Adicionar validação de formato
+   - [ ] Testar integração com modelos existentes
+
+3. **Fase 3: Frontend**
+
+   - [ ] Atualizar transformadores de mensagem
+   - [ ] Modificar componentes para novo formato
+   - [ ] Implementar tratamento de erros
+   - [ ] Adicionar logs de debug
+
+4. **Fase 4: Testes e Validação**
+   - [ ] Executar testes end-to-end
+   - [ ] Validar formato das mensagens
+   - [ ] Verificar performance
+   - [ ] Documentar mudanças
+
+#### 5.4.4 Benefícios Esperados
+
+1. **Simplicidade**:
+
+   - Formato de mensagem mais limpo e direto
+   - Menos transformações de dados
+   - Menor complexidade no código
+
+2. **Manutenibilidade**:
+
+   - Tipos bem definidos
+   - Validação em tempo de compilação
+   - Melhor rastreabilidade de erros
+
+3. **Performance**:
+   - Menos processamento de dados
+   - Menor payload de rede
+   - Resposta mais rápida no frontend
+
+#### 5.4.5 Riscos e Mitigações
+
+1. **Compatibilidade**:
+
+   - **Risco**: Quebrar integrações existentes
+   - **Mitigação**: Implementar gradualmente com feature flags
+
+2. **Performance**:
+
+   - **Risco**: Overhead do middleware
+   - **Mitigação**: Implementar caching e otimizações
+
+3. **Complexidade**:
+   - **Risco**: Aumentar complexidade inicial
+   - **Mitigação**: Documentação clara e testes abrangentes
+
+#### 5.4.6 Métricas de Sucesso
+
+1. **Qualidade**:
+
+   - Cobertura de testes > 90%
+   - Zero erros de tipo em produção
+   - Redução de 50% nos bugs relacionados a formato
+
+2. **Performance**:
+
+   - Tempo de processamento < 50ms
+   - Tamanho médio de mensagem reduzido em 30%
+   - Zero timeouts em produção
+
+3. **Desenvolvimento**:
+   - Redução de 40% no código de transformação
+   - Aumento de 30% na velocidade de desenvolvimento
+   - Redução de 50% nas dúvidas sobre formato
+
+#### 5.4.7 Timeline Estimada
+
+1. **Fase 1**: 2 dias
+
+   - Documentação e setup inicial
+   - Criação de testes
+
+2. **Fase 2**: 3 dias
+
+   - Implementação no backend
+   - Testes de integração
+
+3. **Fase 3**: 3 dias
+
+   - Implementação no frontend
+   - Testes de componentes
+
+4. **Fase 4**: 2 dias
+   - Testes end-to-end
+   - Documentação final
+
+**Total**: 10 dias úteis
+
+#### 5.4.8 Próximos Passos
+
+1. Revisão do plano pela equipe
+2. Aprovação das mudanças propostas
+3. Criação das tasks no sistema de gestão
+4. Início da implementação por fases
 
 ## Regras de Implementação
 

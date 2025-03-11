@@ -48,3 +48,5 @@ export * from "./ReasoningBox/types";
 export * from "./ModelIndicator/types";
 export * from "./ThinkingSection/types";
 export * from "./ReferencesSection/types";
+
+export { default as MessageGroup } from "./MessageGroup";

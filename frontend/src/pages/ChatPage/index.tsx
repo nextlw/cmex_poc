@@ -7,6 +7,7 @@ import {
   ReferencesSection,
   DeepResearchProgress,
   ConnectionIndicator,
+  MessageGroup,
 } from "../../components";
 import React, {
   useState,
@@ -49,6 +50,7 @@ import {
 // Importação do transformador de mensagens de streaming
 import { transformStreamMessage } from "../../utils/transformers/streamMessageTransformers";
 import { SSEClient, ConnectionStatus } from "../../utils/sseClient";
+import { groupMessages } from "./utils";
 
 const ActionIcon: React.FC<ActionIconProps> = ({ type }) => {
   switch (type) {
@@ -445,126 +447,77 @@ const ChatPage: React.FC = () => {
           const messageType = transformedMessage.type;
           const messageData = transformedMessage.data || {};
 
-          // Construir diferentes tipos de mensagens com base no tipo recebido
-          const baseMsgProps = {
+          // Construir a mensagem base com tipagem correta
+          const baseMessage = {
             isTyping: false,
             step: prev.messages.length + 1,
             data: messageData,
           };
 
           // Determinar o tipo e formatação específica com base no tipo da mensagem
+          let newMessage;
           switch (messageType) {
-            case "answer": {
-              // Para respostas, criar uma mensagem de resposta final formatada
-              return {
-                ...prev,
-                messages: [
-                  ...prev.messages,
-                  {
-                    ...baseMsgProps,
-                    type: "answer",
-                    content: messageData.answer || "Resposta do modelo",
-                  },
-                ],
+            case "answer":
+              newMessage = {
+                ...baseMessage,
+                type: "answer" as const,
+                content: messageData.answer || "Resposta do modelo",
               };
-            }
+              break;
 
-            case "reflect": {
-              // Para reflexões, extrair pensamento e questões a responder
-              return {
-                ...prev,
-                messages: [
-                  ...prev.messages,
-                  {
-                    ...baseMsgProps,
-                    type: "reflect",
-                    content: messageData.think || "Reflexão do modelo",
-                  },
-                ],
+            case "reflect":
+              newMessage = {
+                ...baseMessage,
+                type: "reflect" as const,
+                content: messageData.think || "Reflexão do modelo",
               };
-            }
+              break;
 
-            case "search": {
-              // Para buscas, extrair termos de busca e URLs
-              return {
-                ...prev,
-                messages: [
-                  ...prev.messages,
-                  {
-                    ...baseMsgProps,
-                    type: "search",
-                    content: `🔍 Pesquisando: ${messageData.searchQuery || ""}`,
-                  },
-                ],
+            case "search":
+              newMessage = {
+                ...baseMessage,
+                type: "search" as const,
+                content: `🔍 Pesquisando: ${messageData.searchQuery || ""}`,
               };
-            }
+              break;
 
-            case "visit": {
-              // Para visitas a URLs, extrair URL e conteúdo visitado
-              return {
-                ...prev,
-                messages: [
-                  ...prev.messages,
-                  {
-                    ...baseMsgProps,
-                    type: "visit",
-                    content: `🌐 Visitando: ${messageData.url || ""}`,
-                  },
-                ],
+            case "visit":
+              newMessage = {
+                ...baseMessage,
+                type: "visit" as const,
+                content: `🌐 Visitando: ${messageData.url || ""}`,
               };
-            }
+              break;
 
-            case "progress": {
-              // Para mensagens de progresso, mostrar pensamento ou raciocínio
-              return {
-                ...prev,
-                messages: [
-                  ...prev.messages,
-                  {
-                    ...baseMsgProps,
-                    type: "progress",
-                    content:
-                      messageData.think ||
-                      messageData.message ||
-                      "Processando...",
-                  },
-                ],
+            case "progress":
+              newMessage = {
+                ...baseMessage,
+                type: "progress" as const,
+                content:
+                  messageData.think || messageData.message || "Processando...",
               };
-            }
+              break;
 
-            case "error": {
-              // Para erros, mostrar mensagem de erro formatada
-              return {
-                ...prev,
-                messages: [
-                  ...prev.messages,
-                  {
-                    ...baseMsgProps,
-                    type: "error",
-                    content: `❌ Erro: ${
-                      messageData.error || "Erro desconhecido"
-                    }`,
-                  },
-                ],
+            case "error":
+              newMessage = {
+                ...baseMessage,
+                type: "error" as const,
+                content: `❌ Erro: ${messageData.error || "Erro desconhecido"}`,
               };
-            }
+              break;
 
-            default: {
-              // Para outros tipos, mostrar conteúdo bruto formatado
-              console.log("Tipo de mensagem desconhecido:", messageType);
-              return {
-                ...prev,
-                messages: [
-                  ...prev.messages,
-                  {
-                    ...baseMsgProps,
-                    type: messageType,
-                    content: JSON.stringify(messageData, null, 2),
-                  },
-                ],
+            default:
+              newMessage = {
+                ...baseMessage,
+                type: "log" as const,
+                content: JSON.stringify(messageData, null, 2),
               };
-            }
           }
+
+          return {
+            ...prev,
+            messages: [...prev.messages, newMessage],
+          };
         });
 
         if (data.type === "answer" || data.type === "error") {
@@ -1279,11 +1232,11 @@ const ChatPage: React.FC = () => {
                     />
                   </div>
                 )}
-                {agentState.messages.map((message, index) => (
-                  <ChatMessage
-                    key={index}
-                    {...message}
-                    step={index + 1}
+                {groupMessages(agentState.messages).map((group, groupIndex) => (
+                  <MessageGroup
+                    key={groupIndex}
+                    messages={group.messages}
+                    groupType={group.type}
                     modelName={selectedModel}
                   />
                 ))}

@@ -4,6 +4,14 @@ import { ChatMessageProps } from "./types";
 import { ThinkingSection, ModelIndicator, ReferencesSection } from "..";
 import { Reference } from "../ReferencesSection/types";
 import "./styles.css";
+import {
+  FiSearch,
+  FiCpu,
+  FiAlertCircle,
+  FiCheckCircle,
+  FiClock,
+  FiActivity,
+} from "react-icons/fi";
 
 const ChatMessage: React.FC<ChatMessageProps> = ({
   type,
@@ -199,8 +207,69 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     .filter(Boolean)
     .join(" ");
 
+  const getIcon = () => {
+    switch (type) {
+      case "search":
+        return <FiSearch />;
+      case "thinking":
+        return <FiCpu />;
+      case "error":
+        return <FiAlertCircle />;
+      case "answer":
+        return <FiCheckCircle />;
+      case "progress":
+        return <FiActivity />;
+      default:
+        return <FiClock />;
+    }
+  };
+
+  const formatContent = () => {
+    // Se for um objeto JSON, formata de maneira mais amigável
+    if (typeof content === "string" && content.startsWith("{")) {
+      try {
+        const jsonContent = JSON.parse(content);
+        return JSON.stringify(jsonContent, null, 2);
+      } catch {
+        return content;
+      }
+    }
+    return content;
+  };
+
+  const renderThinkingContent = () => {
+    if (!data?.think && !data?.reasoning) return null;
+    return (
+      <div className="thinking-content">
+        <ReactMarkdown>{data.think || data.reasoning || ""}</ReactMarkdown>
+      </div>
+    );
+  };
+
+  const renderReferences = () => {
+    if (!data?.references?.length) return null;
+    return (
+      <div className="references-list">
+        {data.references.map((ref, index) => (
+          <div key={index} className="reference-item">
+            <div className="reference-quote">{ref.exactQuote}</div>
+            <a
+              href={ref.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="reference-url"
+            >
+              {ref.url}
+            </a>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className={messageClasses}>
+      <div className="message-icon">{getIcon()}</div>
       <div className="message-content">
         {isTyping ? (
           <div className="typing-indicator">
@@ -211,6 +280,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         ) : (
           displayedContent
         )}
+        {renderThinkingContent()}
+        {renderReferences()}
       </div>
     </div>
   );

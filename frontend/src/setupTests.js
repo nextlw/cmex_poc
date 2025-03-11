@@ -1,5 +1,6 @@
 // Adiciona as funções de teste do jest-dom
 import "@testing-library/jest-dom";
+import { expect } from "@jest/globals";
 
 // Configurações para documentação de evidências
 global.TEST_EVIDENCE = {

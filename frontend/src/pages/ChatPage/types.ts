@@ -15,7 +15,8 @@ export interface Message {
     | "log"
     | "visit"
     | "answer"
-    | "progress";
+    | "progress"
+    | "thinking";
   content: string;
   isTyping?: boolean;
   data?: {
@@ -28,7 +29,10 @@ export interface Message {
     urls?: string[];
     outputs?: any[];
     trackers?: any;
+    message?: string;
+    error?: string;
   };
+  step?: number;
 }
 
 export interface Query {

@@ -10,7 +10,8 @@ export interface ChatMessageProps {
     | "log"
     | "visit"
     | "answer"
-    | "progress";
+    | "progress"
+    | "thinking";
   content: string;
   isTyping?: boolean;
   data?: {
@@ -26,6 +27,9 @@ export interface ChatMessageProps {
     searchQuery?: string;
     content?: string;
     action?: string;
+    answer?: string;
+    message?: string;
+    error?: string;
   };
   step?: number;
   /**
@@ -45,4 +49,7 @@ export interface ChatMessageData {
   searchQuery?: string;
   content?: string;
   action?: string;
+  answer?: string;
+  message?: string;
+  error?: string;
 }
