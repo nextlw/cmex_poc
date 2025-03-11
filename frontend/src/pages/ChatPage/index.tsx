@@ -331,6 +331,7 @@ const ChatPage: React.FC = () => {
         body: JSON.stringify({
           q: question,
           modelo: selectedModel,
+          definitive: true,
         }),
       });
 
@@ -434,8 +435,67 @@ const ChatPage: React.FC = () => {
       console.log("Evento recebido no cliente:", data);
 
       try {
-        // Processamento da mensagem (manter o código existente)
-        // ... existing message processing code ...
+        // Processar a mensagem transformando para o formato do frontend
+        const transformedMessage = transformStreamMessage(data);
+        console.log("Mensagem transformada:", transformedMessage);
+
+        // Adicionar a mensagem ao estado do agente
+        setAgentState((prev) => {
+          // Construir o objeto de mensagem com base no tipo
+          let newMessage: any = {
+            type: transformedMessage.type,
+            content: "",
+            isTyping: false,
+            data: transformedMessage.data,
+            step: prev.messages.length + 1,
+          };
+
+          // Definir o conteúdo baseado no tipo de mensagem
+          switch (transformedMessage.type) {
+            case "answer":
+              newMessage.content =
+                transformedMessage.data?.answer || "Resposta do modelo";
+              break;
+            case "search":
+              newMessage.content = `🔍 Pesquisando: ${
+                transformedMessage.data?.searchQuery || ""
+              }`;
+              break;
+            case "reflect":
+              newMessage.content = `🤔 Refletindo: ${
+                transformedMessage.data?.think || ""
+              }`;
+              break;
+            case "visit":
+              newMessage.content = `🌐 Visitando: ${
+                transformedMessage.data?.url || ""
+              }`;
+              break;
+            case "progress":
+              newMessage.content = `🔄 Progresso: ${
+                transformedMessage.data?.think ||
+                transformedMessage.data?.message ||
+                ""
+              }`;
+              break;
+            case "error":
+              newMessage.content = `❌ Erro: ${
+                transformedMessage.data?.error || "Erro desconhecido"
+              }`;
+              break;
+            default:
+              newMessage.content = JSON.stringify(transformedMessage.data);
+              break;
+          }
+
+          console.log("Nova mensagem adicionada:", newMessage);
+
+          // Retornar o estado atualizado
+          return {
+            ...prev,
+            messages: [...prev.messages, newMessage],
+          };
+        });
 
         if (data.type === "answer" || data.type === "error") {
           console.log("Fechando conexão após receber resposta/erro");
@@ -945,7 +1005,10 @@ const ChatPage: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ requestId: currentQueryId }),
+          body: JSON.stringify({
+            requestId: currentQueryId,
+            definitive: true,
+          }),
         });
 
         if (cancelResponse.ok) {

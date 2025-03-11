@@ -130,7 +130,16 @@ export async function dedupQueries(
     });
 
     const response = result.response;
-    const content = JSON.parse(response.text());
+
+    // Verificar se text é uma função ou propriedade
+    let textContent;
+    if (typeof response.text === "function") {
+      textContent = response.text();
+    } else {
+      textContent = response.text;
+    }
+
+    const content = JSON.parse(textContent);
 
     try {
       const validated = dedupSchema.parse(content);
