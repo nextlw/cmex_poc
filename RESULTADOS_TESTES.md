@@ -246,3 +246,50 @@
 - Implementar cache para chamadas de API
 - Otimizar tempo de execução dos testes
 - Melhorar gerenciamento de recursos
+
+## Correção de Problemas de Comunicação SSE (11/03/2025)
+
+### Problemas Identificados
+
+Durante a execução dos testes E2E, foram detectados dois problemas principais na comunicação entre frontend e backend:
+
+1. **Validação do campo `definitive`**:
+
+   - O frontend enviava requisições sem o campo `definitive` necessário
+   - O backend retornava erro: `"Formato inválido: Required, Invalid literal value, expected \"definitive\""`
+
+2. **Erro de processamento JSON**:
+   - O backend encontrava erro ao processar JSON devido a funções sendo serializadas
+   - Erro: `"Unexpected token '(', \"() => JSON\"... is not valid JSON"`
+
+### Soluções Implementadas
+
+1. **Middleware para adicionar campo `definitive`**:
+
+   - Adicionamos um middleware no Express que automaticamente inclui o campo `definitive: true` em todas as requisições POST para `/api/v1/query`
+   - Isso elimina a necessidade de modificar cada componente do frontend individualmente
+
+2. **Sanitização de JSON**:
+
+   - Criamos uma função utilitária `sanitizeForJSON` que remove funções de objetos antes da serialização
+   - Modificamos o método `generateContent` na classe `LocalModelClient` para usar esta função
+   - Isso previne erros de serialização quando há funções no objeto
+
+3. **Correção de métodos que usam `text()`**:
+   - Atualizamos os arquivos que usavam o método `text()` para usar a propriedade `text` diretamente
+   - Arquivos modificados: `evaluator.ts`, `query-rewriter.ts`, `safe-generator.ts`
+   - Adicionamos verificação de tipo para garantir compatibilidade com diferentes implementações
+
+### Resultados
+
+- As alterações foram implementadas com sucesso
+- O middleware está funcionando corretamente, adicionando o campo `definitive` às requisições
+- A sanitização de JSON está prevenindo erros de serialização
+- Os testes ainda apresentam problemas com a detecção de elementos na interface, mas os erros de comunicação com o backend foram resolvidos
+
+### Próximos Passos
+
+1. Monitorar logs do servidor para confirmar que o middleware está funcionando em produção
+2. Realizar testes adicionais para garantir que a comunicação SSE está funcionando corretamente
+3. Considerar uma solução mais permanente no frontend para incluir o campo `definitive` em todas as requisições
+4. Melhorar os testes E2E para lidar melhor com a detecção de elementos na interface

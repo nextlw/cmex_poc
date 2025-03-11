@@ -443,6 +443,7 @@
 
 1. O frontend envia requisições sem o campo `definitive` necessário, resultando em erro de formato inválido do backend.
 2. O backend encontra erro ao processar JSON devido a um token inesperado relacionado a funções serializadas.
+3. **NOVO**: Persistência de erro `TypeError: response.text is not a function` no arquivo `agent.ts`.
 
 ### Soluções Implementadas
 
@@ -520,18 +521,32 @@ Atualizamos os arquivos que usavam o método `text()` para usar a propriedade `t
 - `query-rewriter.ts`
 - `safe-generator.ts`
 
+#### 4. Correção Pendente no arquivo `agent.ts`
+
+Identificamos que ainda existe um erro persistente no arquivo `agent.ts` na linha 772, onde está sendo usado o método `response.text()` como uma função.
+
+**Plano de Correção**:
+
+1. Localizar todas as ocorrências de `text()` no arquivo `agent.ts`
+2. Atualizar para usar a propriedade `text` diretamente ou implementar uma verificação de tipo
+3. Analisar o comportamento da resposta final com o campo `definitive`
+4. Verificar se os prompts estão alterando o formato esperado de resposta
+
 ### Status
 
 - [x] Middleware para adicionar campo `definitive` implementado
 - [x] Função de sanitização JSON implementada
-- [x] Correção de métodos que usam `text()` implementada
+- [x] Correção de métodos que usam `text()` em alguns arquivos
+- [ ] Correção de métodos que usam `text()` no arquivo `agent.ts`
+- [ ] Verificação dos prompts e formato de resposta
 - [ ] Testes de integração completos
 
 ### Próximos Passos
 
-1. Monitorar logs do servidor para confirmar que o middleware está funcionando
-2. Realizar testes adicionais para garantir que a comunicação SSE está funcionando corretamente
-3. Considerar uma solução mais permanente no frontend para incluir o campo `definitive` em todas as requisições
+1. Corrigir o arquivo `agent.ts` para lidar corretamente com o retorno `text`
+2. Realizar testes para verificar se o erro foi resolvido
+3. Analisar logs do servidor para identificar possíveis problemas no formato de prompts
+4. Atualizar a documentação com as soluções implementadas
 
 ## Regras de Implementação
 

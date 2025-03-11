@@ -769,7 +769,11 @@ export async function getResponse(
       }
 
       response = await result.response;
-      rawResponseText = await response.text();
+      // Verificar se text é uma função ou uma propriedade
+      rawResponseText =
+        typeof response.text === "function"
+          ? await response.text()
+          : response.text;
       console.log("Raw response text:", rawResponseText);
 
       // Tenta extrair JSON da resposta do Gemini, se necessário
@@ -1252,7 +1256,11 @@ ${diaryContext.join("\n\n") || ""}`.trim();
         }
 
         const response = await result.response;
-        let rawResponseText = await response.text();
+        // Verificar se text é uma função ou uma propriedade
+        let rawResponseText =
+          typeof response.text === "function"
+            ? await response.text()
+            : response.text;
 
         // Extrai JSON da resposta do Gemini, se necessário
         if (isGeminiModel) {
@@ -1380,7 +1388,11 @@ ${answerStep.answer}`;
       }
 
       const response = await result.response;
-      let rawResponseText = await response.text();
+      // Verificar se text é uma função ou uma propriedade
+      let rawResponseText =
+        typeof response.text === "function"
+          ? await response.text()
+          : response.text;
 
       // Extrai JSON da resposta do Gemini, se necessário
       if (isGeminiModel) {
