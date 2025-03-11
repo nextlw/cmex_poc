@@ -300,6 +300,62 @@
 - Desenvolvidos procedimentos para testar a sincronização entre backend e frontend
 - Criado modelo para documentação de evidências e resultados
 
+### 4.1.3 Diferenciação de Tipos de Mensagens no Chat
+
+```typescript
+// Implementado em frontend/src/pages/ChatPage/index.tsx e frontend/src/components/ChatMessage/index.tsx
+```
+
+- [x] Analisar os diferentes tipos de mensagens recebidas da API
+- [x] Identificar os componentes específicos para cada tipo de mensagem
+- [x] Atualizar o transformador de mensagens para identificar corretamente cada tipo
+- [x] Modificar o tratamento de eventos SSE para separar os diferentes tipos de conteúdo
+- [x] Atualizar o componente ChatMessage para exibir adequadamente cada tipo de mensagem
+- [x] Estilizar cada tipo de mensagem de acordo com seu conteúdo e propósito
+- [x] Adicionar suporte para novos tipos de mensagens ("progress", "thinking", etc.)
+
+**Review Point 4.1.3**:
+
+- [x] Cada tipo de mensagem (answer, reflect, search, etc.) tem tratamento específico
+- [x] O processamento de mensagens preserva todos os dados relevantes
+- [x] A interface visual distingue claramente os diferentes tipos de conteúdo
+- [x] As mensagens são exibidas de forma concisa e legível
+- [x] O código segue os padrões estabelecidos de tipagem e estrutura
+- [ ] Testes realizados para validar o comportamento com diferentes tipos de mensagens
+
+**Implementação em Etapas**:
+
+1. **Atualização dos Tipos**: Adicionar novos tipos como "progress", "thinking" aos tipos válidos nas interfaces Message e ChatMessageProps.
+2. **Processamento de Eventos SSE**: Substituir o sistema de processamento de mensagens no ChatPage por uma abordagem baseada em switch-case, que trata cada tipo de mensagem de forma específica.
+3. **Extração de Dados**: Implementar extração de dados específicos para cada tipo de mensagem (think, answer, references, questionsToAnswer, etc.).
+4. **Formatação Visual**: Atualizar ChatMessage para renderizar componentes específicos com base no tipo e os dados da mensagem.
+5. **Estilização**: Criar estilos específicos para cada tipo de mensagem para melhorar a legibilidade e a distinção entre os tipos.
+6. **Testes**: Realizar testes com diferentes tipos de mensagens para validar o comportamento correto.
+
+**Status Atual**:
+
+- [x] Análise dos tipos de mensagens e estrutura existente
+- [x] Identificação de componentes existentes (ThinkingSection, ReferencesSection)
+- [x] Atualização dos tipos para suportar novos formatos de mensagens
+- [x] Implementação do novo processador de mensagens
+- [ ] Testes e validação do comportamento
+
+**Próximos Passos**:
+
+1. ~~Finalizar a tipagem das mensagens (incluir "progress" nos tipos válidos)~~ ✅
+2. ~~Implementar a lógica de processamento por tipo de mensagem~~ ✅
+3. ~~Atualizar o componente ChatMessage para exibir adequadamente cada tipo~~ ✅
+4. Testar com diferentes tipos de respostas da API
+5. Documentar o comportamento e o fluxo de dados
+
+**Melhorias Implementadas**:
+
+1. **Processamento de Mensagens**: Cada tipo de mensagem agora tem um tratamento específico, preservando todos os dados relevantes.
+2. **Visualização Aprimorada**: Mensagens são exibidas com formatação específica para seu tipo, facilitando a leitura.
+3. **Componentes Reutilizáveis**: Utilização de ThinkingSection para exibir o raciocínio do modelo em diferentes contextos.
+4. **Estilização Consistente**: Cada tipo de mensagem tem estilos visuais distintos, mantendo a consistência com o design system.
+5. **Tratamento de Progresso**: Adicionado suporte para mensagens de tipo "progress", importantes para feedback durante operações longas.
+
 ### 4.2 HomePage - Melhorias
 
 ```typescript

@@ -42,9 +42,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     if (!isTyping) {
       setDisplayedContent(
         type === "log" ? (
-          <pre>{content}</pre>
+          <pre className="log-content">{content}</pre>
         ) : type === "response" || type === "answer" ? (
-          <>
+          <div className="answer-container">
             {data?.think && (
               <ThinkingSection
                 content={data.think}
@@ -91,9 +91,21 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                 </div>
               )}
             </div>
-          </>
+          </div>
         ) : type === "reflect" ? (
           <div className="reflect-content">
+            {data?.think && (
+              <div className="reflect-thinking">
+                <ThinkingSection
+                  content={data.think}
+                  isExpanded={isThinkingExpanded}
+                  onToggle={() => setIsThinkingExpanded(!isThinkingExpanded)}
+                  modelName={modelName}
+                  title="Mostrar reflexão"
+                />
+              </div>
+            )}
+
             <ReactMarkdown>{content}</ReactMarkdown>
 
             {data?.questionsToAnswer && data.questionsToAnswer.length > 0 && (
@@ -141,6 +153,23 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                 <div className="content-preview">
                   {data.content.substring(0, 200)}...
                 </div>
+              </div>
+            )}
+          </div>
+        ) : type === "progress" ? (
+          <div className="progress-content">
+            <div className="progress-message">
+              <strong>Processando:</strong> {content}
+            </div>
+            {data?.think && (
+              <div className="progress-thinking">
+                <ThinkingSection
+                  content={data.think}
+                  isExpanded={isThinkingExpanded}
+                  onToggle={() => setIsThinkingExpanded(!isThinkingExpanded)}
+                  modelName={modelName}
+                  title="Mostrar pensamento"
+                />
               </div>
             )}
           </div>

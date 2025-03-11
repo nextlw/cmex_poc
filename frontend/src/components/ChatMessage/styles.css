@@ -288,3 +288,193 @@
 :root.dark-theme .chat-message.step-5 {
   /* As cores já serão ajustadas pelos tokens CSS */
 }
+
+/* Estilos gerais para mensagens */
+.chat-message {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  max-width: 100%;
+}
+
+/* Estilos específicos por tipo de mensagem */
+.chat-message.answer,
+.chat-message.response {
+  background-color: var(--answer-bg-color, #f0f7ff);
+  border-left: 3px solid var(--answer-border-color, #0066cc);
+}
+
+.chat-message.query {
+  background-color: var(--query-bg-color, #f5f5f5);
+  border-left: 3px solid var(--query-border-color, #666666);
+}
+
+.chat-message.reflect {
+  background-color: var(--reflect-bg-color, #f7f0ff);
+  border-left: 3px solid var(--reflect-border-color, #6600cc);
+}
+
+.chat-message.search {
+  background-color: var(--search-bg-color, #f0fff7);
+  border-left: 3px solid var(--search-border-color, #00cc66);
+}
+
+.chat-message.visit {
+  background-color: var(--visit-bg-color, #fff7f0);
+  border-left: 3px solid var(--visit-border-color, #cc6600);
+}
+
+.chat-message.progress {
+  background-color: var(--progress-bg-color, #f0f0ff);
+  border-left: 3px solid var(--progress-border-color, #6666cc);
+}
+
+.chat-message.error {
+  background-color: var(--error-bg-color, #fff0f0);
+  border-left: 3px solid var(--error-border-color, #cc0000);
+}
+
+.chat-message.log {
+  background-color: var(--log-bg-color, #f2f2f2);
+  border-left: 3px solid var(--log-border-color, #999999);
+}
+
+/* Conteúdo das mensagens */
+.message-content {
+  padding: 0.5rem;
+}
+
+/* Estilos para tipos específicos */
+.search-content .search-query {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.visit-content .visit-url {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.progress-content .progress-message {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.final-answer {
+  position: relative;
+  padding: 0.5rem;
+}
+
+.model-indicator-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.25rem;
+}
+
+.reflect-content .questions-section {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 0.25rem;
+}
+
+.reflect-content .questions-section h4 {
+  margin-top: 0;
+  font-size: 0.9rem;
+  color: var(--headings-color, #333);
+}
+
+.reflect-content .questions-section ul {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.5rem;
+}
+
+.reflect-content .questions-section li {
+  margin-bottom: 0.25rem;
+  font-style: italic;
+}
+
+.reflect-thinking,
+.progress-thinking {
+  margin-bottom: 0.5rem;
+}
+
+.log-content {
+  font-family: monospace;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+  padding: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 0.25rem;
+  overflow-x: auto;
+}
+
+.answer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.debug-section {
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #ccc;
+}
+
+.toggle-debug-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.debug-info {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f5f5f5;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.25rem 0.5rem;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ccc;
+  border-radius: 50%;
+  animation: typing-animation 1.5s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-animation {
+
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}

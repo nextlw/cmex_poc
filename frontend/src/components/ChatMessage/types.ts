@@ -9,7 +9,8 @@ export interface ChatMessageProps {
     | "search"
     | "log"
     | "visit"
-    | "answer";
+    | "answer"
+    | "progress";
   content: string;
   isTyping?: boolean;
   data?: {

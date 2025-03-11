@@ -441,60 +441,130 @@ const ChatPage: React.FC = () => {
 
         // Adicionar a mensagem ao estado do agente
         setAgentState((prev) => {
-          // Construir o objeto de mensagem com base no tipo
-          let newMessage: any = {
-            type: transformedMessage.type,
-            content: "",
+          // Identificar o tipo de mensagem e dados
+          const messageType = transformedMessage.type;
+          const messageData = transformedMessage.data || {};
+
+          // Construir diferentes tipos de mensagens com base no tipo recebido
+          const baseMsgProps = {
             isTyping: false,
-            data: transformedMessage.data,
             step: prev.messages.length + 1,
+            data: messageData,
           };
 
-          // Definir o conteúdo baseado no tipo de mensagem
-          switch (transformedMessage.type) {
-            case "answer":
-              newMessage.content =
-                transformedMessage.data?.answer || "Resposta do modelo";
-              break;
-            case "search":
-              newMessage.content = `🔍 Pesquisando: ${
-                transformedMessage.data?.searchQuery || ""
-              }`;
-              break;
-            case "reflect":
-              newMessage.content = `🤔 Refletindo: ${
-                transformedMessage.data?.think || ""
-              }`;
-              break;
-            case "visit":
-              newMessage.content = `🌐 Visitando: ${
-                transformedMessage.data?.url || ""
-              }`;
-              break;
-            case "progress":
-              newMessage.content = `🔄 Progresso: ${
-                transformedMessage.data?.think ||
-                transformedMessage.data?.message ||
-                ""
-              }`;
-              break;
-            case "error":
-              newMessage.content = `❌ Erro: ${
-                transformedMessage.data?.error || "Erro desconhecido"
-              }`;
-              break;
-            default:
-              newMessage.content = JSON.stringify(transformedMessage.data);
-              break;
+          // Determinar o tipo e formatação específica com base no tipo da mensagem
+          switch (messageType) {
+            case "answer": {
+              // Para respostas, criar uma mensagem de resposta final formatada
+              return {
+                ...prev,
+                messages: [
+                  ...prev.messages,
+                  {
+                    ...baseMsgProps,
+                    type: "answer",
+                    content: messageData.answer || "Resposta do modelo",
+                  },
+                ],
+              };
+            }
+
+            case "reflect": {
+              // Para reflexões, extrair pensamento e questões a responder
+              return {
+                ...prev,
+                messages: [
+                  ...prev.messages,
+                  {
+                    ...baseMsgProps,
+                    type: "reflect",
+                    content: messageData.think || "Reflexão do modelo",
+                  },
+                ],
+              };
+            }
+
+            case "search": {
+              // Para buscas, extrair termos de busca e URLs
+              return {
+                ...prev,
+                messages: [
+                  ...prev.messages,
+                  {
+                    ...baseMsgProps,
+                    type: "search",
+                    content: `🔍 Pesquisando: ${messageData.searchQuery || ""}`,
+                  },
+                ],
+              };
+            }
+
+            case "visit": {
+              // Para visitas a URLs, extrair URL e conteúdo visitado
+              return {
+                ...prev,
+                messages: [
+                  ...prev.messages,
+                  {
+                    ...baseMsgProps,
+                    type: "visit",
+                    content: `🌐 Visitando: ${messageData.url || ""}`,
+                  },
+                ],
+              };
+            }
+
+            case "progress": {
+              // Para mensagens de progresso, mostrar pensamento ou raciocínio
+              return {
+                ...prev,
+                messages: [
+                  ...prev.messages,
+                  {
+                    ...baseMsgProps,
+                    type: "progress",
+                    content:
+                      messageData.think ||
+                      messageData.message ||
+                      "Processando...",
+                  },
+                ],
+              };
+            }
+
+            case "error": {
+              // Para erros, mostrar mensagem de erro formatada
+              return {
+                ...prev,
+                messages: [
+                  ...prev.messages,
+                  {
+                    ...baseMsgProps,
+                    type: "error",
+                    content: `❌ Erro: ${
+                      messageData.error || "Erro desconhecido"
+                    }`,
+                  },
+                ],
+              };
+            }
+
+            default: {
+              // Para outros tipos, mostrar conteúdo bruto formatado
+              console.log("Tipo de mensagem desconhecido:", messageType);
+              return {
+                ...prev,
+                messages: [
+                  ...prev.messages,
+                  {
+                    ...baseMsgProps,
+                    type: messageType,
+                    content: JSON.stringify(messageData, null, 2),
+                  },
+                ],
+              };
+            }
           }
-
-          console.log("Nova mensagem adicionada:", newMessage);
-
-          // Retornar o estado atualizado
-          return {
-            ...prev,
-            messages: [...prev.messages, newMessage],
-          };
         });
 
         if (data.type === "answer" || data.type === "error") {
