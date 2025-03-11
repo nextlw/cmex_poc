@@ -251,7 +251,7 @@
 
 ### Problemas Identificados
 
-Durante a execução dos testes E2E, foram detectados dois problemas principais na comunicação entre frontend e backend:
+Durante a execução dos testes E2E, foram detectados problemas na comunicação entre frontend e backend:
 
 1. **Validação do campo `definitive`**:
 
@@ -259,8 +259,13 @@ Durante a execução dos testes E2E, foram detectados dois problemas principais 
    - O backend retornava erro: `"Formato inválido: Required, Invalid literal value, expected \"definitive\""`
 
 2. **Erro de processamento JSON**:
+
    - O backend encontrava erro ao processar JSON devido a funções sendo serializadas
    - Erro: `"Unexpected token '(', \"() => JSON\"... is not valid JSON"`
+
+3. **Erro no método `text()`**:
+   - No arquivo `agent.ts`, havia erro: `TypeError: response.text is not a function`
+   - O método estava sendo chamado como função, mas na nova implementação era uma propriedade
 
 ### Soluções Implementadas
 
@@ -276,20 +281,37 @@ Durante a execução dos testes E2E, foram detectados dois problemas principais 
    - Isso previne erros de serialização quando há funções no objeto
 
 3. **Correção de métodos que usam `text()`**:
-   - Atualizamos os arquivos que usavam o método `text()` para usar a propriedade `text` diretamente
-   - Arquivos modificados: `evaluator.ts`, `query-rewriter.ts`, `safe-generator.ts`
-   - Adicionamos verificação de tipo para garantir compatibilidade com diferentes implementações
+   - Atualizamos os arquivos que usavam o método `text()` para usar a propriedade `text` diretamente:
+     - `evaluator.ts`
+     - `query-rewriter.ts`
+     - `safe-generator.ts`
+     - `agent.ts` (3 ocorrências)
+   - Implementamos uma verificação de tipo para compatibilidade entre diferentes versões:
+   ```typescript
+   rawResponseText =
+     typeof response.text === "function"
+       ? await response.text()
+       : response.text;
+   ```
 
 ### Resultados
 
 - As alterações foram implementadas com sucesso
 - O middleware está funcionando corretamente, adicionando o campo `definitive` às requisições
 - A sanitização de JSON está prevenindo erros de serialização
-- Os testes ainda apresentam problemas com a detecção de elementos na interface, mas os erros de comunicação com o backend foram resolvidos
+- As correções do método `text()` estão permitindo que as respostas sejam processadas corretamente
+- **Problema resolvido**: Os erros `TypeError: response.text is not a function` não ocorrem mais
+
+### Análise do Teste
+
+Embora o teste E2E ainda apresente falhas, elas não estão mais relacionadas à comunicação com o backend, mas sim à detecção de elementos na interface:
+
+- O erro atual é `"Campo de mensagem não encontrado com nenhum dos seletores conhecidos"`
+- Este é um problema de seleção de elementos DOM no frontend e não está relacionado à comunicação SSE
 
 ### Próximos Passos
 
 1. Monitorar logs do servidor para confirmar que o middleware está funcionando em produção
 2. Realizar testes adicionais para garantir que a comunicação SSE está funcionando corretamente
-3. Considerar uma solução mais permanente no frontend para incluir o campo `definitive` em todas as requisições
-4. Melhorar os testes E2E para lidar melhor com a detecção de elementos na interface
+3. Melhorar os testes E2E para lidar melhor com a detecção de elementos na interface
+4. Considerar implementar testes unitários mais específicos para validar a comunicação SSE

@@ -769,11 +769,49 @@ export async function getResponse(
       }
 
       response = await result.response;
-      // Verificar se text é uma função ou uma propriedade
-      rawResponseText =
-        typeof response.text === "function"
-          ? await response.text()
-          : response.text;
+
+      // Abordagem robusta para lidar com text sendo uma função ou propriedade
+      try {
+        // Verificar se response existe e tem a propriedade text
+        if (!response) {
+          console.error("Erro: objeto response é nulo ou indefinido");
+          rawResponseText = "{}"; // Valor padrão em caso de erro
+        } else {
+          console.log("Response type:", typeof response);
+          console.log(
+            "Response properties:",
+            Object.getOwnPropertyNames(response)
+          );
+
+          // Verificar se text existe como propriedade ou método
+          if (typeof response.text === "function") {
+            console.log("text é uma função, chamando response.text()");
+            rawResponseText = await response.text();
+          } else if (response.text !== undefined) {
+            console.log(
+              "text é uma propriedade, acessando response.text diretamente"
+            );
+            rawResponseText = response.text;
+          } else if (typeof response.toString === "function") {
+            console.log("Usando toString() como fallback");
+            rawResponseText = response.toString();
+          } else {
+            console.log(
+              "Nenhum método confiável encontrado, convertendo para JSON"
+            );
+            try {
+              rawResponseText = JSON.stringify(response);
+            } catch (jsonError) {
+              console.error("Erro ao converter response para JSON:", jsonError);
+              rawResponseText = "{}";
+            }
+          }
+        }
+      } catch (textError) {
+        console.error("Erro ao acessar response.text:", textError);
+        rawResponseText = "{}";
+      }
+
       console.log("Raw response text:", rawResponseText);
 
       // Tenta extrair JSON da resposta do Gemini, se necessário
