@@ -1,4 +1,5 @@
-import { fetch } from 'undici';
+import { fetch } from "undici";
+import { sanitizeForJSON } from "../utils/sanitize-json";
 
 /**
  * Interface para a resposta do modelo.
@@ -40,30 +41,31 @@ interface ModelResponse {
  */
 function normalizeAction(action: string): string {
   // Remove prefixos/sufixos comuns e normaliza a ação
-  const normalized = action.toLowerCase()
-    .replace(/^action[-_]?/, '')  // remove 'action-' ou 'action_' do início
-    .replace(/[-_]?action$/, '')  // remove '-action' ou '_action' do fim
-    .replace(/^query[-_]?/, '')   // remove 'query-' ou 'query_' do início
-    .replace(/[-_]?query$/, '');  // remove '-query' ou '_query' do fim
+  const normalized = action
+    .toLowerCase()
+    .replace(/^action[-_]?/, "") // remove 'action-' ou 'action_' do início
+    .replace(/[-_]?action$/, "") // remove '-action' ou '_action' do fim
+    .replace(/^query[-_]?/, "") // remove 'query-' ou 'query_' do início
+    .replace(/[-_]?query$/, ""); // remove '-query' ou '_query' do fim
 
   // Mapeamento de ações conhecidas
   const actionMap: { [key: string]: string } = {
     /**
      * Busca.
      */
-    'search': 'search',
+    search: "search",
     /**
      * Resposta.
      */
-    'answer': 'answer',
+    answer: "answer",
     /**
      * Reflexão.
      */
-    'reflect': 'reflect',
+    reflect: "reflect",
     /**
      * Visita.
      */
-    'visit': 'visit'
+    visit: "visit",
   };
 
   return actionMap[normalized] || action;
@@ -76,7 +78,7 @@ function normalizeAction(action: string): string {
  */
 function normalizeSearchQuery(content: any): any {
   // Se a ação for search e não tiver searchQuery mas tiver query
-  if (content.action === 'search' && !content.searchQuery && content.query) {
+  if (content.action === "search" && !content.searchQuery && content.query) {
     // Copia o valor de query para searchQuery
     content.searchQuery = content.query;
     // Remove o campo query
@@ -97,7 +99,7 @@ function extractLastJSON(text: string): string {
   // Se não houver JSONs válidos, lança um erro
   if (!matches) {
     // Lança um erro
-    throw new Error('Nenhum JSON válido encontrado na resposta');
+    throw new Error("Nenhum JSON válido encontrado na resposta");
   }
 
   // Tentar cada match do mais recente para o mais antigo
@@ -110,21 +112,28 @@ function extractLastJSON(text: string): string {
       return jsonCandidate;
     } catch (e) {
       // Continue tentando com o próximo match
-      console.log(`Tentativa de parsing JSON falhou para candidato ${i + 1}/${matches.length}`);
+      console.log(
+        `Tentativa de parsing JSON falhou para candidato ${i + 1}/${
+          matches.length
+        }`
+      );
       continue;
     }
   }
-  
+
   // Se chegamos aqui, nenhum JSON válido foi encontrado
   // Em vez de lançar um erro, vamos retornar um JSON básico válido com a resposta original
-  console.warn('Todos os JSON candidatos falharam no parsing. Criando JSON de fallback...');
+  console.warn(
+    "Todos os JSON candidatos falharam no parsing. Criando JSON de fallback..."
+  );
   const fallbackJson = JSON.stringify({
     action: "answer",
     think: "Não foi possível extrair o raciocínio original.",
-    answer: "Não foi possível processar a resposta do modelo corretamente. Por favor, tente novamente.",
-    rawResponse: text.substring(0, 1000) // Primeiros 1000 caracteres para não sobrecarregar
+    answer:
+      "Não foi possível processar a resposta do modelo corretamente. Por favor, tente novamente.",
+    rawResponse: text.substring(0, 1000), // Primeiros 1000 caracteres para não sobrecarregar
   });
-  
+
   return fallbackJson;
 }
 
@@ -145,16 +154,25 @@ export class LocalModelClient {
    */
   constructor(endpoint: string) {
     // Remove o último caractere '/' se houver
-    this.endpoint = endpoint.replace(/\/$/, '');
+    this.endpoint = endpoint.replace(/\/$/, "");
     // Inicializa o método de geração de conteúdo
     this.generateContentMethod = async () => {
       // Lança um erro se o método não foi inicializado
-      throw new Error('generateContent não foi inicializado ainda');
+      throw new Error("generateContent não foi inicializado ainda");
     };
     this.expectedFormats = {
-      search: { action: 'search', think: 'string', searchQuery: 'string' },
-      answer: { action: 'answer', think: 'string', answer: 'string', references: 'array' },
-      reflect: { action: 'reflect', think: 'string', questionsToAnswer: 'array' }
+      search: { action: "search", think: "string", searchQuery: "string" },
+      answer: {
+        action: "answer",
+        think: "string",
+        answer: "string",
+        references: "array",
+      },
+      reflect: {
+        action: "reflect",
+        think: "string",
+        questionsToAnswer: "array",
+      },
     };
   }
 
@@ -212,7 +230,7 @@ ${prompt}`;
     // Faz a solicitação POST para o endpoint de conclusão de chat
     const response = await fetch(`${this.endpoint}/v1/chat/completions`, {
       // Método POST
-      method: 'POST',
+      method: "POST",
       // Cabeçalhos da requisição
       headers: { "Content-Type": "application/json" },
       // Corpo da requisição
@@ -221,34 +239,35 @@ ${prompt}`;
         model: "qwen2.5-7b-instruct-1m",
         // Mensagens da requisição
         messages: [
-          { 
+          {
             // Papel da mensagem
-            role: "system", 
+            role: "system",
             // Conteúdo da mensagem
-            content: "Você deve corrigir o formato da resposta anterior mantendo a mesma intenção."
+            content:
+              "Você deve corrigir o formato da resposta anterior mantendo a mesma intenção.",
           },
-          { 
+          {
             // Papel da mensagem
-            role: "user", 
+            role: "user",
             // Conteúdo da mensagem
-            content: correctionPrompt 
-          }
+            content: correctionPrompt,
+          },
         ],
         // Temperatura
         temperature: 0.7,
         // Número máximo de tokens
         max_tokens: -1,
         // Stream
-        stream: false
-      })
+        stream: false,
+      }),
     });
 
     // Converte a resposta para JSON
-    const data = await response.json() as ModelResponse;
+    const data = (await response.json()) as ModelResponse;
     // Se a resposta não contém um conteúdo de mensagem válido, lança um erro
     if (!data.choices?.[0]?.message?.content) {
       // Lança um erro
-      throw new Error('Resposta inválida do modelo na correção');
+      throw new Error("Resposta inválida do modelo na correção");
     }
 
     // Retorna o conteúdo da resposta corrigida
@@ -260,7 +279,7 @@ ${prompt}`;
    * @param options Opções do modelo.
    * @returns O modelo gerativo.
    */
-  getGenerativeModel(options: { model: string, generationConfig: any }) {
+  getGenerativeModel(options: { model: string; generationConfig: any }) {
     // Dentro do método getGenerativeModel
     this.generateContentMethod = async (prompt: string) => {
       // Cria o payload para a requisição
@@ -269,9 +288,9 @@ ${prompt}`;
         model: options.model,
         // Mensagens da requisição
         messages: [
-          { 
+          {
             // Papel da mensagem
-            role: "system", 
+            role: "system",
             // Conteúdo da mensagem
             content: `
 Você é um buscador curioso e muito experiente, consegue achar qualquer coisa na internet, procura até nos mínimos detalhes de pistas que possam te levar até a resposta correta. Suas respostas devem seguir estas regras:
@@ -397,48 +416,54 @@ Para ação de reflexão:
    - SEMPRE cite a legislação (base legal, caso seja UM FATOR PRINCIPAL PARA A RESPOSTA)
    - SEMPRE que não souber como acessar uma fonte, procure documentação da fonte ou use ferramentas de busca na internet para encontrar como acessar.        `,
           },
-          { 
+          {
             // Papel da mensagem
-            role: "user", 
+            role: "user",
             // Conteúdo da mensagem
-            content: prompt 
-          }
+            content: prompt,
+          },
         ],
         // Temperatura
         temperature: options.generationConfig.temperature,
         // Número máximo de tokens
         max_tokens: -1,
         // Stream
-        stream: false
+        stream: false,
       };
       // Cria o endpoint completo
-      const fullEndpoint = `${this.endpoint}/v1/chat/completions`.replace(/(?<!:)\/+/g, '/');
+      const fullEndpoint = `${this.endpoint}/v1/chat/completions`.replace(
+        /(?<!:)\/+/g,
+        "/"
+      );
       // Loga o endpoint completo
-      console.log('Endpoint completo:', fullEndpoint);
+      console.log("Endpoint completo:", fullEndpoint);
       // Faz a solicitação POST para o endpoint de conclusão de chat
       const response = await fetch(fullEndpoint, {
         // Método POST
-        method: 'POST',
+        method: "POST",
         // Cabeçalhos da requisição
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          Accept: "application/json",
         },
         // Corpo da requisição
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       // Loga a resposta completa para debug
-      console.log('Resposta do status HTTP:', response.status);
-      console.log('Resposta dos headers:', [...response.headers.entries()]);
+      console.log("Resposta do status HTTP:", response.status);
+      console.log("Resposta dos headers:", [...response.headers.entries()]);
 
       // Converte a resposta para JSON
-      const data = await response.json() as ModelResponse;
+      const data = (await response.json()) as ModelResponse;
 
       // Se houver um erro, lança um erro
       if (data.error) {
         // Loga o erro
-        console.error('\x1b[31m%s\x1b[0m', `Erro na resposta do modelo: ${data.error}`);
+        console.error(
+          "\x1b[31m%s\x1b[0m",
+          `Erro na resposta do modelo: ${data.error}`
+        );
         // Lança um erro
         throw new Error(`Erro na resposta do modelo: ${data.error}`);
       }
@@ -446,18 +471,18 @@ Para ação de reflexão:
       // Se a resposta não contém um conteúdo de mensagem válido, lança um erro
       if (!data.choices || !data.choices[0]?.message?.content) {
         // Lança um erro
-        throw new Error('Resposta do modelo não contém conteúdo válido');
+        throw new Error("Resposta do modelo não contém conteúdo válido");
       }
 
       // Pega o conteúdo da resposta
       const rawContent = data.choices[0].message.content;
       // Loga o conteúdo da resposta
-      console.log('Resposta completa do modelo:', rawContent);
-      
+      console.log("Resposta completa do modelo:", rawContent);
+
       // Extrai o último JSON da resposta (após o raciocínio)
       const jsonContent = extractLastJSON(rawContent);
       let content = JSON.parse(jsonContent);
-      
+
       // Normaliza a ação se necessário
       if (content.action) {
         // Normaliza a ação
@@ -465,7 +490,9 @@ Para ação de reflexão:
         // Se a ação foi alterada, loga a alteração
         if (normalizedAction !== content.action) {
           // Loga a alteração
-          console.log(`Normalizando ação de "${content.action}" para "${normalizedAction}"`);
+          console.log(
+            `Normalizando ação de "${content.action}" para "${normalizedAction}"`
+          );
           // Atualiza a ação
           content.action = normalizedAction;
         }
@@ -473,42 +500,51 @@ Para ação de reflexão:
 
       // Normaliza searchQuery se necessário
       content = normalizeSearchQuery(content);
-      
+
       // Validação adicional do formato da ação
-      if (!['search', 'answer', 'reflect', 'visit'].includes(content.action)) {
+      if (!["search", "answer", "reflect", "visit"].includes(content.action)) {
         // Loga o erro
-        console.error('!');
+        console.error("!");
         // Tenta corrigir o erro
-        const correctedContent = await this.retryWithCorrection(prompt, 'Ação inválida');
+        const correctedContent = await this.retryWithCorrection(
+          prompt,
+          "Ação inválida"
+        );
         // Retorna o conteúdo corrigido
         return this.generateContentMethod(correctedContent);
       }
 
       // Validação adicional dos campos obrigatórios
-      if (content.action === 'search' && !content.searchQuery) {
+      if (content.action === "search" && !content.searchQuery) {
         // Loga o erro
-        console.error('Campo searchQuery faltando');
+        console.error("Campo searchQuery faltando");
         // Tenta corrigir o erro
-        const correctedContent = await this.retryWithCorrection(prompt, 'Campo searchQuery é obrigatório para ação search');
+        const correctedContent = await this.retryWithCorrection(
+          prompt,
+          "Campo searchQuery é obrigatório para ação search"
+        );
         // Retorna o conteúdo corrigido
         return this.generateContentMethod(correctedContent);
       }
 
       // Loga a ação
-      if (content.action === 'answer') {
+      if (content.action === "answer") {
         // Loga a resposta encontrada
-        console.log('\x1b[32m%s\x1b[0m', 'Resposta encontrada! Verificando qualidade...');
-      } else if (content.action === 'search') {
+        console.log(
+          "\x1b[32m%s\x1b[0m",
+          "Resposta encontrada! Verificando qualidade..."
+        );
+      } else if (content.action === "search") {
         // Loga a busca
-        console.log('\x1b[33m%s\x1b[0m', 'Realizando busca com JINA...');
+        console.log("\x1b[33m%s\x1b[0m", "Realizando busca com JINA...");
       }
 
       // Retorna o conteúdo da resposta
       return {
         response: {
-          text: () => JSON.stringify(content),
-          usageMetadata: data.usage || { totalTokenCount: 0 }
-        }
+          text: JSON.stringify(content),
+          usageMetadata: data.usage || { totalTokenCount: 0 },
+        },
       };
     };
 
@@ -517,30 +553,36 @@ Para ação de reflexão:
       generateContent: async (prompt: string) => {
         const result = await this.generateContentMethod(prompt);
         return result;
-      }
+      },
     };
   }
 
   // Adicionar método de validação melhorado
   private validateResponse(content: any): boolean {
-    if (!content || typeof content !== 'object') return false;
-    
+    if (!content || typeof content !== "object") return false;
+
     const { action } = content;
-    
+
     switch (action) {
-      case 'search':
-        return typeof content.think === 'string' 
-          && typeof content.searchQuery === 'string';
-          
-      case 'answer':
-        return typeof content.think === 'string'
-          && typeof content.answer === 'string'
-          && Array.isArray(content.references);
-          
-      case 'reflect':
-        return typeof content.think === 'string'
-          && Array.isArray(content.questionsToAnswer);
-          
+      case "search":
+        return (
+          typeof content.think === "string" &&
+          typeof content.searchQuery === "string"
+        );
+
+      case "answer":
+        return (
+          typeof content.think === "string" &&
+          typeof content.answer === "string" &&
+          Array.isArray(content.references)
+        );
+
+      case "reflect":
+        return (
+          typeof content.think === "string" &&
+          Array.isArray(content.questionsToAnswer)
+        );
+
       default:
         return false;
     }
@@ -550,19 +592,24 @@ Para ação de reflexão:
   async generateContent(prompt: string) {
     // Obtém o resultado bruto a partir do método sendRequest
     const result = await this.sendRequest(prompt);
-    
+
     if (!this.validateResponse(result)) {
-      throw new Error(`Formato de resposta inválido: ${JSON.stringify(result)}`);
+      throw new Error(
+        `Formato de resposta inválido: ${JSON.stringify(result)}`
+      );
     }
 
+    // Sanitiza o resultado para remover funções antes de serializar
+    const cleanResult = sanitizeForJSON(result);
+
     // Embala a resposta para garantir a consistência do contrato:
-    // - A propriedade "response" possui o método text() para retornar o JSON stringificado.
+    // - A propriedade "response" possui a propriedade "text" com o JSON stringificado.
     // - A propriedade "usageMetadata" é obtida a partir do campo "usage" ou, se não houver, é definido com totalTokenCount 0.
     return {
       response: {
-        text: () => JSON.stringify(result),
-        usageMetadata: result.usage || { totalTokenCount: 0 }
-      }
+        text: JSON.stringify(cleanResult),
+        usageMetadata: result.usage || { totalTokenCount: 0 },
+      },
     };
   }
 }

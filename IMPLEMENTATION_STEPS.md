@@ -435,6 +435,104 @@
    - Adicionar testes de integração para fluxos completos
    - Criar guias de uso com exemplos práticos
 
+### 5.3 Correção de Comunicação SSE Frontend-Backend
+
+**Objetivo**: Resolver problemas de comunicação durante requisições SSE entre o frontend e o backend.
+
+### Problemas Identificados
+
+1. O frontend envia requisições sem o campo `definitive` necessário, resultando em erro de formato inválido do backend.
+2. O backend encontra erro ao processar JSON devido a um token inesperado relacionado a funções serializadas.
+
+### Soluções Implementadas
+
+#### 1. Middleware para Adicionar Campo `definitive`
+
+Adicionamos um middleware no servidor Express para garantir que todas as requisições POST para `/api/v1/query` incluam o campo `definitive`:
+
+```typescript
+// Middleware para adicionar o campo 'definitive' em requisições para /api/v1/query
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.method === "POST" && req.path === "/api/v1/query" && req.body) {
+    // Adiciona o campo 'definitive' se não existir
+    if (!req.body.definitive) {
+      req.body.definitive = true;
+      console.log("Middleware: Campo definitive adicionado à requisição");
+    }
+  }
+  next();
+});
+```
+
+#### 2. Sanitização de JSON para Evitar Serialização de Funções
+
+Criamos uma função utilitária para sanitizar objetos antes da serialização JSON, evitando erros com funções:
+
+```typescript
+// Arquivo: src/utils/sanitize-json.ts
+export function sanitizeForJSON(obj: any): any {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+
+  if (typeof obj === "function") {
+    return "[Function]";
+  }
+
+  if (typeof obj !== "object") {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map((item) => sanitizeForJSON(item));
+  }
+
+  const newObj: any = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      newObj[key] = sanitizeForJSON(obj[key]);
+    }
+  }
+  return newObj;
+}
+```
+
+E modificamos o método `generateContent` na classe `LocalModelClient` para usar esta função:
+
+```typescript
+// Sanitiza o resultado para remover funções antes de serializar
+const cleanResult = sanitizeForJSON(result);
+
+// Embala a resposta para garantir a consistência do contrato
+return {
+  response: {
+    text: JSON.stringify(cleanResult),
+    usageMetadata: result.usage || { totalTokenCount: 0 },
+  },
+};
+```
+
+#### 3. Correção de Métodos que Usam `text()`
+
+Atualizamos os arquivos que usavam o método `text()` para usar a propriedade `text` diretamente:
+
+- `evaluator.ts`
+- `query-rewriter.ts`
+- `safe-generator.ts`
+
+### Status
+
+- [x] Middleware para adicionar campo `definitive` implementado
+- [x] Função de sanitização JSON implementada
+- [x] Correção de métodos que usam `text()` implementada
+- [ ] Testes de integração completos
+
+### Próximos Passos
+
+1. Monitorar logs do servidor para confirmar que o middleware está funcionando
+2. Realizar testes adicionais para garantir que a comunicação SSE está funcionando corretamente
+3. Considerar uma solução mais permanente no frontend para incluir o campo `definitive` em todas as requisições
+
 ## Regras de Implementação
 
 1. **Dependências**:

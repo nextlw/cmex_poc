@@ -471,7 +471,9 @@ export async function evaluateQuestion(
     const result = await generator.generateContent(
       getQuestionEvaluationPrompt(question)
     );
-    const rawResponse = result.response.text();
+
+    // A resposta já é uma string JSON conforme implementação do LocalModelClient
+    const rawResponse = result.response.text;
     const parsedResponse = JSON.parse(rawResponse);
 
     // Validar a resposta usando o schema
@@ -516,7 +518,10 @@ async function performEvaluation(
 
     const result = await model.generateContent(params.prompt);
     const response = result.response;
-    const content = JSON.parse(response.text());
+
+    // A resposta já é uma string JSON conforme implementação do LocalModelClient
+    const rawText = response.text;
+    const content = JSON.parse(rawText);
 
     const resultadoValido = params.schema.safeParse(content);
     if (!resultadoValido.success) {

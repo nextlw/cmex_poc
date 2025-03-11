@@ -127,6 +127,18 @@ app.use(
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
+// Middleware para adicionar o campo 'definitive' em requisições para /api/v1/query
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.method === "POST" && req.path === "/api/v1/query" && req.body) {
+    // Adiciona o campo 'definitive' se não existir
+    if (!req.body.definitive) {
+      req.body.definitive = true;
+      console.log("Middleware: Campo definitive adicionado à requisição");
+    }
+  }
+  next();
+});
+
 // Adicionar a rota de trash-query aqui
 app.post("/api/v1/trash-query", async (req: Request, res: Response) => {
   console.log("Recebida requisição POST para /api/v1/trash-query:", req.body);
@@ -486,6 +498,23 @@ async function getQueryMetadata(requestId: string) {
     return null; // Retorna null se os metadados não existirem
   }
 }
+
+/**
+ * Registrar middleware para manipular corpo de requisições de query
+ */
+app.use("/api/v1/query", (req, res, next) => {
+  if (req.method === "POST" && req.body) {
+    // Adicionar campo definitive se não existir
+    if (req.body.definitive === undefined) {
+      req.body.definitive = true;
+      console.log(
+        "Middleware: Campo 'definitive' adicionado automaticamente:",
+        req.body
+      );
+    }
+  }
+  next();
+});
 
 /**
  * Rota de requisição de query.
