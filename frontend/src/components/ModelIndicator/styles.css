@@ -1,0 +1,66 @@
+.model-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: system-ui, -apple-system, sans-serif;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--background-color-tertiary);
+    padding: 4px 8px;
+    transition: all 0.2s ease;
+}
+
+.model-indicator-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    font-size: 10px;
+}
+
+.model-indicator-name {
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--text-color-primary);
+}
+
+.model-indicator-time {
+    font-size: 10px;
+    color: var(--text-color-muted);
+    margin-left: 4px;
+}
+
+/* Tamanhos */
+.model-indicator.small {
+    padding: 2px 6px;
+    border-radius: calc(var(--border-radius-sm) - 2px);
+}
+
+.model-indicator.small .model-indicator-name {
+    font-size: 10px;
+}
+
+.model-indicator.small .model-indicator-time {
+    font-size: 10px;
+}
+
+.model-indicator.large {
+    padding: 6px 12px;
+    border-radius: calc(var(--border-radius-sm) + 2px);
+}
+
+.model-indicator.large .model-indicator-name {
+    font-size: 12px;
+}
+
+.model-indicator.large .model-indicator-time {
+    font-size: 10px;
+}
+
+/* Modelo padrão */
+.model-indicator.default {
+    background-color: var(--background-color-secondary);
+    border: 1px solid var(--border-color-primary);
+}
+
+/* Não precisamos de estilos específicos para tema escuro, pois os tokens já tratam isso */

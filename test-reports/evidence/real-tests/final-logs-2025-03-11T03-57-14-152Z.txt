@@ -1,0 +1,14 @@
+2025-03-11T03:57:15.427Z - [vite] connecting...
+2025-03-11T03:57:15.467Z - [vite] connected.
+2025-03-11T03:57:15.523Z - %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+2025-03-11T03:57:22.052Z - Link de chat encontrado no header: Chat
+2025-03-11T03:57:22.102Z - JSHandle@error
+2025-03-11T03:57:22.104Z - JSHandle@error
+2025-03-11T03:57:22.105Z - Failed to load resource: the server responded with a status of 404 (Not Found)
+2025-03-11T03:57:22.106Z - Evento de nova query recebido: JSHandle@object
+2025-03-11T03:57:22.107Z - Nova query recebida via props: JSHandle@object
+2025-03-11T03:57:22.108Z - Failed to load resource: the server responded with a status of 404 (Not Found)
+2025-03-11T03:57:22.108Z - Evento de nova query recebido: JSHandle@object
+2025-03-11T03:57:22.109Z - Nova query recebida via props: JSHandle@object
+2025-03-11T03:57:22.110Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T03:57:22.111Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.

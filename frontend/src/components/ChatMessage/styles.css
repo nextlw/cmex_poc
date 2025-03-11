@@ -1,59 +1,57 @@
 .chat-messages {
-    width: 100%;
-    height: calc(100vh - 300px);
-    padding: 0;
-    border-radius: 0.5rem;
-    background-color: #141414;
-    color: #fff;
-    overflow: hidden;
-    margin-bottom: 1rem;
-    border: none;
-    outline: none;
-    display: flex;
-  }
-  .chat-messages .message {
-    width: 100%;
-    height: calc(100vh - 300px);
-    padding: 0;
-    border-radius: 0.5rem;
-    background-color: #141414;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  height: 100%;
+  overflow-y: auto;
+}
 
+.chat-messages .message {
+  padding: 1rem;
+  border-radius: var(--border-radius-sm);
+  background-color: var(--background-color-secondary);
+  box-shadow: var(--box-shadow-md);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Estilos para seções dentro da mensagem */
 .references-section {
-  margin-top: 20px;
-  background-color: rgba(0, 0, 0, 0.03);
-  padding: 10px;
-  border-radius: 8px;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color-secondary);
+  padding-top: 0.75rem;
 }
 
 .references-section h4 {
-  margin-top: 0;
-  font-size: 14px;
-  color: #555;
+  font-size: var(--font-size-sm);
   font-weight: 600;
+  color: var(--text-color-primary);
+  margin-bottom: 0.5rem;
 }
 
 .reference-item {
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px dashed #ddd;
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--color-primary);
 }
 
 .reference-item:last-child {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .reference-item .quote {
+  font-size: 10px;
+  color: var(--text-color-muted);
+  margin-bottom: 0.25rem;
+  background-color: var(--background-color-tertiary);
+  padding: 0.5rem;
+  border-radius: var(--border-radius-sm);
   font-style: italic;
-  margin-bottom: 5px;
-  color: #555;
-  padding-left: 10px;
-  border-left: 3px solid #ccc;
 }
 
 .reference-item .source a {
-  font-size: 13px;
-  color: #0066cc;
+  font-size: 10px;
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -62,80 +60,231 @@
 }
 
 .outputs-section {
-  margin-top: 15px;
-  background-color: rgba(0, 0, 0, 0.03);
-  padding: 10px;
-  border-radius: 8px;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color-secondary);
+  padding-top: 0.75rem;
 }
 
 .outputs-section h4 {
-  margin-top: 0;
-  font-size: 14px;
-  color: #555;
+  font-size: var(--font-size-sm);
   font-weight: 600;
+  color: var(--text-color-primary);
+  margin-bottom: 0.5rem;
 }
 
 .output-item {
-  margin-bottom: 10px;
-  background-color: rgba(255, 255, 255, 0.5);
-  padding: 8px;
-  border-radius: 6px;
-  overflow-x: auto;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  background-color: var(--background-color-tertiary);
+  border-radius: var(--border-radius-sm);
 }
 
 .output-item pre {
-  margin: 0;
-  font-size: 12px;
-  white-space: pre-wrap;
+  font-size: 10px;
+  overflow-x: auto;
 }
 
 .debug-section {
-  margin-top: 20px;
-  border-top: 1px dashed #ddd;
-  padding-top: 10px;
+  margin-top: 1rem;
+  opacity: 0.7;
 }
 
 .toggle-debug-btn {
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 5px 10px;
-  font-size: 12px;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  text-decoration: underline;
   cursor: pointer;
-  color: #555;
+  font-size: 10px;
+  padding: 0;
+  margin: 0;
 }
 
 .toggle-debug-btn:hover {
-  background-color: #e5e5e5;
+  color: var(--color-primary-hover);
 }
 
 .debug-info {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #f8f8f8;
-  border-radius: 6px;
-  overflow-x: auto;
-  font-size: 12px;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--background-color-tertiary);
+  border-radius: var(--border-radius-sm);
+  font-size: 10px;
   max-height: 300px;
   overflow-y: auto;
   white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
-.search-label, .visit-label {
+.search-label,
+.visit-label {
   display: inline-block;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 5px;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 10px;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 .search-label {
-  background-color: #e6f7ff;
-  color: #1890ff;
+  background-color: var(--color-info-light);
+  color: var(--color-info-darker);
 }
 
 .visit-label {
-  background-color: #f6ffed;
-  color: #52c41a;
+  background-color: var(--color-warning-light);
+  color: var(--color-warning-darker);
+}
+
+/* Estilos para o indicador do modelo */
+.model-indicator-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+/* Animação de digitação */
+.typing-indicator {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.typing-dot {
+  width: 4px;
+  height: 4px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  animation: typing-animation 1.4s infinite;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-animation {
+
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+
+  30% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Estilos para consultas de pesquisa e conteúdo visitado */
+.search-query,
+.visit-url {
+  font-size: 10px;
+  padding: 0.5rem;
+  background-color: var(--background-color-tertiary);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 0.5rem;
+  color: var(--text-color-primary);
+}
+
+.url-list,
+.visit-extract {
+  margin-top: 0.5rem;
+}
+
+.url-list h4,
+.visit-extract h4 {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-color-primary);
+  margin-bottom: 0.25rem;
+}
+
+.url-item {
+  font-size: 10px;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--background-color-tertiary);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 0.25rem;
+  color: var(--text-color-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.content-preview {
+  font-size: 10px;
+  padding: 0.5rem;
+  background-color: var(--background-color-tertiary);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-color-muted);
+  max-height: 100px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+/* Estilos para tema escuro */
+:root.dark-theme .search-query,
+:root.dark-theme .visit-url {
+  background-color: var(--color-background-secondary-dark, #222);
+}
+
+:root.dark-theme .url-list h4,
+:root.dark-theme .visit-extract h4 {
+  color: var(--color-text-secondary-dark, #aaa);
+}
+
+:root.dark-theme .content-preview {
+  color: var(--color-text-secondary-dark, #aaa);
+  background-color: var(--color-background-secondary-dark, #222);
+}
+
+:root.dark-theme .typing-dot {
+  background-color: var(--color-primary-dark, #00b0b0);
+}
+
+/* Estilos para indicar a etapa da mensagem */
+.chat-message.step-0 {
+  border-left: 3px solid var(--color-text-muted);
+}
+
+.chat-message.step-1 {
+  border-left: 3px solid var(--color-info-light);
+}
+
+.chat-message.step-2 {
+  border-left: 3px solid var(--color-info);
+}
+
+.chat-message.step-3 {
+  border-left: 3px solid var(--color-info-dark);
+}
+
+.chat-message.step-4 {
+  border-left: 3px solid var(--color-blue-500);
+}
+
+.chat-message.step-5 {
+  border-left: 3px solid var(--color-primary);
+}
+
+/* Versão dark theme - não precisamos mais dessa seção, pois os tokens 
+   já tratam automaticamente o tema dark/light */
+:root.dark-theme .chat-message.step-0,
+:root.dark-theme .chat-message.step-1,
+:root.dark-theme .chat-message.step-2,
+:root.dark-theme .chat-message.step-3,
+:root.dark-theme .chat-message.step-4,
+:root.dark-theme .chat-message.step-5 {
+  /* As cores já serão ajustadas pelos tokens CSS */
 }

@@ -1,0 +1,23 @@
+{
+  "query": "Como classificar um liquidificador elétrico doméstico?",
+  "analysis": {
+    "relevantResults": [
+      {
+        "title": "NCM 8509.40.10 - Liquidificadores",
+        "description": "Liquidificadores com motor elétrico incorporado, de uso doméstico",
+        "url": "https://exemplo.com/ncm/8509.40.10"
+      },
+      {
+        "title": "Classificação de Eletrodomésticos - NCM 8509.40.10",
+        "description": "Os liquidificadores domésticos são classificados no NCM 8509.40.10",
+        "url": "https://exemplo.com/eletrodomesticos"
+      }
+    ],
+    "keyInsights": [
+      "Liquidificadores são eletrodomésticos com motor elétrico",
+      "Usados para preparação de alimentos",
+      "Classificados em NCM específico para uso doméstico"
+    ],
+    "confidence": 85.0
+  }
+}

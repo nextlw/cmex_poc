@@ -1,0 +1,25 @@
+{
+  "name": "ncm_codigos_divergentes",
+  "query": "Qual NCM para sapatos esportivos?",
+  "analysis": {
+    "relevantResults": [
+      {
+        "title": "NCM 6402.19.00 - Calçados esportivos",
+        "description": "Calçados esportivos com sola exterior e parte superior de borracha ou plástico",
+        "url": "https://exemplo.com/ncm/6402.19.00"
+      },
+      {
+        "title": "NCM 6404.11.00 - Calçados para esportes",
+        "description": "Calçados para esportes com sola exterior de borracha ou plástico e parte superior de matéria têxtil",
+        "url": "https://exemplo.com/ncm/6404.11.00"
+      }
+    ],
+    "keyInsights": [
+      "Classificação varia de acordo com o material",
+      "Existem categorias específicas para esportes"
+    ],
+    "confidence": 70.0
+  },
+  "expected_status": "conflicting_data",
+  "expected_confidence_max": 70.0
+}

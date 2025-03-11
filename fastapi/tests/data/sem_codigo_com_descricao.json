@@ -1,0 +1,20 @@
+{
+  "name": "sem_codigo_com_descricao",
+  "query": "Como classificar um perfume importado de luxo?",
+  "analysis": {
+    "relevantResults": [
+      {
+        "title": "Classificação de Perfumes",
+        "description": "Perfumes e águas-de-colônia são normalmente classificados no Capítulo 33 da NCM",
+        "url": "https://exemplo.com/cosmeticos"
+      }
+    ],
+    "keyInsights": [
+      "Perfumes são classificados como cosméticos",
+      "A origem não afeta a classificação NCM"
+    ],
+    "confidence": 60.0
+  },
+  "expected_status": "needs_classification",
+  "expected_confidence_max": 60.0
+}

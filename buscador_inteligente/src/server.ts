@@ -38,6 +38,11 @@ import {
   closeRedisConnections,
 } from "./services/redis-service";
 
+import { SSEService } from "./services/sse-service";
+import { DeepResearchService } from "./services/deep-research-service";
+import { v4 as uuidv4 } from "uuid";
+import deepResearchRoutes from "./routes/deep-research-routes";
+
 /**
  * Interface para armazenar logs do servidor.
  */
@@ -119,7 +124,8 @@ app.use(
 /**
  * Middleware de JSON.
  */
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // Adicionar a rota de trash-query aqui
 app.post("/api/v1/trash-query", async (req: Request, res: Response) => {
@@ -643,6 +649,9 @@ app.post("/api/v1/query", (async (req: Request, res: Response) => {
   }
 }) as RequestHandler);
 
+// Inicializar serviço SSE
+const sseService = SSEService.getInstance();
+
 /**
  * Rota de requisição de stream.
  */
@@ -653,132 +662,25 @@ app.get("/api/v1/stream/:requestId", (async (
   const requestId = req.params.requestId;
   const context = trackers.get(requestId);
 
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
+  // Usar o serviço SSE para gerenciar a conexão
+  sseService.addConnection(requestId, res);
 
+  // Configurar listener para eventos de progresso
   const listener = (data: StreamMessage) => {
-    let formattedData;
-    if (typeof data.data === "object" && "action" in data.data) {
-      const { action } = data.data;
-      switch (action) {
-        case "search":
-          formattedData = {
-            type: "search",
-            data: {
-              action: action,
-              think: data.data.think,
-              searchQuery: data.data.searchQuery,
-              message: `Pesquisando informações para: "${data.data.searchQuery}"`,
-              searchResults: data.data.searchResults || [],
-            },
-            outputs: data.outputs || [],
-            trackers: data.trackers,
-          };
-          break;
-
-        case "answer":
-          formattedData = {
-            type: "answer",
-            data: {
-              action: action,
-              think: data.data.think,
-              answer: data.data.answer,
-              references: data.data.references,
-              reasoning: data.data.reasoning || data.data.accumulatedReasoning,
-            },
-            outputs: data.outputs || [],
-            trackers: data.trackers,
-          };
-          break;
-
-        case "reflect":
-          formattedData = {
-            type: "reflect",
-            data: {
-              action: action,
-              think: data.data.think,
-              questionsToAnswer: data.data.questionsToAnswer,
-              message: `Refletindo sobre: ${
-                data.data.questionsToAnswer
-                  ? data.data.questionsToAnswer.join(", ")
-                  : "a pergunta"
-              }`,
-            },
-            outputs: data.outputs || [],
-            trackers: data.trackers,
-          };
-          break;
-
-        case "visit":
-          formattedData = {
-            type: "visit",
-            data: {
-              action: action,
-              think: data.data.think,
-              URLTargets: data.data.URLTargets,
-              message: `Visitando URLs: ${
-                data.data.URLTargets ? data.data.URLTargets.join(", ") : ""
-              }`,
-            },
-            outputs: data.outputs || [],
-            trackers: data.trackers,
-          };
-          break;
-
-        default:
-          formattedData = {
-            type: "progress",
-            data: data.data,
-            outputs: data.outputs || [],
-            trackers: data.trackers,
-          };
-      }
-    } else {
-      formattedData = {
-        type: data.type || "progress",
-        data: data.data,
-        outputs: data.outputs || [],
-        trackers: data.trackers,
-      };
-    }
-
-    if (formattedData) {
-      try {
-        const jsonString = JSON.stringify(formattedData);
-        console.log("Enviando dados SSE:", jsonString);
-        res.write(`data: ${jsonString}\n\n`);
-      } catch (error) {
-        console.error("Erro ao serializar JSON:", error);
-        const errorData = JSON.stringify({
-          type: "error",
-          data: { error: "Erro ao processar dados" },
-          trackers: null,
-        });
-        res.write(`data: ${errorData}\n\n`);
-      }
-    }
+    sseService.sendStreamMessage(requestId, data);
   };
 
   eventEmitter.on(`progress-${requestId}`, listener);
 
+  // Remover listener quando a conexão for fechada
   req.on("close", () => {
     eventEmitter.removeListener(`progress-${requestId}`, listener);
   });
 
-  const initialData = {
-    type: "connected",
-    requestId,
-    trackers: context
-      ? {
-          tokenUsage: context.tokenTracker.getTotalUsage(),
-          actionState: context.actionTracker.getState(),
-        }
-      : null,
-  };
-  res.write(`data: ${JSON.stringify(initialData)}\n\n`);
+  // Enviar contexto inicial
+  sseService.sendInitialContext(requestId, context);
 
-  // Envia logs antigos associados a este requestId
+  // Enviar logs antigos associados a este requestId
   const recentLogs = serverLogs
     .filter(
       (log) =>
@@ -788,17 +690,7 @@ app.get("/api/v1/stream/:requestId", (async (
     .slice(-20);
 
   if (recentLogs.length > 0) {
-    const logsData = {
-      type: "log",
-      data: `Histórico de logs recentes (${recentLogs.length}):\n${recentLogs
-        .map(
-          (log) =>
-            `[${new Date(log.timestamp).toLocaleTimeString()}] ${log.message}`
-        )
-        .join("\n")}`,
-      trackers: null,
-    };
-    res.write(`data: ${JSON.stringify(logsData)}\n\n`);
+    sseService.sendLogs(requestId, recentLogs);
   }
 }) as RequestHandler);
 
@@ -1077,23 +969,20 @@ app.get("/api/v1/logs", (req: Request, res: Response) => {
  * Implementar rota SSE para logs em tempo real
  */
 app.get("/api/v1/logs/stream", (req: Request, res: Response) => {
-  res.writeHead(200, {
-    "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache",
-    Connection: "keep-alive",
-  });
+  const requestId = `logs-${Date.now()}`;
 
-  // Envia últimos 50 logs ao conectar
+  // Usar o serviço SSE para gerenciar a conexão
+  sseService.addConnection(requestId, res);
+
+  // Enviar últimos 50 logs ao conectar
   const recentLogs = serverLogs.slice(-50);
-  recentLogs.forEach((log) => {
-    res.write(`event: log\n`);
-    res.write(`data: ${JSON.stringify(log)}\n\n`);
-  });
+  if (recentLogs.length > 0) {
+    sseService.sendLogs(requestId, recentLogs);
+  }
 
   // Handler para novos logs
   const logHandler = (log: ServerLog) => {
-    res.write(`event: log\n`);
-    res.write(`data: ${JSON.stringify(log)}\n\n`);
+    sseService.sendEvent(requestId, "log", log);
   };
 
   logEventEmitter.on("new-log", logHandler);
@@ -1101,7 +990,7 @@ app.get("/api/v1/logs/stream", (req: Request, res: Response) => {
   // Remove listener ao fechar conexão
   req.on("close", () => {
     logEventEmitter.off("new-log", logHandler);
-    res.end();
+    sseService.closeConnection(requestId);
   });
 });
 
@@ -1945,3 +1834,9 @@ app.use("/api/v1", async (req, res, next) => {
   // Passa para o modelRouter
   await modelRouter(req, res, next);
 });
+
+// Inicializar o serviço de pesquisa profunda
+const deepResearchService = DeepResearchService.getInstance();
+
+// Rotas da API
+app.use("/api/v1/deep-research", deepResearchRoutes);

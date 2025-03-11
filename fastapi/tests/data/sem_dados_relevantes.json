@@ -1,0 +1,13 @@
+{
+  "name": "sem_dados_relevantes",
+  "query": "Classificação NCM para tecnologia de computação quântica",
+  "analysis": {
+    "relevantResults": [],
+    "keyInsights": [
+      "Tecnologia emergente sem classificação específica"
+    ],
+    "confidence": 30.0
+  },
+  "expected_status": "insufficient_data",
+  "expected_confidence_max": 30.0
+}

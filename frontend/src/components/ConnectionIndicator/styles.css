@@ -1,0 +1,64 @@
+.connection-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--text-color-muted);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    transition: all 0.2s ease;
+    width: fit-content;
+}
+
+.connection-dot {
+    width: var(--spacing-xs);
+    height: var(--spacing-xs);
+    border-radius: 50%;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.connection-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+}
+
+/* Estilos para os diferentes status */
+.connection-indicator.connecting .connection-dot {
+    background-color: var(--color-warning);
+    animation: pulse 1.5s infinite;
+}
+
+.connection-indicator.connected .connection-dot {
+    background-color: var(--color-success);
+}
+
+.connection-indicator.reconnecting .connection-dot {
+    background-color: var(--color-warning);
+    animation: pulse 1.5s infinite;
+}
+
+.connection-indicator.error .connection-dot,
+.connection-indicator.failed .connection-dot {
+    background-color: var(--color-error);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+        transform: scale(0.8);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 0.6;
+        transform: scale(0.8);
+    }
+}

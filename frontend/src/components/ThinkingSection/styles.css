@@ -1,0 +1,76 @@
+.thinking-section {
+    width: 100%;
+    border-radius: var(--border-radius-sm);
+    margin: 12px 0;
+    overflow: hidden;
+    border: 1px solid var(--border-color-primary);
+    background-color: var(--background-color-secondary);
+    transition: all 0.2s ease-in-out;
+}
+
+.thinking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.thinking-header:hover {
+    background-color: var(--background-color-hover);
+}
+
+.thinking-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-color-primary);
+}
+
+.thinking-model {
+    font-size: 10px;
+    color: var(--text-color-primary);
+    background-color: var(--background-color-tertiary);
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: auto;
+    margin-right: 12px;
+}
+
+.thinking-toggle-icon {
+    color: var(--text-color-muted);
+    font-size: 14px;
+    transition: transform 0.2s ease;
+}
+
+.thinking-toggle-icon.expanded {
+    transform: rotate(180deg);
+}
+
+.thinking-content {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.thinking-content.expanded {
+    padding: 12px;
+    max-height: 1000px;
+    /* Valor alto o suficiente para acomodar conteúdo */
+    overflow-y: auto;
+}
+
+.thinking-content .markdown-content {
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--text-color-primary);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Não precisamos de estilos específicos para tema escuro, pois os tokens já tratam isso */

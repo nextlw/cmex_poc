@@ -1,0 +1,6 @@
+2025-03-10T23:07:08.761Z - [vite] connecting...
+2025-03-10T23:07:08.777Z - %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+2025-03-10T23:07:09.000Z - [vite] connected.
+2025-03-10T23:07:28.514Z - Failed to load resource: the server responded with a status of 400 ()
+2025-03-10T23:07:36.375Z - Failed to load resource: the server responded with a status of 400 ()
+2025-03-10T23:07:44.157Z - Failed to load resource: the server responded with a status of 400 ()

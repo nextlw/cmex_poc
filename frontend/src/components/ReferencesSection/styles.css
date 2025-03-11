@@ -1,0 +1,113 @@
+.references-section {
+    width: 100%;
+    border-radius: var(--border-radius-sm);
+    margin: 12px 0;
+    overflow: hidden;
+    border: 1px solid var(--border-color-primary);
+    background-color: var(--background-color-secondary);
+    transition: all 0.2s ease-in-out;
+}
+
+.references-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.references-header:hover {
+    background-color: var(--background-color-hover);
+}
+
+.references-title {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-color-primary);
+}
+
+.references-count {
+    font-size: 10px;
+    color: var(--text-color-muted);
+    background-color: var(--background-color-tertiary);
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 12px;
+}
+
+.references-toggle-icon {
+    color: var(--text-color-muted);
+    font-size: 14px;
+    margin-left: auto;
+    transition: transform 0.2s ease;
+}
+
+.references-toggle-icon.expanded {
+    transform: rotate(180deg);
+}
+
+.references-content {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.references-content.expanded {
+    padding: 12px;
+    max-height: 1000px;
+    /* Valor alto o suficiente para acomodar conteúdo */
+    overflow-y: auto;
+}
+
+.reference-group {
+    margin-bottom: 12px;
+}
+
+.reference-group:last-child {
+    margin-bottom: 0;
+}
+
+.reference-domain {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-color-primary);
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-color-secondary);
+}
+
+.reference-link {
+    display: block;
+    font-size: 10px;
+    color: var(--color-primary);
+    text-decoration: none;
+    margin-bottom: 8px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background-color: var(--background-color-tertiary);
+    transition: background-color 0.2s;
+    word-break: break-word;
+}
+
+.reference-link:hover {
+    background-color: var(--background-color-hover);
+    text-decoration: underline;
+}
+
+.reference-quote {
+    font-size: 10px;
+    color: var(--text-color-muted);
+    background-color: var(--background-color-tertiary);
+    padding: 8px 10px;
+    margin-top: 4px;
+    border-radius: 4px;
+    border-left: 3px solid var(--color-primary);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+/* Não precisamos de estilos específicos para tema escuro, pois os tokens já tratam isso */

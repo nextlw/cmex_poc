@@ -1,5 +1,15 @@
 export interface ChatMessageProps {
-  type: 'query' | 'step' | 'response' | 'error' | 'connected' | 'reflect' | 'search' | 'log' | 'visit' | 'answer';
+  type:
+    | "query"
+    | "step"
+    | "response"
+    | "error"
+    | "connected"
+    | "reflect"
+    | "search"
+    | "log"
+    | "visit"
+    | "answer";
   content: string;
   isTyping?: boolean;
   data?: {
@@ -16,7 +26,11 @@ export interface ChatMessageProps {
     content?: string;
     action?: string;
   };
-  step: number;
+  step?: number;
+  /**
+   * Nome do modelo que gerou a resposta
+   */
+  modelName?: string;
 }
 
 export interface ChatMessageData {
@@ -30,4 +44,4 @@ export interface ChatMessageData {
   searchQuery?: string;
   content?: string;
   action?: string;
-} 
+}

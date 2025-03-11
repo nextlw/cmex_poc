@@ -20,6 +20,13 @@ export { default as Atributos } from "./Atributos";
 export { default as DeepResearchToggle } from "./DeepResearchToggle";
 export { default as DeepResearchSidebar } from "./DeepResearchSidebar";
 export { default as DeepResearchStatus } from "./DeepResearchStatus";
+export { default as DeepResearchProgress } from "./DeepResearchProgress";
+
+// Componentes de interface e feedback
+export { default as ThinkingSection } from "./ThinkingSection";
+export { default as ModelIndicator } from "./ModelIndicator";
+export { default as ReferencesSection } from "./ReferencesSection";
+export { default as ConnectionIndicator } from "./ConnectionIndicator";
 
 // Componentes de formulário
 export { default as NCMConsultaForm } from "./NCMConsultaForm";
@@ -34,6 +41,10 @@ export * from "./InputAi/types";
 export * from "./DeepResearchToggle/types";
 export * from "./DeepResearchSidebar/types";
 export * from "./DeepResearchStatus/types";
+export * from "./DeepResearchProgress/types";
 export * from "./DropdownMenu/types";
 export * from "./NCMConsultaForm/types";
 export * from "./ReasoningBox/types";
+export * from "./ModelIndicator/types";
+export * from "./ThinkingSection/types";
+export * from "./ReferencesSection/types";
