@@ -315,3 +315,47 @@ Embora o teste E2E ainda apresente falhas, elas não estão mais relacionadas à
 2. Realizar testes adicionais para garantir que a comunicação SSE está funcionando corretamente
 3. Melhorar os testes E2E para lidar melhor com a detecção de elementos na interface
 4. Considerar implementar testes unitários mais específicos para validar a comunicação SSE
+
+## Tratamento de TypeError: response.text is not a function
+
+### Problema Identificado
+
+Durante os testes de comunicação com o backend, foi identificado um erro no arquivo `agent.ts` onde ocorria a exceção `TypeError: response.text is not a function` na linha 772. Este erro estava impedindo o processamento correto das respostas do modelo, resultando em falhas na comunicação.
+
+### Análise
+
+A análise do código revelou que o método `getResponse` estava lidando com objetos `response` de diferentes fontes e modelos, onde a propriedade `text` poderia ser tanto um método (função) quanto uma propriedade direta, dependendo do contexto.
+
+O código original fazia uma verificação simples:
+
+```typescript
+rawResponseText =
+  typeof response.text === "function" ? await response.text() : response.text;
+```
+
+No entanto, em alguns casos específicos, o objeto `response` tinha características diferentes ou possivelmente não possuía uma propriedade `text` acessível, causando o erro.
+
+### Solução Implementada
+
+Foi implementada uma solução mais robusta no arquivo `agent.ts` que:
+
+1. Verifica se o objeto `response` existe
+2. Utiliza `Object.getOwnPropertyNames()` para examinar todas as propriedades disponíveis
+3. Implementa uma estratégia de fallback em cascata:
+
+   - Tenta usar `text()` como função se disponível
+   - Tenta acessar `text` como propriedade se disponível
+   - Tenta usar `toString()` como método alternativo
+   - Como último recurso, tenta converter o objeto para JSON
+
+4. Todo o processo é envolvido em blocos try/catch para prevenir falhas catastróficas
+
+### Resultados
+
+A implementação robusta resolveu o problema, permitindo que as respostas sejam processadas corretamente, independentemente da estrutura do objeto `response`. A solução mantém compatibilidade com diferentes implementações de modelos e formatos de resposta.
+
+### Lições Aprendidas
+
+- Nunca assumir uma estrutura fixa para objetos que podem vir de fontes externas ou serem afetados por diferentes versões de bibliotecas
+- Implementar verificações de tipo robustas e vários níveis de fallback para maior resiliência
+- Utilizar logging adequado para facilitar o diagnóstico de problemas em produção

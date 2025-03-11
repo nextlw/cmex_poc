@@ -10,6 +10,7 @@ export async function sendQuery(query: string, model: string) {
     const response = await axios.post(`${API_URL}/api/v1/query`, {
       query,
       model,
+      definitive: true,
     });
 
     return response.data;
@@ -63,6 +64,7 @@ export async function sendChatMessage(message: string, model: string) {
     const response = await axios.post(`${NODE_API_URL}/api/v1/chat`, {
       message,
       model,
+      definitive: true,
     });
 
     return response.data;

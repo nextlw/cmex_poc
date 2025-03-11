@@ -1,0 +1,54 @@
+2025-03-11T04:29:38.657Z - [vite] connecting...
+2025-03-11T04:29:38.669Z - %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+2025-03-11T04:29:38.797Z - [vite] connected.
+2025-03-11T04:29:44.650Z - Link de chat encontrado no header: Chat
+2025-03-11T04:29:44.702Z - JSHandle@error
+2025-03-11T04:29:44.705Z - JSHandle@error
+2025-03-11T04:29:44.706Z - Failed to load resource: the server responded with a status of 404 (Not Found)
+2025-03-11T04:29:44.707Z - Evento de nova query recebido: JSHandle@object
+2025-03-11T04:29:44.708Z - Nova query recebida via props: JSHandle@object
+2025-03-11T04:29:44.709Z - Failed to load resource: the server responded with a status of 404 (Not Found)
+2025-03-11T04:29:44.710Z - Evento de nova query recebido: JSHandle@object
+2025-03-11T04:29:44.711Z - Nova query recebida via props: JSHandle@object
+2025-03-11T04:29:44.713Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:29:44.731Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:29:51.144Z - Enviando pergunta para: http://localhost:3000/api/v1/query
+2025-03-11T04:29:51.174Z - RESPOSTA: {"requestId":"1741667391161"}
+2025-03-11T04:29:51.188Z - Conexão SSE estabelecida
+2025-03-11T04:29:51.192Z - Mensagem SSE recebida: {"type":"connected","requestId":"1741667391161","trackers":{"tokenUsage":0,"actionState":{"thisStep":{"action":"answer","answer":"","references":[],"think":""},"gaps":[],"badAttempts":0,"totalStep":1}}}
+2025-03-11T04:29:51.193Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:29:54.664Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:29:57.656Z - Erro na conexão SSE: JSHandle@object
+2025-03-11T04:29:57.659Z - Tentando reconectar em 1 segundos (tentativa 1/5)...
+2025-03-11T04:29:58.240Z - [vite] connecting...
+2025-03-11T04:29:59.475Z - [vite] connected.
+2025-03-11T04:30:01.944Z - %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+2025-03-11T04:30:02.325Z - Restaurando sessão: 1741667391161
+2025-03-11T04:30:02.328Z - Restaurando sessão: 1741667391161
+2025-03-11T04:30:02.337Z - JSHandle@error
+2025-03-11T04:30:02.354Z - JSHandle@error
+2025-03-11T04:30:02.359Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:30:02.372Z - Conexão SSE estabelecida
+2025-03-11T04:30:02.380Z - Mensagem SSE recebida: {"type":"connected","requestId":"1741667391161","trackers":{"tokenUsage":0,"actionState":{"thisStep":{"action":"answer","answer":"","references":[],"think":""},"gaps":[],"badAttempts":0,"totalStep":1}}}
+2025-03-11T04:30:02.382Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:30:02.389Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:30:02.394Z - Conexão SSE estabelecida
+2025-03-11T04:30:02.397Z - Mensagem SSE recebida: {"type":"connected","requestId":"1741667391161","trackers":{"tokenUsage":0,"actionState":{"thisStep":{"action":"answer","answer":"","references":[],"think":""},"gaps":[],"badAttempts":0,"totalStep":1}}}
+2025-03-11T04:30:02.398Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:30:02.399Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:30:12.364Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:30:12.503Z - Mensagem SSE recebida: {"type":"progress","data":{"state":{"thisStep":{"action":"answer","answer":"","references":[],"think":"Formato inválido: Required, Invalid literal value, expected \"definitive\""},"gaps":[],"badAttempts":0,"totalStep":1},"tokenUsage":0},"outputs":[]}
+2025-03-11T04:30:12.506Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:30:12.507Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:30:22.333Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:30:32.332Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:30:32.444Z - Mensagem SSE recebida: {"type":"status","data":{"status":"error"},"outputs":[]}
+2025-03-11T04:30:32.446Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:30:32.447Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:30:32.448Z - Mensagem SSE recebida: {"type":"error","data":"Unexpected token '(', \"() => JSON\"... is not valid JSON","outputs":[],"trackers":{"tokenUsage":0,"actionState":{"thisStep":{"action":"answer","answer":"","references":[],"think":"Formato inválido: Required, Invalid literal value, expected \"definitive\""},"gaps":[],"badAttempts":0,"totalStep":1}}}
+2025-03-11T04:30:32.450Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:30:32.451Z - Fechando conexão após receber resposta/erro
+2025-03-11T04:30:32.452Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:30:32.453Z - Fechando conexão após receber resposta/erro
+2025-03-11T04:30:42.332Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:30:52.332Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.

@@ -65,93 +65,93 @@ async function sleep(ms) {
 describe("Teste de Conversa com IA", () => {
   let browser;
   let page;
-  let pageLogs = [];
+  let logs = [];
 
   // Configuração antes de todos os testes
   beforeAll(async () => {
-    // Lançar o navegador
+    // Configurar o navegador com argumentos específicos
     browser = await puppeteer.launch({
-      headless: false, // Mostrar navegador durante o teste
+      headless: "new",
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
-        "--window-size=1920,1080",
+        "--disable-dev-shm-usage",
+        "--disable-accelerated-2d-canvas",
+        "--disable-gpu",
+        "--window-size=1280,720",
       ],
-      defaultViewport: { width: 1920, height: 1080 },
+      defaultViewport: {
+        width: 1280,
+        height: 720,
+      },
     });
 
-    // Criar nova página
     page = await browser.newPage();
 
-    // Configurar interceptação de requisições
+    // Interceptar requisições para adicionar o campo definitive
     await page.setRequestInterception(true);
-
-    // Interceptar requisições para adicionar o campo 'definitive'
-    page.on("request", (interceptedRequest) => {
+    page.on("request", async (request) => {
       if (
-        interceptedRequest.url().includes("/api/v1/query") &&
-        interceptedRequest.method() === "POST"
+        request.method() === "POST" &&
+        request.url().includes("/api/v1/query")
       ) {
         try {
-          const postData = interceptedRequest.postData();
+          const postData = request.postData();
           if (postData) {
-            const jsonData = JSON.parse(postData);
-
-            // Adicionar o campo definitive que o backend espera
-            jsonData.definitive = true;
-
+            const data = JSON.parse(postData);
             console.log("===== MODIFICANDO REQUISIÇÃO =====");
             console.log("Dados originais:", postData);
-            console.log("Dados modificados:", JSON.stringify(jsonData));
+
+            // Adicionar o campo definitive se não existir
+            if (!data.definitive) {
+              data.definitive = true;
+            }
+
+            const modifiedData = JSON.stringify(data);
+            console.log("Dados modificados:", modifiedData);
             console.log("=================================");
 
-            // Continuar a requisição com os dados modificados
-            interceptedRequest.continue({
-              postData: JSON.stringify(jsonData),
+            // Continuar com os dados modificados
+            request.continue({
+              postData: modifiedData,
             });
           } else {
-            interceptedRequest.continue();
+            request.continue();
           }
         } catch (error) {
-          console.log("Erro ao modificar requisição:", error.message);
-          interceptedRequest.continue();
+          console.error("Erro ao modificar requisição:", error);
+          request.continue();
         }
       } else {
-        // Para todas as outras requisições, apenas continuar normalmente
-        interceptedRequest.continue();
+        request.continue();
       }
     });
 
     // Capturar logs do console
-    page.on("console", (message) => {
-      const text = message.text();
-      console.log(`[Browser Console] ${text}`);
-      pageLogs.push(`${new Date().toISOString()} - ${text}`);
+    page.on("console", (msg) => {
+      logs.push(msg.text());
+      console.log(`[Browser Console] ${msg.text()}`);
     });
 
-    // Capturar e registrar respostas do servidor
+    // Capturar respostas da API
     page.on("response", async (response) => {
       const url = response.url();
-      if (url.includes("/api/v1/query")) {
+      if (url.includes("/api/v1/")) {
         console.log("===== RESPOSTA DA API =====");
-        console.log(`URL: ${url}`);
-        console.log(`Status: ${response.status()} ${response.statusText()}`);
+        console.log("URL:", url);
+        console.log("Status:", response.status(), response.statusText());
 
         try {
           const responseBody = await response.text();
-          console.log(`Corpo da resposta: ${responseBody}`);
-          pageLogs.push(
-            `${new Date().toISOString()} - RESPOSTA: ${responseBody}`
-          );
-
           try {
-            const jsonResponse = JSON.parse(responseBody);
+            const jsonBody = JSON.parse(responseBody);
+            console.log("Corpo da resposta:", responseBody);
             console.log(
               "Resposta JSON formatada:",
-              JSON.stringify(jsonResponse, null, 2)
+              JSON.stringify(jsonBody, null, 2)
             );
           } catch (e) {
-            console.log("Resposta não é um JSON válido");
+            console.log("Corpo da resposta:", responseBody);
           }
         } catch (error) {
           console.log("Erro ao obter corpo da resposta:", error.message);
@@ -169,7 +169,7 @@ describe("Teste de Conversa com IA", () => {
   // Limpeza após os testes
   afterAll(async () => {
     // Salvar logs
-    await savePageLogs(pageLogs, "final");
+    await savePageLogs(logs, "final");
 
     // Fechar o navegador
     if (browser) {
