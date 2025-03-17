@@ -25,8 +25,8 @@ import {
   VisitAction,
   SearchAction,
   ReflectAction,
-} from "./types/index";
-import { TrackerContext } from "./types/index";
+} from "./types";
+import { TrackerContext } from "./types";
 import { jinaSearch } from "./tools/jinaSearch";
 import { LocalModelClient } from "./tools/local-model-client";
 import { spawn } from "child_process";

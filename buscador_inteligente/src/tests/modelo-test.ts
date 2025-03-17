@@ -1,4 +1,4 @@
-import { ConsultaProduto } from "../types/ncm";
+import { ConsultaProduto } from "../types";
 import {
   TokenTracker,
   DeepResearch,

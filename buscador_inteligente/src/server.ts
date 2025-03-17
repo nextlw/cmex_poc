@@ -24,7 +24,7 @@ import { specs } from "./swagger";
 import chokidar from "chokidar";
 import { Server as WebSocketServer, WebSocket } from "ws";
 import http from "http";
-import { QuerySession } from "./types/session";
+import { QuerySession } from "./types";
 import { ensureModelClientInitialized } from "./agent";
 import { ncmRouter } from "./controllers/ncm";
 import { processarDeepResearch } from "./controllers/deepResearchNCM";
@@ -1473,6 +1473,182 @@ app.get(
 );
 
 /**
+ * Rota para conectar ao SSE e receber atualizações em tempo real
+ * Esta rota substitui o polling para verificar o status da tarefa
+ */
+app.get(
+  "/api/v1/sse/connect/:requestId",
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { requestId } = req.params;
+      const token = req.query.token as string;
+
+      if (!requestId) {
+        res.status(400).json({ error: "ID da tarefa é obrigatório" });
+        return;
+      }
+
+      console.log(`Iniciando conexão SSE para a tarefa: ${requestId}`);
+
+      // Verificar autenticação (opcional, dependendo da configuração)
+      if (token) {
+        // Lógica de validação do token se necessário
+        console.log(`Token recebido: ${token.substring(0, 15)}...`);
+      }
+
+      // Configurar SSE
+      const sseService = SSEService.getInstance();
+      sseService.addConnection(requestId, res);
+
+      // Enviar estado inicial
+      const trackerContext = trackers.get(requestId);
+      if (trackerContext) {
+        // Se a tarefa está ativa, enviamos o contexto atual
+        sseService.sendInitialContext(requestId, trackerContext);
+      } else {
+        // Se a tarefa não está ativa, tentamos buscar dos metadados
+        try {
+          const metadata = await getQueryMetadata(requestId);
+          if (metadata) {
+            // Formata os dados para o formato esperado pelo cliente
+            const data = {
+              requestId,
+              completed: true,
+              status: metadata.status,
+              step: 5, // Último passo
+              currentAction: "Processamento concluído",
+              researchDetails: [
+                {
+                  type: "text",
+                  content: "Análise detalhada concluída com sucesso.",
+                },
+              ],
+              // Adiciona informações finais, se disponíveis
+              partialInfo: metadata.finalResults || {
+                ncmCode: metadata.ncmCode || "",
+                ncmDescription: metadata.description || "",
+              },
+              // Todos os campos já validados
+              validationStatus: {
+                ncmCode: false,
+                ncmDescription: false,
+                taxationDetails: false,
+                attributes: false,
+                conclusion: false,
+              },
+            };
+            sseService.sendEvent(requestId, "message", data);
+          } else {
+            // Se não encontrarmos a tarefa, enviamos um erro
+            sseService.sendEvent(requestId, "error", {
+              error: "Tarefa não encontrada",
+              code: 404,
+            });
+            // Fechamos a conexão após enviar o erro
+            setTimeout(() => sseService.closeConnection(requestId), 1000);
+          }
+        } catch (error) {
+          console.error(
+            `Erro ao buscar metadados da tarefa ${requestId}:`,
+            error
+          );
+          sseService.sendEvent(requestId, "error", {
+            error: "Erro interno ao buscar tarefa",
+            code: 500,
+          });
+          // Fechamos a conexão após enviar o erro
+          setTimeout(() => sseService.closeConnection(requestId), 1000);
+        }
+      }
+
+      // Configurar cleanup quando a conexão for fechada
+      req.on("close", () => {
+        console.log(`Conexão SSE fechada para ${requestId}`);
+        sseService.closeConnection(requestId);
+      });
+    } catch (error) {
+      console.error("Erro ao configurar conexão SSE:", error);
+      res.status(500).json({ error: "Erro interno do servidor" });
+    }
+  }
+);
+
+/**
+ * Rota para consulta de NCM
+ */
+app.post("/api/v1/ncm", (req, res, next) => {
+  ncmRouter(req, res, next).catch(next);
+});
+
+// Middleware para processamento DeepResearch
+app.use("/api/v1/ncm", processarDeepResearch);
+
+/**
+ * Mapa para armazenar as tarefas completadas e seus timestamps
+ * Isso permite limpar periodicamente tarefas antigas
+ */
+const completedTasks = new Map<string, number>();
+
+/**
+ * Mapa para armazenar os resultados das tarefas
+ */
+const taskResults = new Map<string, any>();
+
+/**
+ * Limpa tarefas concluídas antigas (mais de 2 horas)
+ */
+function cleanupCompletedTasks() {
+  const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000; // 2 horas em milissegundos
+
+  for (const [requestId, timestamp] of completedTasks.entries()) {
+    if (timestamp < twoHoursAgo) {
+      // Remove do mapa de tarefas concluídas
+      completedTasks.delete(requestId);
+
+      // Remove também dos outros mapas/caches se existirem
+      taskResults.delete(requestId);
+      llmOutputsByRequest.delete(requestId);
+      trackers.delete(requestId);
+
+      console.log(`Limpeza: Tarefa ${requestId} removida por inatividade.`);
+    }
+  }
+}
+
+// Executa a limpeza a cada 30 minutos
+setInterval(cleanupCompletedTasks, 30 * 60 * 1000);
+
+// Adicionar manipulador para encerrar conexões Redis ao fechar o servidor
+process.on("SIGTERM", () => {
+  console.log("Encerrando servidor...");
+  closeRedisConnections();
+  // Outros procedimentos de encerramento
+  // ...
+});
+
+process.on("SIGINT", () => {
+  console.log("Encerrando servidor...");
+  closeRedisConnections();
+  process.exit(0);
+});
+
+// Adicionar o modelRouter como middleware para processar as rotas relacionadas a modelos
+// O código existente para as rotas /api/v1/process-with-model e /api/v1/chat
+// deve ser removido, pois agora será tratado pelo modelRouter
+
+// Adicionar nas configurações de middleware, próximo de onde outros roteadores são adicionados
+app.use("/api/v1", async (req, res, next) => {
+  // Passa para o modelRouter
+  await modelRouter(req, res, next);
+});
+
+// Inicializar o serviço de pesquisa profunda
+const deepResearchService = DeepResearchService.getInstance();
+
+// Rotas da API
+app.use("/api/v1/deep-research", deepResearchRoutes);
+
+/**
  * Função auxiliar para extrair informações parciais dos dados disponíveis
  */
 function extractPartialInfo(
@@ -1561,99 +1737,6 @@ function extractPartialInfo(
     return defaultInfo;
   }
 }
-
-// Rota para cancelar explicitamente o processamento de uma tarefa
-app.post(
-  "/api/v1/cancel",
-  async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { requestId } = req.body;
-
-      if (!requestId) {
-        res.status(400).json({ error: "ID da tarefa é obrigatório" });
-        return;
-      }
-
-      console.log(`Cancelando tarefa: ${requestId}`);
-
-      // Verifica se temos rastreadores para esta requisição
-      const trackerContext = trackers.get(requestId);
-
-      if (trackerContext) {
-        // Limpa o contexto da tarefa
-        cleanup(requestId);
-
-        // Atualiza os metadados com status cancelado
-        try {
-          // Primeiro, busca os metadados existentes
-          const existingMetadata = await getQueryMetadata(requestId);
-
-          if (existingMetadata) {
-            // Se existirem metadados, atualiza apenas o status
-            await saveQueryMetadata(requestId, {
-              ...existingMetadata,
-              status: "cancelled",
-            });
-          } else {
-            // Se não existirem, cria um registro mínimo
-            await saveQueryMetadata(requestId, {
-              title: `Consulta ${requestId}`,
-              originalQuestion: "Consulta cancelada pelo usuário",
-              timestamp: new Date().toISOString(),
-              status: "cancelled",
-              promptCount: 0,
-              question: "Consulta cancelada",
-            });
-          }
-
-          console.log(`Tarefa ${requestId} cancelada com sucesso`);
-        } catch (error) {
-          console.error(
-            `Erro ao atualizar metadados da tarefa ${requestId}:`,
-            error
-          );
-        }
-      }
-
-      // Move a query para a lixeira, se possível
-      try {
-        const queriesDir = path.join(process.cwd(), "queries");
-        const queryPath = path.join(queriesDir, requestId.toString());
-
-        // Verifica se a pasta existe antes de tentar movê-la
-        await fs.access(queryPath);
-
-        // Se a pasta existe, chama a lógica de mover para a lixeira
-        const trashDir = path.join(process.cwd(), "trash");
-        const trashPath = path.join(trashDir, requestId.toString());
-
-        // Cria o diretório da lixeira se não existir
-        await fs.mkdir(trashDir, { recursive: true });
-
-        // Move a pasta para a lixeira
-        await fs.rename(queryPath, trashPath);
-      } catch (error) {
-        // Ignora erros se o diretório não existir
-        console.log(
-          `Diretório da consulta ${requestId} não encontrado ou não pode ser movido`
-        );
-      }
-
-      // Retorna sucesso
-      res.json({
-        success: true,
-        message: "Tarefa cancelada com sucesso",
-        requestId,
-      });
-    } catch (error) {
-      console.error("Erro ao cancelar tarefa:", error);
-      res.status(500).json({
-        error: "Erro interno ao cancelar a tarefa",
-        message: error instanceof Error ? error.message : "Erro desconhecido",
-      });
-    }
-  }
-);
 
 /**
  * Gera informações detalhadas sobre a pesquisa com base no estado atual do tracker
@@ -1796,76 +1879,3 @@ function generateResearchDetails(
 
   return details;
 }
-
-// Rota para consulta de NCM
-app.post("/api/v1/ncm", (req, res, next) => {
-  ncmRouter(req, res, next).catch(next);
-});
-
-// Middleware para processamento DeepResearch
-app.use("/api/v1/ncm", processarDeepResearch);
-
-/**
- * Mapa para armazenar as tarefas completadas e seus timestamps
- * Isso permite limpar periodicamente tarefas antigas
- */
-const completedTasks = new Map<string, number>();
-
-/**
- * Mapa para armazenar os resultados das tarefas
- */
-const taskResults = new Map<string, any>();
-
-/**
- * Limpa tarefas concluídas antigas (mais de 2 horas)
- */
-function cleanupCompletedTasks() {
-  const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000; // 2 horas em milissegundos
-
-  for (const [requestId, timestamp] of completedTasks.entries()) {
-    if (timestamp < twoHoursAgo) {
-      // Remove do mapa de tarefas concluídas
-      completedTasks.delete(requestId);
-
-      // Remove também dos outros mapas/caches se existirem
-      taskResults.delete(requestId);
-      llmOutputsByRequest.delete(requestId);
-      trackers.delete(requestId);
-
-      console.log(`Limpeza: Tarefa ${requestId} removida por inatividade.`);
-    }
-  }
-}
-
-// Executa a limpeza a cada 30 minutos
-setInterval(cleanupCompletedTasks, 30 * 60 * 1000);
-
-// Adicionar manipulador para encerrar conexões Redis ao fechar o servidor
-process.on("SIGTERM", () => {
-  console.log("Encerrando servidor...");
-  closeRedisConnections();
-  // Outros procedimentos de encerramento
-  // ...
-});
-
-process.on("SIGINT", () => {
-  console.log("Encerrando servidor...");
-  closeRedisConnections();
-  process.exit(0);
-});
-
-// Adicionar o modelRouter como middleware para processar as rotas relacionadas a modelos
-// O código existente para as rotas /api/v1/process-with-model e /api/v1/chat
-// deve ser removido, pois agora será tratado pelo modelRouter
-
-// Adicionar nas configurações de middleware, próximo de onde outros roteadores são adicionados
-app.use("/api/v1", async (req, res, next) => {
-  // Passa para o modelRouter
-  await modelRouter(req, res, next);
-});
-
-// Inicializar o serviço de pesquisa profunda
-const deepResearchService = DeepResearchService.getInstance();
-
-// Rotas da API
-app.use("/api/v1/deep-research", deepResearchRoutes);

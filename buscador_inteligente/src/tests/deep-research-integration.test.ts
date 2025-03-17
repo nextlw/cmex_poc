@@ -238,7 +238,7 @@ class DeepResearchService {
 class FastAPIIntegration {
   private baseUrl: string;
 
-  constructor(baseUrl: string = "http://localhost:8000") {
+  constructor(baseUrl: string = "http://localhost:10000") {
     this.baseUrl = baseUrl;
   }
 
@@ -385,7 +385,7 @@ describe("Deep Research Integration Tests", () => {
     // Verificar chamada ao axios
     expect(mockedAxios.post).toHaveBeenCalledTimes(1);
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      "http://localhost:8000/api/v1/deep-research",
+      "http://localhost:10000/api/v1/deep-research",
       expect.objectContaining({
         query,
         sessionId: "test-session-123",
@@ -405,7 +405,7 @@ describe("Deep Research Integration Tests", () => {
     // Verificar chamada ao axios para status
     expect(mockedAxios.get).toHaveBeenCalledTimes(1);
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      "http://localhost:8000/api/v1/deep-research/test-session-123/status"
+      "http://localhost:10000/api/v1/deep-research/test-session-123/status"
     );
 
     console.log("✅ Teste de integração com FastAPI concluído com sucesso.");
@@ -437,7 +437,7 @@ describe("Deep Research Integration Tests", () => {
     const originalExecuteTask = (deepResearchService as any).executeTask;
     (deepResearchService as any).executeTask = jest
       .fn()
-      .mockRejectedValue(new Error("Falha simulada"));
+      .mockImplementation(() => Promise.reject(new Error("Falha simulada")));
 
     // Iniciar pesquisa que deve emitir erro
     const sessionId = await deepResearchService.startResearch(

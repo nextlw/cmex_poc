@@ -1,4 +1,4 @@
-import { ConsultaProduto, FastApiNCMResult } from "../types/ncm";
+import { ConsultaProduto, FastApiNCMResult } from "../types";
 import {
   TokenTracker,
   DeepResearch,

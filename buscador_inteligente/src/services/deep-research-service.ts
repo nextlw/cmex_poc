@@ -105,7 +105,7 @@ export class DeepResearchService extends EventEmitter {
     );
     this.sseService = SSEService.getInstance();
     this.activeResearches = new Map();
-    this.fastApiUrl = process.env.FASTAPI_URL || "http://localhost:8000";
+    this.fastApiUrl = process.env.FASTAPI_URL || "http://localhost:10000";
 
     // Configurar listeners para eventos do modelo
     this.setupModelListeners();

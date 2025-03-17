@@ -146,6 +146,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [prevStepIndex, setPrevStepIndex] = useState(-1);
   const [validationResult, setValidationResult] =
     useState<ValidationResult | null>(null);
@@ -235,271 +236,279 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     }
 
     let isMounted = true;
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
+    let intervalId: number | null = null;
 
-    const checkStatus = async () => {
+    // Função para atualizar o status
+    const fetchStatus = async () => {
       try {
         // Verifica se há token no localStorage
         const session = localStorage.getItem(
           "sb-qrfxqaovpddcziulqflw-auth-token"
         );
         if (!session) {
-          throw new Error("Sessão não encontrada");
+          setHasError(true);
+          setErrorMessage("Sessão não encontrada");
+          return;
         }
 
+        const token = JSON.parse(session).access_token;
+
+        // Fazendo uma requisição normal para o endpoint existente
         const response = await api.get(`/task-status/${requestId}`, {
-          signal: controller.signal,
           headers: {
-            Authorization: `Bearer ${JSON.parse(session).access_token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
-        if (isMounted && response.data) {
-          setHasError(false);
+        if (!isMounted) return;
 
-          // Se recebemos dados pela primeira vez, removemos o skeleton
-          if (!hasInitialData) {
-            setHasInitialData(true);
-          }
+        // Processa a resposta
+        const data = response.data;
 
-          // Atualiza informações parciais se disponíveis na resposta
-          if (response.data.partialInfo) {
-            setPartialInfo((prev) => ({
+        setHasError(false);
+
+        // Se recebemos dados pela primeira vez, removemos o skeleton
+        if (!hasInitialData) {
+          setHasInitialData(true);
+        }
+
+        // Atualiza informações parciais se disponíveis na resposta
+        if (data.partialInfo) {
+          setPartialInfo((prev) => ({
+            ...prev,
+            ...data.partialInfo,
+          }));
+
+          // Atualiza o estado de validação se fornecido
+          if (data.validationStatus) {
+            setValidationStatus((prev) => ({
               ...prev,
-              ...response.data.partialInfo,
+              ...data.validationStatus,
             }));
+          }
+        }
 
-            // Atualiza o estado de validação se fornecido
-            if (response.data.validationStatus) {
-              setValidationStatus((prev) => ({
-                ...prev,
-                ...response.data.validationStatus,
-              }));
-            }
+        const stepIndex = data.step !== undefined ? data.step : 0;
+        const step = Math.min(stepIndex, PROGRESS_MESSAGES.length - 1);
+
+        // Se o passo mudou, minimiza os passos anteriores
+        if (step > currentStepIndex) {
+          const updatedSteps = [...steps];
+          // Minimiza todos os passos anteriores
+          for (let i = 0; i < step; i++) {
+            updatedSteps[i].minimized = true;
+          }
+          setSteps(updatedSteps);
+        }
+
+        setCurrentStepIndex(step);
+
+        // Atualiza a mensagem principal
+        if (data.currentAction) {
+          setStatusMessage(data.currentAction);
+        } else {
+          let message = PROGRESS_MESSAGES[step]
+            .replace("{produto}", productName)
+            .replace("{ncm}", ncmCode);
+          setStatusMessage(message);
+        }
+
+        // Atualiza o status dos passos
+        updateStepsWithNewData(step, data);
+
+        // Adiciona novas informações de pesquisa se disponíveis
+        updateResearchInfo(data);
+
+        // Verifica se o processamento foi concluído
+        if (data.completed) {
+          setSidebarStatus("completed");
+          setIsLoading(false);
+
+          // Cancelar o intervalo quando completa
+          if (intervalId) {
+            window.clearInterval(intervalId);
+            intervalId = null;
           }
 
-          const stepIndex =
-            response.data.step !== undefined ? response.data.step : 0;
-          const step = Math.min(stepIndex, PROGRESS_MESSAGES.length - 1);
+          // Exibição do relatório final e outras ações de conclusão
+          handleCompletedProcess(step, data);
+        } else {
+          setSidebarStatus("processing");
+        }
+      } catch (error) {
+        console.error("Erro ao processar requisição:", error);
+        setHasError(true);
+        setErrorMessage("Erro na conexão com o servidor");
+      }
+    };
 
-          // Se o passo mudou, minimiza os passos anteriores
-          if (step > currentStepIndex) {
-            const updatedSteps = [...steps];
-            // Minimiza todos os passos anteriores
-            for (let i = 0; i < step; i++) {
-              updatedSteps[i].minimized = true;
-            }
-            setSteps(updatedSteps);
-          }
+    // Função para atualizar os passos com os novos dados
+    const updateStepsWithNewData = (step: number, data: any) => {
+      if (step > 0) {
+        const updatedSteps = [...steps];
+        // Todos os passos anteriores estão completos
+        for (let i = 0; i < step; i++) {
+          updatedSteps[i].status = "completed";
+          updatedSteps[i].minimized = true; // Sempre minimiza passos anteriores
+        }
+        // O passo atual está em processamento
+        updatedSteps[step].status = "processing";
+        updatedSteps[step].minimized = false; // Garante que o passo atual está expandido
 
-          setCurrentStepIndex(step);
+        // Garante que todos os passos futuros também estão minimizados
+        for (let i = step + 1; i < updatedSteps.length; i++) {
+          updatedSteps[i].minimized = true;
+        }
 
-          // Atualiza a mensagem principal
-          if (response.data.currentAction) {
-            setStatusMessage(response.data.currentAction);
+        // Atualiza o conteúdo do passo atual com a mensagem de status
+        updatedSteps[step].content = statusMessage;
+
+        // Adiciona os detalhes da pesquisa ao passo atual
+        if (data.researchDetails && data.researchDetails.length > 0) {
+          const newDetails = data.researchDetails.map((detail: any) => ({
+            type: detail.type,
+            content: detail.content,
+            source: detail.source,
+            timestamp: new Date(),
+          }));
+
+          // Adiciona os novos detalhes apenas se não existirem já
+          if (!updatedSteps[step].details) {
+            updatedSteps[step].details = newDetails;
           } else {
-            let message = PROGRESS_MESSAGES[step]
-              .replace("{produto}", productName)
-              .replace("{ncm}", ncmCode);
-            setStatusMessage(message);
-          }
-
-          // Atualiza o status dos passos
-          if (step > 0) {
-            const updatedSteps = [...steps];
-            // Todos os passos anteriores estão completos
-            for (let i = 0; i < step; i++) {
-              updatedSteps[i].status = "completed";
-              updatedSteps[i].minimized = true; // Sempre minimiza passos anteriores
-            }
-            // O passo atual está em processamento
-            updatedSteps[step].status = "processing";
-            updatedSteps[step].minimized = false; // Garante que o passo atual está expandido
-
-            // Garante que todos os passos futuros também estão minimizados
-            for (let i = step + 1; i < updatedSteps.length; i++) {
-              updatedSteps[i].minimized = true;
-            }
-
-            // Atualiza o conteúdo do passo atual com a mensagem de status
-            updatedSteps[step].content = statusMessage;
-
-            // Adiciona os detalhes da pesquisa ao passo atual
-            if (
-              response.data.researchDetails &&
-              response.data.researchDetails.length > 0
-            ) {
-              const newDetails = response.data.researchDetails.map(
-                (detail: any) => ({
-                  type: detail.type,
-                  content: detail.content,
-                  source: detail.source,
-                  timestamp: new Date(),
-                })
-              );
-
-              // Adiciona os novos detalhes apenas se não existirem já
-              if (!updatedSteps[step].details) {
-                updatedSteps[step].details = newDetails;
-              } else {
-                // Verifica se já temos esses detalhes para evitar duplicação
-                const existingContents =
-                  updatedSteps[step].details?.map((d) => d.content) || [];
-                const uniqueNewDetails = newDetails.filter(
-                  (detail: ResearchDetail) =>
-                    !existingContents.includes(detail.content)
-                );
-
-                if (uniqueNewDetails.length > 0) {
-                  updatedSteps[step].details = [
-                    ...(updatedSteps[step].details || []),
-                    ...uniqueNewDetails,
-                  ];
-                }
-
-                // Incrementa a iteração apenas quando novos detalhes são adicionados
-                if (uniqueNewDetails.length > 0) {
-                  updatedSteps[step].iterations =
-                    (updatedSteps[step].iterations || 0) + 1;
-                }
-              }
-            }
-
-            setSteps(updatedSteps);
-          }
-
-          // Adiciona novas informações de pesquisa se disponíveis
-          if (response.data.researchDetails) {
-            const newDetails = response.data.researchDetails.map(
-              (detail: any) => ({
-                type: detail.type,
-                content: detail.content,
-                source: detail.source,
-                timestamp: new Date(),
-              })
-            );
-
             // Verifica se já temos esses detalhes para evitar duplicação
-            const existingContents = researchInfo.map((info) => info.content);
+            const existingContents =
+              updatedSteps[step].details?.map((d) => d.content) || [];
             const uniqueNewDetails = newDetails.filter(
               (detail: ResearchDetail) =>
                 !existingContents.includes(detail.content)
             );
 
             if (uniqueNewDetails.length > 0) {
-              setResearchInfo((prevInfo) => [...prevInfo, ...uniqueNewDetails]);
+              updatedSteps[step].details = [
+                ...(updatedSteps[step].details || []),
+                ...uniqueNewDetails,
+              ];
+
+              // Incrementa a iteração apenas quando novos detalhes são adicionados
+              updatedSteps[step].iterations =
+                (updatedSteps[step].iterations || 0) + 1;
             }
           }
-
-          if (!response.data.completed) {
-            setSidebarStatus("processing");
-            setTimeout(checkStatus, 2000);
-          } else {
-            setSidebarStatus("completed");
-            setIsLoading(false);
-
-            // Se completou, expande a última etapa e minimiza todas as outras
-            const finalStepIndex = step;
-            const finalUpdatedSteps = [...steps];
-
-            finalUpdatedSteps.forEach((s, idx) => {
-              s.minimized = idx !== finalStepIndex;
-              s.status = idx <= finalStepIndex ? "completed" : "waiting";
-            });
-
-            setSteps(finalUpdatedSteps);
-
-            // Gerar relatório final com as informações coletadas
-            const detailsCollected = researchInfo.filter(
-              (info) => info.type !== "question"
-            );
-
-            // Exemplo de construção do relatório final
-            const report: FinalReport = {
-              conclusion: `Após análise detalhada, concluímos que o produto "${productName}" está corretamente classificado com o NCM ${
-                response.data.finalNcm || ncmCode
-              }.`,
-              evidences: detailsCollected
-                .filter((detail) => detail.source && detail.content)
-                .map((detail) => ({
-                  source: detail.source || "Fonte não especificada",
-                  content: detail.content,
-                  type:
-                    detail.content.includes("Lei") ||
-                    detail.content.includes("Decreto")
-                      ? "law"
-                      : detail.content.includes("tribunal") ||
-                        detail.content.includes("decisão")
-                      ? "jurisprudence"
-                      : "technical",
-                })),
-              alternativeCases: [
-                {
-                  scenario:
-                    "Se o produto tiver funcionalidade principal distinta",
-                  impact:
-                    "A classificação poderia mudar para outro capítulo da NCM",
-                  suggestedNCM: response.data.alternativeNcm || undefined,
-                },
-                {
-                  scenario:
-                    "Se o produto apresentar composição material diferente",
-                  impact:
-                    "Poderia haver alteração na alíquota tributária aplicável",
-                },
-              ],
-              ncmCode: response.data.finalNcm || ncmCode,
-              ncmDescription:
-                response.data.ncmDescription || "Descrição não disponível",
-              taxationDetails: response.data.taxationDetails || {
-                ipi: "Conforme tabela TIPI",
-                icms: "Conforme regulamentação estadual",
-                pis: "Regime normal",
-                cofins: "Regime normal",
-                importTax: "Consultar tabela vigente",
-              },
-              attributes: response.data.attributes || {},
-            };
-
-            setFinalReport(report);
-            // Inicialmente, mostra o resumo (não os passos detalhados)
-            setShowDetailedSteps(false);
-
-            // Define todos os estados de validação como concluídos
-            setValidationStatus({
-              ncmCode: false,
-              ncmDescription: false,
-              taxationDetails: false,
-              attributes: false,
-              conclusion: false,
-            });
-          }
         }
-      } catch (error: any) {
-        console.error("Erro ao verificar status da tarefa:", error);
 
-        // Se for erro de autenticação, tenta recarregar a página
-        if (error.response?.status === 401) {
-          setHasError(true);
-          setSidebarStatus("error");
-          setStatusMessage("Erro de autenticação. Tentando reconectar...");
-          // Aguarda 5 segundos antes de tentar novamente
-          setTimeout(checkStatus, 5000);
-        } else if (isMounted) {
-          setHasError(true);
-          setSidebarStatus("error");
-          setStatusMessage("Erro ao verificar status. Tentando novamente...");
-          setTimeout(checkStatus, 3000);
+        setSteps(updatedSteps);
+      }
+    };
+
+    // Função para atualizar as informações de pesquisa
+    const updateResearchInfo = (data: any) => {
+      if (data.researchDetails) {
+        const newDetails = data.researchDetails.map((detail: any) => ({
+          type: detail.type,
+          content: detail.content,
+          source: detail.source,
+          timestamp: new Date(),
+        }));
+
+        // Verifica se já temos esses detalhes para evitar duplicação
+        const existingContents = researchInfo.map((info) => info.content);
+        const uniqueNewDetails = newDetails.filter(
+          (detail: ResearchDetail) => !existingContents.includes(detail.content)
+        );
+
+        if (uniqueNewDetails.length > 0) {
+          setResearchInfo((prevInfo) => [...prevInfo, ...uniqueNewDetails]);
         }
       }
     };
 
-    checkStatus();
+    // Função para lidar com o processo concluído
+    const handleCompletedProcess = (step: number, data: any) => {
+      // Se completou, expande a última etapa e minimiza todas as outras
+      const finalStepIndex = step;
+      const finalUpdatedSteps = [...steps];
 
+      finalUpdatedSteps.forEach((s, idx) => {
+        s.minimized = idx !== finalStepIndex;
+        s.status = idx <= finalStepIndex ? "completed" : "waiting";
+      });
+
+      setSteps(finalUpdatedSteps);
+
+      // Gerar relatório final com as informações coletadas
+      const detailsCollected = researchInfo.filter(
+        (info) => info.type !== "question"
+      );
+
+      // Exemplo de construção do relatório final
+      const report: FinalReport = {
+        conclusion: `Após análise detalhada, concluímos que o produto "${productName}" está corretamente classificado com o NCM ${
+          data.finalNcm || ncmCode
+        }.`,
+        evidences: detailsCollected
+          .filter((detail) => detail.source && detail.content)
+          .map((detail) => ({
+            source: detail.source || "Fonte não especificada",
+            content: detail.content,
+            type:
+              detail.content.includes("Lei") ||
+              detail.content.includes("Decreto")
+                ? "law"
+                : detail.content.includes("tribunal") ||
+                  detail.content.includes("decisão")
+                ? "jurisprudence"
+                : "technical",
+          })),
+        alternativeCases: [
+          {
+            scenario: "Se o produto tiver funcionalidade principal distinta",
+            impact: "A classificação poderia mudar para outro capítulo da NCM",
+            suggestedNCM: data.alternativeNcm || undefined,
+          },
+          {
+            scenario: "Se o produto apresentar composição material diferente",
+            impact: "Poderia haver alteração na alíquota tributária aplicável",
+          },
+        ],
+        ncmCode: data.finalNcm || ncmCode,
+        ncmDescription: data.ncmDescription || "Descrição não disponível",
+        taxationDetails: data.taxationDetails || {
+          ipi: "Conforme tabela TIPI",
+          icms: "Conforme regulamentação estadual",
+          pis: "Regime normal",
+          cofins: "Regime normal",
+          importTax: "Consultar tabela vigente",
+        },
+        attributes: data.attributes || {},
+      };
+
+      setFinalReport(report);
+      // Inicialmente, mostra o resumo (não os passos detalhados)
+      setShowDetailedSteps(false);
+
+      // Define todos os estados de validação como concluídos
+      setValidationStatus({
+        ncmCode: false,
+        ncmDescription: false,
+        taxationDetails: false,
+        attributes: false,
+        conclusion: false,
+      });
+    };
+
+    // Iniciar com a primeira consulta
+    fetchStatus();
+
+    // Configurar a consulta periódica (a cada 2 segundos)
+    intervalId = window.setInterval(fetchStatus, 2000);
+
+    // Limpeza ao desmontar o componente
     return () => {
       isMounted = false;
-      if (controller) controller.abort();
+      if (intervalId) {
+        window.clearInterval(intervalId);
+      }
     };
   }, [requestId, productName, ncmCode, steps]);
 

@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Configuração do cliente HTTP para comunicação com a FastAPI
 const httpClient = axios.create({
-  baseURL: process.env.FASTAPI_URL || "http://localhost:8000",
+  baseURL: process.env.FASTAPI_URL || "http://localhost:10000/api",
   timeout: 30000, // 30 segundos
   headers: {
     "Content-Type": "application/json",

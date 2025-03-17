@@ -6,7 +6,7 @@ import axios from "axios";
 import { TokenTracker } from "../utils/token-tracker";
 import httpClient from "../utils/http-client";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { FastApiNCMResult } from "../types/ncm";
+import { FastApiNCMResult } from "../types";
 
 // Interface personalizada para estender o Request do Express
 interface CustomRequest extends Request {
