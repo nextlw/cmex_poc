@@ -1,7 +1,6 @@
 import { modelConfigs, LOCAL_MODEL_ENDPOINT } from "../config";
 import { TokenTracker } from "../utils/token-tracker";
-import { SearchAction } from "../types";
-import { KeywordsResponse } from "../types";
+import { SearchAction } from "../types/globalTypes";
 import { LocalModelClient } from "./local-model-client";
 import { z } from "zod";
 

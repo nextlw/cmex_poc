@@ -1,8 +1,6 @@
 import { Response } from "express";
 import { EventEmitter } from "events";
-import { ServerLog } from "../types/globalTypes";
-import { StreamMessage } from "../types";
-import { TrackerContext } from "../types";
+import { ServerLog, StreamMessage, TrackerContext } from "../types/globalTypes";
 
 export interface SSEConnection {
   id: string;
