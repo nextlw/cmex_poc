@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { TokenTracker } from "../utils/token-tracker";
 import { ActionTracker } from "../utils/action-tracker";
 import { getResponse } from "../agent";
-import { AnswerAction, TrackerContext } from "../types";
+import { AnswerAction, TrackerContext } from "../types/globalTypes";
 import {
   publishTaskUpdate,
   publishQueryResults,

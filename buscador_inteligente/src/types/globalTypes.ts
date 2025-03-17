@@ -38,6 +38,56 @@ export type ResponseSchema = {
   required?: string[];
 };
 
+// Tipos de Bloco de Conteúdo
+export interface ContentBlock {
+  type: string;
+  content: string;
+}
+
+export interface TextBlock extends ContentBlock {
+  type: "text";
+}
+
+export interface CodeBlock extends ContentBlock {
+  type: "code";
+  language?: string;
+}
+
+export interface HeadingBlock extends ContentBlock {
+  type: "heading";
+  level: number;
+}
+
+export interface ListItem {
+  content: string;
+  items?: ListItem[];
+}
+
+export interface ListOrderedBlock extends ContentBlock {
+  type: "list-ordered";
+  items: ListItem[];
+}
+
+export interface ListUnorderedBlock extends ContentBlock {
+  type: "list-unordered";
+  items: ListItem[];
+}
+
+export interface TableBlock extends ContentBlock {
+  type: "table";
+  headers: string[];
+  rows: string[][];
+}
+
+export interface QuoteBlock extends ContentBlock {
+  type: "quote";
+}
+
+export interface AlertBlock extends ContentBlock {
+  type: "alert";
+  variant: "info" | "warning" | "error" | "success";
+}
+
 // Tipos de Referência
 export interface Reference {
   exactQuote: string;
@@ -248,80 +298,72 @@ export interface StreamMessage {
 
 // Interfaces do Contexto do Rastreador
 export interface TrackerContext {
-  outputs: any[];
   tokenTracker: TokenTracker;
   actionTracker: ActionTracker;
+  outputs?: Array<{ step: number; rawResponseText: string }>;
 }
 
-// Interfaces de Log do Servidor
-export interface ServerLog {
-  context: {
-    pid: number;
-    env: string;
-    requestId?: string;
+// ============ TIPOS DO ARQUIVO NCM.TS ============
+
+export interface ConsultaProduto {
+  consulta: string;
+  estadoOrigem: string;
+  operacao?: string;
+  regimeTributario?: string;
+  tributacao?: string;
+  modelo: string;
+  autocomplete?: boolean;
+  useDeepResearch?: boolean;
+  descricao?: string;
+  caracteristicas?: string[];
+}
+
+export interface FastApiNCMResult {
+  ncm_code: string;
+  ncm?: string;
+  description: string;
+  descricao?: string;
+  taxation: {
+    ipi: number;
+    icms: number;
+    pis: number;
+    cofins: number;
+    import_tax: number;
   };
-  timestamp: string;
-  message: string;
-  level: "log" | "error" | "warn" | "info";
-}
-
-// Tipos da API OpenAI
-export interface Model {
-  id: string;
-  object: "model";
-  created: number;
-  owned_by: string;
-}
-
-export interface ChatCompletionRequest {
-  model: string;
-  messages: Array<CoreUserMessage | CoreAssistantMessage>;
-  stream?: boolean;
-  reasoning_effort?: "low" | "medium" | "high" | null;
-  max_completion_tokens?: number | null;
-}
-
-export interface ChatCompletionResponse {
-  id: string;
-  object: "chat.completion";
-  created: number;
-  model: string;
-  system_fingerprint: string;
-  choices: Array<{
-    index: number;
-    message: {
-      role: "assistant";
-      content: string;
+  valores_de_impostos?: {
+    ipi: string;
+    icms: { [key: string]: string };
+    pis: string;
+    cofins: string;
+  };
+  attributes: {
+    [key: string]: string;
+  };
+  atributos?: string[];
+  atributos_tipi?: string[];
+  conclusion: string;
+  confidence: number;
+  model_used: string;
+  processing_time: number;
+  observacoes_deep_research?: string[];
+  classificacao_tributaria?: {
+    tipo_classificacao_tributario?: {
+      tipo_tributario_ativo?: string;
+      justificativa?: string;
     };
-    logprobs: null;
-    finish_reason: "stop";
-  }>;
-  usage: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
+    ipi_entrada?: string;
+    ipi_saida?: string;
+    pis_entrada?: string;
+    pis_saida?: string;
+    cofins_entrada?: string;
+    cofins_saida?: string;
+    cst_entrada?: string;
+    cst_saida?: string;
   };
 }
 
-export interface ChatCompletionChunk {
-  id: string;
-  object: "chat.completion.chunk";
-  created: number;
-  model: string;
-  system_fingerprint: string;
-  choices: Array<{
-    index: number;
-    delta: {
-      role?: "assistant";
-      content?: string;
-    };
-    logprobs: null;
-    finish_reason: null | "stop";
-  }>;
-  usage?: any;
-}
+// ============ TIPOS DO ARQUIVO SESSION.TS ============
 
-// Tipos de Sessão e Etapas
 export interface QueryStep {
   id: number;
   type:
@@ -368,4 +410,16 @@ export interface QuerySession {
     elapsedTime?: string;
     urlCount?: number;
   };
+}
+
+// Interfaces de Log do Servidor
+export interface ServerLog {
+  context: {
+    pid: number;
+    env: string;
+    requestId?: string;
+  };
+  timestamp: string;
+  message: string;
+  level: "log" | "error" | "warn" | "info";
 }

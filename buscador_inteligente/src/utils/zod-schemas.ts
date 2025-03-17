@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { Schema, SchemaType } from "@google/generative-ai";
-import { EvaluationType } from "../types";
+import { EvaluationType } from "../types/globalTypes";
 
 // Constantes
 export const MAX_URLS_PER_STEP = 4;

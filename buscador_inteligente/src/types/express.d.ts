@@ -1,4 +1,4 @@
-import { FastApiNCMResult } from "./ncm";
+import { FastApiNCMResult } from "./globalTypes";
 
 declare global {
   namespace Express {

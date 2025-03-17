@@ -4,8 +4,7 @@ import { zodSchemas } from "./zod-schemas";
 import { SafeObjectGenerator } from "./safe-object-generator";
 import { TokenTracker } from "./token-tracker";
 import { ActionTracker } from "./action-tracker";
-import { Schema as GoogleSchema } from "@google/generative-ai";
-import { EvaluationType, TrackerContext } from "../types";
+import { EvaluationType, TrackerContext } from "../types/globalTypes";
 
 /**
  * Classe adaptadora que integra os schemas Zod ao agente CMEX.
@@ -83,7 +82,7 @@ export class AgentSchemaAdapter {
     allowAnswer: boolean,
     allowSearch: boolean,
     improvement?: string
-  ): GoogleSchema {
+  ): Schema {
     const zodSchema = this.getAgentZodSchema(
       allowReflect,
       allowRead,
@@ -108,7 +107,7 @@ export class AgentSchemaAdapter {
    * @param evalType Tipo de avaliação
    * @returns Schema Google para avaliação
    */
-  getEvaluatorGoogleSchema(evalType: EvaluationType): GoogleSchema {
+  getEvaluatorGoogleSchema(evalType: EvaluationType): Schema {
     const zodSchema = this.getEvaluatorZodSchema(evalType);
     return this.zodSchemas.convertToGoogleSchema(zodSchema);
   }

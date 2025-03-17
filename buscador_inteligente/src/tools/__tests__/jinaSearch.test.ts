@@ -1,5 +1,5 @@
 import { jinaSearch } from "../jinaSearch";
-import { SearchResponse } from "../../types";
+import { SearchResponse } from "../../types/globalTypes";
 
 describe("jinaSearch", () => {
   it("should return search results", async () => {

@@ -34,6 +34,7 @@ Este documento detalha o plano de implementação para integrar múltiplos model
   - Suporta código com highlight de sintaxe
 
 - **Home Component**
+
   - Exibe histórico de pesquisas
   - Mostra estatísticas de uso
   - Permite iniciar novas pesquisas
@@ -179,6 +180,7 @@ sequenceDiagram
    - Frontend exibe resultado imediatamente
 
 2. **Deep Research (Opcional)**
+
    - Se Deep Research estiver ativada:
      - Frontend inicia processo de pesquisa profunda via Node.js
      - Node.js realiza validação completa das informações
@@ -227,6 +229,7 @@ sequenceDiagram
    - Implementar cache Redis
 
 3. **Comunicação**
+
    - Configurar novos canais Redis
    - Implementar protocolo de mensagens
    - Estabelecer padrões de erro
@@ -248,6 +251,7 @@ sequenceDiagram
    - Criar sistema de fallback
 
 3. **Backend FastAPI**
+
    - Atualizar endpoints
    - Implementar novo protocolo
    - Melhorar tratamento de erros
@@ -262,6 +266,7 @@ sequenceDiagram
    - Adicionar animações
 
 2. **Backend**
+
    - Otimizar queries
    - Implementar rate limiting
    - Melhorar logging
@@ -333,6 +338,7 @@ Nossa homepage atual tem:
    - Adicionar opção para download de mensagens ou sessão completa
 
 4. **Integração com Seleção de Modelos:**
+
    - Manter a seleção de modelos no Header, mas adicionar indicação visual do modelo em uso na área de chat
    - Implementar tratamento específico para particularidades de cada modelo
 
@@ -351,6 +357,7 @@ Nossa homepage atual tem:
    - Implementar feedback visual de qual modelo foi usado para cada resultado
 
 3. **Melhorias Visuais:**
+
    - Adicionar transições suaves entre estados (carregando, resultados, erro)
    - Implementar indicadores de confiança mais claros para resultados de classificação
    - Melhorar a visualização de fontes e referências
@@ -373,6 +380,7 @@ Nossa homepage atual tem:
    - Inclui toggle para expandir/contrair e contagem de fontes
 
 4. **DeepResearchProgress:**
+
    - Componente para mostrar o progresso da análise DeepResearch
    - Inclui barra de progresso, porcentagem e etapas
 
@@ -397,6 +405,7 @@ Nossa homepage atual tem:
    - Priorizar melhorias que agregam mais valor à experiência do usuário
 
 4. **Acessibilidade:**
+
    - Manter boa navegação por teclado
    - Garantir contraste adequado
    - Incluir texto alternativo para elementos visuais
@@ -575,7 +584,7 @@ Nossa homepage atual tem:
 - Manter documentação atualizada
 - Implementar testes automatizados
 - Usar TypeScript strict mode
-- Manter dependências atualizadas
+- Manter dependências atualizada
 - Implementar CI/CD
 
 ## Próximos Passos
