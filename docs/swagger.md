@@ -45,12 +45,17 @@ http://localhost:3001/api/docs
 - **GET /api/queries**: Lista todas as consultas realizadas
 - **POST /api/queries**: Cria uma nova consulta
 - **GET /api/queries/{id}**: Obtém detalhes de uma consulta específica
+- **POST /api/redis/publish**: Publica uma mensagem no canal Redis especificado
+- **GET /api/redis/status**: Verifica o status da conexão Redis
 
 ### Buscador Inteligente
 
 - **POST /api/v1/ncm**: Consulta a classificação fiscal (NCM) de produtos
 - **POST /api/v1/ncm/deep-research**: Inicia uma análise profunda de NCM
 - **GET /api/v1/ncm/deep-research/{requestId}**: Obtém o status de uma análise profunda
+- **GET /api/v1/sse/connect/{requestId}**: Estabelece uma conexão SSE para receber atualizações em tempo real
+- **GET /api/v1/stream/{requestId}**: Alternativa à conexão SSE para streaming de eventos
+- **GET /api/v1/redis/status**: Verifica o status da conexão Redis
 
 ## Schemas (Modelos de Dados)
 
@@ -60,6 +65,26 @@ A documentação Swagger também fornece detalhes sobre os modelos de dados util
 - **NCMResponse**: Estrutura de uma resposta de consulta NCM
 - **DeepResearchRequest**: Estrutura de uma requisição de análise profunda
 - **DeepResearchStatus**: Estrutura de status de uma análise profunda
+- **StreamMessage**: Estrutura das mensagens enviadas via SSE
+- **RedisMessage**: Estrutura das mensagens publicadas no Redis
+
+## Comunicação em Tempo Real
+
+### Server-Sent Events (SSE)
+
+Para estabelecer uma conexão SSE e receber atualizações em tempo real:
+
+1. Acesse `/api/v1/sse/connect/{requestId}` no navegador ou use a API EventSource.
+2. As mensagens serão enviadas em formato JSON com um tipo específico.
+3. Os tipos de eventos incluem: `message`, `progress`, `answer`, `thinking`, `error`.
+
+### Redis Pub/Sub
+
+O sistema utiliza Redis para comunicação entre os microserviços:
+
+1. O FastAPI publica mensagens nos canais Redis.
+2. O Buscador Inteligente se inscreve nos canais e processa as mensagens.
+3. Os resultados são enviados ao cliente via SSE.
 
 ## Exportação da Documentação
 
@@ -109,3 +134,22 @@ const options = {
 const swaggerSpec = swaggerJsdoc(options);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 ```
+
+## Testando Endpoints SSE
+
+Por padrão, o Swagger não suporta teste de endpoints SSE diretamente na interface. Para testar esses endpoints:
+
+1. Use um navegador e acesse diretamente o URL: `http://localhost:3001/api/v1/sse/connect/{requestId}`
+2. Verifique o console do navegador para ver as mensagens recebidas
+3. Ou use uma ferramenta como Postman que suporta conexões SSE
+
+## Diagrama de Comunicação
+
+A comunicação entre os serviços ocorre da seguinte forma:
+
+1. **Cliente** ↔ **Frontend** (React)
+2. **Frontend** → **Buscador Inteligente** (Via API REST)
+3. **Buscador Inteligente** ↔ **FastAPI** (Via Redis Pub/Sub)
+4. **Buscador Inteligente** → **Cliente** (Via SSE)
+
+Esta arquitetura permite comunicação assíncrona e atualizações em tempo real.

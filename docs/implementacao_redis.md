@@ -30,10 +30,29 @@
    - Criado serviço de API para comunicação com backend
    - Implementado componente de pesquisa
    - Implementado componente de chat
+   - Adicionada implementação de Server-Sent Events (SSE) para atualização em tempo real
 
 6. **Configuração para Produção**
    - Criado arquivo `render.yaml` com configuração para todos os serviços
    - Configurado Redis como serviço compartilhado
+
+## Estado Atual da Implementação
+
+1. **Server-Sent Events (SSE)**
+
+   - Implementada rota `/api/v1/sse/connect/:requestId` no servidor Node.js para permitir conexões SSE
+   - Criado serviço SSE (`sse-service.ts`) para gerenciar conexões e enviar eventos
+   - Implementado cliente SSE no frontend para substituir o polling
+
+2. **Comunicação Redis**
+
+   - Implementada comunicação completa entre serviços através do Redis
+   - Corrigida assinatura Redis para usar Promises em vez de callbacks
+   - Adicionado canal `NCM_REQUEST` para comunicação específica de requisições NCM
+
+3. **DeepResearchSidebar**
+   - Substituído o mecanismo de polling por conexão SSE para atualizações em tempo real
+   - Implementada lógica para gerenciar reconexões e tratamento de erros
 
 ## Erros encontrados e correções
 
@@ -104,8 +123,6 @@ app.use("/api/v1", async (req, res, next) => {
 });
 ```
 
-Esta abordagem permite que as rotas sejam processadas de forma modular e organizada, sem os problemas de tipagem anteriores.
-
 ### Erro 3: Parâmetros e Tipagem em ActionTracker
 
 No código, há um erro indicando que `ActionTracker` espera receber um parâmetro `{ requestId: string }`.
@@ -163,47 +180,60 @@ if (responseResult.result && responseResult.result.action === "answer") {
 }
 ```
 
+### Erro 6: Problemas com CORS no FastAPI
+
+Ocorreram problemas com CORS ao tentar acessar endpoints de APIs em diferentes origens.
+
+**Solução:**
+Ajustada a configuração CORS no FastAPI para permitir requests de diferentes origens:
+
+```python
+# Em main.py
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Em produção, especificar origens específicas
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
+
+### Erro 7: Problemas com rotas de API
+
+Inconsistências entre os caminhos de API no frontend e backend.
+
+**Solução:**
+Ajustado o arquivo axiosConfig.ts para usar os prefixos corretos:
+
+```typescript
+// De:
+baseURL: "/api/v1";
+
+// Para:
+baseURL: "/api";
+```
+
 ## O que ainda precisa ser feito
 
-1. **Revisão final dos tipos**
+1. **Testes adicionais**
 
-   - Verificar se há outros problemas de tipagem no código
-   - Ajustar as interfaces conforme necessário
+   - Testar sob diferentes condições de carga
+   - Verificar tratamento de desconexões Redis
 
-2. **Testes**
+2. **Otimizações**
 
-   - Testar a comunicação entre os serviços em ambiente de desenvolvimento
-   - Verificar se a seleção de modelo está funcionando corretamente
+   - Implementar limite de conexões SSE por usuário
+   - Melhorar gestão de memória no cache Redis
 
-3. **Implementação completa**
+3. **Monitoramento**
 
-   - Completar a função `processModelSelection` no arquivo Redis
-   - Conectar os modelos existentes com o novo sistema
+   - Adicionar métricas de uso do Redis
+   - Monitorar desempenho das conexões SSE
 
 4. **Segurança**
+   - Implementar autenticação nas conexões SSE
+   - Criptografar mensagens Redis sensíveis
 
-   - Adicionar autenticação para as APIs
-   - Configurar CORS adequadamente
+## Conclusão
 
-5. **Monitoramento**
-
-   - Implementar logs estruturados
-   - Adicionar métricas para monitoramento
-
-6. **Fallback**
-   - Implementar mecanismos de fallback caso o Redis fique indisponível
-
-## Próximos passos
-
-1. Testar a comunicação em ambiente de desenvolvimento
-2. Configurar o ambiente de produção no Render
-3. Implementar monitoramento e logs
-4. Testar em produção
-
-## Observações
-
-- O Redis é usado como message broker para comunicação assíncrona entre os serviços
-- O SSE (Server-Sent Events) continua sendo usado para comunicação em tempo real com o frontend
-- O polling foi substituído por um sistema de eventos baseado em Redis
-- A seleção de modelo agora é respeitada e encaminhada para o Node.js
-- A organização dos controladores segue o padrão existente no projeto
+A implementação de comunicação via Redis e SSE substituiu com sucesso o mecanismo de polling anterior, resultando em menor uso de recursos e comunicação mais eficiente entre os serviços. O sistema agora é mais escalável e robusto, permitindo a comunicação assíncrona entre o FastAPI e o Node.js, com atualizações em tempo real para o frontend.

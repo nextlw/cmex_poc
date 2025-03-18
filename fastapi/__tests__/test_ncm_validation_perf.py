@@ -12,7 +12,7 @@ from fastapi.testclient import TestClient
 sys.path.append(str(Path(__file__).parent.parent))
 
 from main import app
-from routers.ncm_validation import ValidationRequest, AnalysisData
+from app.schemas.ncm_validation import ValidationRequest, AnalysisData
 
 # Cliente de teste
 client = TestClient(app)

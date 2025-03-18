@@ -21,9 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Incluir rotas
-# app.include_router(ncm_validation.router)
-
 # Direciona para o módulo app.main
 # Em vez de tentar incluir um router que não existe,
 # vamos apenas criar um endpoint básico para teste
