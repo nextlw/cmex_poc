@@ -4,7 +4,11 @@ import { InfoBasicasProps } from "./types";
 import { BsInfoCircle } from "react-icons/bs";
 import Skeleton from "../Skeleton";
 
-const InfoBasicas: React.FC<InfoBasicasProps> = ({ ncm, descricao, isLoading = false }) => {
+const InfoBasicas: React.FC<InfoBasicasProps> = ({
+  ncm,
+  descricao,
+  isLoading = false,
+}) => {
   if (isLoading) {
     return (
       <div className="info-bas">

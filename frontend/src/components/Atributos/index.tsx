@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { AtributosProps } from './types';
-import './styles.css';
-import { BsBoxes } from 'react-icons/bs';
-import TagAtributo from '../TagAtributo';
+import React, { useState, useEffect } from "react";
+import { AtributosProps } from "./types";
+import "./styles.css";
+import { BsBoxes } from "react-icons/bs";
+import TagAtributo from "../TagAtributo";
 
 const Atributos: React.FC<AtributosProps> = ({
   atributos = [],
@@ -10,7 +10,8 @@ const Atributos: React.FC<AtributosProps> = ({
   isLoading = false,
 }) => {
   const [listaAtributos, setListaAtributos] = useState<string[]>(atributos);
-  const [listaAtributosTipi, setListaAtributosTipi] = useState<string[]>(atributos_tipi);
+  const [listaAtributosTipi, setListaAtributosTipi] =
+    useState<string[]>(atributos_tipi);
 
   // Atualiza os estados quando as props mudarem
   useEffect(() => {
@@ -44,7 +45,6 @@ const Atributos: React.FC<AtributosProps> = ({
             Carregando atributos...
           </span>
         </div>
-
       </div>
     );
   }
@@ -66,7 +66,6 @@ const Atributos: React.FC<AtributosProps> = ({
             Sem atributos disponíveis
           </span>
         </div>
-
       </div>
     );
   }
@@ -93,7 +92,9 @@ const Atributos: React.FC<AtributosProps> = ({
 
       {temAtributosTipi && (
         <div>
-          <h3 className="text-[var(--color-atributos-text)] text-sm pb-2">Atributos TIPI</h3>
+          <h3 className="text-[var(--color-atributos-text)] text-sm pb-2">
+            Atributos TIPI
+          </h3>
           <ul className="atributos-item space-y-1 w-full flex flex-wrap gap-2 text-sm items-baseline justify-start">
             {listaAtributosTipi.map((atributo, index) => (
               <TagAtributo

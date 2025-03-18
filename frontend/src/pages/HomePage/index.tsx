@@ -752,7 +752,7 @@ const HomePage: React.FC = () => {
                               ? "bg-red-100 border border-red-300 text-red-800"
                               : item.validacao_deepresearch.cor === "amarelo"
                               ? "bg-yellow-100 border border-yellow-300 text-yellow-800"
-                              : "bg-gray-100 border border-gray-300 text-gray-800"
+                              : "bg-gray-800 border border-gray-300 text-gray-800"
                           }`}
                         >
                           <div className="flex-shrink-0 mt-0.5">

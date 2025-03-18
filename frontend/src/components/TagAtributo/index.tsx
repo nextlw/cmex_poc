@@ -1,10 +1,8 @@
-import React from 'react';
-import { TbSitemap } from 'react-icons/tb';
-import { IoClose } from 'react-icons/io5';
-import './styles.css';
-import { TagAtributoProps } from './types';
-
-
+import React from "react";
+import { TbSitemap } from "react-icons/tb";
+import { IoClose } from "react-icons/io5";
+import "./styles.css";
+import { TagAtributoProps } from "./types";
 
 const TagAtributo: React.FC<TagAtributoProps> = ({ atributo, onRemove }) => {
   return (
@@ -17,4 +15,4 @@ const TagAtributo: React.FC<TagAtributoProps> = ({ atributo, onRemove }) => {
   );
 };
 
-export default TagAtributo; 
+export default TagAtributo;
