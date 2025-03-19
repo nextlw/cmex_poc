@@ -1,0 +1,360 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import {
+  checkServiceStatus,
+  startService,
+  stopService,
+  checkAllServices,
+  killAllServiceProcesses,
+  type ServiceId,
+} from "../actions/services";
+
+// Interface para um serviço
+export interface Service {
+  id: ServiceId;
+  name: string;
+  description: string;
+  port: number;
+  icon: string;
+  status: "stopped" | "running" | "loading" | "unknown";
+  pid: number | null;
+  logs: string[];
+}
+
+type ServiceMap = Record<ServiceId, Service>;
+
+// Configuração inicial dos serviços com as portas corretas
+const serviceConfig: Record<
+  ServiceId,
+  Omit<Service, "status" | "pid" | "logs">
+> = {
+  redis: {
+    id: "redis",
+    name: "Redis",
+    description:
+      "Banco de dados em memória usado para cache e armazenamento de dados",
+    port: 6378,
+    icon: "🔄",
+  },
+  fastapi: {
+    id: "fastapi",
+    name: "FastAPI",
+    description:
+      "Backend Python com FastAPI para processamento de dados e integração com IA",
+    port: 10000,
+    icon: "🐍",
+  },
+  node: {
+    id: "node",
+    name: "Node.js Backend",
+    description:
+      "Servidor Node.js para buscador inteligente e integração com Jina",
+    port: 3000,
+    icon: "🟢",
+  },
+  frontend: {
+    id: "frontend",
+    name: "Frontend React",
+    description: "Interface de usuário React com Vite",
+    port: 5173,
+    icon: "⚛️",
+  },
+};
+
+// Hook para gerenciar serviços
+export function useServiceManager() {
+  const [services, setServices] = useState<ServiceMap>({
+    redis: { ...serviceConfig.redis, status: "unknown", pid: null, logs: [] },
+    fastapi: {
+      ...serviceConfig.fastapi,
+      status: "unknown",
+      pid: null,
+      logs: [],
+    },
+    node: { ...serviceConfig.node, status: "unknown", pid: null, logs: [] },
+    frontend: {
+      ...serviceConfig.frontend,
+      status: "unknown",
+      pid: null,
+      logs: [],
+    },
+  });
+
+  const addLog = useCallback((serviceId: ServiceId, message: string) => {
+    setServices((prev) => ({
+      ...prev,
+      [serviceId]: {
+        ...prev[serviceId],
+        logs: [
+          ...prev[serviceId].logs,
+          `[${new Date().toLocaleTimeString()}] ${message}`,
+        ],
+      },
+    }));
+  }, []);
+
+  const updateServiceStatus = useCallback(
+    (
+      serviceId: ServiceId,
+      status: Service["status"],
+      pid: number | null = null
+    ) => {
+      setServices((prev) => ({
+        ...prev,
+        [serviceId]: {
+          ...prev[serviceId],
+          status,
+          pid: pid ?? prev[serviceId].pid,
+        },
+      }));
+    },
+    []
+  );
+
+  const checkStatus = useCallback(
+    async (serviceId: ServiceId) => {
+      try {
+        updateServiceStatus(serviceId, "loading");
+        addLog(serviceId, "Verificando status...");
+
+        const result = await checkServiceStatus(serviceId);
+
+        updateServiceStatus(
+          serviceId,
+          result.running ? "running" : "stopped",
+          result.pid
+        );
+
+        addLog(
+          serviceId,
+          `Status: ${result.running ? "Em execução" : "Parado"}${
+            result.pid ? ` (PID: ${result.pid})` : ""
+          }`
+        );
+
+        return result;
+      } catch (error) {
+        console.error(
+          `Erro ao verificar status do serviço ${serviceId}:`,
+          error
+        );
+        updateServiceStatus(serviceId, "unknown");
+        addLog(
+          serviceId,
+          `Erro ao verificar status: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+        return { running: false, pid: null };
+      }
+    },
+    [addLog, updateServiceStatus]
+  );
+
+  const start = useCallback(
+    async (serviceId: ServiceId) => {
+      try {
+        updateServiceStatus(serviceId, "loading");
+        addLog(serviceId, "Iniciando serviço...");
+
+        const result = await startService(serviceId);
+
+        if (result.success) {
+          updateServiceStatus(serviceId, "running", result.pid);
+          addLog(
+            serviceId,
+            `Serviço iniciado com sucesso${
+              result.pid ? ` (PID: ${result.pid})` : ""
+            }`
+          );
+        } else {
+          updateServiceStatus(serviceId, "stopped");
+          addLog(
+            serviceId,
+            `Falha ao iniciar serviço: ${
+              result.message || "Motivo desconhecido"
+            }`
+          );
+        }
+
+        return result;
+      } catch (error) {
+        console.error(`Erro ao iniciar serviço ${serviceId}:`, error);
+        updateServiceStatus(serviceId, "stopped");
+        addLog(
+          serviceId,
+          `Erro ao iniciar: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+        return { success: false, message: String(error), pid: null };
+      }
+    },
+    [addLog, updateServiceStatus]
+  );
+
+  const stop = useCallback(
+    async (serviceId: ServiceId) => {
+      try {
+        updateServiceStatus(serviceId, "loading");
+        addLog(serviceId, "Parando serviço...");
+
+        const result = await stopService(serviceId);
+
+        if (result.success) {
+          updateServiceStatus(serviceId, "stopped", null);
+          addLog(serviceId, "Serviço parado com sucesso");
+        } else {
+          // Verificar o status atual
+          const statusCheck = await checkStatus(serviceId);
+          addLog(
+            serviceId,
+            `Falha ao parar serviço: ${result.message || "Motivo desconhecido"}`
+          );
+        }
+
+        return result;
+      } catch (error) {
+        console.error(`Erro ao parar serviço ${serviceId}:`, error);
+        // Verificar status atual após erro
+        await checkStatus(serviceId);
+        addLog(
+          serviceId,
+          `Erro ao parar: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+        return { success: false, message: String(error) };
+      }
+    },
+    [addLog, updateServiceStatus, checkStatus]
+  );
+
+  const restart = useCallback(
+    async (serviceId: ServiceId) => {
+      addLog(serviceId, "Reiniciando serviço...");
+      await stop(serviceId);
+      // Pequena pausa para garantir que o serviço parou completamente
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      return await start(serviceId);
+    },
+    [stop, start, addLog]
+  );
+
+  const checkAllStatus = useCallback(async () => {
+    try {
+      const allStatuses = await checkAllServices();
+
+      Object.entries(allStatuses).forEach(([id, status]) => {
+        const serviceId = id as ServiceId;
+        updateServiceStatus(
+          serviceId,
+          status.running ? "running" : "stopped",
+          status.pid
+        );
+        addLog(
+          serviceId,
+          `Status: ${status.running ? "Em execução" : "Parado"}${
+            status.pid ? ` (PID: ${status.pid})` : ""
+          }`
+        );
+      });
+
+      return allStatuses;
+    } catch (error) {
+      console.error("Erro ao verificar status de todos os serviços:", error);
+      return {};
+    }
+  }, [addLog, updateServiceStatus]);
+
+  const startAll = useCallback(async () => {
+    for (const serviceId of Object.keys(services) as ServiceId[]) {
+      await start(serviceId);
+      // Pequena pausa entre o início de cada serviço para evitar sobrecarga
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  }, [services, start]);
+
+  const stopAll = useCallback(async () => {
+    // Primeiro para os serviços que dependem de outros
+    // Frontend → Node → FastAPI → Redis
+    await stop("frontend");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await stop("node");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await stop("fastapi");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await stop("redis");
+  }, [stop]);
+
+  // Encerrar todos os processos em todas as portas utilizadas
+  const cleanupAllPorts = useCallback(async () => {
+    try {
+      addLog("redis", "Limpando todas as portas...");
+      addLog("fastapi", "Limpando todas as portas...");
+      addLog("node", "Limpando todas as portas...");
+      addLog("frontend", "Limpando todas as portas...");
+
+      const results = await killAllServiceProcesses();
+
+      Object.entries(results).forEach(([id, killed]) => {
+        const serviceId = id as ServiceId;
+        if (killed) {
+          addLog(
+            serviceId,
+            `Processos anteriores encerrados na porta ${services[serviceId].port}`
+          );
+          updateServiceStatus(serviceId, "stopped", null);
+        }
+      });
+
+      await checkAllStatus();
+
+      return true;
+    } catch (error) {
+      console.error("Erro ao limpar portas:", error);
+      return false;
+    }
+  }, [services, addLog, updateServiceStatus, checkAllStatus]);
+
+  // Verificar status inicial e limpar portas na inicialização
+  useEffect(() => {
+    let isMounted = true;
+
+    // Função de inicialização executada apenas uma vez - somente verificar status, sem limpar portas
+    const init = async () => {
+      if (isMounted) {
+        console.log("Verificando status inicial dos serviços...");
+        await checkAllStatus();
+      }
+    };
+
+    init();
+
+    // Verificar periodicamente o status dos serviços
+    const interval = setInterval(() => {
+      if (isMounted) {
+        checkAllStatus();
+      }
+    }, 10000);
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []); // Mantemos sem dependências para garantir que execute apenas uma vez
+
+  return {
+    services: Object.values(services),
+    checkStatus,
+    start,
+    stop,
+    restart,
+    checkAllStatus,
+    startAll,
+    stopAll,
+    cleanupAllPorts, // Mantemos esta função disponível para uso manual via botão
+  };
+}
