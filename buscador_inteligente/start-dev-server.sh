@@ -6,8 +6,8 @@ export MOCK_RESPONSES=true
 
 # Verificar se a porta 3000 está em uso
 if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null ; then
-    echo "Porta 3000 já está em uso. Usando porta 3001..."
-    export PORT=3001
+    echo "Porta 3000 já está em uso. Usando porta 3000..."
+    export PORT=3000
 else
     echo "Usando porta padrão 3000..."
     export PORT=3000

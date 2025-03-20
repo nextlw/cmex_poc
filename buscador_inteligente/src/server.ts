@@ -108,15 +108,22 @@ const logEventEmitter = new EventEmitter();
 const app: express.Application = express();
 /**
  * Porta da aplicação.
+ * Usando a variável de ambiente NODE_PORT do .env ou PORT diretamente,
+ * com fallback para 3000.
  */
-const port = process.env.PORT || 3000;
+const port = process.env.NODE_PORT || process.env.PORT || 3000;
 
 /**
  * Middleware de CORS.
  */
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin: [
+      "http://localhost:5173", // Frontend
+      "http://localhost:3000", // Node/Next
+      "http://localhost:3001", // Node alternativo
+      "http://localhost:3003", // Admin Panel
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
   })

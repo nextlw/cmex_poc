@@ -13,25 +13,36 @@ interface ServiceConfig {
   port: number;
 }
 
-// Configuração dos serviços conforme portas especificadas
+// Função auxiliar para obter porta do .env ou usar valor padrão
+function getEnvPort(envVar: string, defaultPort: number): number {
+  const portValue = process.env[envVar];
+  return portValue ? parseInt(portValue, 10) : defaultPort;
+}
+
+// Configuração dos serviços com portas do .env
 const serviceConfig: Record<ServiceId, ServiceConfig> = {
   redis: {
-    command: "docker start cmex-redis || redis-server --port 6378",
-    port: 6378,
+    command: `docker start cmex-redis || redis-server --port ${getEnvPort(
+      "REDIS_PORT",
+      6378
+    )}`,
+    port: getEnvPort("REDIS_PORT", 6378),
   },
   fastapi: {
-    command:
-      "cd ../fastapi && python -m uvicorn app.main:app --reload --port 10000",
-    port: 10000,
+    command: `cd ../fastapi && python -m uvicorn app.main:app --reload --port ${getEnvPort(
+      "FASTAPI_PORT",
+      10000
+    )}`,
+    port: getEnvPort("FASTAPI_PORT", 10000),
   },
   node: {
     command:
       "cd ../buscador_inteligente && nohup pnpm run dev > ./node.log 2>&1 &",
-    port: 3000,
+    port: getEnvPort("NODE_PORT", 3000),
   },
   frontend: {
     command: "cd ../frontend && pnpm dev",
-    port: 5173,
+    port: getEnvPort("FRONTEND_PORT", 5173),
   },
 };
 

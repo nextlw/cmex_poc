@@ -139,7 +139,7 @@ Esta seção descreve os testes realizados para validar a implementação de Ser
 
 1. Execute o seguinte comando:
    ```bash
-   curl -N http://localhost:3001/api/v1/sse/connect/test
+   curl -N http://localhost:3000/api/v1/sse/connect/test
    ```
 
 **Resultado Esperado**:

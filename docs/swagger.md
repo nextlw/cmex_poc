@@ -27,7 +27,7 @@ http://localhost:10000/api/redoc
 A documentação Swagger da API do Buscador Inteligente está disponível em:
 
 ```
-http://localhost:3001/api/docs
+http://localhost:3000/api/docs
 ```
 
 ## Como Usar a Documentação Swagger
@@ -91,7 +91,7 @@ O sistema utiliza Redis para comunicação entre os microserviços:
 Você pode exportar a documentação Swagger em formato JSON ou YAML para uso em outras ferramentas:
 
 - FastAPI: `http://localhost:10000/api/openapi.json`
-- Buscador Inteligente: `http://localhost:3001/api/openapi.json`
+- Buscador Inteligente: `http://localhost:3000/api/openapi.json`
 
 ## Configuração do Swagger
 
@@ -139,7 +139,7 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 Por padrão, o Swagger não suporta teste de endpoints SSE diretamente na interface. Para testar esses endpoints:
 
-1. Use um navegador e acesse diretamente o URL: `http://localhost:3001/api/v1/sse/connect/{requestId}`
+1. Use um navegador e acesse diretamente o URL: `http://localhost:3000/api/v1/sse/connect/{requestId}`
 2. Verifique o console do navegador para ver as mensagens recebidas
 3. Ou use uma ferramenta como Postman que suporta conexões SSE
 

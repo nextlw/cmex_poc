@@ -24,7 +24,13 @@ export interface Service {
 
 type ServiceMap = Record<ServiceId, Service>;
 
-// Configuração inicial dos serviços com as portas corretas
+// Função auxiliar para obter porta do .env ou usar valor padrão
+function getEnvPort(envVar: string, defaultPort: number): number {
+  const portValue = process.env[envVar];
+  return portValue ? parseInt(portValue, 10) : defaultPort;
+}
+
+// Configuração inicial dos serviços com portas do .env
 const serviceConfig: Record<
   ServiceId,
   Omit<Service, "status" | "pid" | "logs">
@@ -34,7 +40,7 @@ const serviceConfig: Record<
     name: "Redis",
     description:
       "Banco de dados em memória usado para cache e armazenamento de dados",
-    port: 6378,
+    port: getEnvPort("REDIS_PORT", 6378),
     icon: "🔄",
   },
   fastapi: {
@@ -42,7 +48,7 @@ const serviceConfig: Record<
     name: "FastAPI",
     description:
       "Backend Python com FastAPI para processamento de dados e integração com IA",
-    port: 10000,
+    port: getEnvPort("FASTAPI_PORT", 10000),
     icon: "🐍",
   },
   node: {
@@ -50,14 +56,14 @@ const serviceConfig: Record<
     name: "Node.js Backend",
     description:
       "Servidor Node.js para buscador inteligente e integração com Jina",
-    port: 3000,
+    port: getEnvPort("NODE_PORT", 3000),
     icon: "🟢",
   },
   frontend: {
     id: "frontend",
     name: "Frontend React",
     description: "Interface de usuário React com Vite",
-    port: 5173,
+    port: getEnvPort("FRONTEND_PORT", 5173),
     icon: "⚛️",
   },
 };

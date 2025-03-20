@@ -8,7 +8,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configurações
-PORT=${1:-3001}
+PORT=${1:-3000}
 API_BASE="http://localhost:${PORT}/api/v1"
 MOCK_MODE=${2:-"true"}
 

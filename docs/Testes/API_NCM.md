@@ -23,22 +23,22 @@ A API de NCM permite consultar a classificação fiscal de produtos através de 
 
 #### Parâmetros da Requisição
 
-| Parâmetro | Tipo | Descrição | Obrigatório |
-|-----------|------|-----------|-------------|
-| consulta | string | Descrição do produto | Sim |
-| estadoOrigem | string | Estado de origem (sigla) | Sim |
-| operacao | string | Tipo de operação | Não |
-| regimeTributario | string | Regime tributário | Não |
-| tributacao | string | Tipo de tributação | Não |
-| modelo | string | Modelo de IA a ser utilizado | Sim |
+| Parâmetro        | Tipo   | Descrição                    | Obrigatório |
+| ---------------- | ------ | ---------------------------- | ----------- |
+| consulta         | string | Descrição do produto         | Sim         |
+| estadoOrigem     | string | Estado de origem (sigla)     | Sim         |
+| operacao         | string | Tipo de operação             | Não         |
+| regimeTributario | string | Regime tributário            | Não         |
+| tributacao       | string | Tipo de tributação           | Não         |
+| modelo           | string | Modelo de IA a ser utilizado | Sim         |
 
 #### Modelos Disponíveis
 
-| Nome do Modelo | Descrição |
-|----------------|-----------|
-| Nex-0.1-Pro-2024 | Utiliza GPT-4 |
-| Nex-0.3-Preview-2024 | Utiliza Claude |
-| Nex-0.5-Preview-2025 | Utiliza Deepseek |
+| Nome do Modelo         | Descrição                 |
+| ---------------------- | ------------------------- |
+| Nex-0.1-Pro-2024       | Utiliza GPT-4             |
+| Nex-0.3-Preview-2024   | Utiliza Claude            |
+| Nex-0.5-Preview-2025   | Utiliza Deepseek          |
 | Qwen2.5-7b-instruct-1m | Utiliza modelo local Qwen |
 
 #### Exemplo de Requisição
@@ -74,7 +74,7 @@ A API de NCM permite consultar a classificação fiscal de produtos através de 
   ],
   "valores_de_impostos": {
     "ipi": "0%",
-    "icms": {"SP": "18%"},
+    "icms": { "SP": "18%" },
     "pis": "1,65%",
     "cofins": "7,6%"
   },
@@ -97,11 +97,11 @@ A API de NCM permite consultar a classificação fiscal de produtos através de 
 
 ## Códigos de Status
 
-| Código | Descrição |
-|--------|-----------|
-| 200 | Sucesso |
-| 400 | Requisição inválida (parâmetros obrigatórios ausentes ou modelo inválido) |
-| 500 | Erro interno do servidor |
+| Código | Descrição                                                                 |
+| ------ | ------------------------------------------------------------------------- |
+| 200    | Sucesso                                                                   |
+| 400    | Requisição inválida (parâmetros obrigatórios ausentes ou modelo inválido) |
+| 500    | Erro interno do servidor                                                  |
 
 ### Exemplos de Erros
 
@@ -110,12 +110,14 @@ A API de NCM permite consultar a classificação fiscal de produtos através de 
 ```json
 {
   "status_code": 400,
-  "errors": [{
-    "loc": ["body"],
-    "msg": "Dados obrigatórios não fornecidos",
-    "type": "error.invalid_request",
-    "ctx": { "dados_fornecidos": ["consulta"] }
-  }],
+  "errors": [
+    {
+      "loc": ["body"],
+      "msg": "Dados obrigatórios não fornecidos",
+      "type": "error.invalid_request",
+      "ctx": { "dados_fornecidos": ["consulta"] }
+    }
+  ],
   "message": "Requisição inválida",
   "error_type": "invalid_request"
 }
@@ -126,12 +128,14 @@ A API de NCM permite consultar a classificação fiscal de produtos através de 
 ```json
 {
   "status_code": 400,
-  "errors": [{
-    "loc": ["body", "modelo"],
-    "msg": "Modelo não encontrado ou inválido",
-    "type": "error.invalid_value",
-    "ctx": { "valor_fornecido": "modelo-inexistente" }
-  }],
+  "errors": [
+    {
+      "loc": ["body", "modelo"],
+      "msg": "Modelo não encontrado ou inválido",
+      "type": "error.invalid_value",
+      "ctx": { "valor_fornecido": "modelo-inexistente" }
+    }
+  ],
   "message": "Modelo não encontrado ou inválido",
   "error_type": "invalid_value"
 }
@@ -151,7 +155,7 @@ Para iniciar o servidor em modo de desenvolvimento com respostas mockadas, utili
 ./start-dev-server.sh
 ```
 
-Este script verifica automaticamente se a porta 3000 está em uso e, caso esteja, utiliza a porta 3001. Também define as variáveis de ambiente necessárias para o modo de desenvolvimento com respostas mockadas.
+Este script verifica automaticamente se a porta 3000 está em uso e, caso esteja, utiliza a porta 3000. Também define as variáveis de ambiente necessárias para o modo de desenvolvimento com respostas mockadas.
 
 ## Implementação Técnica
 
@@ -163,4 +167,4 @@ A API possui um mecanismo de fallback que tenta outros modelos disponíveis caso
 
 - Implementação de cache para consultas frequentes
 - Adição de estatísticas de uso por modelo
-- Integração com sistema de logs centralizado 
+- Integração com sistema de logs centralizado

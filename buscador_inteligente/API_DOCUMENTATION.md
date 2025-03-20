@@ -7,7 +7,7 @@ Este documento descreve as APIs disponíveis no servidor de busca inteligente, c
 Para executar o servidor em modo de desenvolvimento com respostas mockadas:
 
 ```bash
-PORT=3001 NODE_ENV=development MOCK_RESPONSES=true npm run server
+PORT=3000 NODE_ENV=development MOCK_RESPONSES=true npm run server
 ```
 
 Ou utilize o script de inicialização fornecido:
@@ -28,23 +28,23 @@ Endpoint para consultar a classificação fiscal (NCM) de produtos.
 
 #### Parâmetros da Requisição
 
-| Parâmetro | Tipo | Descrição | Obrigatório |
-|-----------|------|-----------|-------------|
-| consulta | string | Descrição do produto | Sim |
-| estadoOrigem | string | Estado de origem (sigla) | Sim |
-| operacao | string | Tipo de operação | Não |
-| regimeTributario | string | Regime tributário | Não |
-| tributacao | string | Tipo de tributação | Não |
-| modelo | string | Modelo de IA a ser utilizado | Sim |
-| useDeepResearch | boolean | Ativa o modo de análise profunda | Não (default: false) |
+| Parâmetro        | Tipo    | Descrição                        | Obrigatório          |
+| ---------------- | ------- | -------------------------------- | -------------------- |
+| consulta         | string  | Descrição do produto             | Sim                  |
+| estadoOrigem     | string  | Estado de origem (sigla)         | Sim                  |
+| operacao         | string  | Tipo de operação                 | Não                  |
+| regimeTributario | string  | Regime tributário                | Não                  |
+| tributacao       | string  | Tipo de tributação               | Não                  |
+| modelo           | string  | Modelo de IA a ser utilizado     | Sim                  |
+| useDeepResearch  | boolean | Ativa o modo de análise profunda | Não (default: false) |
 
 #### Modelos Disponíveis
 
-| Nome do Modelo | Descrição |
-|----------------|-----------|
-| Nex-0.1-Pro-2024 | Utiliza GPT-4 |
-| Nex-0.3-Preview-2024 | Utiliza Claude |
-| Nex-0.5-Preview-2025 | Utiliza Deepseek |
+| Nome do Modelo         | Descrição                 |
+| ---------------------- | ------------------------- |
+| Nex-0.1-Pro-2024       | Utiliza GPT-4             |
+| Nex-0.3-Preview-2024   | Utiliza Claude            |
+| Nex-0.5-Preview-2025   | Utiliza Deepseek          |
 | Qwen2.5-7b-instruct-1m | Utiliza modelo local Qwen |
 
 #### Modo DeepResearch
@@ -52,6 +52,7 @@ Endpoint para consultar a classificação fiscal (NCM) de produtos.
 Esta API agora suporta dois fluxos de processamento:
 
 1. **Fluxo Padrão** (`useDeepResearch=false`):
+
    - Consulta direta ao FastAPI
    - Resultado sem processamento adicional
 
@@ -107,7 +108,7 @@ Esta API agora suporta dois fluxos de processamento:
   ],
   "valores_de_impostos": {
     "ipi": "0%",
-    "icms": {"SP": "18%"},
+    "icms": { "SP": "18%" },
     "pis": "1,65%",
     "cofins": "7,6%"
   },
@@ -134,11 +135,13 @@ Esta API agora suporta dois fluxos de processamento:
 {
   "ncm": "61.05.10.00",
   "descricao": "Camisa polo masculina, confeccionada em malha de algodão, com gola e abertura frontal parcial com fechamento por botões.",
-  
+
   /* ... outros campos iguais à resposta padrão ... */
-  
+
   "validacao_profunda": {
-    "resultado": { /* Dados da validação */ },
+    "resultado": {
+      /* Dados da validação */
+    },
     "confianca": 95,
     "timestamp": "2025-02-26T18:34:25.123Z",
     "modelo_utilizado": "claude"
@@ -158,11 +161,11 @@ Esta API agora suporta dois fluxos de processamento:
 
 #### Códigos de Status
 
-| Código | Descrição |
-|--------|-----------|
-| 200 | Sucesso |
-| 400 | Requisição inválida (parâmetros obrigatórios ausentes ou modelo inválido) |
-| 500 | Erro interno do servidor |
+| Código | Descrição                                                                 |
+| ------ | ------------------------------------------------------------------------- |
+| 200    | Sucesso                                                                   |
+| 400    | Requisição inválida (parâmetros obrigatórios ausentes ou modelo inválido) |
+| 500    | Erro interno do servidor                                                  |
 
 ### Rota de Teste (Trash Query)
 
@@ -202,8 +205,8 @@ Aceita qualquer objeto JSON.
 #### Códigos de Status
 
 | Código | Descrição |
-|--------|-----------|
-| 200 | Sucesso |
+| ------ | --------- |
+| 200    | Sucesso   |
 
 ## Modo de Desenvolvimento
 
@@ -222,13 +225,13 @@ Neste modo, a API de NCM retornará respostas pré-definidas para testes, permit
 Um componente React foi desenvolvido para facilitar a integração do modo DeepResearch na interface do usuário:
 
 ```tsx
-import DeepResearchToggle from './components/DeepResearchToggle';
+import DeepResearchToggle from "./components/DeepResearchToggle";
 
 function MyComponent() {
   const [useDeepResearch, setUseDeepResearch] = useState(false);
-  
+
   return (
-    <DeepResearchToggle 
+    <DeepResearchToggle
       enabled={useDeepResearch}
       onChange={setUseDeepResearch}
       helpText="Ative para análise profunda e validação adicional dos resultados"
@@ -242,18 +245,18 @@ function MyComponent() {
 Um componente de formulário completo para consulta NCM também está disponível:
 
 ```tsx
-import NCMConsultaForm from './components/NCMConsultaForm';
+import NCMConsultaForm from "./components/NCMConsultaForm";
 
 function MyPage() {
   const handleResult = (result) => {
-    console.log('Resultado da consulta:', result);
+    console.log("Resultado da consulta:", result);
   };
-  
+
   return (
-    <NCMConsultaForm 
+    <NCMConsultaForm
       onResult={handleResult}
-      initialData={{ estadoOrigem: 'SP' }}
+      initialData={{ estadoOrigem: "SP" }}
     />
   );
 }
-``` 
+```

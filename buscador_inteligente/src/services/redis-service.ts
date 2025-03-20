@@ -12,9 +12,10 @@ export const CHANNELS = {
 };
 
 // Configuração do Redis
+// Usando a porta 6378 conforme configurado no sistema CMEX
 const redisConfig = {
   host: process.env.REDIS_HOST || "localhost",
-  port: Number(process.env.REDIS_PORT) || 6379,
+  port: Number(process.env.REDIS_PORT) || 6379, // Será 6378 quando definido no .env
   password: process.env.REDIS_PASSWORD,
   tls: process.env.REDIS_TLS === "true" ? {} : undefined,
 };
@@ -25,6 +26,8 @@ export const subscriber = new Redis(redisConfig);
 
 // Inicializar assinaturas
 export function initializeRedisSubscriptions(eventEmitter: EventEmitter) {
+  console.log(`Conectando ao Redis em ${redisConfig.host}:${redisConfig.port}`);
+
   // Assinar aos canais relevantes usando Promise em vez de callback
   subscriber
     .subscribe(
