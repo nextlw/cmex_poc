@@ -1,0 +1,7869 @@
+{
+  "project": "deepsearch-ui-jina",
+  "version": "1.0.0",
+  "createdAt": "2025-03-22",
+  "description": "Documentação completa do projeto deepsearch-ui-jina para referência e integração",
+  "structure": {
+    "components": {
+      "app.js": {
+        "path": "app.js",
+        "type": "javascript",
+        "size": 81517,
+        "extension": ".js",
+        "modifiedAt": "2025-03-19T03:29:27.607Z",
+        "functions": [
+          {
+            "name": "loadTranslations",
+            "params": []
+          },
+          {
+            "name": "t",
+            "params": [
+              "key",
+              "replacements = {}",
+              "fallbackLanguage = 'en'"
+            ]
+          },
+          {
+            "name": "applyTranslations",
+            "params": []
+          },
+          {
+            "name": "initializeApiKey",
+            "params": []
+          },
+          {
+            "name": "generateId",
+            "params": [
+              "type = 'message'"
+            ]
+          },
+          {
+            "name": "saveChatMessages",
+            "params": []
+          },
+          {
+            "name": "loadChatMessages",
+            "params": []
+          },
+          {
+            "name": "loadChatSessions",
+            "params": []
+          },
+          {
+            "name": "saveChatSessions",
+            "params": []
+          },
+          {
+            "name": "saveCurrentSession",
+            "params": [
+              "messages"
+            ]
+          },
+          {
+            "name": "handleClickSessionEvent",
+            "params": [
+              "sessionId"
+            ]
+          },
+          {
+            "name": "handleDeleteSessionEvent",
+            "params": [
+              "sessionId",
+              "event"
+            ]
+          },
+          {
+            "name": "handleClearAllSessionsEvent",
+            "params": []
+          },
+          {
+            "name": "updateSessionsList",
+            "params": []
+          },
+          {
+            "name": "toggleSessionsDropdown",
+            "params": [
+              "forceState"
+            ]
+          },
+          {
+            "name": "handleFileUpload",
+            "params": [
+              "files"
+            ]
+          },
+          {
+            "name": "isSupportedFileType",
+            "params": [
+              "mimeType"
+            ]
+          },
+          {
+            "name": "createFilePreview",
+            "params": [
+              "file"
+            ]
+          },
+          {
+            "name": "getFileTypeDisplay",
+            "params": [
+              "mimeType"
+            ]
+          },
+          {
+            "name": "createReferencesSection",
+            "params": [
+              "content",
+              "visitedURLs = []",
+              "numURLs=0"
+            ]
+          },
+          {
+            "name": "renderFaviconList",
+            "params": [
+              "visitedURLs",
+              "numURLs"
+            ]
+          },
+          {
+            "name": "fetchFavicons",
+            "params": [
+              "domains"
+            ]
+          },
+          {
+            "name": "createThinkSection",
+            "params": [
+              "messageDiv"
+            ]
+          },
+          {
+            "name": "scrollToBottom",
+            "params": []
+          },
+          {
+            "name": "handleTooltipEvent",
+            "params": [
+              "triggerElement",
+              "orientation = 'bottom' | 'top' | 'left' | 'right'"
+            ]
+          },
+          {
+            "name": "adjustHorizontalPosition",
+            "params": [
+              "triggerElement",
+              "tooltip"
+            ]
+          },
+          {
+            "name": "handleReDoEvent",
+            "params": [
+              "redoButton"
+            ]
+          },
+          {
+            "name": "handleCopyEvent",
+            "params": [
+              "copyButton",
+              "copyIcon",
+              "content"
+            ]
+          },
+          {
+            "name": "handleStopEvent",
+            "params": []
+          },
+          {
+            "name": "createCodeCopyButton",
+            "params": [
+              "codeElement"
+            ]
+          },
+          {
+            "name": "createActionButton",
+            "params": [
+              "content"
+            ]
+          },
+          {
+            "name": "toggleStopMessage",
+            "params": [
+              "show"
+            ]
+          },
+          {
+            "name": "createMessage",
+            "params": [
+              "role",
+              "content",
+              "messageId = null"
+            ]
+          },
+          {
+            "name": "removeLoadingIndicator",
+            "params": [
+              "messageDiv"
+            ]
+          },
+          {
+            "name": "createErrorMessage",
+            "params": [
+              "message",
+              "buttonText",
+              "onClick"
+            ]
+          },
+          {
+            "name": "initializeMarkdown",
+            "params": []
+          },
+          {
+            "name": "markdownItTableWrapper",
+            "params": [
+              "md"
+            ]
+          },
+          {
+            "name": "renderMarkdown",
+            "params": [
+              "content",
+              "returnElement = false",
+              "visitedURLs = []",
+              "role = 'assistant'",
+              "numURLs = 0"
+            ]
+          },
+          {
+            "name": "addCodeCopyButtons",
+            "params": [
+              "markdownElement"
+            ]
+          },
+          {
+            "name": "updateEmptyState",
+            "params": []
+          },
+          {
+            "name": "clearMessages",
+            "params": []
+          },
+          {
+            "name": "makeAllLinksOpenInNewTab",
+            "params": []
+          },
+          {
+            "name": "sendMessage",
+            "params": [
+              "redo = false"
+            ]
+          },
+          {
+            "name": "updateMessagesList",
+            "params": []
+          },
+          {
+            "name": "loadAndDisplaySavedMessages",
+            "params": []
+          },
+          {
+            "name": "initializeSettings",
+            "params": []
+          },
+          {
+            "name": "handleURLParams",
+            "params": [
+              "queryParam"
+            ]
+          },
+          {
+            "name": "handleApiKeySave",
+            "params": []
+          },
+          {
+            "name": "handleVisibilityChange",
+            "params": []
+          },
+          {
+            "name": "setFaviconBadge",
+            "params": []
+          },
+          {
+            "name": "clearFaviconBadge",
+            "params": []
+          },
+          {
+            "name": "playNotificationSound",
+            "params": []
+          },
+          {
+            "name": "handleFootnoteClick",
+            "params": [
+              "event"
+            ]
+          },
+          {
+            "name": "setupFileDrop",
+            "params": []
+          },
+          {
+            "name": "displayDropArea",
+            "params": []
+          },
+          {
+            "name": "hideDropArea",
+            "params": []
+          },
+          {
+            "name": "preventDefaults",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "ensureHljsLoaded",
+            "params": []
+          }
+        ],
+        "variables": [
+          {
+            "type": "let",
+            "name": "i18n"
+          },
+          {
+            "type": "let",
+            "name": "currentLanguage"
+          },
+          {
+            "type": "let",
+            "name": "UI_STRINGS"
+          },
+          {
+            "type": "const",
+            "name": "response"
+          },
+          {
+            "type": "const",
+            "name": "keys"
+          },
+          {
+            "type": "let",
+            "name": "value"
+          },
+          {
+            "type": "let",
+            "name": "fallback"
+          },
+          {
+            "type": "let",
+            "name": "fallbackValue"
+          },
+          {
+            "type": "const",
+            "name": "replacementValue"
+          },
+          {
+            "type": "const",
+            "name": "regex"
+          },
+          {
+            "type": "const",
+            "name": "metaTags"
+          },
+          {
+            "type": "const",
+            "name": "tag"
+          },
+          {
+            "type": "const",
+            "name": "key"
+          },
+          {
+            "type": "const",
+            "name": "labelKey"
+          },
+          {
+            "type": "const",
+            "name": "newVal"
+          },
+          {
+            "type": "const",
+            "name": "placeholderKey"
+          },
+          {
+            "type": "const",
+            "name": "htmlKey"
+          },
+          {
+            "type": "const",
+            "name": "tooltipElement"
+          },
+          {
+            "type": "const",
+            "name": "logo"
+          },
+          {
+            "type": "const",
+            "name": "mainContainer"
+          },
+          {
+            "type": "const",
+            "name": "chatContainer"
+          },
+          {
+            "type": "const",
+            "name": "messageForm"
+          },
+          {
+            "type": "const",
+            "name": "messageInput"
+          },
+          {
+            "type": "const",
+            "name": "newChatButton"
+          },
+          {
+            "type": "const",
+            "name": "apiKeyInput"
+          },
+          {
+            "type": "const",
+            "name": "saveApiKeyBtn"
+          },
+          {
+            "type": "const",
+            "name": "toggleApiKeyBtn"
+          },
+          {
+            "type": "const",
+            "name": "toggleApiKeyBtnText"
+          },
+          {
+            "type": "const",
+            "name": "getApiKeyBtn"
+          },
+          {
+            "type": "const",
+            "name": "freeUserRPMInfo"
+          },
+          {
+            "type": "const",
+            "name": "apiKeyDialog"
+          },
+          {
+            "type": "const",
+            "name": "helpButton"
+          },
+          {
+            "type": "const",
+            "name": "helpDialog"
+          },
+          {
+            "type": "const",
+            "name": "settingsButton"
+          },
+          {
+            "type": "const",
+            "name": "settingsDialog"
+          },
+          {
+            "type": "const",
+            "name": "dialogCloseBtns"
+          },
+          {
+            "type": "const",
+            "name": "fileUploadButton"
+          },
+          {
+            "type": "const",
+            "name": "fileInput"
+          },
+          {
+            "type": "const",
+            "name": "filePreviewContainer"
+          },
+          {
+            "type": "const",
+            "name": "inputErrorMessage"
+          },
+          {
+            "type": "const",
+            "name": "stopMessageButton"
+          },
+          {
+            "type": "const",
+            "name": "recentSessionsContainer"
+          },
+          {
+            "type": "const",
+            "name": "recentSessionsButton"
+          },
+          {
+            "type": "const",
+            "name": "sessionsDropdown"
+          },
+          {
+            "type": "const",
+            "name": "sessionsList"
+          },
+          {
+            "type": "const",
+            "name": "clearAllSessionsButton"
+          },
+          {
+            "type": "const",
+            "name": "deleteSessionDialog"
+          },
+          {
+            "type": "const",
+            "name": "deleteAllSessionsDialog"
+          },
+          {
+            "type": "const",
+            "name": "loadingSvg"
+          },
+          {
+            "type": "const",
+            "name": "BASE_ORIGIN"
+          },
+          {
+            "type": "const",
+            "name": "MAX_TOTAL_SIZE"
+          },
+          {
+            "type": "const",
+            "name": "docIcon"
+          },
+          {
+            "type": "const",
+            "name": "imgIcon"
+          },
+          {
+            "type": "const",
+            "name": "SUPPORTED_FILE_TYPES"
+          },
+          {
+            "type": "let",
+            "name": "isLoading"
+          },
+          {
+            "type": "let",
+            "name": "abortController"
+          },
+          {
+            "type": "let",
+            "name": "existingMessages"
+          },
+          {
+            "type": "let",
+            "name": "isComposing"
+          },
+          {
+            "type": "let",
+            "name": "compositionEnded"
+          },
+          {
+            "type": "let",
+            "name": "uploadedFiles"
+          },
+          {
+            "type": "let",
+            "name": "chatSessions"
+          },
+          {
+            "type": "const",
+            "name": "MAX_SESSIONS"
+          },
+          {
+            "type": "let",
+            "name": "isSessionsDropdownOpen"
+          },
+          {
+            "type": "const",
+            "name": "savedKey"
+          },
+          {
+            "type": "const",
+            "name": "thinMessage"
+          },
+          {
+            "type": "const",
+            "name": "savedMessages"
+          },
+          {
+            "type": "const",
+            "name": "savedSessions"
+          },
+          {
+            "type": "const",
+            "name": "firstUserMessage"
+          },
+          {
+            "type": "const",
+            "name": "currentSessionIndex"
+          },
+          {
+            "type": "const",
+            "name": "session"
+          },
+          {
+            "type": "let",
+            "name": "sessionTitle"
+          },
+          {
+            "type": "const",
+            "name": "newSession"
+          },
+          {
+            "type": "const",
+            "name": "session"
+          },
+          {
+            "type": "const",
+            "name": "sessionItem"
+          },
+          {
+            "type": "const",
+            "name": "sessionTitle"
+          },
+          {
+            "type": "const",
+            "name": "deleteButton"
+          },
+          {
+            "type": "const",
+            "name": "isOpen"
+          },
+          {
+            "type": "const",
+            "name": "chevronIcon"
+          },
+          {
+            "type": "let",
+            "name": "totalSize"
+          },
+          {
+            "type": "const",
+            "name": "reader"
+          },
+          {
+            "type": "const",
+            "name": "previewItem"
+          },
+          {
+            "type": "const",
+            "name": "removeButton"
+          },
+          {
+            "type": "const",
+            "name": "fileName"
+          },
+          {
+            "type": "const",
+            "name": "img"
+          },
+          {
+            "type": "const",
+            "name": "fileTypeIcon"
+          },
+          {
+            "type": "const",
+            "name": "section"
+          },
+          {
+            "type": "const",
+            "name": "header"
+          },
+          {
+            "type": "const",
+            "name": "contentDiv"
+          },
+          {
+            "type": "const",
+            "name": "faviconContainer"
+          },
+          {
+            "type": "const",
+            "name": "renderFaviconList"
+          },
+          {
+            "type": "const",
+            "name": "faviconList"
+          },
+          {
+            "type": "const",
+            "name": "domainMap"
+          },
+          {
+            "type": "const",
+            "name": "domain"
+          },
+          {
+            "type": "const",
+            "name": "img"
+          },
+          {
+            "type": "const",
+            "name": "item"
+          },
+          {
+            "type": "const",
+            "name": "data"
+          },
+          {
+            "type": "const",
+            "name": "sourceCount"
+          },
+          {
+            "type": "const",
+            "name": "label"
+          },
+          {
+            "type": "const",
+            "name": "fetchFavicons"
+          },
+          {
+            "type": "const",
+            "name": "failedDomains"
+          },
+          {
+            "type": "const",
+            "name": "response"
+          },
+          {
+            "type": "const",
+            "name": "favicons"
+          },
+          {
+            "type": "const",
+            "name": "BATCH_SIZE"
+          },
+          {
+            "type": "const",
+            "name": "domains"
+          },
+          {
+            "type": "let",
+            "name": "failedDomains"
+          },
+          {
+            "type": "let",
+            "name": "i"
+          },
+          {
+            "type": "let",
+            "name": "i"
+          },
+          {
+            "type": "const",
+            "name": "thinkSection"
+          },
+          {
+            "type": "const",
+            "name": "thinkHeader"
+          },
+          {
+            "type": "const",
+            "name": "thinkContent"
+          },
+          {
+            "type": "const",
+            "name": "expanded"
+          },
+          {
+            "type": "let",
+            "name": "tooltip"
+          },
+          {
+            "type": "const",
+            "name": "adjustHorizontalPosition"
+          },
+          {
+            "type": "const",
+            "name": "rect"
+          },
+          {
+            "type": "const",
+            "name": "tooltipRect"
+          },
+          {
+            "type": "const",
+            "name": "messageElement"
+          },
+          {
+            "type": "const",
+            "name": "currentMessageId"
+          },
+          {
+            "type": "const",
+            "name": "currentMessageIndex"
+          },
+          {
+            "type": "let",
+            "name": "userMessageIndex"
+          },
+          {
+            "type": "const",
+            "name": "userMessage"
+          },
+          {
+            "type": "const",
+            "name": "allMessages"
+          },
+          {
+            "type": "const",
+            "name": "startIndex"
+          },
+          {
+            "type": "const",
+            "name": "checkIcon"
+          },
+          {
+            "type": "const",
+            "name": "animationElement"
+          },
+          {
+            "type": "const",
+            "name": "copyButton"
+          },
+          {
+            "type": "const",
+            "name": "copyIcon"
+          },
+          {
+            "type": "const",
+            "name": "buttonContainer"
+          },
+          {
+            "type": "const",
+            "name": "redoButton"
+          },
+          {
+            "type": "const",
+            "name": "redoIcon"
+          },
+          {
+            "type": "const",
+            "name": "copyButton"
+          },
+          {
+            "type": "const",
+            "name": "copyIcon"
+          },
+          {
+            "type": "const",
+            "name": "messageDiv"
+          },
+          {
+            "type": "const",
+            "name": "id"
+          },
+          {
+            "type": "const",
+            "name": "messageContent"
+          },
+          {
+            "type": "const",
+            "name": "fileContainer"
+          },
+          {
+            "type": "const",
+            "name": "fileLink"
+          },
+          {
+            "type": "const",
+            "name": "fileIcon"
+          },
+          {
+            "type": "const",
+            "name": "textElement"
+          },
+          {
+            "type": "const",
+            "name": "loadingIndicator"
+          },
+          {
+            "type": "const",
+            "name": "messageDiv"
+          },
+          {
+            "type": "const",
+            "name": "errorContainer"
+          },
+          {
+            "type": "const",
+            "name": "errorIcon"
+          },
+          {
+            "type": "const",
+            "name": "errorText"
+          },
+          {
+            "type": "const",
+            "name": "actionButton"
+          },
+          {
+            "type": "const",
+            "name": "options"
+          },
+          {
+            "type": "const",
+            "name": "defaultTableRenderer"
+          },
+          {
+            "type": "const",
+            "name": "defaultTableCloseRenderer"
+          },
+          {
+            "type": "const",
+            "name": "tempDiv"
+          },
+          {
+            "type": "const",
+            "name": "textParts"
+          },
+          {
+            "type": "const",
+            "name": "rendered"
+          },
+          {
+            "type": "const",
+            "name": "footnoteAnchors"
+          },
+          {
+            "type": "const",
+            "name": "text"
+          },
+          {
+            "type": "const",
+            "name": "footnotes"
+          },
+          {
+            "type": "const",
+            "name": "footnoteContent"
+          },
+          {
+            "type": "const",
+            "name": "referencesSection"
+          },
+          {
+            "type": "const",
+            "name": "blockElements"
+          },
+          {
+            "type": "const",
+            "name": "codeBlocks"
+          },
+          {
+            "type": "const",
+            "name": "preElement"
+          },
+          {
+            "type": "const",
+            "name": "copyButton"
+          },
+          {
+            "type": "const",
+            "name": "chatApp"
+          },
+          {
+            "type": "const",
+            "name": "makeAllLinksOpenInNewTab"
+          },
+          {
+            "type": "const",
+            "name": "links"
+          },
+          {
+            "type": "const",
+            "name": "queryText"
+          },
+          {
+            "type": "const",
+            "name": "filePromises"
+          },
+          {
+            "type": "const",
+            "name": "reader"
+          },
+          {
+            "type": "const",
+            "name": "base64Data"
+          },
+          {
+            "type": "const",
+            "name": "fileParts"
+          },
+          {
+            "type": "const",
+            "name": "userMessageId"
+          },
+          {
+            "type": "const",
+            "name": "assistantMessageId"
+          },
+          {
+            "type": "const",
+            "name": "assistantMessageDiv"
+          },
+          {
+            "type": "let",
+            "name": "markdownContent"
+          },
+          {
+            "type": "let",
+            "name": "thinkContent"
+          },
+          {
+            "type": "let",
+            "name": "inThinkSection"
+          },
+          {
+            "type": "let",
+            "name": "thinkSectionElement"
+          },
+          {
+            "type": "let",
+            "name": "thinkHeaderElement"
+          },
+          {
+            "type": "const",
+            "name": "headers"
+          },
+          {
+            "type": "const",
+            "name": "apiKey"
+          },
+          {
+            "type": "const",
+            "name": "res"
+          },
+          {
+            "type": "const",
+            "name": "errorResponse"
+          },
+          {
+            "type": "const",
+            "name": "errorMsg"
+          },
+          {
+            "type": "const",
+            "name": "errorMessageDiv"
+          },
+          {
+            "type": "const",
+            "name": "markdownDiv"
+          },
+          {
+            "type": "const",
+            "name": "reader"
+          },
+          {
+            "type": "const",
+            "name": "decoder"
+          },
+          {
+            "type": "let",
+            "name": "partialBrokenData"
+          },
+          {
+            "type": "let",
+            "name": "visitedURLs"
+          },
+          {
+            "type": "let",
+            "name": "numURLs"
+          },
+          {
+            "type": "const",
+            "name": "streamData"
+          },
+          {
+            "type": "const",
+            "name": "events"
+          },
+          {
+            "type": "const",
+            "name": "data"
+          },
+          {
+            "type": "const",
+            "name": "json"
+          },
+          {
+            "type": "const",
+            "name": "content"
+          },
+          {
+            "type": "let",
+            "name": "tempContent"
+          },
+          {
+            "type": "const",
+            "name": "thinkingAnimation"
+          },
+          {
+            "type": "const",
+            "name": "thinkEndIndex"
+          },
+          {
+            "type": "const",
+            "name": "thinkContentElement"
+          },
+          {
+            "type": "const",
+            "name": "thinkContentElement"
+          },
+          {
+            "type": "const",
+            "name": "thinkContentElement"
+          },
+          {
+            "type": "const",
+            "name": "animationElement"
+          },
+          {
+            "type": "const",
+            "name": "thinkStartIndex"
+          },
+          {
+            "type": "const",
+            "name": "thinkContentElement"
+          },
+          {
+            "type": "const",
+            "name": "animationElement"
+          },
+          {
+            "type": "const",
+            "name": "markdown"
+          },
+          {
+            "type": "const",
+            "name": "copyButton"
+          },
+          {
+            "type": "const",
+            "name": "referencesSection"
+          },
+          {
+            "type": "const",
+            "name": "jsonResult"
+          },
+          {
+            "type": "const",
+            "name": "actionButton"
+          },
+          {
+            "type": "const",
+            "name": "errorText"
+          },
+          {
+            "type": "const",
+            "name": "errorIcon"
+          },
+          {
+            "type": "const",
+            "name": "errorContainer"
+          },
+          {
+            "type": "const",
+            "name": "messageDiv"
+          },
+          {
+            "type": "const",
+            "name": "markdownDiv"
+          },
+          {
+            "type": "const",
+            "name": "markdown"
+          },
+          {
+            "type": "const",
+            "name": "copyButton"
+          },
+          {
+            "type": "const",
+            "name": "referencesSection"
+          },
+          {
+            "type": "const",
+            "name": "thinkSectionElement"
+          },
+          {
+            "type": "const",
+            "name": "thinkContentElement"
+          },
+          {
+            "type": "const",
+            "name": "thinkHeaderElement"
+          },
+          {
+            "type": "const",
+            "name": "savedTheme"
+          },
+          {
+            "type": "const",
+            "name": "themeToggleInput"
+          },
+          {
+            "type": "const",
+            "name": "languageSelect"
+          },
+          {
+            "type": "const",
+            "name": "chirpOnDone"
+          },
+          {
+            "type": "const",
+            "name": "chirpOnDoneToggleInput"
+          },
+          {
+            "type": "const",
+            "name": "dialog"
+          },
+          {
+            "type": "const",
+            "name": "themeToggleInput"
+          },
+          {
+            "type": "const",
+            "name": "theme"
+          },
+          {
+            "type": "const",
+            "name": "hlTheme"
+          },
+          {
+            "type": "const",
+            "name": "hlThemeElement"
+          },
+          {
+            "type": "const",
+            "name": "languageSelect"
+          },
+          {
+            "type": "const",
+            "name": "language"
+          },
+          {
+            "type": "const",
+            "name": "chirpOnDoneToggleInput"
+          },
+          {
+            "type": "const",
+            "name": "chirpOnDone"
+          },
+          {
+            "type": "const",
+            "name": "computedStyle"
+          },
+          {
+            "type": "const",
+            "name": "maxHeight"
+          },
+          {
+            "type": "let",
+            "name": "autoScrollEnabled"
+          },
+          {
+            "type": "const",
+            "name": "observer"
+          },
+          {
+            "type": "const",
+            "name": "isAtBottom"
+          },
+          {
+            "type": "const",
+            "name": "dialog"
+          },
+          {
+            "type": "const",
+            "name": "key"
+          },
+          {
+            "type": "const",
+            "name": "favicon"
+          },
+          {
+            "type": "const",
+            "name": "pattern"
+          },
+          {
+            "type": "let",
+            "name": "step"
+          },
+          {
+            "type": "const",
+            "name": "favicon"
+          },
+          {
+            "type": "const",
+            "name": "chirpOnDone"
+          },
+          {
+            "type": "const",
+            "name": "AudioContext"
+          },
+          {
+            "type": "const",
+            "name": "audioCtx"
+          },
+          {
+            "type": "const",
+            "name": "osc1"
+          },
+          {
+            "type": "const",
+            "name": "osc2"
+          },
+          {
+            "type": "const",
+            "name": "gainNode"
+          },
+          {
+            "type": "const",
+            "name": "href"
+          },
+          {
+            "type": "const",
+            "name": "footnoteId"
+          },
+          {
+            "type": "const",
+            "name": "referencesSection"
+          },
+          {
+            "type": "const",
+            "name": "referencesHeader"
+          },
+          {
+            "type": "const",
+            "name": "referencesContent"
+          },
+          {
+            "type": "const",
+            "name": "targetFootnote"
+          },
+          {
+            "type": "const",
+            "name": "existingHighlights"
+          },
+          {
+            "type": "const",
+            "name": "container"
+          },
+          {
+            "type": "const",
+            "name": "dropArea"
+          },
+          {
+            "type": "const",
+            "name": "rect"
+          },
+          {
+            "type": "let",
+            "name": "files"
+          },
+          {
+            "type": "const",
+            "name": "items"
+          },
+          {
+            "type": "let",
+            "name": "i"
+          },
+          {
+            "type": "const",
+            "name": "file"
+          },
+          {
+            "type": "const",
+            "name": "items"
+          },
+          {
+            "type": "let",
+            "name": "files"
+          },
+          {
+            "type": "let",
+            "name": "i"
+          },
+          {
+            "type": "const",
+            "name": "file"
+          },
+          {
+            "type": "const",
+            "name": "urlParams"
+          },
+          {
+            "type": "const",
+            "name": "initPrompt"
+          }
+        ],
+        "eventListeners": [
+          {
+            "event": "click",
+            "position": 15902
+          },
+          {
+            "event": "click",
+            "position": 16309
+          },
+          {
+            "event": "click",
+            "position": 18055
+          },
+          {
+            "event": "click",
+            "position": 18146
+          },
+          {
+            "event": "click",
+            "position": 20282
+          },
+          {
+            "event": "click",
+            "position": 21708
+          },
+          {
+            "event": "change",
+            "position": 21780
+          },
+          {
+            "event": "click",
+            "position": 21907
+          },
+          {
+            "event": "click",
+            "position": 21999
+          },
+          {
+            "event": "click",
+            "position": 22105
+          },
+          {
+            "event": "click",
+            "position": 22294
+          },
+          {
+            "event": "click",
+            "position": 23097
+          },
+          {
+            "event": "click",
+            "position": 24721
+          },
+          {
+            "event": "click",
+            "position": 28508
+          },
+          {
+            "event": "mouseenter",
+            "position": 29497
+          },
+          {
+            "event": "mouseleave",
+            "position": 31443
+          },
+          {
+            "event": "click",
+            "position": 34627
+          },
+          {
+            "event": "click",
+            "position": 36377
+          },
+          {
+            "event": "click",
+            "position": 36472
+          },
+          {
+            "event": "click",
+            "position": 40669
+          },
+          {
+            "event": "click",
+            "position": 66783
+          },
+          {
+            "event": "click",
+            "position": 66951
+          },
+          {
+            "event": "change",
+            "position": 67216
+          },
+          {
+            "event": "change",
+            "position": 67719
+          },
+          {
+            "event": "change",
+            "position": 68082
+          },
+          {
+            "event": "click",
+            "position": 68309
+          },
+          {
+            "event": "compositionstart",
+            "position": 68365
+          },
+          {
+            "event": "compositionend",
+            "position": 68518
+          },
+          {
+            "event": "keydown",
+            "position": 68734
+          },
+          {
+            "event": "submit",
+            "position": 69124
+          },
+          {
+            "event": "input",
+            "position": 69229
+          },
+          {
+            "event": "click",
+            "position": 69856
+          },
+          {
+            "event": "scroll",
+            "position": 70628
+          },
+          {
+            "event": "click",
+            "position": 71209
+          },
+          {
+            "event": "click",
+            "position": 71364
+          },
+          {
+            "event": "click",
+            "position": 71594
+          },
+          {
+            "event": "visibilitychange",
+            "position": 72356
+          },
+          {
+            "event": "focus",
+            "position": 72425
+          },
+          {
+            "event": "click",
+            "position": 76947
+          },
+          {
+            "event": "click",
+            "position": 77014
+          },
+          {
+            "event": "dragenter",
+            "position": 77313
+          },
+          {
+            "event": "dragleave",
+            "position": 77430
+          },
+          {
+            "event": "dragover",
+            "position": 77815
+          },
+          {
+            "event": "drop",
+            "position": 77903
+          },
+          {
+            "event": "paste",
+            "position": 78348
+          },
+          {
+            "event": "DOMContentLoaded",
+            "position": 79942
+          }
+        ],
+        "jsSummary": {
+          "functionCount": 58,
+          "variableCount": 269,
+          "eventListenerCount": 46,
+          "path": "app.js"
+        }
+      },
+      "hljs.js": {
+        "path": "hljs.js",
+        "type": "javascript",
+        "size": 1948,
+        "extension": ".js",
+        "modifiedAt": "2025-03-10T15:07:01.552Z",
+        "functions": [
+          {
+            "name": "loadResource",
+            "params": [
+              "resource"
+            ]
+          },
+          {
+            "name": "initializeApp",
+            "params": []
+          }
+        ],
+        "variables": [
+          {
+            "type": "const",
+            "name": "theme"
+          },
+          {
+            "type": "const",
+            "name": "hlTheme"
+          },
+          {
+            "type": "const",
+            "name": "scripts"
+          },
+          {
+            "type": "const",
+            "name": "timeout"
+          },
+          {
+            "type": "const",
+            "name": "loadPromises"
+          }
+        ],
+        "eventListeners": [],
+        "jsSummary": {
+          "functionCount": 2,
+          "variableCount": 5,
+          "eventListenerCount": 0,
+          "path": "hljs.js"
+        }
+      },
+      "preload.js": {
+        "path": "preload.js",
+        "type": "javascript",
+        "size": 1285,
+        "extension": ".js",
+        "modifiedAt": "2025-03-10T15:07:01.553Z",
+        "functions": [
+          {
+            "name": "initializeAppearance",
+            "params": []
+          },
+          {
+            "name": "getCurrentColorScheme",
+            "params": []
+          },
+          {
+            "name": "initializeLanguage",
+            "params": []
+          },
+          {
+            "name": "getBrowserLanguage",
+            "params": []
+          }
+        ],
+        "variables": [
+          {
+            "type": "const",
+            "name": "savedTheme"
+          },
+          {
+            "type": "const",
+            "name": "savedLanguage"
+          },
+          {
+            "type": "const",
+            "name": "browserLang"
+          }
+        ],
+        "eventListeners": [],
+        "jsSummary": {
+          "functionCount": 4,
+          "variableCount": 3,
+          "eventListenerCount": 0,
+          "path": "preload.js"
+        }
+      },
+      "third-party/highlight.min.js": {
+        "path": "third-party/highlight.min.js",
+        "type": "javascript",
+        "size": 126557,
+        "extension": ".js",
+        "modifiedAt": "2025-03-10T15:07:01.553Z",
+        "functions": [
+          {
+            "name": "e",
+            "params": [
+              "n"
+            ]
+          },
+          {
+            "name": "t",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "a",
+            "params": [
+              "e",
+              "...n"
+            ]
+          },
+          {
+            "name": "n",
+            "params": [
+              "(e",
+              "{prefix:n}"
+            ]
+          },
+          {
+            "name": "s",
+            "params": [
+              "e={}"
+            ]
+          },
+          {
+            "name": "c",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "d",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "g",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "u",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "b",
+            "params": [
+              "...e"
+            ]
+          },
+          {
+            "name": "m",
+            "params": [
+              "...e"
+            ]
+          },
+          {
+            "name": "p",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "h",
+            "params": [
+              "e",
+              "{joinWith:n}"
+            ]
+          },
+          {
+            "name": "T",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "R",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "D",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "I",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "L",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "B",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "U",
+            "params": [
+              "e",
+              "n",
+              "t=F"
+            ]
+          },
+          {
+            "name": "i",
+            "params": [
+              "e",
+              "t"
+            ]
+          },
+          {
+            "name": "j",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "Z",
+            "params": [
+              "e",
+              "n",
+              "{key:t}"
+            ]
+          },
+          {
+            "name": "W",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Q",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "n",
+            "params": [
+              "n",
+              "t"
+            ]
+          },
+          {
+            "name": "t",
+            "params": [
+              "r",
+              "s"
+            ]
+          },
+          {
+            "name": "X",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "_",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "h",
+            "params": [
+              "e",
+              "n",
+              "t"
+            ]
+          },
+          {
+            "name": "f",
+            "params": [
+              "e",
+              "t",
+              "i",
+              "r"
+            ]
+          },
+          {
+            "name": "c",
+            "params": []
+          },
+          {
+            "name": "d",
+            "params": []
+          },
+          {
+            "name": "g",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "u",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "b",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "m",
+            "params": [
+              "e",
+              "t",
+              "a"
+            ]
+          },
+          {
+            "name": "_",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "h",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "N",
+            "params": [
+              "a",
+              "r"
+            ]
+          },
+          {
+            "name": "E",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "y",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "w",
+            "params": []
+          },
+          {
+            "name": "v",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "O",
+            "params": [
+              "e",
+              "{languageName:n}"
+            ]
+          },
+          {
+            "name": "k",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "x",
+            "params": [
+              "e",
+              "n"
+            ]
+          },
+          {
+            "name": "pe",
+            "params": [
+              "e",
+              "n",
+              "t"
+            ]
+          },
+          {
+            "name": "Oe",
+            "params": [
+              "e"
+            ]
+          }
+        ],
+        "variables": [
+          {
+            "type": "var",
+            "name": "hljs"
+          },
+          {
+            "type": "const",
+            "name": "a"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "i"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "s"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "_"
+          },
+          {
+            "type": "let",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "let",
+            "name": "a"
+          },
+          {
+            "type": "const",
+            "name": "e"
+          },
+          {
+            "type": "const",
+            "name": "f"
+          },
+          {
+            "type": "const",
+            "name": "i"
+          },
+          {
+            "type": "const",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "C"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "a"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "P"
+          },
+          {
+            "type": "let",
+            "name": "a"
+          },
+          {
+            "type": "const",
+            "name": "i"
+          },
+          {
+            "type": "let",
+            "name": "e"
+          },
+          {
+            "type": "const",
+            "name": "e"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "let",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "o"
+          },
+          {
+            "type": "let",
+            "name": "l"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "J"
+          },
+          {
+            "type": "const",
+            "name": "a"
+          },
+          {
+            "type": "let",
+            "name": "s"
+          },
+          {
+            "type": "const",
+            "name": "o"
+          },
+          {
+            "type": "let",
+            "name": "p"
+          },
+          {
+            "type": "let",
+            "name": "a"
+          },
+          {
+            "type": "const",
+            "name": "r"
+          },
+          {
+            "type": "const",
+            "name": "s"
+          },
+          {
+            "type": "const",
+            "name": "l"
+          },
+          {
+            "type": "let",
+            "name": "e"
+          },
+          {
+            "type": "let",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "i"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "let",
+            "name": "e"
+          },
+          {
+            "type": "let",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "a"
+          },
+          {
+            "type": "const",
+            "name": "a"
+          },
+          {
+            "type": "let",
+            "name": "i"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "a"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "r"
+          },
+          {
+            "type": "let",
+            "name": "y"
+          },
+          {
+            "type": "const",
+            "name": "o"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "e"
+          },
+          {
+            "type": "const",
+            "name": "e"
+          },
+          {
+            "type": "const",
+            "name": "w"
+          },
+          {
+            "type": "const",
+            "name": "O"
+          },
+          {
+            "type": "let",
+            "name": "k"
+          },
+          {
+            "type": "const",
+            "name": "M"
+          },
+          {
+            "type": "const",
+            "name": "e"
+          },
+          {
+            "type": "let",
+            "name": "n"
+          },
+          {
+            "type": "let",
+            "name": "A"
+          },
+          {
+            "type": "const",
+            "name": "e"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "r"
+          },
+          {
+            "type": "let",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "let",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "a"
+          },
+          {
+            "type": "const",
+            "name": "a"
+          },
+          {
+            "type": "let",
+            "name": "N"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "let",
+            "name": "i"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "ae"
+          },
+          {
+            "type": "const",
+            "name": "ie"
+          },
+          {
+            "type": "var",
+            "name": "ge"
+          },
+          {
+            "type": "const",
+            "name": "_e"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "r"
+          },
+          {
+            "type": "const",
+            "name": "_"
+          },
+          {
+            "type": "const",
+            "name": "O"
+          },
+          {
+            "type": "const",
+            "name": "ke"
+          },
+          {
+            "type": "var",
+            "name": "Ke"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "i"
+          },
+          {
+            "type": "const",
+            "name": "o"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "g"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "i"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "s"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "g"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "let",
+            "name": "o"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "r"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "w"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "p"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "a"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "I"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "t"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "a"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          },
+          {
+            "type": "const",
+            "name": "He"
+          },
+          {
+            "type": "const",
+            "name": "n"
+          }
+        ],
+        "eventListeners": [
+          {
+            "event": "DOMContentLoaded",
+            "position": 19968
+          }
+        ],
+        "jsSummary": {
+          "functionCount": 49,
+          "variableCount": 153,
+          "eventListenerCount": 1,
+          "path": "third-party/highlight.min.js"
+        }
+      },
+      "third-party/markdown-it-footnote.min.js": {
+        "path": "third-party/markdown-it-footnote.min.js",
+        "type": "javascript",
+        "size": 5859,
+        "extension": ".js",
+        "modifiedAt": "2025-03-10T15:07:01.553Z",
+        "functions": [
+          {
+            "name": "e",
+            "params": [
+              "o",
+              "t",
+              "n"
+            ]
+          },
+          {
+            "name": "r",
+            "params": [
+              "f",
+              "l"
+            ]
+          },
+          {
+            "name": "n",
+            "params": [
+              "e",
+              "o",
+              "t",
+              "n"
+            ]
+          },
+          {
+            "name": "r",
+            "params": [
+              "e",
+              "o"
+            ]
+          },
+          {
+            "name": "s",
+            "params": [
+              "e",
+              "o",
+              "t",
+              "n",
+              "r"
+            ]
+          },
+          {
+            "name": "f",
+            "params": [
+              "e",
+              "o",
+              "t"
+            ]
+          },
+          {
+            "name": "l",
+            "params": []
+          },
+          {
+            "name": "i",
+            "params": [
+              "e",
+              "o",
+              "t",
+              "n",
+              "r"
+            ]
+          },
+          {
+            "name": "u",
+            "params": []
+          },
+          {
+            "name": "a",
+            "params": [
+              "e",
+              "o",
+              "t",
+              "n",
+              "r"
+            ]
+          }
+        ],
+        "variables": [
+          {
+            "type": "var",
+            "name": "i"
+          },
+          {
+            "type": "var",
+            "name": "u"
+          },
+          {
+            "type": "var",
+            "name": "a"
+          },
+          {
+            "type": "var",
+            "name": "s"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "s"
+          },
+          {
+            "type": "var",
+            "name": "s"
+          },
+          {
+            "type": "var",
+            "name": "s"
+          },
+          {
+            "type": "var",
+            "name": "o"
+          }
+        ],
+        "eventListeners": [],
+        "jsSummary": {
+          "functionCount": 10,
+          "variableCount": 10,
+          "eventListenerCount": 0,
+          "path": "third-party/markdown-it-footnote.min.js"
+        }
+      },
+      "third-party/markdown-it.min.js": {
+        "path": "third-party/markdown-it.min.js",
+        "type": "javascript",
+        "size": 103011,
+        "extension": ".js",
+        "modifiedAt": "2025-03-10T15:07:01.554Z",
+        "functions": [
+          {
+            "name": "e",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "s",
+            "params": [
+              "e",
+              "r",
+              "t"
+            ]
+          },
+          {
+            "name": "a",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "l",
+            "params": []
+          },
+          {
+            "name": "o",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "i",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "a",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "d",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "R",
+            "params": []
+          },
+          {
+            "name": "N",
+            "params": []
+          },
+          {
+            "name": "V",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "J",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "W",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Y",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "te",
+            "params": [
+              "e",
+              "r",
+              "t"
+            ]
+          },
+          {
+            "name": "ne",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "se",
+            "params": [
+              "e",
+              "r",
+              "t"
+            ]
+          },
+          {
+            "name": "ie",
+            "params": [
+              "e",
+              "r",
+              "t"
+            ]
+          },
+          {
+            "name": "le",
+            "params": []
+          },
+          {
+            "name": "he",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "fe",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "_e",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "ke",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "qe",
+            "params": [
+              "e",
+              "r",
+              "t",
+              "n"
+            ]
+          },
+          {
+            "name": "Le",
+            "params": []
+          },
+          {
+            "name": "Te",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Oe",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "je",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "rr",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "or",
+            "params": [
+              "e",
+              "r",
+              "t",
+              "n"
+            ]
+          },
+          {
+            "name": "lr",
+            "params": []
+          },
+          {
+            "name": "pr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "hr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "fr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "dr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "kr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "s",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "i",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "br",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "vr",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "Cr",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "Lr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "zr",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "Tr",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "Ir",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Mr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Rr",
+            "params": [
+              "e",
+              "r"
+            ]
+          },
+          {
+            "name": "Br",
+            "params": [
+              "e",
+              "r",
+              "t"
+            ]
+          },
+          {
+            "name": "Nr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Or",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Pr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "jr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Wr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Kr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Qr",
+            "params": [
+              "e"
+            ]
+          },
+          {
+            "name": "Xr",
+            "params": [
+              "e",
+              "r"
+            ]
+          }
+        ],
+        "variables": [
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "o"
+          },
+          {
+            "type": "var",
+            "name": "c"
+          },
+          {
+            "type": "var",
+            "name": "u"
+          },
+          {
+            "type": "var",
+            "name": "c"
+          },
+          {
+            "type": "var",
+            "name": "l"
+          },
+          {
+            "type": "var",
+            "name": "C"
+          },
+          {
+            "type": "var",
+            "name": "y"
+          },
+          {
+            "type": "var",
+            "name": "A"
+          },
+          {
+            "type": "var",
+            "name": "x"
+          },
+          {
+            "type": "var",
+            "name": "D"
+          },
+          {
+            "type": "var",
+            "name": "q"
+          },
+          {
+            "type": "var",
+            "name": "L"
+          },
+          {
+            "type": "var",
+            "name": "z"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "C"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "s"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "c"
+          },
+          {
+            "type": "var",
+            "name": "p"
+          },
+          {
+            "type": "var",
+            "name": "m"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "o"
+          },
+          {
+            "type": "var",
+            "name": "o"
+          },
+          {
+            "type": "var",
+            "name": "o"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "B"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "e"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "s"
+          },
+          {
+            "type": "var",
+            "name": "s"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "O"
+          },
+          {
+            "type": "var",
+            "name": "Z"
+          },
+          {
+            "type": "var",
+            "name": "K"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "oe"
+          },
+          {
+            "type": "var",
+            "name": "ae"
+          },
+          {
+            "type": "var",
+            "name": "e"
+          },
+          {
+            "type": "var",
+            "name": "ue"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "de"
+          },
+          {
+            "type": "var",
+            "name": "be"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "Se"
+          },
+          {
+            "type": "var",
+            "name": "e"
+          },
+          {
+            "type": "var",
+            "name": "ze"
+          },
+          {
+            "type": "var",
+            "name": "Ie"
+          },
+          {
+            "type": "var",
+            "name": "Pe"
+          },
+          {
+            "type": "var",
+            "name": "Ue"
+          },
+          {
+            "type": "var",
+            "name": "Ye"
+          },
+          {
+            "type": "var",
+            "name": "h"
+          },
+          {
+            "type": "var",
+            "name": "tr"
+          },
+          {
+            "type": "var",
+            "name": "e"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "ir"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "ur"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "mr"
+          },
+          {
+            "type": "var",
+            "name": "gr"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "o"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "a"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "yr"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "Ur"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "Yr"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "n"
+          },
+          {
+            "type": "var",
+            "name": "r"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          },
+          {
+            "type": "var",
+            "name": "t"
+          }
+        ],
+        "eventListeners": [],
+        "jsSummary": {
+          "functionCount": 56,
+          "variableCount": 109,
+          "eventListenerCount": 0,
+          "path": "third-party/markdown-it.min.js"
+        }
+      },
+      "index.html": {
+        "elements": {
+          "ids": [
+            "chat-app",
+            "settings-container",
+            "settings-button",
+            "new-chat-button",
+            "recent-sessions-container",
+            "recent-sessions-button",
+            "sessions-dropdown",
+            "sessions-header",
+            "clear-all-sessions",
+            "sessions-list",
+            "toggle-api-key",
+            "help-button",
+            "main-container",
+            "chat-container",
+            "input-area",
+            "logo",
+            "file-preview-container",
+            "message-input-container",
+            "message-input",
+            "search-icon-container",
+            "default-search-icon",
+            "chat-search-icon",
+            "file-upload-button",
+            "stop-message-button",
+            "stop-icon",
+            "file-drop-area",
+            "input-error-message",
+            "file-input",
+            "send-button",
+            "api-key-dialog",
+            "api-key-dialog-title",
+            "free-user-rpm",
+            "api-key-input",
+            "get-api-key",
+            "save-api-key",
+            "help-dialog",
+            "help-dialog-title",
+            "contact-us",
+            "settings-dialog",
+            "settings-dialog-title",
+            "theme-toggle-input",
+            "chirp-on-done-toggle-input",
+            "language-select",
+            "delete-session-dialog",
+            "delete-session-dialog-title",
+            "free-user-rpm",
+            "delete-all-sessions-dialog",
+            "delete-all-dialog-title",
+            "free-user-rpm"
+          ],
+          "classes": [
+            "empty-chat",
+            "buttons-group",
+            "tooltip-container",
+            "action-icon",
+            "sr-only",
+            "tooltip",
+            "icon-button",
+            "chevron-icon",
+            "feather",
+            "feather-search",
+            "feather-stop-circle",
+            "dialog-overlay",
+            "dialog",
+            "dialog-header",
+            "dialog-title",
+            "dialog-close",
+            "dialog-content",
+            "dialog-description",
+            "dialog-footer",
+            "link-button",
+            "help-list",
+            "settings-option",
+            "toggle-switch",
+            "toggle-slider",
+            "toggle-label",
+            "settings-label",
+            "settings-select",
+            "delete"
+          ],
+          "tags": {
+            "html": 1,
+            "head": 1,
+            "title": 1,
+            "meta": 19,
+            "script": 6,
+            "link": 3,
+            "body": 1,
+            "div": 40,
+            "button": 19,
+            "svg": 11,
+            "circle": 7,
+            "path": 6,
+            "span": 25,
+            "line": 5,
+            "polyline": 1,
+            "ul": 2,
+            "main": 1,
+            "form": 1,
+            "textarea": 1,
+            "g": 1,
+            "rect": 1,
+            "input": 4,
+            "p": 4,
+            "b": 1,
+            "a": 2,
+            "li": 4,
+            "code": 1,
+            "i": 1,
+            "polygon": 1,
+            "label": 3,
+            "select": 1,
+            "option": 7
+          }
+        }
+      }
+    },
+    "styles": {
+      "styles.css": {
+        "path": "styles.css",
+        "type": "stylesheet",
+        "size": 31432,
+        "extension": ".css",
+        "modifiedAt": "2025-03-19T03:29:27.609Z",
+        "cssSummary": {
+          "classCount": 71,
+          "selectorCount": 212,
+          "path": "styles.css"
+        }
+      },
+      "third-party/vs.min.css": {
+        "path": "third-party/vs.min.css",
+        "type": "stylesheet",
+        "size": 640,
+        "extension": ".css",
+        "modifiedAt": "2025-03-10T15:07:01.554Z",
+        "cssSummary": {
+          "classCount": 29,
+          "selectorCount": 12,
+          "path": "third-party/vs.min.css"
+        }
+      },
+      "third-party/vs2015.min.css": {
+        "path": "third-party/vs2015.min.css",
+        "type": "stylesheet",
+        "size": 1088,
+        "extension": ".css",
+        "modifiedAt": "2025-03-10T15:07:01.554Z",
+        "cssSummary": {
+          "classCount": 38,
+          "selectorCount": 21,
+          "path": "third-party/vs2015.min.css"
+        }
+      }
+    },
+    "endpoints": {},
+    "configs": {},
+    "assets": {
+      "j-dark.svg": {
+        "path": "j-dark.svg",
+        "type": "asset",
+        "size": 248,
+        "extension": ".svg",
+        "modifiedAt": "2025-03-10T15:07:01.552Z",
+        "assetType": "image"
+      },
+      "j-light.svg": {
+        "path": "j-light.svg",
+        "type": "asset",
+        "size": 263,
+        "extension": ".svg",
+        "modifiedAt": "2025-03-10T15:07:01.552Z",
+        "assetType": "image"
+      },
+      "jina-dark.svg": {
+        "path": "jina-dark.svg",
+        "type": "asset",
+        "size": 482,
+        "extension": ".svg",
+        "modifiedAt": "2025-03-10T15:07:01.552Z",
+        "assetType": "image"
+      },
+      "jina-light.svg": {
+        "path": "jina-light.svg",
+        "type": "asset",
+        "size": 543,
+        "extension": ".svg",
+        "modifiedAt": "2025-03-10T15:07:01.553Z",
+        "assetType": "image"
+      }
+    }
+  },
+  "files": [
+    {
+      "path": "app.js",
+      "type": "javascript",
+      "size": 81517,
+      "extension": ".js",
+      "modifiedAt": "2025-03-19T03:29:27.607Z",
+      "functions": [
+        {
+          "name": "loadTranslations",
+          "params": []
+        },
+        {
+          "name": "t",
+          "params": [
+            "key",
+            "replacements = {}",
+            "fallbackLanguage = 'en'"
+          ]
+        },
+        {
+          "name": "applyTranslations",
+          "params": []
+        },
+        {
+          "name": "initializeApiKey",
+          "params": []
+        },
+        {
+          "name": "generateId",
+          "params": [
+            "type = 'message'"
+          ]
+        },
+        {
+          "name": "saveChatMessages",
+          "params": []
+        },
+        {
+          "name": "loadChatMessages",
+          "params": []
+        },
+        {
+          "name": "loadChatSessions",
+          "params": []
+        },
+        {
+          "name": "saveChatSessions",
+          "params": []
+        },
+        {
+          "name": "saveCurrentSession",
+          "params": [
+            "messages"
+          ]
+        },
+        {
+          "name": "handleClickSessionEvent",
+          "params": [
+            "sessionId"
+          ]
+        },
+        {
+          "name": "handleDeleteSessionEvent",
+          "params": [
+            "sessionId",
+            "event"
+          ]
+        },
+        {
+          "name": "handleClearAllSessionsEvent",
+          "params": []
+        },
+        {
+          "name": "updateSessionsList",
+          "params": []
+        },
+        {
+          "name": "toggleSessionsDropdown",
+          "params": [
+            "forceState"
+          ]
+        },
+        {
+          "name": "handleFileUpload",
+          "params": [
+            "files"
+          ]
+        },
+        {
+          "name": "isSupportedFileType",
+          "params": [
+            "mimeType"
+          ]
+        },
+        {
+          "name": "createFilePreview",
+          "params": [
+            "file"
+          ]
+        },
+        {
+          "name": "getFileTypeDisplay",
+          "params": [
+            "mimeType"
+          ]
+        },
+        {
+          "name": "createReferencesSection",
+          "params": [
+            "content",
+            "visitedURLs = []",
+            "numURLs=0"
+          ]
+        },
+        {
+          "name": "renderFaviconList",
+          "params": [
+            "visitedURLs",
+            "numURLs"
+          ]
+        },
+        {
+          "name": "fetchFavicons",
+          "params": [
+            "domains"
+          ]
+        },
+        {
+          "name": "createThinkSection",
+          "params": [
+            "messageDiv"
+          ]
+        },
+        {
+          "name": "scrollToBottom",
+          "params": []
+        },
+        {
+          "name": "handleTooltipEvent",
+          "params": [
+            "triggerElement",
+            "orientation = 'bottom' | 'top' | 'left' | 'right'"
+          ]
+        },
+        {
+          "name": "adjustHorizontalPosition",
+          "params": [
+            "triggerElement",
+            "tooltip"
+          ]
+        },
+        {
+          "name": "handleReDoEvent",
+          "params": [
+            "redoButton"
+          ]
+        },
+        {
+          "name": "handleCopyEvent",
+          "params": [
+            "copyButton",
+            "copyIcon",
+            "content"
+          ]
+        },
+        {
+          "name": "handleStopEvent",
+          "params": []
+        },
+        {
+          "name": "createCodeCopyButton",
+          "params": [
+            "codeElement"
+          ]
+        },
+        {
+          "name": "createActionButton",
+          "params": [
+            "content"
+          ]
+        },
+        {
+          "name": "toggleStopMessage",
+          "params": [
+            "show"
+          ]
+        },
+        {
+          "name": "createMessage",
+          "params": [
+            "role",
+            "content",
+            "messageId = null"
+          ]
+        },
+        {
+          "name": "removeLoadingIndicator",
+          "params": [
+            "messageDiv"
+          ]
+        },
+        {
+          "name": "createErrorMessage",
+          "params": [
+            "message",
+            "buttonText",
+            "onClick"
+          ]
+        },
+        {
+          "name": "initializeMarkdown",
+          "params": []
+        },
+        {
+          "name": "markdownItTableWrapper",
+          "params": [
+            "md"
+          ]
+        },
+        {
+          "name": "renderMarkdown",
+          "params": [
+            "content",
+            "returnElement = false",
+            "visitedURLs = []",
+            "role = 'assistant'",
+            "numURLs = 0"
+          ]
+        },
+        {
+          "name": "addCodeCopyButtons",
+          "params": [
+            "markdownElement"
+          ]
+        },
+        {
+          "name": "updateEmptyState",
+          "params": []
+        },
+        {
+          "name": "clearMessages",
+          "params": []
+        },
+        {
+          "name": "makeAllLinksOpenInNewTab",
+          "params": []
+        },
+        {
+          "name": "sendMessage",
+          "params": [
+            "redo = false"
+          ]
+        },
+        {
+          "name": "updateMessagesList",
+          "params": []
+        },
+        {
+          "name": "loadAndDisplaySavedMessages",
+          "params": []
+        },
+        {
+          "name": "initializeSettings",
+          "params": []
+        },
+        {
+          "name": "handleURLParams",
+          "params": [
+            "queryParam"
+          ]
+        },
+        {
+          "name": "handleApiKeySave",
+          "params": []
+        },
+        {
+          "name": "handleVisibilityChange",
+          "params": []
+        },
+        {
+          "name": "setFaviconBadge",
+          "params": []
+        },
+        {
+          "name": "clearFaviconBadge",
+          "params": []
+        },
+        {
+          "name": "playNotificationSound",
+          "params": []
+        },
+        {
+          "name": "handleFootnoteClick",
+          "params": [
+            "event"
+          ]
+        },
+        {
+          "name": "setupFileDrop",
+          "params": []
+        },
+        {
+          "name": "displayDropArea",
+          "params": []
+        },
+        {
+          "name": "hideDropArea",
+          "params": []
+        },
+        {
+          "name": "preventDefaults",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "ensureHljsLoaded",
+          "params": []
+        }
+      ],
+      "variables": [
+        {
+          "type": "let",
+          "name": "i18n"
+        },
+        {
+          "type": "let",
+          "name": "currentLanguage"
+        },
+        {
+          "type": "let",
+          "name": "UI_STRINGS"
+        },
+        {
+          "type": "const",
+          "name": "response"
+        },
+        {
+          "type": "const",
+          "name": "keys"
+        },
+        {
+          "type": "let",
+          "name": "value"
+        },
+        {
+          "type": "let",
+          "name": "fallback"
+        },
+        {
+          "type": "let",
+          "name": "fallbackValue"
+        },
+        {
+          "type": "const",
+          "name": "replacementValue"
+        },
+        {
+          "type": "const",
+          "name": "regex"
+        },
+        {
+          "type": "const",
+          "name": "metaTags"
+        },
+        {
+          "type": "const",
+          "name": "tag"
+        },
+        {
+          "type": "const",
+          "name": "key"
+        },
+        {
+          "type": "const",
+          "name": "labelKey"
+        },
+        {
+          "type": "const",
+          "name": "newVal"
+        },
+        {
+          "type": "const",
+          "name": "placeholderKey"
+        },
+        {
+          "type": "const",
+          "name": "htmlKey"
+        },
+        {
+          "type": "const",
+          "name": "tooltipElement"
+        },
+        {
+          "type": "const",
+          "name": "logo"
+        },
+        {
+          "type": "const",
+          "name": "mainContainer"
+        },
+        {
+          "type": "const",
+          "name": "chatContainer"
+        },
+        {
+          "type": "const",
+          "name": "messageForm"
+        },
+        {
+          "type": "const",
+          "name": "messageInput"
+        },
+        {
+          "type": "const",
+          "name": "newChatButton"
+        },
+        {
+          "type": "const",
+          "name": "apiKeyInput"
+        },
+        {
+          "type": "const",
+          "name": "saveApiKeyBtn"
+        },
+        {
+          "type": "const",
+          "name": "toggleApiKeyBtn"
+        },
+        {
+          "type": "const",
+          "name": "toggleApiKeyBtnText"
+        },
+        {
+          "type": "const",
+          "name": "getApiKeyBtn"
+        },
+        {
+          "type": "const",
+          "name": "freeUserRPMInfo"
+        },
+        {
+          "type": "const",
+          "name": "apiKeyDialog"
+        },
+        {
+          "type": "const",
+          "name": "helpButton"
+        },
+        {
+          "type": "const",
+          "name": "helpDialog"
+        },
+        {
+          "type": "const",
+          "name": "settingsButton"
+        },
+        {
+          "type": "const",
+          "name": "settingsDialog"
+        },
+        {
+          "type": "const",
+          "name": "dialogCloseBtns"
+        },
+        {
+          "type": "const",
+          "name": "fileUploadButton"
+        },
+        {
+          "type": "const",
+          "name": "fileInput"
+        },
+        {
+          "type": "const",
+          "name": "filePreviewContainer"
+        },
+        {
+          "type": "const",
+          "name": "inputErrorMessage"
+        },
+        {
+          "type": "const",
+          "name": "stopMessageButton"
+        },
+        {
+          "type": "const",
+          "name": "recentSessionsContainer"
+        },
+        {
+          "type": "const",
+          "name": "recentSessionsButton"
+        },
+        {
+          "type": "const",
+          "name": "sessionsDropdown"
+        },
+        {
+          "type": "const",
+          "name": "sessionsList"
+        },
+        {
+          "type": "const",
+          "name": "clearAllSessionsButton"
+        },
+        {
+          "type": "const",
+          "name": "deleteSessionDialog"
+        },
+        {
+          "type": "const",
+          "name": "deleteAllSessionsDialog"
+        },
+        {
+          "type": "const",
+          "name": "loadingSvg"
+        },
+        {
+          "type": "const",
+          "name": "BASE_ORIGIN"
+        },
+        {
+          "type": "const",
+          "name": "MAX_TOTAL_SIZE"
+        },
+        {
+          "type": "const",
+          "name": "docIcon"
+        },
+        {
+          "type": "const",
+          "name": "imgIcon"
+        },
+        {
+          "type": "const",
+          "name": "SUPPORTED_FILE_TYPES"
+        },
+        {
+          "type": "let",
+          "name": "isLoading"
+        },
+        {
+          "type": "let",
+          "name": "abortController"
+        },
+        {
+          "type": "let",
+          "name": "existingMessages"
+        },
+        {
+          "type": "let",
+          "name": "isComposing"
+        },
+        {
+          "type": "let",
+          "name": "compositionEnded"
+        },
+        {
+          "type": "let",
+          "name": "uploadedFiles"
+        },
+        {
+          "type": "let",
+          "name": "chatSessions"
+        },
+        {
+          "type": "const",
+          "name": "MAX_SESSIONS"
+        },
+        {
+          "type": "let",
+          "name": "isSessionsDropdownOpen"
+        },
+        {
+          "type": "const",
+          "name": "savedKey"
+        },
+        {
+          "type": "const",
+          "name": "thinMessage"
+        },
+        {
+          "type": "const",
+          "name": "savedMessages"
+        },
+        {
+          "type": "const",
+          "name": "savedSessions"
+        },
+        {
+          "type": "const",
+          "name": "firstUserMessage"
+        },
+        {
+          "type": "const",
+          "name": "currentSessionIndex"
+        },
+        {
+          "type": "const",
+          "name": "session"
+        },
+        {
+          "type": "let",
+          "name": "sessionTitle"
+        },
+        {
+          "type": "const",
+          "name": "newSession"
+        },
+        {
+          "type": "const",
+          "name": "session"
+        },
+        {
+          "type": "const",
+          "name": "sessionItem"
+        },
+        {
+          "type": "const",
+          "name": "sessionTitle"
+        },
+        {
+          "type": "const",
+          "name": "deleteButton"
+        },
+        {
+          "type": "const",
+          "name": "isOpen"
+        },
+        {
+          "type": "const",
+          "name": "chevronIcon"
+        },
+        {
+          "type": "let",
+          "name": "totalSize"
+        },
+        {
+          "type": "const",
+          "name": "reader"
+        },
+        {
+          "type": "const",
+          "name": "previewItem"
+        },
+        {
+          "type": "const",
+          "name": "removeButton"
+        },
+        {
+          "type": "const",
+          "name": "fileName"
+        },
+        {
+          "type": "const",
+          "name": "img"
+        },
+        {
+          "type": "const",
+          "name": "fileTypeIcon"
+        },
+        {
+          "type": "const",
+          "name": "section"
+        },
+        {
+          "type": "const",
+          "name": "header"
+        },
+        {
+          "type": "const",
+          "name": "contentDiv"
+        },
+        {
+          "type": "const",
+          "name": "faviconContainer"
+        },
+        {
+          "type": "const",
+          "name": "renderFaviconList"
+        },
+        {
+          "type": "const",
+          "name": "faviconList"
+        },
+        {
+          "type": "const",
+          "name": "domainMap"
+        },
+        {
+          "type": "const",
+          "name": "domain"
+        },
+        {
+          "type": "const",
+          "name": "img"
+        },
+        {
+          "type": "const",
+          "name": "item"
+        },
+        {
+          "type": "const",
+          "name": "data"
+        },
+        {
+          "type": "const",
+          "name": "sourceCount"
+        },
+        {
+          "type": "const",
+          "name": "label"
+        },
+        {
+          "type": "const",
+          "name": "fetchFavicons"
+        },
+        {
+          "type": "const",
+          "name": "failedDomains"
+        },
+        {
+          "type": "const",
+          "name": "response"
+        },
+        {
+          "type": "const",
+          "name": "favicons"
+        },
+        {
+          "type": "const",
+          "name": "BATCH_SIZE"
+        },
+        {
+          "type": "const",
+          "name": "domains"
+        },
+        {
+          "type": "let",
+          "name": "failedDomains"
+        },
+        {
+          "type": "let",
+          "name": "i"
+        },
+        {
+          "type": "let",
+          "name": "i"
+        },
+        {
+          "type": "const",
+          "name": "thinkSection"
+        },
+        {
+          "type": "const",
+          "name": "thinkHeader"
+        },
+        {
+          "type": "const",
+          "name": "thinkContent"
+        },
+        {
+          "type": "const",
+          "name": "expanded"
+        },
+        {
+          "type": "let",
+          "name": "tooltip"
+        },
+        {
+          "type": "const",
+          "name": "adjustHorizontalPosition"
+        },
+        {
+          "type": "const",
+          "name": "rect"
+        },
+        {
+          "type": "const",
+          "name": "tooltipRect"
+        },
+        {
+          "type": "const",
+          "name": "messageElement"
+        },
+        {
+          "type": "const",
+          "name": "currentMessageId"
+        },
+        {
+          "type": "const",
+          "name": "currentMessageIndex"
+        },
+        {
+          "type": "let",
+          "name": "userMessageIndex"
+        },
+        {
+          "type": "const",
+          "name": "userMessage"
+        },
+        {
+          "type": "const",
+          "name": "allMessages"
+        },
+        {
+          "type": "const",
+          "name": "startIndex"
+        },
+        {
+          "type": "const",
+          "name": "checkIcon"
+        },
+        {
+          "type": "const",
+          "name": "animationElement"
+        },
+        {
+          "type": "const",
+          "name": "copyButton"
+        },
+        {
+          "type": "const",
+          "name": "copyIcon"
+        },
+        {
+          "type": "const",
+          "name": "buttonContainer"
+        },
+        {
+          "type": "const",
+          "name": "redoButton"
+        },
+        {
+          "type": "const",
+          "name": "redoIcon"
+        },
+        {
+          "type": "const",
+          "name": "copyButton"
+        },
+        {
+          "type": "const",
+          "name": "copyIcon"
+        },
+        {
+          "type": "const",
+          "name": "messageDiv"
+        },
+        {
+          "type": "const",
+          "name": "id"
+        },
+        {
+          "type": "const",
+          "name": "messageContent"
+        },
+        {
+          "type": "const",
+          "name": "fileContainer"
+        },
+        {
+          "type": "const",
+          "name": "fileLink"
+        },
+        {
+          "type": "const",
+          "name": "fileIcon"
+        },
+        {
+          "type": "const",
+          "name": "textElement"
+        },
+        {
+          "type": "const",
+          "name": "loadingIndicator"
+        },
+        {
+          "type": "const",
+          "name": "messageDiv"
+        },
+        {
+          "type": "const",
+          "name": "errorContainer"
+        },
+        {
+          "type": "const",
+          "name": "errorIcon"
+        },
+        {
+          "type": "const",
+          "name": "errorText"
+        },
+        {
+          "type": "const",
+          "name": "actionButton"
+        },
+        {
+          "type": "const",
+          "name": "options"
+        },
+        {
+          "type": "const",
+          "name": "defaultTableRenderer"
+        },
+        {
+          "type": "const",
+          "name": "defaultTableCloseRenderer"
+        },
+        {
+          "type": "const",
+          "name": "tempDiv"
+        },
+        {
+          "type": "const",
+          "name": "textParts"
+        },
+        {
+          "type": "const",
+          "name": "rendered"
+        },
+        {
+          "type": "const",
+          "name": "footnoteAnchors"
+        },
+        {
+          "type": "const",
+          "name": "text"
+        },
+        {
+          "type": "const",
+          "name": "footnotes"
+        },
+        {
+          "type": "const",
+          "name": "footnoteContent"
+        },
+        {
+          "type": "const",
+          "name": "referencesSection"
+        },
+        {
+          "type": "const",
+          "name": "blockElements"
+        },
+        {
+          "type": "const",
+          "name": "codeBlocks"
+        },
+        {
+          "type": "const",
+          "name": "preElement"
+        },
+        {
+          "type": "const",
+          "name": "copyButton"
+        },
+        {
+          "type": "const",
+          "name": "chatApp"
+        },
+        {
+          "type": "const",
+          "name": "makeAllLinksOpenInNewTab"
+        },
+        {
+          "type": "const",
+          "name": "links"
+        },
+        {
+          "type": "const",
+          "name": "queryText"
+        },
+        {
+          "type": "const",
+          "name": "filePromises"
+        },
+        {
+          "type": "const",
+          "name": "reader"
+        },
+        {
+          "type": "const",
+          "name": "base64Data"
+        },
+        {
+          "type": "const",
+          "name": "fileParts"
+        },
+        {
+          "type": "const",
+          "name": "userMessageId"
+        },
+        {
+          "type": "const",
+          "name": "assistantMessageId"
+        },
+        {
+          "type": "const",
+          "name": "assistantMessageDiv"
+        },
+        {
+          "type": "let",
+          "name": "markdownContent"
+        },
+        {
+          "type": "let",
+          "name": "thinkContent"
+        },
+        {
+          "type": "let",
+          "name": "inThinkSection"
+        },
+        {
+          "type": "let",
+          "name": "thinkSectionElement"
+        },
+        {
+          "type": "let",
+          "name": "thinkHeaderElement"
+        },
+        {
+          "type": "const",
+          "name": "headers"
+        },
+        {
+          "type": "const",
+          "name": "apiKey"
+        },
+        {
+          "type": "const",
+          "name": "res"
+        },
+        {
+          "type": "const",
+          "name": "errorResponse"
+        },
+        {
+          "type": "const",
+          "name": "errorMsg"
+        },
+        {
+          "type": "const",
+          "name": "errorMessageDiv"
+        },
+        {
+          "type": "const",
+          "name": "markdownDiv"
+        },
+        {
+          "type": "const",
+          "name": "reader"
+        },
+        {
+          "type": "const",
+          "name": "decoder"
+        },
+        {
+          "type": "let",
+          "name": "partialBrokenData"
+        },
+        {
+          "type": "let",
+          "name": "visitedURLs"
+        },
+        {
+          "type": "let",
+          "name": "numURLs"
+        },
+        {
+          "type": "const",
+          "name": "streamData"
+        },
+        {
+          "type": "const",
+          "name": "events"
+        },
+        {
+          "type": "const",
+          "name": "data"
+        },
+        {
+          "type": "const",
+          "name": "json"
+        },
+        {
+          "type": "const",
+          "name": "content"
+        },
+        {
+          "type": "let",
+          "name": "tempContent"
+        },
+        {
+          "type": "const",
+          "name": "thinkingAnimation"
+        },
+        {
+          "type": "const",
+          "name": "thinkEndIndex"
+        },
+        {
+          "type": "const",
+          "name": "thinkContentElement"
+        },
+        {
+          "type": "const",
+          "name": "thinkContentElement"
+        },
+        {
+          "type": "const",
+          "name": "thinkContentElement"
+        },
+        {
+          "type": "const",
+          "name": "animationElement"
+        },
+        {
+          "type": "const",
+          "name": "thinkStartIndex"
+        },
+        {
+          "type": "const",
+          "name": "thinkContentElement"
+        },
+        {
+          "type": "const",
+          "name": "animationElement"
+        },
+        {
+          "type": "const",
+          "name": "markdown"
+        },
+        {
+          "type": "const",
+          "name": "copyButton"
+        },
+        {
+          "type": "const",
+          "name": "referencesSection"
+        },
+        {
+          "type": "const",
+          "name": "jsonResult"
+        },
+        {
+          "type": "const",
+          "name": "actionButton"
+        },
+        {
+          "type": "const",
+          "name": "errorText"
+        },
+        {
+          "type": "const",
+          "name": "errorIcon"
+        },
+        {
+          "type": "const",
+          "name": "errorContainer"
+        },
+        {
+          "type": "const",
+          "name": "messageDiv"
+        },
+        {
+          "type": "const",
+          "name": "markdownDiv"
+        },
+        {
+          "type": "const",
+          "name": "markdown"
+        },
+        {
+          "type": "const",
+          "name": "copyButton"
+        },
+        {
+          "type": "const",
+          "name": "referencesSection"
+        },
+        {
+          "type": "const",
+          "name": "thinkSectionElement"
+        },
+        {
+          "type": "const",
+          "name": "thinkContentElement"
+        },
+        {
+          "type": "const",
+          "name": "thinkHeaderElement"
+        },
+        {
+          "type": "const",
+          "name": "savedTheme"
+        },
+        {
+          "type": "const",
+          "name": "themeToggleInput"
+        },
+        {
+          "type": "const",
+          "name": "languageSelect"
+        },
+        {
+          "type": "const",
+          "name": "chirpOnDone"
+        },
+        {
+          "type": "const",
+          "name": "chirpOnDoneToggleInput"
+        },
+        {
+          "type": "const",
+          "name": "dialog"
+        },
+        {
+          "type": "const",
+          "name": "themeToggleInput"
+        },
+        {
+          "type": "const",
+          "name": "theme"
+        },
+        {
+          "type": "const",
+          "name": "hlTheme"
+        },
+        {
+          "type": "const",
+          "name": "hlThemeElement"
+        },
+        {
+          "type": "const",
+          "name": "languageSelect"
+        },
+        {
+          "type": "const",
+          "name": "language"
+        },
+        {
+          "type": "const",
+          "name": "chirpOnDoneToggleInput"
+        },
+        {
+          "type": "const",
+          "name": "chirpOnDone"
+        },
+        {
+          "type": "const",
+          "name": "computedStyle"
+        },
+        {
+          "type": "const",
+          "name": "maxHeight"
+        },
+        {
+          "type": "let",
+          "name": "autoScrollEnabled"
+        },
+        {
+          "type": "const",
+          "name": "observer"
+        },
+        {
+          "type": "const",
+          "name": "isAtBottom"
+        },
+        {
+          "type": "const",
+          "name": "dialog"
+        },
+        {
+          "type": "const",
+          "name": "key"
+        },
+        {
+          "type": "const",
+          "name": "favicon"
+        },
+        {
+          "type": "const",
+          "name": "pattern"
+        },
+        {
+          "type": "let",
+          "name": "step"
+        },
+        {
+          "type": "const",
+          "name": "favicon"
+        },
+        {
+          "type": "const",
+          "name": "chirpOnDone"
+        },
+        {
+          "type": "const",
+          "name": "AudioContext"
+        },
+        {
+          "type": "const",
+          "name": "audioCtx"
+        },
+        {
+          "type": "const",
+          "name": "osc1"
+        },
+        {
+          "type": "const",
+          "name": "osc2"
+        },
+        {
+          "type": "const",
+          "name": "gainNode"
+        },
+        {
+          "type": "const",
+          "name": "href"
+        },
+        {
+          "type": "const",
+          "name": "footnoteId"
+        },
+        {
+          "type": "const",
+          "name": "referencesSection"
+        },
+        {
+          "type": "const",
+          "name": "referencesHeader"
+        },
+        {
+          "type": "const",
+          "name": "referencesContent"
+        },
+        {
+          "type": "const",
+          "name": "targetFootnote"
+        },
+        {
+          "type": "const",
+          "name": "existingHighlights"
+        },
+        {
+          "type": "const",
+          "name": "container"
+        },
+        {
+          "type": "const",
+          "name": "dropArea"
+        },
+        {
+          "type": "const",
+          "name": "rect"
+        },
+        {
+          "type": "let",
+          "name": "files"
+        },
+        {
+          "type": "const",
+          "name": "items"
+        },
+        {
+          "type": "let",
+          "name": "i"
+        },
+        {
+          "type": "const",
+          "name": "file"
+        },
+        {
+          "type": "const",
+          "name": "items"
+        },
+        {
+          "type": "let",
+          "name": "files"
+        },
+        {
+          "type": "let",
+          "name": "i"
+        },
+        {
+          "type": "const",
+          "name": "file"
+        },
+        {
+          "type": "const",
+          "name": "urlParams"
+        },
+        {
+          "type": "const",
+          "name": "initPrompt"
+        }
+      ],
+      "eventListeners": [
+        {
+          "event": "click",
+          "position": 15902
+        },
+        {
+          "event": "click",
+          "position": 16309
+        },
+        {
+          "event": "click",
+          "position": 18055
+        },
+        {
+          "event": "click",
+          "position": 18146
+        },
+        {
+          "event": "click",
+          "position": 20282
+        },
+        {
+          "event": "click",
+          "position": 21708
+        },
+        {
+          "event": "change",
+          "position": 21780
+        },
+        {
+          "event": "click",
+          "position": 21907
+        },
+        {
+          "event": "click",
+          "position": 21999
+        },
+        {
+          "event": "click",
+          "position": 22105
+        },
+        {
+          "event": "click",
+          "position": 22294
+        },
+        {
+          "event": "click",
+          "position": 23097
+        },
+        {
+          "event": "click",
+          "position": 24721
+        },
+        {
+          "event": "click",
+          "position": 28508
+        },
+        {
+          "event": "mouseenter",
+          "position": 29497
+        },
+        {
+          "event": "mouseleave",
+          "position": 31443
+        },
+        {
+          "event": "click",
+          "position": 34627
+        },
+        {
+          "event": "click",
+          "position": 36377
+        },
+        {
+          "event": "click",
+          "position": 36472
+        },
+        {
+          "event": "click",
+          "position": 40669
+        },
+        {
+          "event": "click",
+          "position": 66783
+        },
+        {
+          "event": "click",
+          "position": 66951
+        },
+        {
+          "event": "change",
+          "position": 67216
+        },
+        {
+          "event": "change",
+          "position": 67719
+        },
+        {
+          "event": "change",
+          "position": 68082
+        },
+        {
+          "event": "click",
+          "position": 68309
+        },
+        {
+          "event": "compositionstart",
+          "position": 68365
+        },
+        {
+          "event": "compositionend",
+          "position": 68518
+        },
+        {
+          "event": "keydown",
+          "position": 68734
+        },
+        {
+          "event": "submit",
+          "position": 69124
+        },
+        {
+          "event": "input",
+          "position": 69229
+        },
+        {
+          "event": "click",
+          "position": 69856
+        },
+        {
+          "event": "scroll",
+          "position": 70628
+        },
+        {
+          "event": "click",
+          "position": 71209
+        },
+        {
+          "event": "click",
+          "position": 71364
+        },
+        {
+          "event": "click",
+          "position": 71594
+        },
+        {
+          "event": "visibilitychange",
+          "position": 72356
+        },
+        {
+          "event": "focus",
+          "position": 72425
+        },
+        {
+          "event": "click",
+          "position": 76947
+        },
+        {
+          "event": "click",
+          "position": 77014
+        },
+        {
+          "event": "dragenter",
+          "position": 77313
+        },
+        {
+          "event": "dragleave",
+          "position": 77430
+        },
+        {
+          "event": "dragover",
+          "position": 77815
+        },
+        {
+          "event": "drop",
+          "position": 77903
+        },
+        {
+          "event": "paste",
+          "position": 78348
+        },
+        {
+          "event": "DOMContentLoaded",
+          "position": 79942
+        }
+      ]
+    },
+    {
+      "path": "hljs.js",
+      "type": "javascript",
+      "size": 1948,
+      "extension": ".js",
+      "modifiedAt": "2025-03-10T15:07:01.552Z",
+      "functions": [
+        {
+          "name": "loadResource",
+          "params": [
+            "resource"
+          ]
+        },
+        {
+          "name": "initializeApp",
+          "params": []
+        }
+      ],
+      "variables": [
+        {
+          "type": "const",
+          "name": "theme"
+        },
+        {
+          "type": "const",
+          "name": "hlTheme"
+        },
+        {
+          "type": "const",
+          "name": "scripts"
+        },
+        {
+          "type": "const",
+          "name": "timeout"
+        },
+        {
+          "type": "const",
+          "name": "loadPromises"
+        }
+      ],
+      "eventListeners": []
+    },
+    {
+      "path": "i18n.json",
+      "type": "data",
+      "size": 24637,
+      "extension": ".json",
+      "modifiedAt": "2025-03-19T03:29:27.608Z",
+      "jsonSummary": {
+        "keys": [
+          "en",
+          "zh-CN",
+          "zh-TW",
+          "jp",
+          "fr",
+          "de",
+          "ko"
+        ],
+        "size": 24637,
+        "topLevelItemCount": 7
+      }
+    },
+    {
+      "path": "index.html",
+      "type": "html",
+      "size": 17997,
+      "extension": ".html",
+      "modifiedAt": "2025-03-19T03:29:27.608Z",
+      "htmlSummary": {
+        "tagCounts": {
+          "html": 1,
+          "head": 1,
+          "title": 1,
+          "meta": 19,
+          "script": 6,
+          "link": 3,
+          "body": 1,
+          "div": 40,
+          "button": 19,
+          "svg": 11,
+          "circle": 7,
+          "path": 6,
+          "span": 25,
+          "line": 5,
+          "polyline": 1,
+          "ul": 2,
+          "main": 1,
+          "form": 1,
+          "textarea": 1,
+          "g": 1,
+          "rect": 1,
+          "input": 4,
+          "p": 4,
+          "b": 1,
+          "a": 2,
+          "li": 4,
+          "code": 1,
+          "i": 1,
+          "polygon": 1,
+          "label": 3,
+          "select": 1,
+          "option": 7
+        },
+        "idElements": [
+          "chat-app",
+          "settings-container",
+          "settings-button",
+          "new-chat-button",
+          "recent-sessions-container",
+          "recent-sessions-button",
+          "sessions-dropdown",
+          "sessions-header",
+          "clear-all-sessions",
+          "sessions-list",
+          "toggle-api-key",
+          "help-button",
+          "main-container",
+          "chat-container",
+          "input-area",
+          "logo",
+          "file-preview-container",
+          "message-input-container",
+          "message-input",
+          "search-icon-container",
+          "default-search-icon",
+          "chat-search-icon",
+          "file-upload-button",
+          "stop-message-button",
+          "stop-icon",
+          "file-drop-area",
+          "input-error-message",
+          "file-input",
+          "send-button",
+          "api-key-dialog",
+          "api-key-dialog-title",
+          "free-user-rpm",
+          "api-key-input",
+          "get-api-key",
+          "save-api-key",
+          "help-dialog",
+          "help-dialog-title",
+          "contact-us",
+          "settings-dialog",
+          "settings-dialog-title",
+          "theme-toggle-input",
+          "chirp-on-done-toggle-input",
+          "language-select",
+          "delete-session-dialog",
+          "delete-session-dialog-title",
+          "free-user-rpm",
+          "delete-all-sessions-dialog",
+          "delete-all-dialog-title",
+          "free-user-rpm"
+        ],
+        "classNames": [
+          "empty-chat",
+          "buttons-group",
+          "tooltip-container",
+          "action-icon",
+          "sr-only",
+          "tooltip",
+          "icon-button",
+          "chevron-icon",
+          "feather",
+          "feather-search",
+          "feather-stop-circle",
+          "dialog-overlay",
+          "dialog",
+          "dialog-header",
+          "dialog-title",
+          "dialog-close",
+          "dialog-content",
+          "dialog-description",
+          "dialog-footer",
+          "link-button",
+          "help-list",
+          "settings-option",
+          "toggle-switch",
+          "toggle-slider",
+          "toggle-label",
+          "settings-label",
+          "settings-select",
+          "delete"
+        ],
+        "charCount": 17968,
+        "lineCount": 289
+      }
+    },
+    {
+      "path": "j-dark.svg",
+      "type": "asset",
+      "size": 248,
+      "extension": ".svg",
+      "modifiedAt": "2025-03-10T15:07:01.552Z",
+      "assetType": "image"
+    },
+    {
+      "path": "j-light.svg",
+      "type": "asset",
+      "size": 263,
+      "extension": ".svg",
+      "modifiedAt": "2025-03-10T15:07:01.552Z",
+      "assetType": "image"
+    },
+    {
+      "path": "jina-dark.svg",
+      "type": "asset",
+      "size": 482,
+      "extension": ".svg",
+      "modifiedAt": "2025-03-10T15:07:01.552Z",
+      "assetType": "image"
+    },
+    {
+      "path": "jina-light.svg",
+      "type": "asset",
+      "size": 543,
+      "extension": ".svg",
+      "modifiedAt": "2025-03-10T15:07:01.553Z",
+      "assetType": "image"
+    },
+    {
+      "path": "preload.js",
+      "type": "javascript",
+      "size": 1285,
+      "extension": ".js",
+      "modifiedAt": "2025-03-10T15:07:01.553Z",
+      "functions": [
+        {
+          "name": "initializeAppearance",
+          "params": []
+        },
+        {
+          "name": "getCurrentColorScheme",
+          "params": []
+        },
+        {
+          "name": "initializeLanguage",
+          "params": []
+        },
+        {
+          "name": "getBrowserLanguage",
+          "params": []
+        }
+      ],
+      "variables": [
+        {
+          "type": "const",
+          "name": "savedTheme"
+        },
+        {
+          "type": "const",
+          "name": "savedLanguage"
+        },
+        {
+          "type": "const",
+          "name": "browserLang"
+        }
+      ],
+      "eventListeners": []
+    },
+    {
+      "path": "styles.css",
+      "type": "stylesheet",
+      "size": 31432,
+      "extension": ".css",
+      "modifiedAt": "2025-03-19T03:29:27.609Z",
+      "cssSummary": {
+        "selectorCount": 212,
+        "classes": [
+          "action-icon",
+          "link-button",
+          "action-buttons-container",
+          "empty-chat",
+          "code-copy-button",
+          "buttons-group",
+          "message",
+          "assistant-message",
+          "user-message",
+          "dialog-overlay",
+          "dialog-header",
+          "dialog-title",
+          "dialog-close",
+          "dialog-content",
+          "dialog-description",
+          "dialog-footer",
+          "delete",
+          "icon-button",
+          "chevron-icon",
+          "rotated",
+          "show",
+          "session-item",
+          "session-title",
+          "delete-session",
+          "help-list",
+          "error-message",
+          "error-action-button",
+          "references-header",
+          "w3",
+          "org",
+          "think-section",
+          "references-section",
+          "think-header",
+          "think-wrapper",
+          "expanded",
+          "think-content",
+          "references-content",
+          "markdown",
+          "markdown-inner",
+          "footnotes-sep",
+          "footnotes",
+          "footnotes-list",
+          "references-favicons",
+          "favicon-list",
+          "favicon-item",
+          "sources-count",
+          "visible",
+          "dialog",
+          "get-key-btn",
+          "sr-only",
+          "settings-option",
+          "toggle-switch",
+          "toggle-slider",
+          "toggle-label",
+          "settings-label",
+          "settings-select",
+          "footnote-highlight",
+          "footnote-ref",
+          "tooltip-container",
+          "tooltip",
+          "drag-over",
+          "file-preview-item",
+          "file-name",
+          "remove-file",
+          "file-type-icon",
+          "message-file-icon",
+          "message-image-container",
+          "message-image",
+          "message-file-container",
+          "message-file-link",
+          "message-file-name"
+        ],
+        "properties": {
+          "--bg-color": 2,
+          "--primary": 1,
+          "--negative": 1,
+          "--warning": 1,
+          "--disabled": 1,
+          "--text-color": 2,
+          "--text-secondary": 2,
+          "--input-focus-shadow": 2,
+          "--title-size": 1,
+          "--subtitle-size": 1,
+          "--body-size": 1,
+          "--secondary-size": 1,
+          "--bg-color-opacity": 2,
+          "font-family": 8,
+          "margin": 18,
+          "height": 29,
+          "overflow": 7,
+          "background-color": 38,
+          "color": 38,
+          "padding": 37,
+          "border-radius": 28,
+          "border": 18,
+          "font-size": 27,
+          "cursor": 9,
+          "text-decoration": 7,
+          "display": 68,
+          "align-items": 29,
+          "transition": 17,
+          "button": 4,
+          "box-shadow": 6,
+          "border-color": 5,
+          "outline": 5,
+          "pointer": 1,
+          "background": 11,
+          "width": 36,
+          "min-height": 2,
+          "min-width": 1,
+          "scrollbar-color": 3,
+          "will-change": 1,
+          "hover": 3,
+          "-webkit-scrollbar-thumb": 2,
+          "scrollbar-gutter": 1,
+          "scrollbar-width": 1,
+          "position": 32,
+          "flex-direction": 4,
+          "Modified": 5,
+          "flex": 1,
+          "overflow-y": 5,
+          "contain": 1,
+          "padding-inline-start": 2,
+          "margin-right": 8,
+          "fill": 1,
+          "justify-content": 15,
+          "top": 13,
+          "gap": 7,
+          "z-index": 7,
+          "border-top": 3,
+          "padding-top": 2,
+          "backdrop-filter": 2,
+          "-webkit-backdrop-filter": 2,
+          "-moz-backdrop-filter": 2,
+          "-o-backdrop-filter": 2,
+          "code-copy-button": 1,
+          "flex-grow": 2,
+          "max-width": 12,
+          "chat-container": 1,
+          "margin-bottom": 5,
+          "bottom": 8,
+          "padding-bottom": 3,
+          "vertical-align": 3,
+          "resize": 1,
+          "max-height": 6,
+          "line-height": 10,
+          "left": 8,
+          "chat-app": 2,
+          "message-input": 2,
+          "box-size": 1,
+          "margin-left": 5,
+          "border-top-right-radius": 2,
+          "right": 7,
+          "font-weight": 2,
+          "dialog-close": 3,
+          "overflow-x": 3,
+          "text-overflow": 3,
+          "white-space": 7,
+          "api-key-input": 1,
+          "margin-top": 5,
+          "transform": 11,
+          "list-style-type": 2,
+          "session-item": 2,
+          "visibility": 3,
+          "delete-session": 1,
+          "clear-all-sessions": 1,
+          "delete": 1,
+          "border-bottom": 5,
+          "li": 1,
+          "text-align": 6,
+          "justify-items": 1,
+          "references-header": 5,
+          "background-image": 6,
+          "data": 6,
+          "http": 6,
+          "think-section": 1,
+          "references-section": 1,
+          "think-header": 5,
+          "content": 4,
+          "background-repeat": 2,
+          "background-position": 2,
+          "expanded": 2,
+          "word-break": 2,
+          "a": 5,
+          "padding-left": 3,
+          "border-collapse": 2,
+          "flex-wrap": 2,
+          "object-fit": 2,
+          "animation": 2,
+          "opacity": 8,
+          "pointer-events": 3,
+          "clip": 1,
+          "border-width": 1,
+          "toggle-slider": 2,
+          "input": 2,
+          "settings-select": 1,
+          "overflow-wrap": 1,
+          "stop-message-button": 1,
+          "file-upload-button": 1,
+          "remove-file": 1,
+          "file-preview-container": 1,
+          "border-spacing": 1,
+          "border-right": 2,
+          "td": 3,
+          "th": 3,
+          "tr": 3,
+          "Optional": 2,
+          "border-top-left-radius": 1,
+          "border-bottom-left-radius": 1,
+          "border-bottom-right-radius": 1,
+          "box-sizing": 1,
+          "code": 1,
+          "pre": 1
+        },
+        "charCount": 31432,
+        "lineCount": 1470
+      }
+    },
+    {
+      "path": "third-party/highlight.min.js",
+      "type": "javascript",
+      "size": 126557,
+      "extension": ".js",
+      "modifiedAt": "2025-03-10T15:07:01.553Z",
+      "functions": [
+        {
+          "name": "e",
+          "params": [
+            "n"
+          ]
+        },
+        {
+          "name": "t",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "a",
+          "params": [
+            "e",
+            "...n"
+          ]
+        },
+        {
+          "name": "n",
+          "params": [
+            "(e",
+            "{prefix:n}"
+          ]
+        },
+        {
+          "name": "s",
+          "params": [
+            "e={}"
+          ]
+        },
+        {
+          "name": "c",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "d",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "g",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "u",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "b",
+          "params": [
+            "...e"
+          ]
+        },
+        {
+          "name": "m",
+          "params": [
+            "...e"
+          ]
+        },
+        {
+          "name": "p",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "h",
+          "params": [
+            "e",
+            "{joinWith:n}"
+          ]
+        },
+        {
+          "name": "T",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "R",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "D",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "I",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "L",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "B",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "U",
+          "params": [
+            "e",
+            "n",
+            "t=F"
+          ]
+        },
+        {
+          "name": "i",
+          "params": [
+            "e",
+            "t"
+          ]
+        },
+        {
+          "name": "j",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "Z",
+          "params": [
+            "e",
+            "n",
+            "{key:t}"
+          ]
+        },
+        {
+          "name": "W",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Q",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "n",
+          "params": [
+            "n",
+            "t"
+          ]
+        },
+        {
+          "name": "t",
+          "params": [
+            "r",
+            "s"
+          ]
+        },
+        {
+          "name": "X",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "_",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "h",
+          "params": [
+            "e",
+            "n",
+            "t"
+          ]
+        },
+        {
+          "name": "f",
+          "params": [
+            "e",
+            "t",
+            "i",
+            "r"
+          ]
+        },
+        {
+          "name": "c",
+          "params": []
+        },
+        {
+          "name": "d",
+          "params": []
+        },
+        {
+          "name": "g",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "u",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "b",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "m",
+          "params": [
+            "e",
+            "t",
+            "a"
+          ]
+        },
+        {
+          "name": "_",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "h",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "N",
+          "params": [
+            "a",
+            "r"
+          ]
+        },
+        {
+          "name": "E",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "y",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "w",
+          "params": []
+        },
+        {
+          "name": "v",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "O",
+          "params": [
+            "e",
+            "{languageName:n}"
+          ]
+        },
+        {
+          "name": "k",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "x",
+          "params": [
+            "e",
+            "n"
+          ]
+        },
+        {
+          "name": "pe",
+          "params": [
+            "e",
+            "n",
+            "t"
+          ]
+        },
+        {
+          "name": "Oe",
+          "params": [
+            "e"
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "type": "var",
+          "name": "hljs"
+        },
+        {
+          "type": "const",
+          "name": "a"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "i"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "s"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "_"
+        },
+        {
+          "type": "let",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "let",
+          "name": "a"
+        },
+        {
+          "type": "const",
+          "name": "e"
+        },
+        {
+          "type": "const",
+          "name": "f"
+        },
+        {
+          "type": "const",
+          "name": "i"
+        },
+        {
+          "type": "const",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "C"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "a"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "P"
+        },
+        {
+          "type": "let",
+          "name": "a"
+        },
+        {
+          "type": "const",
+          "name": "i"
+        },
+        {
+          "type": "let",
+          "name": "e"
+        },
+        {
+          "type": "const",
+          "name": "e"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "let",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "o"
+        },
+        {
+          "type": "let",
+          "name": "l"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "J"
+        },
+        {
+          "type": "const",
+          "name": "a"
+        },
+        {
+          "type": "let",
+          "name": "s"
+        },
+        {
+          "type": "const",
+          "name": "o"
+        },
+        {
+          "type": "let",
+          "name": "p"
+        },
+        {
+          "type": "let",
+          "name": "a"
+        },
+        {
+          "type": "const",
+          "name": "r"
+        },
+        {
+          "type": "const",
+          "name": "s"
+        },
+        {
+          "type": "const",
+          "name": "l"
+        },
+        {
+          "type": "let",
+          "name": "e"
+        },
+        {
+          "type": "let",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "i"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "let",
+          "name": "e"
+        },
+        {
+          "type": "let",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "a"
+        },
+        {
+          "type": "const",
+          "name": "a"
+        },
+        {
+          "type": "let",
+          "name": "i"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "a"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "r"
+        },
+        {
+          "type": "let",
+          "name": "y"
+        },
+        {
+          "type": "const",
+          "name": "o"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "e"
+        },
+        {
+          "type": "const",
+          "name": "e"
+        },
+        {
+          "type": "const",
+          "name": "w"
+        },
+        {
+          "type": "const",
+          "name": "O"
+        },
+        {
+          "type": "let",
+          "name": "k"
+        },
+        {
+          "type": "const",
+          "name": "M"
+        },
+        {
+          "type": "const",
+          "name": "e"
+        },
+        {
+          "type": "let",
+          "name": "n"
+        },
+        {
+          "type": "let",
+          "name": "A"
+        },
+        {
+          "type": "const",
+          "name": "e"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "r"
+        },
+        {
+          "type": "let",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "let",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "a"
+        },
+        {
+          "type": "const",
+          "name": "a"
+        },
+        {
+          "type": "let",
+          "name": "N"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "let",
+          "name": "i"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "ae"
+        },
+        {
+          "type": "const",
+          "name": "ie"
+        },
+        {
+          "type": "var",
+          "name": "ge"
+        },
+        {
+          "type": "const",
+          "name": "_e"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "r"
+        },
+        {
+          "type": "const",
+          "name": "_"
+        },
+        {
+          "type": "const",
+          "name": "O"
+        },
+        {
+          "type": "const",
+          "name": "ke"
+        },
+        {
+          "type": "var",
+          "name": "Ke"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "i"
+        },
+        {
+          "type": "const",
+          "name": "o"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "g"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "i"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "s"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "g"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "let",
+          "name": "o"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "r"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "w"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "p"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "a"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "I"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "t"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "a"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        },
+        {
+          "type": "const",
+          "name": "He"
+        },
+        {
+          "type": "const",
+          "name": "n"
+        }
+      ],
+      "eventListeners": [
+        {
+          "event": "DOMContentLoaded",
+          "position": 19968
+        }
+      ]
+    },
+    {
+      "path": "third-party/markdown-it-footnote.min.js",
+      "type": "javascript",
+      "size": 5859,
+      "extension": ".js",
+      "modifiedAt": "2025-03-10T15:07:01.553Z",
+      "functions": [
+        {
+          "name": "e",
+          "params": [
+            "o",
+            "t",
+            "n"
+          ]
+        },
+        {
+          "name": "r",
+          "params": [
+            "f",
+            "l"
+          ]
+        },
+        {
+          "name": "n",
+          "params": [
+            "e",
+            "o",
+            "t",
+            "n"
+          ]
+        },
+        {
+          "name": "r",
+          "params": [
+            "e",
+            "o"
+          ]
+        },
+        {
+          "name": "s",
+          "params": [
+            "e",
+            "o",
+            "t",
+            "n",
+            "r"
+          ]
+        },
+        {
+          "name": "f",
+          "params": [
+            "e",
+            "o",
+            "t"
+          ]
+        },
+        {
+          "name": "l",
+          "params": []
+        },
+        {
+          "name": "i",
+          "params": [
+            "e",
+            "o",
+            "t",
+            "n",
+            "r"
+          ]
+        },
+        {
+          "name": "u",
+          "params": []
+        },
+        {
+          "name": "a",
+          "params": [
+            "e",
+            "o",
+            "t",
+            "n",
+            "r"
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "type": "var",
+          "name": "i"
+        },
+        {
+          "type": "var",
+          "name": "u"
+        },
+        {
+          "type": "var",
+          "name": "a"
+        },
+        {
+          "type": "var",
+          "name": "s"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "s"
+        },
+        {
+          "type": "var",
+          "name": "s"
+        },
+        {
+          "type": "var",
+          "name": "s"
+        },
+        {
+          "type": "var",
+          "name": "o"
+        }
+      ],
+      "eventListeners": []
+    },
+    {
+      "path": "third-party/markdown-it.min.js",
+      "type": "javascript",
+      "size": 103011,
+      "extension": ".js",
+      "modifiedAt": "2025-03-10T15:07:01.554Z",
+      "functions": [
+        {
+          "name": "e",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "s",
+          "params": [
+            "e",
+            "r",
+            "t"
+          ]
+        },
+        {
+          "name": "a",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "l",
+          "params": []
+        },
+        {
+          "name": "o",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "i",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "a",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "d",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "R",
+          "params": []
+        },
+        {
+          "name": "N",
+          "params": []
+        },
+        {
+          "name": "V",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "J",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "W",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Y",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "te",
+          "params": [
+            "e",
+            "r",
+            "t"
+          ]
+        },
+        {
+          "name": "ne",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "se",
+          "params": [
+            "e",
+            "r",
+            "t"
+          ]
+        },
+        {
+          "name": "ie",
+          "params": [
+            "e",
+            "r",
+            "t"
+          ]
+        },
+        {
+          "name": "le",
+          "params": []
+        },
+        {
+          "name": "he",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "fe",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "_e",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "ke",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "qe",
+          "params": [
+            "e",
+            "r",
+            "t",
+            "n"
+          ]
+        },
+        {
+          "name": "Le",
+          "params": []
+        },
+        {
+          "name": "Te",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Oe",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "je",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "rr",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "or",
+          "params": [
+            "e",
+            "r",
+            "t",
+            "n"
+          ]
+        },
+        {
+          "name": "lr",
+          "params": []
+        },
+        {
+          "name": "pr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "hr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "fr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "dr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "kr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "s",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "i",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "br",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "vr",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "Cr",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "Lr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "zr",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "Tr",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "Ir",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Mr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Rr",
+          "params": [
+            "e",
+            "r"
+          ]
+        },
+        {
+          "name": "Br",
+          "params": [
+            "e",
+            "r",
+            "t"
+          ]
+        },
+        {
+          "name": "Nr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Or",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Pr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "jr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Wr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Kr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Qr",
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "Xr",
+          "params": [
+            "e",
+            "r"
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "o"
+        },
+        {
+          "type": "var",
+          "name": "c"
+        },
+        {
+          "type": "var",
+          "name": "u"
+        },
+        {
+          "type": "var",
+          "name": "c"
+        },
+        {
+          "type": "var",
+          "name": "l"
+        },
+        {
+          "type": "var",
+          "name": "C"
+        },
+        {
+          "type": "var",
+          "name": "y"
+        },
+        {
+          "type": "var",
+          "name": "A"
+        },
+        {
+          "type": "var",
+          "name": "x"
+        },
+        {
+          "type": "var",
+          "name": "D"
+        },
+        {
+          "type": "var",
+          "name": "q"
+        },
+        {
+          "type": "var",
+          "name": "L"
+        },
+        {
+          "type": "var",
+          "name": "z"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "C"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "s"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "c"
+        },
+        {
+          "type": "var",
+          "name": "p"
+        },
+        {
+          "type": "var",
+          "name": "m"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "o"
+        },
+        {
+          "type": "var",
+          "name": "o"
+        },
+        {
+          "type": "var",
+          "name": "o"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "B"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "e"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "s"
+        },
+        {
+          "type": "var",
+          "name": "s"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "O"
+        },
+        {
+          "type": "var",
+          "name": "Z"
+        },
+        {
+          "type": "var",
+          "name": "K"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "oe"
+        },
+        {
+          "type": "var",
+          "name": "ae"
+        },
+        {
+          "type": "var",
+          "name": "e"
+        },
+        {
+          "type": "var",
+          "name": "ue"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "de"
+        },
+        {
+          "type": "var",
+          "name": "be"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "Se"
+        },
+        {
+          "type": "var",
+          "name": "e"
+        },
+        {
+          "type": "var",
+          "name": "ze"
+        },
+        {
+          "type": "var",
+          "name": "Ie"
+        },
+        {
+          "type": "var",
+          "name": "Pe"
+        },
+        {
+          "type": "var",
+          "name": "Ue"
+        },
+        {
+          "type": "var",
+          "name": "Ye"
+        },
+        {
+          "type": "var",
+          "name": "h"
+        },
+        {
+          "type": "var",
+          "name": "tr"
+        },
+        {
+          "type": "var",
+          "name": "e"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "ir"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "ur"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "mr"
+        },
+        {
+          "type": "var",
+          "name": "gr"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "o"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "a"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "yr"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "Ur"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "Yr"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "n"
+        },
+        {
+          "type": "var",
+          "name": "r"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        },
+        {
+          "type": "var",
+          "name": "t"
+        }
+      ],
+      "eventListeners": []
+    },
+    {
+      "path": "third-party/vs.min.css",
+      "type": "stylesheet",
+      "size": 640,
+      "extension": ".css",
+      "modifiedAt": "2025-03-10T15:07:01.554Z",
+      "cssSummary": {
+        "selectorCount": 12,
+        "classes": [
+          "hljs",
+          "hljs-comment",
+          "hljs-quote",
+          "hljs-variable",
+          "hljs-built_in",
+          "hljs-keyword",
+          "hljs-name",
+          "hljs-selector-tag",
+          "hljs-tag",
+          "hljs-addition",
+          "hljs-attribute",
+          "hljs-literal",
+          "hljs-section",
+          "hljs-string",
+          "hljs-template-tag",
+          "hljs-template-variable",
+          "hljs-title",
+          "hljs-type",
+          "hljs-deletion",
+          "hljs-meta",
+          "hljs-selector-attr",
+          "hljs-selector-pseudo",
+          "hljs-doctag",
+          "hljs-attr",
+          "hljs-bullet",
+          "hljs-link",
+          "hljs-symbol",
+          "hljs-emphasis",
+          "hljs-strong"
+        ],
+        "properties": {
+          "display": 1,
+          "overflow-x": 1,
+          "padding": 2,
+          "background": 1,
+          "color": 8,
+          "font-style": 1,
+          "font-weight": 1
+        },
+        "charCount": 640,
+        "lineCount": 1
+      }
+    },
+    {
+      "path": "third-party/vs2015.min.css",
+      "type": "stylesheet",
+      "size": 1088,
+      "extension": ".css",
+      "modifiedAt": "2025-03-10T15:07:01.554Z",
+      "cssSummary": {
+        "selectorCount": 21,
+        "classes": [
+          "hljs",
+          "hljs-keyword",
+          "hljs-literal",
+          "hljs-name",
+          "hljs-symbol",
+          "hljs-link",
+          "hljs-built_in",
+          "hljs-type",
+          "hljs-class",
+          "hljs-number",
+          "hljs-meta",
+          "hljs-string",
+          "hljs-regexp",
+          "hljs-template-tag",
+          "hljs-formula",
+          "hljs-function",
+          "hljs-params",
+          "hljs-subst",
+          "hljs-title",
+          "hljs-comment",
+          "hljs-quote",
+          "hljs-doctag",
+          "hljs-tag",
+          "hljs-template-variable",
+          "hljs-variable",
+          "hljs-attr",
+          "hljs-attribute",
+          "hljs-section",
+          "hljs-emphasis",
+          "hljs-strong",
+          "hljs-bullet",
+          "hljs-selector-attr",
+          "hljs-selector-class",
+          "hljs-selector-id",
+          "hljs-selector-pseudo",
+          "hljs-selector-tag",
+          "hljs-addition",
+          "hljs-deletion"
+        ],
+        "properties": {
+          "display": 3,
+          "overflow-x": 1,
+          "padding": 2,
+          "background": 1,
+          "color": 15,
+          "text-decoration": 1,
+          "font-style": 2,
+          "font-weight": 1,
+          "background-color": 2,
+          "width": 2
+        },
+        "charCount": 1088,
+        "lineCount": 1
+      }
+    }
+  ],
+  "fileStructure": {
+    "third-party": {}
+  }
+}
