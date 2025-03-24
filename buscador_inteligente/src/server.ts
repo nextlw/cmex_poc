@@ -29,6 +29,154 @@ import { ensureModelClientInitialized } from "./agent";
 import { ncmRouter } from "./controllers/ncm";
 import { processarDeepResearch } from "./controllers/deepResearchNCM";
 import { modelRouter } from "./controllers/modelController";
+import figlet from "figlet";
+
+// Sobrescrever console.log antes de qualquer outra parte do código para filtrar todas as mensagens
+const originalConsoleLog = console.log;
+const capturedMessages = {
+  modelStatus: "",
+  redisConnection: "",
+  serverRunning: "",
+};
+
+console.log = function (...args) {
+  // Converte os argumentos para string para facilitar a verificação
+  const logMessage = args.join(" ");
+
+  // Captura mensagens específicas para mostrar após o banner
+  if (logMessage.includes("Modelos inicializados")) {
+    // Não capturamos nem exibimos esta mensagem
+    return;
+  }
+  if (logMessage.includes("Assinado nos canais Redis com sucesso")) {
+    capturedMessages.redisConnection = logMessage;
+    return; // Não exibe agora
+  }
+  if (logMessage.includes("Servidor rodando na porta")) {
+    capturedMessages.serverRunning = logMessage;
+    return; // Não exibe agora
+  }
+
+  // Continua filtrando logs indesejados
+  if (
+    logMessage.includes("Modelo registrado:") ||
+    logMessage.includes("Configuration Summary:") ||
+    logMessage.includes("Endpoint local") ||
+    (logMessage.includes("Modo de modelo:") && !logMessage.includes("eL.ia"))
+  ) {
+    return; // Não exibe estes logs
+  }
+
+  // Exibe o restante dos logs normalmente
+  originalConsoleLog.apply(console, args);
+};
+
+// Exibe o banner eL.ia no início da aplicação com linhas de separação
+console.log("\n" + "=".repeat(80) + "\n");
+
+// ASCII art da nave espacial
+const spaceshipArt = `
+     /\\
+    /  \\
+   |    |
+  /|    |\\
+ / |    | \\
+/__|____|__\\
+   /    \\
+  /      \\
+`;
+
+figlet.text(
+  "eL.ia",
+  {
+    font: "Larry 3D",
+    horizontalLayout: "full",
+    verticalLayout: "default",
+    width: 80,
+    whitespaceBreak: false,
+  },
+  (err: Error | null, result?: string) => {
+    if (err) {
+      console.log("Algo deu errado ao gerar o banner...");
+      console.dir(err);
+      return;
+    }
+
+    if (result) {
+      // Adiciona a nave ao final de cada linha do logo
+      const logoLines = result.split("\n");
+      const spaceshipLines = spaceshipArt.split("\n");
+
+      // Calcula a largura do logo para posicionar a nave
+      const logoWidth = Math.max(...logoLines.map((line) => line.length));
+
+      // Calcula a largura total da arte (logo + nave)
+      const totalArtWidth =
+        logoWidth +
+        Math.max(...spaceshipLines.map((line) => line.trim().length)) +
+        2;
+
+      // Calcula o padding para centralizar na tela de 80 caracteres
+      const sidePadding = Math.floor((80 - totalArtWidth) / 2);
+
+      // Combina o logo e a nave
+      const combinedLines = logoLines.map((line, index) => {
+        // Preenche a linha do logo até a largura máxima
+        const paddedLine = line.padEnd(logoWidth);
+        // Adiciona a linha correspondente da nave (se existir)
+        if (index < spaceshipLines.length && spaceshipLines[index]) {
+          // Adiciona padding à esquerda para centralizar a arte completa
+          return (
+            " ".repeat(sidePadding) + paddedLine + "  " + spaceshipLines[index]
+          );
+        }
+        // Se não há linha correspondente da nave, apenas centraliza a linha do logo
+        return " ".repeat(sidePadding) + paddedLine;
+      });
+
+      // Exibe o resultado combinado
+      console.log(combinedLines.join("\n"));
+
+      // Adiciona a frase centralizada
+      const subtitle = "Seu buscador inteligente";
+      const padding = Math.floor((80 - subtitle.length) / 2);
+      console.log("\n" + " ".repeat(padding) + subtitle + "\n");
+
+      // Linha de separação inferior
+      console.log("=".repeat(80) + "\n");
+
+      // Arte ASCII de botões com os dizeres solicitados
+      const buttons = [
+        "┌────────────┐ ┌─────────┐ ┌─────────────┐ ┌────────────┐",
+        "│    Busque   │ │   Use   │ │ Codeifique  │ │   Acesse   │",
+        "└────────────┘ └─────────┘ └─────────────┘ └────────────┘",
+      ];
+
+      // Centraliza e exibe os botões
+      buttons.forEach((line) => {
+        const centerPadding = Math.floor((80 - line.length) / 2);
+        originalConsoleLog(" ".repeat(centerPadding) + line);
+      });
+
+      // Adiciona uma linha em branco após os botões
+      originalConsoleLog("");
+
+      // Exibe apenas as mensagens relevantes capturadas
+      if (capturedMessages.redisConnection) {
+        // Centraliza a mensagem de conexão Redis
+        const redisMsg = capturedMessages.redisConnection;
+        const centerPadding = Math.floor((80 - redisMsg.length) / 2);
+        originalConsoleLog(" ".repeat(centerPadding) + redisMsg);
+      }
+      if (capturedMessages.serverRunning) {
+        // Centraliza a mensagem de servidor rodando
+        const serverMsg = capturedMessages.serverRunning;
+        const centerPadding = Math.floor((80 - serverMsg.length) / 2);
+        originalConsoleLog(" ".repeat(centerPadding) + serverMsg);
+      }
+    }
+  }
+);
 
 // Importar serviço Redis
 import {
@@ -60,7 +208,7 @@ interface ServerLog {
 /**
  * Tamanho máximo do array de logs para evitar crescimento ilimitado.
  */
-const MAX_LOGS = 1000;
+const MAX_LOGS = 10000;
 
 /**
  * Array para armazenar os logs do servidor.

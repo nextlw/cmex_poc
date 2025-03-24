@@ -191,9 +191,10 @@ export class ModelService extends EventEmitter {
       });
     }
 
-    this.log("info", "Modelos inicializados", {
-      count: Object.keys(this.configs).length,
-    });
+    // Provável linha que exibe a mensagem de inicialização
+    // this.log("info", `Modelos inicializados`, {
+    //   count: Object.keys(this.configs).length,
+    // });
   }
 
   /**
@@ -201,11 +202,8 @@ export class ModelService extends EventEmitter {
    */
   public registerModel(config: ModelConfig): void {
     this.configs[config.modelName] = config;
-    this.log("info", `Modelo registrado: ${config.modelName}`, {
-      provider: config.provider,
-      displayName: config.displayName,
-      supportsStreaming: config.supportsStreaming,
-    });
+    // Não exibir mensagens individuais de registro de modelos
+    // Apenas armazenar para contagem final
   }
 
   /**
