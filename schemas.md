@@ -4,7 +4,8 @@
 
 1. [Introdução](#introdução)
 2. [Fluxo de Dados](#fluxo-de-dados)
-3. [Schemas Utilizados](#schemas-utilizados)
+3. [Configuração do Sistema](#configuração-do-sistema)
+4. [Schemas Utilizados](#schemas-utilizados)
    - [Schema de Busca](#schema-de-busca)
    - [Schema de Resposta](#schema-de-resposta)
    - [Schema de Visita](#schema-de-visita)
@@ -14,9 +15,14 @@
    - [Schema de Leitura](#schema-de-leitura)
    - [Schema de Resposta Alternativa](#schema-de-resposta-alternativa)
    - [Schema de Desduplicação](#schema-de-desduplicação)
-4. [Formato de Resposta do Sistema](#formato-de-resposta-do-sistema)
-5. [Análise de Erros](#análise-de-erros)
-6. [Conclusão](#conclusão)
+   - [Schema de Avaliação de Qualidade](#schema-de-avaliação-de-qualidade)
+   - [Schema de Análise de Erro](#schema-de-análise-de-erro)
+   - [Schema de Resposta Definitiva](#schema-de-resposta-definitiva)
+5. [Formato de Resposta do Sistema](#formato-de-resposta-do-sistema)
+6. [Análise de Erros](#análise-de-erros)
+7. [Modelos Suportados](#modelos-suportados)
+8. [Conclusão](#conclusão)
+9. [Fluxo Detalhado do Processamento](#fluxo-detalhado-do-processamento)
 
 ## Introdução
 
@@ -44,6 +50,94 @@ flowchart TD
     K --> C
     L -->|SSE| A
 ```
+
+## Configuração do Sistema
+
+O sistema utiliza uma configuração modular que define os modelos e parâmetros utilizados para cada componente. A seguir está um exemplo da configuração extraída dos logs:
+
+```json
+{
+  "provider": {
+    "name": "gemini",
+    "model": "gemini-2.0-flash"
+  },
+  "search": {
+    "provider": "jina"
+  },
+  "tools": {
+    "coder": {
+      "model": "gemini-2.0-flash",
+      "temperature": 0.7,
+      "maxTokens": 8000
+    },
+    "searchGrounding": {
+      "model": "gemini-2.0-flash",
+      "temperature": 0,
+      "maxTokens": 8000
+    },
+    "dedup": {
+      "model": "gemini-2.0-flash",
+      "temperature": 0.1,
+      "maxTokens": 8000
+    },
+    "evaluator": {
+      "model": "gemini-2.0-flash",
+      "temperature": 0,
+      "maxTokens": 8000
+    },
+    "errorAnalyzer": {
+      "model": "gemini-2.0-flash",
+      "temperature": 0,
+      "maxTokens": 8000
+    },
+    "queryRewriter": {
+      "model": "gemini-2.0-flash",
+      "temperature": 0.1,
+      "maxTokens": 8000
+    },
+    "agent": {
+      "model": "gemini-2.0-flash",
+      "temperature": 0.7,
+      "maxTokens": 8000
+    },
+    "agentBeastMode": {
+      "model": "gemini-2.0-flash",
+      "temperature": 0.7,
+      "maxTokens": 8000
+    },
+    "fallback": {
+      "model": "gemini-2.0-flash",
+      "temperature": 0,
+      "maxTokens": 8000
+    }
+  },
+  "defaults": {
+    "stepSleep": 0
+  }
+}
+```
+
+**Parâmetros:**
+
+- **provider**: Define o provedor e modelo principal a ser utilizado pelo sistema.
+  - **name**: Nome do provedor (ex: "gemini").
+  - **model**: Modelo específico a ser utilizado (ex: "gemini-2.0-flash").
+- **search**: Configuração do provedor de busca.
+  - **provider**: Nome do provedor de busca (ex: "jina").
+- **tools**: Conjunto de ferramentas utilizadas pelo sistema, cada uma com sua própria configuração.
+  - **coder**: Ferramenta para geração de código.
+  - **searchGrounding**: Ferramenta para fundamentar buscas.
+  - **dedup**: Ferramenta para desduplicação de consultas.
+  - **evaluator**: Ferramenta para avaliação de respostas.
+  - **errorAnalyzer**: Ferramenta para análise de erros.
+  - **queryRewriter**: Ferramenta para reescrita de consultas.
+  - **agent**: Ferramenta principal do agente.
+  - **agentBeastMode**: Versão mais potente do agente.
+  - **fallback**: Ferramenta de fallback para casos de falha.
+- **defaults**: Configurações padrão do sistema.
+  - **stepSleep**: Tempo de espera entre etapas (em milissegundos).
+
+**Propósito:** Esta configuração define o comportamento e as capacidades do sistema, especificando quais modelos são utilizados para cada tipo de tarefa e quais são seus parâmetros (temperatura, número máximo de tokens, etc.). Isso permite uma personalização detalhada do comportamento do sistema.
 
 ## Schemas Utilizados
 
@@ -188,30 +282,30 @@ flowchart TD
 
 ```json
 {
-  "action": "action-answer",
+  "action": "answer",
   "think": "String - Processo de pensamento",
   "answer": "String - Conteúdo da resposta",
+  "nota_detalhada": "String - Informações adicionais e contexto",
   "references": [
     {
       "exactQuote": "String - Citação exata",
       "url": "String - URL da fonte"
     }
-  ],
-  "Nota Detalhada": "String - Informações adicionais e contexto"
+  ]
 }
 ```
 
 **Parâmetros:**
 
-- **action**: Define a ação como "action-answer", indicando uma resposta com ação específica.
+- **action**: Define a ação como "answer", indicando uma resposta final.
 - **think**: Documenta o processo de pensamento por trás da resposta.
-- **answer**: O conteúdo da resposta a ser entregue ao usuário.
+- **answer**: O conteúdo principal da resposta a ser entregue ao usuário.
+- **nota_detalhada**: Campo adicional que fornece contexto e informações extras sobre o tema da resposta.
 - **references**: Array contendo referências que embasam a resposta.
-- **Nota Detalhada**: Campo adicional que fornece contexto e informações extras sobre a resposta.
 
-**Propósito:** Este schema é uma variação do schema de resposta padrão, incluindo uma "Nota Detalhada" que fornece informações adicionais e contexto mais amplo sobre o tema da resposta.
+**Propósito:** Este schema é uma variação do schema de resposta padrão, incluindo uma "nota_detalhada" que fornece informações adicionais e contexto mais amplo sobre o tema da resposta. A diferença em relação ao Schema de Resposta Alternativa anterior é a mudança na nomenclatura do campo de "Nota Detalhada" para "nota_detalhada".
 
-**Contexto de Uso:** Aparece como uma resposta completa do modelo, geralmente em um formato mais detalhado e informativo, fornecendo explicações adicionais além da resposta direta.
+**Contexto de Uso:** Conforme observado nos logs, este formato é utilizado para responder com uma estrutura mais detalhada, frequentemente usado para separar a resposta direta de informações contextuais adicionais.
 
 ### Schema de Desduplicação
 
@@ -228,6 +322,92 @@ flowchart TD
 **Propósito:** Este schema é utilizado no processo de desduplicação de consultas, garantindo que consultas semelhantes ou idênticas não sejam processadas múltiplas vezes, economizando recursos.
 
 **Contexto de Uso:** Este schema é identificado nos erros como ausente (undefined) quando o processo de desduplicação falha, gerando erros de validação.
+
+### Schema de Avaliação de Qualidade
+
+```json
+{
+  "type": "not_definitive",
+  "pass": false,
+  "think": "String - Análise da qualidade da resposta"
+}
+```
+
+ou
+
+```json
+{
+  "type": "definitive",
+  "pass": true
+}
+```
+
+**Parâmetros:**
+
+- **type**: Tipo de avaliação, podendo ser "definitive" (definitiva) ou "not_definitive" (não definitiva).
+- **pass**: Booleano indicando se a resposta passou no critério de qualidade.
+- **think**: Quando disponível, contém a análise do processo de avaliação e por que a resposta não é considerada adequada.
+
+**Propósito:** Este schema é utilizado para avaliar a qualidade da resposta gerada, determinando se ela é definitiva e satisfatória ou se precisa de mais processamento. Uma resposta marcada como "definitive" e "pass: true" é considerada pronta para ser entregue ao usuário.
+
+**Contexto de Uso:** Este schema aparece nos logs durante o processo de avaliação, após uma resposta ser gerada. Quando uma resposta não passa nos critérios de qualidade, o sistema pode tentar gerar uma nova resposta ou realizar análises adicionais.
+
+### Schema de Análise de Erro
+
+```json
+{
+  "data": {
+    "think": "String - Análise do processo de erro",
+    "answer": {
+      "steps": ["String - Passos que causaram o erro"],
+      "recommendations": ["String - Recomendações para resolver o erro"]
+    }
+  }
+}
+```
+
+**Parâmetros:**
+
+- **data**: Contém os dados da análise de erro.
+  - **think**: Análise do processo que levou ao erro.
+  - **answer**: Informações detalhadas sobre o erro e como resolvê-lo.
+    - **steps**: Lista de passos que levaram ao erro, identificando onde o processo falhou.
+    - **recommendations**: Lista de recomendações para resolver o erro e melhorar o processo.
+
+**Propósito:** Este schema é utilizado quando o sistema encontra um erro e precisa analisá-lo para identificar a causa e propor soluções. Ele fornece uma estrutura para documentar o processo que levou ao erro e sugerir formas de corrigi-lo.
+
+**Contexto de Uso:** Este schema é observado nos logs após uma falha no processamento ou quando uma resposta não passa pela validação de qualidade. Ele faz parte do mecanismo de auto-correção do sistema.
+
+### Schema de Resposta Definitiva
+
+```json
+{
+  "action": "answer",
+  "think": "String - Processo de pensamento",
+  "answer": "String - Conteúdo da resposta",
+  "references": [
+    {
+      "exactQuote": "String - Citação exata",
+      "url": "String - URL da fonte"
+    }
+  ],
+  "type": "definitive",
+  "pass": true
+}
+```
+
+**Parâmetros:**
+
+- **action**: Define a ação como "answer", indicando uma resposta final.
+- **think**: Documenta o processo de pensamento por trás da resposta.
+- **answer**: O conteúdo principal da resposta a ser entregue ao usuário.
+- **references**: Array contendo referências que embasam a resposta.
+- **type**: Indica que a resposta é "definitive" (definitiva).
+- **pass**: Booleano indicando que a resposta passou nos critérios de qualidade.
+
+**Propósito:** Este schema combina o schema de resposta padrão com o schema de avaliação de qualidade, indicando que a resposta é definitiva e pronta para ser entregue ao usuário. Ele é usado como o formato final antes da resposta ser enviada.
+
+**Contexto de Uso:** Este schema é observado nos logs quando uma resposta passou por todos os processos de validação e está pronta para ser entregue ao usuário final.
 
 ## Formato de Resposta do Sistema
 
@@ -316,6 +496,44 @@ Erro na validação do schema: ZodError: [
 
 **Impacto:** Quando este erro ocorre, o processamento normal é interrompido e o sistema precisa realizar uma recuperação, geralmente tentando reprocessar a consulta ou prosseguir sem a desduplicação.
 
+## Modelos Suportados
+
+Com base nos logs analisados, o sistema suporta os seguintes modelos:
+
+1. **local-model**: Um modelo que pode ser executado localmente.
+
+   - **provider**: 'local'
+   - **displayName**: 'Local'
+   - **supportsStreaming**: true
+
+2. **gpt-4**: Modelo da OpenAI.
+
+   - **provider**: 'openai'
+   - **displayName**: 'GPT-4'
+   - **supportsStreaming**: true
+
+3. **gpt-3.5-turbo**: Versão menos robusta do modelo da OpenAI.
+
+   - **provider**: 'openai'
+   - **displayName**: 'GPT-3.5'
+   - **supportsStreaming**: true
+
+4. **claude-3-opus-20240229**: Modelo da Anthropic.
+
+   - **provider**: 'anthropic'
+   - **displayName**: 'Claude'
+   - **supportsStreaming**: true
+
+5. **gemini-1.5-pro**: Modelo do Google.
+
+   - **provider**: 'google'
+   - **displayName**: 'Gemini Pro'
+   - **supportsStreaming**: true
+
+6. **qwen2.5-7b-instruct-1m**: Um modelo específico utilizado em algumas requisições, aparentemente implementado localmente.
+
+Todos esses modelos suportam streaming, o que permite a transmissão de respostas em tempo real para o cliente usando Server-Sent Events (SSE).
+
 ## Conclusão
 
 O sistema utiliza uma arquitetura baseada em Server-Sent Events (SSE) para comunicação em tempo real entre o backend e o frontend. Os schemas aqui documentados estruturam as diferentes etapas do processamento, desde a busca inicial até a entrega da resposta final, passando por validação e controle de qualidade.
@@ -323,3 +541,89 @@ O sistema utiliza uma arquitetura baseada em Server-Sent Events (SSE) para comun
 Esta estruturação permite um fluxo de trabalho organizado e controlado, com capacidade de auto-correção através de mecanismos de reflexão e análise de erros. A ênfase na atribuição adequada de fontes e na precisão das citações demonstra um compromisso com a qualidade e confiabilidade das respostas.
 
 Os diversos schemas e formatos de resposta permitem que o sistema seja flexível e adaptável a diferentes tipos de consultas e requisitos de informação, ao mesmo tempo que mantém a consistência e a qualidade das respostas. O mecanismo de tratamento de erros proporciona resiliência e capacidade de recuperação em situações adversas.
+
+O sistema também oferece suporte a uma variedade de modelos de diferentes provedores, com flexibilidade para executar modelos localmente ou utilizar serviços externos, dependendo das necessidades e restrições de cada caso de uso.
+
+## Fluxo Detalhado do Processamento
+
+O diagrama abaixo apresenta um fluxo mais detalhado do processamento de uma consulta no sistema, baseado na análise dos logs:
+
+```mermaid
+flowchart TD
+    A[Cliente Browser] -->|POST /api/query| B[Servidor Node.js]
+    B -->|Recebe query e modelo| C[Inicialização]
+    C -->|"Configuração do modelo
+    (provider, temperatura, maxTokens)"| D[Preparação do Cliente]
+    D -->|"Cria LocalModelClient
+    ou usa API externa"| E{Ciclo de Processamento}
+
+    E -->|"action: search
+    searchQuery, think"| F[Busca de Informações]
+    F -->|Envia requisição ao endpoint| G[Busca em Provedor]
+    G -->|"URL, title, tokens"| H[Resultados de Busca]
+
+    E -->|"action: visit
+    url-list, think"| I[Visita URLs]
+    I -->|Coleta conteúdo| J[Leitura de Conteúdo]
+    J -->|"title, url, tokens"| K[Dados Coletados]
+
+    E -->|"action: reflect
+    questionsToAnswer, think"| L[Reflexão]
+    L -->|Análise do progresso| M[Próximos Passos]
+
+    E -->|"action: answer
+    answer, references, think"| N[Geração de Resposta]
+    N -->|"Resposta encontrada!
+    Verificando qualidade..."| O[Verificação de Qualidade]
+
+    O -->|"type: definitive
+    pass: true"| P[Resposta Válida]
+
+    O -->|"type: not_definitive
+    pass: false
+    think: análise"| Q[Resposta Inválida]
+
+    Q -->|Análise de erro| R[Diagnóstico de Erro]
+    R -->|"data: {
+      think: análise,
+      answer: {
+        steps: [...],
+        recommendations: [...]
+      }
+    }"| S[Recomendações]
+
+    S --> E
+
+    P -->|"text, usageMetadata"| T[Formatação Final]
+    T -->|SSE| A
+
+    subgraph Modelos [Modelos Disponíveis]
+        MA[local-model]
+        MB[gpt-4]
+        MC[gpt-3.5-turbo]
+        MD[claude-3-opus]
+        ME[gemini-1.5-pro]
+        MF[qwen2.5-7b-instruct-1m]
+    end
+
+    subgraph Ferramentas [Ferramentas de Processamento]
+        TA[coder]
+        TB[searchGrounding]
+        TC[dedup]
+        TD[evaluator]
+        TE[errorAnalyzer]
+        TF[queryRewriter]
+        TG[agent]
+        TH[agentBeastMode]
+        TI[fallback]
+    end
+
+    C --- Modelos
+    D --- Ferramentas
+```
+
+O fluxo acima ilustra o processamento completo de uma consulta, desde o momento em que o cliente envia uma requisição até o recebimento da resposta final. Cada etapa do processamento utiliza schemas específicos e pode acionar diferentes ferramentas conforme necessário.
+
+O ciclo de processamento principal (representado pelo nó E) pode envolver múltiplas iterações entre as ações de busca, visita, reflexão e resposta, até que uma resposta definitiva e de alta qualidade seja obtida. Quando ocorrem erros ou a resposta não atende aos critérios de qualidade, o sistema realiza uma análise detalhada e tenta corrigir o problema antes de prosseguir.
+
+Os modelos disponíveis e as ferramentas de processamento são configuráveis e podem ser ajustados conforme as necessidades específicas de cada aplicação.
