@@ -627,3 +627,321 @@ O fluxo acima ilustra o processamento completo de uma consulta, desde o momento 
 O ciclo de processamento principal (representado pelo nó E) pode envolver múltiplas iterações entre as ações de busca, visita, reflexão e resposta, até que uma resposta definitiva e de alta qualidade seja obtida. Quando ocorrem erros ou a resposta não atende aos critérios de qualidade, o sistema realiza uma análise detalhada e tenta corrigir o problema antes de prosseguir.
 
 Os modelos disponíveis e as ferramentas de processamento são configuráveis e podem ser ajustados conforme as necessidades específicas de cada aplicação.
+
+## Fluxo HabilityCode
+
+```mermaid
+flowchart TD
+    A[Usuário/IDE] -->|Envia requisição de tarefa| B[Servidor HabilityCode]
+    B -->|Análise inicial da tarefa| C[Inicialização]
+    C -->|"Configuração de ambiente
+    (linguagem, framework, bibliotecas)"| D[Preparação do Agente]
+    D -->|"Configura executor de código
+    e contexto de desenvolvimento"| E{Ciclo de Desenvolvimento}
+
+    E -->|"action: analyze_task
+    taskDescription, context"| F[Análise de Requisitos]
+    F -->|Decomposição do problema| G[Planejamento de Solução]
+    G -->|"plano, dependências, etapas"| H[Estratégia de Implementação]
+
+    E -->|"action: search_docs
+    docQuery, language"| I[Consulta Documentação]
+    I -->|Busca APIs e exemplos| J[Leitura da Documentação]
+    J -->|"snippets, métodos, parâmetros"| K[Referências Técnicas]
+
+    E -->|"action: plan_code
+    architecture, components"| L[Arquitetura de Solução]
+    L -->|Definição de estrutura| M[Design de Código]
+
+    E -->|"action: code_gen
+    functionality, tests"| N[Geração de Código]
+    N -->|"Código criado!
+    Verificando qualidade..."| O[Verificação Sintática/Semântica]
+
+    O -->|"status: functional
+    success: true"| P[Código Funcional]
+
+    O -->|"status: error
+    success: false
+    diagnostics: análise"| Q[Código com Problemas]
+
+    Q -->|Análise de erros| R[Diagnóstico Técnico]
+    R -->|"report: {
+      error_type: tipo,
+      location: posição,
+      solutions: [
+        abordagens,
+        correções
+      ]
+    }"| S[Sugestões de Correção]
+
+    S --> E
+
+    P -->|"code, tests, documentation"| T[Integração e Execução]
+    T -->|Resultados em tempo real| A
+
+    subgraph Linguagens [Linguagens Suportadas]
+        LA[Python]
+        LB[JavaScript/TypeScript]
+        LC[Java]
+        LD[C/C++]
+        LE[Go]
+        LF[Rust]
+    end
+
+    subgraph Ferramentas [Ferramentas de Desenvolvimento]
+        TA[codeAnalyzer]
+        TB[testGenerator]
+        TC[dependencyResolver]
+        TD[codeExecutor]
+        TE[debugger]
+        TF[optimizationEngine]
+        TG[documentationGenerator]
+        TH[securityScan]
+        TI[performanceProfiler]
+    end
+
+    subgraph Ambientes [Ambientes de Execução]
+        EA[Sandbox isolado]
+        EB[Container Docker]
+        EC[Ambiente virtual]
+        ED[Servidor de produção]
+        EE[Ambiente de testes]
+    end
+
+    C --- Linguagens
+    D --- Ferramentas
+    T --- Ambientes
+```
+
+```mermaid
+
+flowchart TD
+    A[Cliente Browser] -->|POST /api/query| B[Servidor Node.js]
+    B -->|Recebe query e modelo| C[Inicialização]
+    C -->|"Configuração do modelo
+    (provider, temperatura, maxTokens)"| D[Preparação do Cliente]
+    D -->|"Cria LocalModelClient
+    ou usa API externa"| E{Ciclo de Processamento}
+
+    E -->|"action: analyze_requirements
+    query, objectives, constraints"| F[Análise de Requisitos]
+    F -->|Decomposição do problema| G[Definição da Tarefa]
+    G -->|"task_definition, edge_cases, constraints"| H[Escopo Definido]
+
+    E -->|"action: select_language
+    domain, performance_needs, compatibility"| I[Seleção de Linguagem]
+    I -->|Avaliação de paradigmas| J[Decisão Tecnológica]
+    J -->|"language, framework, libraries"| K[Stack Tecnológico]
+
+    E -->|"action: research_approaches
+    patterns, algorithms, techniques"| L[Pesquisa de Abordagens]
+    L -->|Análise comparativa| M[Avaliação de Métodos]
+    M -->|"selected_approach, alternatives, tradeoffs"| N[Estratégia Definida]
+
+    E -->|"action: code_generation
+    approach, structure, tests"| O[Geração de Código]
+    O -->|"Código gerado!
+    Verificando qualidade..."| P[Validação do Código]
+
+    P -->|"quality: high
+    pass: true
+    metrics: {complexity, coverage, performance}"| Q[Código Aprovado]
+
+    P -->|"quality: insufficient
+    pass: false
+    issues: {type, severity, location}"| R[Código com Problemas]
+
+    R -->|Diagnóstico profundo| S[Análise de Erro]
+    S -->|"error_analysis: {
+      root_cause: diagnóstico,
+      context: escopo afetado,
+      solution_paths: [
+        abordagem_1,
+        abordagem_2,
+        fallback_option
+      ],
+      learning_points: lições_aprendidas
+    }"| T[Estratégias de Correção]
+
+    T -->|"action: refactor_code
+    target_areas, approach"| U[Refatoração]
+
+    T -->|"action: debug_code
+    issue_points, test_cases"| V[Depuração]
+
+    T -->|"action: alternative_approach
+    new_strategy, justification"| W[Abordagem Alternativa]
+
+    T -->|"action: fallback_implementation
+    simpler_solution, limitations"| X[Implementação de Fallback]
+
+    U --> E
+    V --> E
+    W --> E
+    X --> E
+
+    Q -->|"code: {
+      source_files,
+      tests,
+      documentation,
+      execution_instructions
+    }"| Y[Pacote de Entrega]
+
+    Y -->|"action: execute_code
+    environment, parameters"| Z[Execução e Monitoramento]
+    Z -->|"results: {
+      output,
+      performance,
+      logs,
+      analytics
+    }"| A
+
+    subgraph Linguagens [Linguagens e Frameworks]
+        LA[Python/Django/Flask]
+        LB[JavaScript/Node.js/React]
+        LC[Java/Spring/Android]
+        LD[C#/.NET/Unity]
+        LE[Ruby/Rails]
+        LF[Go/Gin]
+        LG[Rust/Actix]
+        LH[PHP/Laravel]
+        LI[Swift/UIKit/SwiftUI]
+        LJ[Kotlin/JetBrains]
+    end
+
+    subgraph Algoritmos [Algoritmos e Padrões]
+        AA[Estruturas de Dados]
+        AB[Algoritmos de Busca]
+        AC[Algoritmos de Ordenação]
+        AD[Machine Learning]
+        AE[Processamento de Linguagem Natural]
+        AF[Visão Computacional]
+        AG[Padrões de Design]
+        AH[Arquiteturas de Software]
+        AI[Otimização de Performance]
+        AJ[Segurança e Criptografia]
+    end
+
+    subgraph Ferramentas [Ferramentas de Desenvolvimento]
+        TA[codeAnalyzer]
+        TB[testGenerator]
+        TC[dependencyResolver]
+        TD[codeExecutor]
+        TE[debugger]
+        TF[optimizationEngine]
+        TG[documentationGenerator]
+        TH[securityScan]
+        TI[performanceProfiler]
+        TJ[fallbackManager]
+        TK[edgeCaseHandler]
+        TL[compatibilityChecker]
+        TM[errorPredictor]
+    end
+
+    subgraph Ambientes [Ambientes de Execução]
+        EA[Sandbox Isolado]
+        EB[Container Docker]
+        EC[VM Dedicada]
+        ED[Serverless Functions]
+        EE[Kubernetes Cluster]
+        EF[CI/CD Pipeline]
+        EG[Ambiente de Testes]
+        EH[Ambiente de Staging]
+        EI[Ambiente de Produção]
+    end
+
+    C --- Linguagens
+    D --- Ferramentas
+    I --- Linguagens
+    L --- Algoritmos
+    Z --- Ambientes
+```
+
+```mermaid
+flowchart TD
+    A[Cliente Browser] -->|POST /api/query| B[Servidor HabilityCode]
+    B -->|"Analisa: adicionar lista de compras ao arquivo X"| C[Inicialização]
+    C -->|"Configuração do agente\n(permissões, sandbox, escopo)"| D[Preparação do Ambiente]
+    D -->|"Configura sandbox seguro\ncom acesso controlado"| E{Ciclo de Processamento}
+
+    E -->|"action: parse_user_intent\nintent: manipular_arquivo, adicionar_conteúdo\ntarget: arquivo_X, lista_compras"| F[Análise da Intenção]
+    F -->|Identifica operações necessárias| G[Decomposição da Tarefa]
+    G -->|"tasks: localizar_arquivo, abrir_arquivo,\nadicionar_conteúdo, salvar_arquivo"| H[Plano de Execução]
+
+    E -->|"action: system_discovery\nenvironment: os_type, permissions, paths"| I[Descoberta do Sistema]
+    I -->|Detecta ambiente macOS| J[Identificação de APIs]
+    J -->|"apis: filesystem, spotlight, terminal"| K[Métodos de Acesso]
+
+    E -->|"action: generate_commands\nos: macOS, task: localizar_arquivo"| L[Geração de Comandos]
+    L -->|"Comandos relevantes para macOS:\n1. mdfind 'nome_arquivo'\n2. find ~ -name 'nome_arquivo'\n3. Spotlight via script AppleScript"| M[Conjunto de Comandos]
+
+    E -->|"action: execute_command\ncommand: Terminal('mdfind arquivo_X')\nfallbacks: find, AppleScript"| N[Execução de Comando]
+    N -->|"Executa no sandbox\ncom permissões limitadas"| O[Retorno do Sistema]
+
+    O -->|"status: success\nresult: path: '/Users/nome/arquivo_X'"| P[Arquivo Localizado]
+
+    O -->|"status: error\nerror_code: 'FILE_NOT_FOUND'\ndetails: 'Arquivo não encontrado'"| Q[Erro na Execução]
+
+    Q -->|Análise do erro| R[Diagnóstico do Problema]
+    R -->|"diagnosis:\nerror_type: 'acesso_sistema'\nroot_cause: 'arquivo inexistente ou sem permissão'\napproaches: criar_arquivo, verificar_permissões, buscar_alternativas"| S[Estratégias de Recuperação]
+
+    S -->|"action: recover_operation\napproach: criar_arquivo\nparams: path: '/Users/nome/arquivo_X'"| T[Recuperação]
+
+    T --> E
+
+    P -->|"action: file_operation\noperation: 'open'\nmode: 'append'\npath: '/Users/nome/arquivo_X'"| U[Operação de Arquivo]
+
+    U -->|"action: write_content\ncontent: 'Lista de compras:\n- Item 1\n- Item 2\n- Item 3'\nposition: 'EOF'"| V[Adição de Conteúdo]
+
+    V -->|"action: verify_changes\noperation: 'read'\npatterns: 'Lista de compras'"| W[Verificação]
+
+    W -->|"action: save_file\npath: '/Users/nome/arquivo_X'"| X[Salvamento]
+
+    X -->|"action: generate_report\noperations: localizar, abrir, escrever, verificar, salvar\nstatus: 'success'\ndetails: 'Lista de compras adicionada com sucesso'"| Y[Relatório de Operação]
+
+    Y -->|"Resultado detalhado com\nevidências e passos executados"| A
+
+    subgraph Métodos_Acesso[Métodos de Acesso ao Sistema]
+        MA[Terminal/Shell]
+        MB[APIs do Sistema Operacional]
+        MC[Interfaces de Scripting]
+        MD[Bibliotecas Nativas]
+        ME[Serviços do Sistema]
+    end
+
+    subgraph Operações_Arquivo[Operações de Arquivo]
+        OA[Localizar find/search]
+        OB[Criar create/touch]
+        OC[Abrir open/read]
+        OD[Editar write/append]
+        OE[Verificar validate/check]
+        OF[Salvar save/close]
+        OG[Mover move/rename]
+        OH[Excluir delete/remove]
+    end
+
+    subgraph Mecanismos_Recuperação[Mecanismos de Recuperação]
+        RA[Criar recursos ausentes]
+        RB[Solicitar permissões]
+        RC[Alternar métodos de acesso]
+        RD[Usar locais alternativos]
+        RE[Oferecer operação manual]
+        RF[Registrar para tentativa posterior]
+    end
+
+    subgraph Verificações_Segurança[Verificações de Segurança]
+        SA[Validação de caminhos]
+        SB[Sanitização de inputs]
+        SC[Escopo limitado de acesso]
+        SD[Validação de operações]
+        SE[Verificação de permissões]
+        SF[Auditoria de ações]
+    end
+
+    D --- Verificações_Segurança
+    I --- Métodos_Acesso
+    N --- Métodos_Acesso
+    U --- Operações_Arquivo
+    S --- Mecanismos_Recuperação
+```
