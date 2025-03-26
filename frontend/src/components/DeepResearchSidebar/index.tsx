@@ -1,7 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import api from "../../axiosConfig";
 import { DeepResearchSidebarProps } from "./types";
 import "./styles.css";
+import {
+  FaProjectDiagram,
+  FaArrowDown,
+  FaArrowUp,
+  FaTimes,
+  FaCheck,
+  FaList,
+  FaPencilAlt,
+  FaBook,
+  FaFile,
+  FaLightbulb,
+  FaExclamationTriangle,
+} from "react-icons/fa";
+import clsx from "clsx";
 
 interface ResearchStep {
   id: number;
@@ -349,15 +363,18 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         // Todos os passos anteriores estão completos
         for (let i = 0; i < step; i++) {
           updatedSteps[i].status = "completed";
-          updatedSteps[i].minimized = true; // Sempre minimiza passos anteriores
+          // Não força minimização - preserva o estado definido pelo usuário
+          // updatedSteps[i].minimized = true;
         }
         // O passo atual está em processamento
         updatedSteps[step].status = "processing";
-        updatedSteps[step].minimized = false; // Garante que o passo atual está expandido
+        // Não força expansão - deixa o usuário controlar
+        // updatedSteps[step].minimized = false;
 
-        // Garante que todos os passos futuros também estão minimizados
+        // Garante que todos os passos futuros também estão mantidos como estão
         for (let i = step + 1; i < updatedSteps.length; i++) {
-          updatedSteps[i].minimized = true;
+          // Não força minimização - preserva o estado definido pelo usuário
+          // updatedSteps[i].minimized = true;
         }
 
         // Atualiza o conteúdo do passo atual com a mensagem de status
@@ -430,8 +447,12 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
       const finalUpdatedSteps = [...steps];
 
       finalUpdatedSteps.forEach((s, idx) => {
-        s.minimized = idx !== finalStepIndex;
+        // Preserva o estado de minimizado, apenas definindo o status
+        // s.minimized = idx !== finalStepIndex;
         s.status = idx <= finalStepIndex ? "completed" : "waiting";
+
+        // Garante que nenhum passo tenha a propriedade hidden ativa
+        s.hidden = false;
       });
 
       setSteps(finalUpdatedSteps);
@@ -484,8 +505,8 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
       };
 
       setFinalReport(report);
-      // Inicialmente, mostra o resumo (não os passos detalhados)
-      setShowDetailedSteps(false);
+      // Não redefine o modo de visualização para permitir que o usuário escolha qual visualização ver
+      // setShowDetailedSteps(false);
 
       // Define todos os estados de validação como concluídos
       setValidationStatus({
@@ -510,7 +531,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         window.clearInterval(intervalId);
       }
     };
-  }, [requestId, productName, ncmCode, steps]);
+  }, [requestId, productName, ncmCode]); // Removendo steps da dependência
 
   // Função de cancelamento
   const handleCancelRequest = () => {
@@ -576,130 +597,14 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
   useEffect(() => {
     if (!isOpen || !sidebarRef.current || !stepsContainerRef.current) return;
 
-    const checkAndAdjustContent = () => {
-      const sidebarHeight = sidebarRef.current?.clientHeight || 0;
-      const headerHeight =
-        sidebarRef.current?.querySelector(".deep-research-sidebar-header")
-          ?.clientHeight || 0;
-      const contentMaxHeight = sidebarHeight - headerHeight - 40; // 40px para margem de segurança
-
-      const stepsContainer = stepsContainerRef.current;
-      if (!stepsContainer) return;
-
-      // Clonar os passos para trabalhar
-      const updatedSteps = [...steps];
-      let minimizedCount = 0;
-      let hiddenCount = 0;
-      let needsAdjustment = stepsContainer.scrollHeight > contentMaxHeight;
-
-      if (needsAdjustment) {
-        // Começamos minimizando os passos completos mais antigos
-        for (let i = 0; i < currentStepIndex && needsAdjustment; i++) {
-          if (
-            updatedSteps[i].status === "completed" &&
-            !updatedSteps[i].minimized
-          ) {
-            updatedSteps[i].minimized = true;
-            minimizedCount++;
-
-            // Verificar se ainda precisa de ajuste após minimizar
-            const wouldBeHeight = calculateHeightAfterAdjustment(updatedSteps);
-            needsAdjustment = wouldBeHeight > contentMaxHeight;
-          }
-        }
-
-        // Se ainda precisar de ajuste, começar a esconder os mais antigos
-        if (needsAdjustment) {
-          for (let i = 0; i < currentStepIndex - 1 && needsAdjustment; i++) {
-            if (!updatedSteps[i].hidden) {
-              updatedSteps[i].hidden = true;
-              hiddenCount++;
-
-              // Verificar se ainda precisa de ajuste após esconder
-              const wouldBeHeight =
-                calculateHeightAfterAdjustment(updatedSteps);
-              needsAdjustment = wouldBeHeight > contentMaxHeight;
-            }
-          }
-        }
-
-        // Atualizar os passos se fizemos alguma alteração
-        if (minimizedCount > 0 || hiddenCount > 0) {
-          setSteps(updatedSteps);
-        }
-      } else {
-        // Agora, só restauramos a visibilidade dos itens, não expandimos automaticamente
-        // já que queremos seguir a regra de apenas um expandido por vez
-        let anyRestored = false;
-
-        // Só tentamos mostrar itens ocultos, sem expandir
-        for (let i = currentStepIndex - 2; i >= 0; i--) {
-          if (updatedSteps[i].hidden) {
-            // Testar se remover o hidden causaria overflow
-            const testSteps = [...updatedSteps];
-            testSteps[i].hidden = false;
-            // Mantemos ele minimizado
-            testSteps[i].minimized = true;
-
-            const wouldBeHeight = calculateHeightAfterAdjustment(testSteps);
-            if (wouldBeHeight <= contentMaxHeight) {
-              updatedSteps[i].hidden = false;
-              // Mantemos ele minimizado
-              updatedSteps[i].minimized = true;
-              anyRestored = true;
-            } else {
-              break; // Se não couber, não tente mais
-            }
-          }
-        }
-
-        // Atualizar os passos se restauramos algum
-        if (anyRestored) {
-          setSteps(updatedSteps);
-        }
-      }
-    };
-
-    // Função auxiliar para estimar a altura após ajustes
-    const calculateHeightAfterAdjustment = (adjustedSteps: ResearchStep[]) => {
-      // Cria uma aproximação da altura baseada no número de itens visíveis e seus estados
-      const visibleSteps = adjustedSteps.filter((step) => !step.hidden);
-
-      // Aproximação de altura para cada tipo de item
-      const minimizedItemHeight = 50; // altura aproximada do item minimizado (só título)
-      const normalItemHeight = 100; // altura base para um item normal
-      const detailsMultiplier = 50; // multiplicador para cada detail
-
-      let totalHeight = 0;
-
-      visibleSteps.forEach((step) => {
-        if (step.minimized) {
-          totalHeight += minimizedItemHeight;
-        } else {
-          let itemHeight = normalItemHeight;
-
-          // Adiciona altura extra para detalhes, se existirem
-          if (step.details && step.details.length > 0) {
-            itemHeight += step.details.length * detailsMultiplier;
-          }
-
-          totalHeight += itemHeight;
-        }
-      });
-
-      return totalHeight;
-    };
-
-    // Executar verificação quando os passos mudam ou quando o tamanho da janela muda
-    checkAndAdjustContent();
-
+    // Função para lidar com resize da janela - não ajusta mais os passos automaticamente
     const handleResize = () => {
-      checkAndAdjustContent();
+      // Apenas atualizar se necessário, sem forçar minimização
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [steps, currentStepIndex, isOpen]);
+  }, [isOpen]); // Removendo steps e currentStepIndex das dependências para não recalcular quando os passos mudam
 
   // Renderiza o relatório final
   const renderFinalReport = () => {
@@ -709,17 +614,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
       <div className="deep-research-final-report">
         <div className="final-report-header">
           <div className="final-report-title">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
+            <FaCheck className="final-report-title-icon" />
             Análise Concluída
           </div>
         </div>
@@ -825,41 +720,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
               {finalReport.evidences.slice(0, 3).map((evidence, index) => (
                 <div key={index} className={`evidence-item ${evidence.type}`}>
                   <div className="evidence-icon">
-                    {evidence.type === "law" && (
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6"></path>
-                        <path d="M19 10v11"></path>
-                        <path d="M5 10v11"></path>
-                        <path d="M5 4h14"></path>
-                        <path d="M5 10h14"></path>
-                      </svg>
-                    )}
-                    {evidence.type === "jurisprudence" && (
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                      </svg>
-                    )}
-                    {evidence.type === "technical" && (
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                      </svg>
-                    )}
+                    {renderEvidenceIcon(evidence.type)}
                   </div>
                   <div className="evidence-content">
                     <div className="evidence-text">{evidence.content}</div>
@@ -876,14 +737,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
               {finalReport.alternativeCases.map((altCase, index) => (
                 <div key={index} className="case-item">
                   <div className="case-header">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                    </svg>
+                    {renderCaseIcon()}
                     <h4>{altCase.scenario}</h4>
                   </div>
                   <div className="case-impact">{altCase.impact}</div>
@@ -899,16 +753,13 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
 
           <button
             className="view-steps-button"
-            onClick={() => setShowDetailedSteps(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowDetailedSteps(true);
+            }}
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+            <FaArrowDown />
             Ver Passos da Pesquisa (
             {steps.filter((s) => s.status === "completed").length})
           </button>
@@ -924,16 +775,13 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         <div className="detailed-steps-header">
           <button
             className="back-to-summary-button"
-            onClick={() => setShowDetailedSteps(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowDetailedSteps(false);
+            }}
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <polyline points="18 15 12 9 6 15"></polyline>
-            </svg>
+            <FaArrowUp />
             Voltar ao Resumo
           </button>
           <h3>
@@ -953,7 +801,9 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
               >
                 <div
                   className="deep-research-step-header"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     // Toggle minimizado apenas para passos concluídos ou anteriores ao atual
                     if (
                       step.status === "completed" ||
@@ -1195,6 +1045,59 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     );
   };
 
+  // Retornar uma classe baseada no status do passo
+  const getStepStatusClass = (index: number) => {
+    if (index < currentStepIndex) {
+      return "completed";
+    } else if (index === currentStepIndex) {
+      return "active";
+    } else if (steps[index]?.status === "error") {
+      return "error";
+    }
+    return "";
+  };
+
+  // Renderizar o ícone correspondente ao tipo de evidência
+  const renderEvidenceIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case "lei":
+      case "law":
+        return <FaBook className="evidence-icon" />;
+      case "jurisprudencia":
+      case "jurisprudência":
+      case "jurisprudence":
+        return <FaFile className="evidence-icon" />;
+      case "tecnico":
+      case "técnico":
+      case "technical":
+        return <FaPencilAlt className="evidence-icon" />;
+      default:
+        return <FaLightbulb className="evidence-icon" />;
+    }
+  };
+
+  // Renderizar ícone para casos alternativos
+  const renderCaseIcon = () => {
+    return <FaExclamationTriangle />;
+  };
+
+  // Renderizar o indicador do passo
+  const renderStepIndicator = (step: ResearchStep, index: number) => {
+    if (index < currentStepIndex) {
+      return <FaCheck />;
+    }
+
+    if (step.status === "processing") {
+      return <div className="deep-research-step-loading" />;
+    }
+
+    if (step.status === "error") {
+      return <FaTimes />;
+    }
+
+    return index + 1;
+  };
+
   // Retorna a estrutura visual do componente
   return (
     <aside
@@ -1207,17 +1110,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     >
       <div className="deep-research-sidebar-header">
         <div className="deep-research-sidebar-title">
-          <svg
-            className="deep-research-sidebar-title-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M9 3v18m0 0h6m-6 0H3m6-18h6m-6 0H3m18 0v18h-6" />
-          </svg>
+          <FaProjectDiagram className="deep-research-sidebar-title-icon" />
           Pesquisa Profunda
           {/* Botão de cancelamento - mostrado apenas quando está processando */}
           {(sidebarStatus === "processing" || isProcessing) && (
@@ -1226,16 +1119,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
               onClick={handleCancelRequest}
               title="Cancelar pesquisa"
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
+              <FaTimes />
               Cancelar
             </button>
           )}
@@ -1248,14 +1132,12 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
       <div className="deep-research-sidebar-content">
         {sidebarStatus === "empty" ? (
           renderEmptyState()
-        ) : sidebarStatus === "completed" &&
-          finalReport &&
-          !showDetailedSteps ? (
-          renderFinalReport()
-        ) : sidebarStatus === "completed" &&
-          finalReport &&
+        ) : sidebarStatus === "completed" && finalReport ? (
           showDetailedSteps ? (
-          renderDetailedSteps()
+            renderDetailedSteps()
+          ) : (
+            renderFinalReport()
+          )
         ) : (
           <ul className="deep-research-steps" ref={stepsContainerRef}>
             {steps.map((step, index) =>
@@ -1268,7 +1150,9 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
                 >
                   <div
                     className="deep-research-step-header"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       // Toggle minimizado apenas para passos concluídos ou anteriores ao atual
                       if (
                         step.status === "completed" ||
@@ -1294,36 +1178,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
                     }}
                   >
                     <div className="deep-research-step-indicator">
-                      {step.status === "waiting" && step.id}
-                      {step.status === "processing" && (
-                        <div className="deep-research-step-loading"></div>
-                      )}
-                      {step.status === "completed" && (
-                        <svg
-                          className="deep-research-step-icon"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                      {step.status === "error" && (
-                        <svg
-                          className="deep-research-step-icon"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M18 6L6 18M6 6l12 12" />
-                        </svg>
-                      )}
+                      {renderStepIndicator(step, index)}
                     </div>
                     <div className="deep-research-step-title">
                       {step.title}
