@@ -7,7 +7,7 @@ import configJson from "../config.json";
 /**
  * Indica se deve usar o modelo local.
  */
-export const USE_LOCAL_MODEL = true;
+export const USE_LOCAL_MODEL = false;
 console.log("Modo de modelo:", USE_LOCAL_MODEL ? "Local" : "Remoto");
 
 /**
