@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 from functools import lru_cache
 from dotenv import load_dotenv
 from supabase import create_client, Client
+
 # Carrega as variáveis de ambiente
 load_dotenv()
 
@@ -24,7 +25,7 @@ class Settings(BaseSettings):
     # Configurações do OpenAI
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     OPENAI_MODEL: str = "gpt-4"
-    
+
     # Configurações do DeepSeek
     DEEPSEEK_API_KEY: str = os.getenv("DEEPSEEK_API_KEY", "")
     DEEPSEEK_API_BASE: str = "https://api.deepseek.com/v1"
@@ -37,7 +38,7 @@ class Settings(BaseSettings):
     # Configurações do Anthropic
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
-    
+
     # Configurações do vite
     VITE_API_LOCAL_URL: str = os.getenv("VITE_API_LOCAL_URL", "")
     LOCAL_MODEL: str = "qwen2.5-7b-instruct-1m"
@@ -54,9 +55,9 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:10000",
-        "http://127.0.0.1:3000"
+        "http://127.0.0.1:3000",
     ]
-        
+
     CORS_ALLOW_CREDENTIALS: bool = True
     CORS_ALLOW_METHODS: list[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     CORS_ALLOW_HEADERS: list[str] = [
@@ -67,7 +68,7 @@ class Settings(BaseSettings):
         "X-Requested-With",
         "Access-Control-Request-Method",
         "Access-Control-Request-Headers",
-        "content-type"  # Adicionando explicitamente
+        "content-type",  # Adicionando explicitamente
     ]
     CORS_EXPOSE_HEADERS: list[str] = ["*"]
     CORS_MAX_AGE: int = 600  # 10 minutos em segundos
@@ -79,7 +80,9 @@ class Settings(BaseSettings):
     CACHE_TTL: int = 60 * 60  # 1 hora em segundos
 
     # Configurações do modelo Qwen
-    LOCAL_MODEL_URL: str = "http://localhost:1234"  # URL do servidor local do modelo Qwen
+    LOCAL_MODEL_URL: str = (
+        "http://localhost:1234"  # URL do servidor local do modelo Qwen
+    )
 
     class Config:
         case_sensitive = True
@@ -95,6 +98,7 @@ def get_settings() -> Settings:
 
 # Instância das configurações para uso em toda a aplicação
 SETTINGS = get_settings()
+
 
 def format_prompt(consulta_produto):
     return f"""
@@ -159,6 +163,7 @@ def format_prompt(consulta_produto):
 
     """
 
+
 # Constantes específicas da aplicação
 PROMPT_TEMPLATE = format_prompt
 
@@ -188,7 +193,7 @@ MODEL_MAPPING = {
         "model_name": SETTINGS.LOCAL_MODEL,
         "max_tokens": 10000,
         "temperature": 0.7,
-    }
+    },
 }
 
 # Configurações de resposta padrão
@@ -217,10 +222,10 @@ ERROR_TYPES = {
     "processing": "processing_error",
     "api_error": "api_error",
     "validation": "validation_error",
-    "token_count": "token_count_error"
+    "token_count": "token_count_error",
 }
+
 
 def converter_para_booleano(valor: str) -> bool:
     """Converte um valor string para booleano."""
     return str(valor).lower() in ["sim", "true", "1", "verdadeiro"]
-

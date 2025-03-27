@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { FastApiNCMResult, ConsultaProduto } from "../../types/ncm";
+import { FastApiNCMResult, ConsultaProduto } from "../../types";
 
 // Implementação simplificada do TokenTracker para testes
 export class TokenTracker extends EventEmitter {

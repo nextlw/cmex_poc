@@ -127,6 +127,7 @@ export default function AdminPanel() {
     stopAll,
     checkAllStatus,
     cleanupAllPorts,
+    toggleJinaServices,
   } = useServiceManager();
 
   const [selectedServiceLogs, setSelectedServiceLogs] =
@@ -182,7 +183,8 @@ export default function AdminPanel() {
 
         <StatusBar>
           Portas utilizadas: Redis (6378), FastAPI (10000), Node (3000),
-          Frontend (5173) | Última verificação: {lastChecked}
+          Frontend (5173), Node-Jina (3100), UI-Jina (8080) | Última
+          verificação: {lastChecked}
         </StatusBar>
 
         <ButtonBar>
@@ -194,6 +196,14 @@ export default function AdminPanel() {
             {isCleaningPorts
               ? "Limpando portas..."
               : "Limpar todas as portas manualmente"}
+          </Button>
+
+          <Button $primary onClick={() => toggleJinaServices("start")}>
+            Iniciar DeepSearch Jina
+          </Button>
+
+          <Button onClick={() => toggleJinaServices("stop")}>
+            Parar DeepSearch Jina
           </Button>
         </ButtonBar>
 

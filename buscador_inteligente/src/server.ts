@@ -148,7 +148,7 @@ figlet.text(
       // Arte ASCII de botões com os dizeres solicitados
       const buttons = [
         "┌────────────┐ ┌─────────┐ ┌─────────────┐ ┌────────────┐",
-        "│    Busque   │ │   Use   │ │ Codeifique  │ │   Acesse   │",
+        "│    Busque   │ │   Use   │ │ Codefique  │ │   Acesse   │",
         "└────────────┘ └─────────┘ └─────────────┘ └────────────┘",
       ];
 

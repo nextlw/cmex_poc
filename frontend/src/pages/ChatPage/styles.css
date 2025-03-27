@@ -45,11 +45,23 @@ body {
 .chat-container {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+.iframe-container {
+  flex: 1;
+  position: relative;
+  width: 100%;
+}
+
+.chat-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
-  max-height: calc(100vh - 60px);
-  background-color: var(--color-background-dark);
-  padding: 20px;
-  overflow: auto;
+  border: none;
 }
 
 .page-header-container {
@@ -505,3 +517,32 @@ body {
 }
 
 /* Não precisamos de estilos para tema escuro, pois os tokens já cuidam disso */
+
+/* Ajustes específicos para o Select no header do chat */
+.chat-container .section-header .select-wrapper {
+  min-width: 256px;
+}
+
+.chat-container .section-header .dark-select {
+  height: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px 0 16px;
+  font-size: 14px;
+  background-color: var(--color-select-background);
+  border: 1px solid var(--color-select-border);
+  color: var(--color-select-text);
+}
+
+.chat-container .section-header .options-list {
+  width: 256px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Ajuste para o ícone do modelo */
+.chat-container .section-header .icon-ai {
+  color: var(--color-primary);
+  margin: 8px;
+}

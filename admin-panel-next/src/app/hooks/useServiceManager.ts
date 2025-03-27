@@ -66,6 +66,20 @@ const serviceConfig: Record<
     port: getEnvPort("FRONTEND_PORT", 5173),
     icon: "⚛️",
   },
+  "node-jina": {
+    id: "node-jina",
+    name: "DeepResearch Jina",
+    description: "Servidor Node.js para DeepResearch com Jina AI",
+    port: getEnvPort("NODE_JINA_PORT", 3100),
+    icon: "🔍",
+  },
+  "ui-jina": {
+    id: "ui-jina",
+    name: "DeepSearch UI Jina",
+    description: "Interface de usuário para DeepSearch com Jina AI",
+    port: getEnvPort("UI_JINA_PORT", 8080),
+    icon: "🔎",
+  },
 };
 
 // Hook para gerenciar serviços
@@ -81,6 +95,18 @@ export function useServiceManager() {
     node: { ...serviceConfig.node, status: "unknown", pid: null, logs: [] },
     frontend: {
       ...serviceConfig.frontend,
+      status: "unknown",
+      pid: null,
+      logs: [],
+    },
+    "node-jina": {
+      ...serviceConfig["node-jina"],
+      status: "unknown",
+      pid: null,
+      logs: [],
+    },
+    "ui-jina": {
+      ...serviceConfig["ui-jina"],
       status: "unknown",
       pid: null,
       logs: [],
@@ -283,34 +309,74 @@ export function useServiceManager() {
   }, [services, start]);
 
   const stopAll = useCallback(async () => {
-    // Primeiro para os serviços que dependem de outros
-    // Frontend → Node → FastAPI → Redis
+    // Primeiro para os serviços na ordem de dependência
+    // Frontend → Node → Node-Jina → UI-Jina → FastAPI → Redis
+
+    // Primeiro parar as interfaces de usuário
     await stop("frontend");
     await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Depois parar o UI-Jina se estiver em execução
+    await stop("ui-jina");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Depois parar os backends Node
     await stop("node");
     await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Depois parar o Node-Jina
+    await stop("node-jina");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Por fim, parar os serviços de infraestrutura
     await stop("fastapi");
     await new Promise((resolve) => setTimeout(resolve, 1000));
+
     await stop("redis");
-  }, [stop]);
+
+    // Verificar se realmente todos pararam
+    await checkAllStatus();
+  }, [stop, checkAllStatus]);
+
+  // Função específica para lidar com serviços Jina
+  const toggleJinaServices = useCallback(
+    async (action: "start" | "stop") => {
+      if (action === "start") {
+        // Inicia os serviços Jina na ordem correta
+        await start("node-jina");
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await start("ui-jina");
+      } else {
+        // Para os serviços Jina na ordem inversa
+        await stop("ui-jina");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await stop("node-jina");
+      }
+
+      await checkAllStatus();
+    },
+    [start, stop, checkAllStatus]
+  );
 
   // Encerrar todos os processos em todas as portas utilizadas
   const cleanupAllPorts = useCallback(async () => {
     try {
-      addLog("redis", "Limpando todas as portas...");
-      addLog("fastapi", "Limpando todas as portas...");
-      addLog("node", "Limpando todas as portas...");
-      addLog("frontend", "Limpando todas as portas...");
+      for (const service of Object.values(services)) {
+        addLog(service.id, "Limpando todas as portas...");
+      }
 
       const results = await killAllServiceProcesses();
 
       Object.entries(results).forEach(([id, killed]) => {
         const serviceId = id as ServiceId;
-        if (killed) {
-          addLog(
-            serviceId,
-            `Processos anteriores encerrados na porta ${services[serviceId].port}`
-          );
+        const service = services[serviceId];
+        if (killed && service) {
+          const portMsg =
+            service.id === "ui-jina"
+              ? `(porta real detectada ou configurada: ${service.port})`
+              : `(porta: ${service.port})`;
+
+          addLog(serviceId, `Processos anteriores encerrados ${portMsg}`);
           updateServiceStatus(serviceId, "stopped", null);
         }
       });
@@ -361,6 +427,7 @@ export function useServiceManager() {
     checkAllStatus,
     startAll,
     stopAll,
+    toggleJinaServices,
     cleanupAllPorts, // Mantemos esta função disponível para uso manual via botão
   };
 }

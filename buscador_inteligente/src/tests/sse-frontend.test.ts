@@ -25,6 +25,13 @@ global.document = dom.window.document;
 global.window = dom.window as any;
 global.navigator = dom.window.navigator;
 
+// Definir a interface para as propriedades adicionadas ao objeto window
+declare global {
+  interface Window {
+    addMessageToUI: (role: string, content: string) => void;
+  }
+}
+
 // Simula os eventos SSE para testar o frontend
 class MockEventSource {
   onopen: () => void = () => {};
@@ -35,8 +42,8 @@ class MockEventSource {
   withCredentials: boolean;
   private eventListeners: Record<string, Array<(event: any) => void>> = {};
 
-  constructor(url: string, options?: any) {
-    this.url = url;
+  constructor(url: unknown, options?: any) {
+    this.url = url as string;
     this.withCredentials = options?.withCredentials || false;
 
     // Simular que a conexão foi estabelecida após um pequeno delay
@@ -90,7 +97,7 @@ class MockEventSource {
 // Substituir a implementação do EventSource pelo nosso mock
 (EventSourcePolyfill as unknown as jest.Mock).mockImplementation(
   (url, options) => {
-    return new MockEventSource(url, options);
+    return new MockEventSource(url as string, options);
   }
 );
 
@@ -223,6 +230,9 @@ describe("Frontend SSE Tests", () => {
     statusElement.textContent = status;
   }
 
+  // Adicionar ao objeto window para os testes
+  window.addMessageToUI = addMessageToUI;
+
   test("deve exibir mensagens do usuário corretamente", () => {
     // Simular envio de mensagem do usuário
     const inputElement = document.getElementById(
@@ -319,7 +329,7 @@ describe("Frontend SSE Tests", () => {
 
     // Sobrescrever a função addMessageToUI para medir o tempo de renderização
     const originalAddMessageToUI = window.addMessageToUI;
-    (window as any).addMessageToUI = (role: string, content: string) => {
+    window.addMessageToUI = (role: string, content: string) => {
       const startTime = performance.now();
       originalAddMessageToUI(role, content);
       const endTime = performance.now();
@@ -347,7 +357,7 @@ describe("Frontend SSE Tests", () => {
     expect(maxRenderTime).toBeLessThan(30); // máximo menor que 30ms
 
     // Restaurar a função original
-    (window as any).addMessageToUI = originalAddMessageToUI;
+    window.addMessageToUI = originalAddMessageToUI;
   });
 });
 
