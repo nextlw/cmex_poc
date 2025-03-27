@@ -436779,6 +436779,7 @@
             "'the language to use for the search. a two-letter language code. e.g.",
             "en for English",
             "es for Spanish",
+            "pt for Potuguese Brazil",
             "or fr for French.'"
           ],
           "isAsync": false
