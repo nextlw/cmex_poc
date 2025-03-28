@@ -1498,12 +1498,24 @@ app.get(
     try {
       const { requestId } = req.params;
 
+      // Log para depuração
+      console.log(`Verificando status da tarefa: ${requestId}`, {
+        authHeader: req.headers.authorization ? "Presente" : "Ausente",
+      });
+
       if (!requestId) {
         res.status(400).json({ error: "ID da tarefa é obrigatório" });
         return;
       }
 
-      console.log(`Verificando status da tarefa: ${requestId}`);
+      // Verificamos a presença do cabeçalho de autenticação (opcional para desenvolvimento)
+      // No ambiente de produção, você pode descomentar este código para exigir autenticação
+      /*
+      if (!req.headers.authorization) {
+        res.status(401).json({ error: "Autenticação necessária" });
+        return;
+      }
+      */
 
       // Verifica se temos rastreadores para esta requisição
       const trackerContext = trackers.get(requestId);
@@ -1531,13 +1543,11 @@ app.get(
                 ncmCode: metadata.ncmCode || "",
                 ncmDescription: metadata.description || "",
               },
-              // Todos os campos já validados
+              // Formato correto para o validationStatus (todos já validados e sem loading)
               validationStatus: {
-                ncmCode: false,
-                ncmDescription: false,
-                taxationDetails: false,
-                attributes: false,
-                conclusion: false,
+                infoBasicas: { validated: true, loading: false },
+                atributos: { validated: true, loading: false },
+                tributacao: { validated: true, loading: false },
               },
             });
             return;
@@ -1582,18 +1592,20 @@ app.get(
         researchDetails
       );
 
-      // Status de validação baseado no passo atual
+      // Status de validação com formato correto esperado pelo frontend
       const validationStatus = {
-        // Passo 1-2: Validando NCM
-        ncmCode: step <= 2,
-        // Passo 2-3: Validando descrição
-        ncmDescription: step <= 3,
-        // Passo 3-4: Validando tributação
-        taxationDetails: step <= 4,
-        // Passo 4-5: Validando atributos
-        attributes: step <= 5,
-        // Passo 5: Validando conclusão
-        conclusion: step <= 5,
+        infoBasicas: {
+          validated: step > 2, // Validado após o passo 2
+          loading: step <= 2, // Em loading até o passo 2
+        },
+        atributos: {
+          validated: step > 4, // Validado após o passo 4
+          loading: step > 2 && step <= 4, // Em loading do passo 3 ao 4
+        },
+        tributacao: {
+          validated: step > 4, // Validado após o passo 4
+          loading: step > 3 && step <= 5, // Em loading do passo 4 ao 5
+        },
       };
 
       // Prepara resposta com o status atual
@@ -1685,11 +1697,9 @@ app.get(
               },
               // Todos os campos já validados
               validationStatus: {
-                ncmCode: false,
-                ncmDescription: false,
-                taxationDetails: false,
-                attributes: false,
-                conclusion: false,
+                infoBasicas: { validated: true, loading: false },
+                atributos: { validated: true, loading: false },
+                tributacao: { validated: true, loading: false },
               },
             };
             sseService.sendEvent(requestId, "message", data);

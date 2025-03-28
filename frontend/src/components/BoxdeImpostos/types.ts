@@ -1,5 +1,5 @@
 export interface BoxdeImpostosProps {
-  classificacao: {
+  classificacao?: {
     tipo_classificacao_tributario?: {
       tipo_tributario_ativo: string;
       justificativa?: string;
@@ -12,5 +12,5 @@ export interface BoxdeImpostosProps {
     cofins_saida: string | number;
     cst_entrada: string | number;
     cst_saida: string | number;
-  };
+  } | null;
 }

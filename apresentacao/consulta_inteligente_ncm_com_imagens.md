@@ -24,16 +24,7 @@
 
 ### O Problema
 
-```mermaid
-graph TD
-    A[Classificação fiscal complexa] --> D[Stress e sobrecarga]
-    B[Constantes atualizações na legislação] --> D
-    C[Alto volume de produtos para classificar] --> D
-    D --> E[Erros de classificação]
-    E --> F[Multas e penalidades fiscais]
-    E --> G[Retrabalho]
-    G --> H[Custos operacionais elevados]
-```
+![Diagrama do Problema](fluxos/image.png)
 
 - Contadores gastam horas buscando classificações NCM corretas
 - Interpretação complexa das regras de classificação fiscal
@@ -42,19 +33,7 @@ graph TD
 
 ### A Solução
 
-```mermaid
-graph TD
-    A[CMEX: Consulta Inteligente NCM] --> B[Busca por descrição de produto]
-    A --> C[Deep Search em bases oficiais]
-    B --> D[Classificação NCM precisa]
-    C --> D
-    D --> E[Informações completas de tributação]
-    D --> F[Validação e conformidade]
-    E --> G[Economia de tempo]
-    F --> H[Redução de riscos fiscais]
-    G --> I[Aumento da produtividade]
-    H --> J[Segurança nas operações]
-```
+![Diagrama da Solução](fluxos/image%20copy.png)
 
 - IA treinada com base nas regras oficiais de classificação fiscal
 - Sistema que aprende continuamente com novas consultas
@@ -74,22 +53,7 @@ Ana é contadora em um escritório que atende uma empresa de importação de equ
 
 **Interação com o Sistema:**
 
-```mermaid
-sequenceDiagram
-    Usuário->>CMEX: Insere descrição "smartwatch com monitor cardíaco e GPS integrado"
-    CMEX->>CMEX: Processa descrição e identifica palavras-chave
-    CMEX->>CMEX: Analisa com base em regras de classificação
-    CMEX->>Usuário: Apresenta código NCM 8517.62.49
-    CMEX->>Usuário: Exibe alíquotas e informações detalhadas
-    Usuário->>CMEX: Solicita validação via Deep Search
-    CMEX->>Base Oficial: Consulta históricos de importação
-    CMEX->>Base Oficial: Verifica atualizações recentes da CAMEX
-    Base Oficial->>CMEX: Retorna dados oficiais e precedentes
-    CMEX->>Usuário: Confirma NCM e apresenta referências
-    CMEX->>Usuário: Sugere notas de validação para documentação
-```
-
-![Autocomplete NCM](ImagensApresentação/Autocomplete%20NCM.jpeg)
+![Diagrama de interação - Caso 1](fluxos/image%20copy%202.png)
 
 **Retorno do Sistema:**
 
@@ -131,20 +95,7 @@ Carlos é responsável fiscal de uma rede de supermercados que está ampliando s
 
 **Interação com o Sistema:**
 
-```mermaid
-sequenceDiagram
-    Usuário->>CMEX: Faz upload da planilha com 230 descrições de produtos
-    CMEX->>CMEX: Processa cada item da planilha
-    CMEX->>Usuário: Mostra progresso do processamento em tempo real
-    CMEX->>Usuário: Apresenta classificações preliminares (85% de confiança)
-    Usuário->>CMEX: Marca 28 itens para revisão manual
-    CMEX->>Usuário: Solicita mais detalhes para os itens marcados
-    Usuário->>CMEX: Adiciona especificações para os itens duvidosos
-    CMEX->>Base Oficial: Executa Deep Search nos itens prioritários
-    Base Oficial->>CMEX: Confirma classificações com precedentes
-    CMEX->>Usuário: Apresenta relatório completo com todos os NCMs
-    CMEX->>Usuário: Destaca 5 itens com recentes mudanças tributárias
-```
+![Diagrama de interação - Caso 2](fluxos/image%20copy%203.png)
 
 **Retorno do Sistema:**
 
@@ -185,19 +136,7 @@ Renata é consultora tributária e foi contratada para auditar as classificaçõ
 
 **Interação com o Sistema:**
 
-```mermaid
-sequenceDiagram
-    Usuário->>CMEX: Importa planilha com 75 produtos cosméticos já classificados
-    CMEX->>CMEX: Analisa classificações atuais
-    CMEX->>Base Oficial: Executa Deep Search em toda a lista
-    Base Oficial->>CMEX: Retorna precedentes e atualizações legislativas
-    CMEX->>Usuário: Identifica 8 produtos com classificação incorreta
-    CMEX->>Usuário: Mostra 12 produtos com possibilidade de redução tributária
-    Usuário->>CMEX: Solicita detalhamento das fundamentações legais
-    CMEX->>Usuário: Apresenta legislação, jurisprudência e precedentes
-    Usuário->>CMEX: Solicita cenário comparativo (antes/depois)
-    CMEX->>Usuário: Gera relatório de impacto financeiro e recomendações
-```
+![Diagrama de interação - Caso 3](fluxos/image%20copy%204.png)
 
 **Retorno do Sistema:**
 
@@ -245,13 +184,7 @@ sequenceDiagram
 
 ### Oportunidade
 
-```mermaid
-pie
-    title "Potencial de Market Share em 3 anos"
-    "Mercado Alvo Inicial (5%)" : 26000
-    "Crescimento Projetado (10%)" : 26000
-    "Mercado Remanescente" : 468000
-```
+![Gráfico de Market Share](fluxos/image%20copy%205.png)
 
 ## Funcionalidades do Produto
 
@@ -288,64 +221,19 @@ pie
 
 ### Ciclo de Vendas
 
-```mermaid
-graph LR
-    A[Convite Exclusivo] --> B[Versão Básica]
-    B --> C[Demonstração Premium]
-    C --> D[Período Trial]
-    D --> E[Assinatura Premium]
-    E --> F[Expansão para Equipe]
-    F --> G[Integração Sistemas]
-```
+![Ciclo de Vendas](fluxos/image%20copy%206.png)
 
 ## Estratégia de Lançamento
 
-### Fase 1: Lançamento Exclusivo (3 meses)
+### Estratégia de Lançamento
 
-- Seleção de 50 escritórios de contabilidade influentes para acesso antecipado
-- Coleta intensiva de feedback para refinamento do produto
-- Ajustes no modelo de precificação e nas funcionalidades
-
-### Fase 2: Expansão por Convite (6 meses)
-
-- Sistema de indicação onde usuários podem convidar colegas
-- Parcerias com influenciadores do setor contábil
-- Presença em eventos e feiras de contabilidade
-- Marketing de conteúdo focado em casos de sucesso
-
-### Fase 3: Crescimento Estruturado (12 meses)
-
-- Abertura gradual para o mercado, mantendo exclusividade
-- Lançamento de novas funcionalidades baseadas no feedback
-- Programas de fidelização e referência
+![Estratégia de Lançamento](fluxos/image%20copy%207.png)
 
 ## Projeção Financeira
 
-### Receita Mensal Recorrente (MRR)
+### Projeção Financeira
 
-| Cenário | Usuários | % do Mercado | MRR (US$)   | MRR (R$)        |     |     |     |     |     |     |     |     |
-| ------- | -------- | ------------ | ----------- | --------------- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Inicial | 26.000   | 5%           | $448.500,00 | R$ 2.574.000,00 |     |     |     |     |     |     |     |     |
-| Alvo    | 52.000   | 10%          | $897.000,00 | R$ 5.148.000,00 |     |     |     |     |     |     |     |     |
-
-_Taxa de câmbio considerada: US$ 1,00 = R$ 5,74_
-
-### Projeção de Crescimento Anual
-
-```mermaid
-   graph TD
-     subgraph "Crescimento de Assinantes Premium"
-     A["Ano 1"] --- A1["10.400"]
-     B["Ano 2"] --- B1["26.000"]
-     C["Ano 3"] --- C1["52.000"]
-     end
-```
-
-| Ano   | Assinantes Premium |
-| ----- | ------------------ |
-| Ano 1 | 10.400             |
-| Ano 2 | 26.000             |
-| Ano 3 | 52.000             |
+![Projeção Financeira](fluxos/image%20copy%208.png)
 
 ## Infraestrutura e Custos
 
@@ -357,44 +245,44 @@ _Taxa de câmbio considerada: US$ 1,00 = R$ 5,74_
 
 ### Custos Mensais Estimados
 
-| Item                   | Descrição                   | Custo Mensal (US$) | Custo Mensal (R$) |     |     |     |     |     |     |     |     |
-| ---------------------- | --------------------------- | ------------------ | ----------------- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Serviços AWS           | EC2, ECS, RDS, ElastiCache  | $3.500,00          | R$ 20.090,00      |     |     |     |     |     |     |     |     |
-| CDN e Transferência    | CloudFront, S3              | $1.200,00          | R$ 6.888,00       |     |     |     |     |     |     |     |     |
-| Monitoramento          | CloudWatch, AWS X-Ray       | $800,00            | R$ 4.592,00       |     |     |     |     |     |     |     |     |
-| Base de Conhecimento   | Atualização e manutenção    | $1.500,00          | R$ 8.610,00       |     |     |     |     |     |     |     |     |
-| Equipe Desenvolvimento | _Detalhado abaixo_          | $6.271,00          | R$ 36.000,00      |     |     |     |     |     |     |     |     |
-| Marketing              | Aquisição de clientes       | $8.000,00          | R$ 45.920,00      |     |     |     |     |     |     |     |     |
-| Tokens LLMs            | DeepSeek, Bedrock, etc.     | $12.500,00         | R$ 71.750,00      |     |     |     |     |     |     |     |     |
-| Equipe Fiscal          | Especialistas em tributação | $10.453,00         | R$ 60.000,00      |     |     |     |     |     |     |     |     |
-| Suporte Técnico        | Atendimento e treinamento   | $8.362,00          | R$ 48.000,00      |     |     |     |     |     |     |     |     |
-| **Total**              |                             | **$52.586,00**     | **R$ 301.850,00** |     |     |     |     |     |     |     |     |
+| Item                   | Descrição                   | Custo Mensal (US$) | Custo Mensal (R$) |
+| ---------------------- | --------------------------- | ------------------ | ----------------- |
+| Serviços AWS           | EC2, ECS, RDS, ElastiCache  | $3.500,00          | R$ 20.090,00      |
+| CDN e Transferência    | CloudFront, S3              | $1.200,00          | R$ 6.888,00       |
+| Monitoramento          | CloudWatch, AWS X-Ray       | $800,00            | R$ 4.592,00       |
+| Base de Conhecimento   | Atualização e manutenção    | $1.500,00          | R$ 8.610,00       |
+| Equipe Desenvolvimento | _Detalhado abaixo_          | $6.271,00          | R$ 36.000,00      |
+| Marketing              | Aquisição de clientes       | $8.000,00          | R$ 45.920,00      |
+| Tokens LLMs            | DeepSeek, Bedrock, etc.     | $12.500,00         | R$ 71.750,00      |
+| Equipe Fiscal          | Especialistas em tributação | $10.453,00         | R$ 60.000,00      |
+| Suporte Técnico        | Atendimento e treinamento   | $8.362,00          | R$ 48.000,00      |
+| **Total**              |                             | **$52.586,00**     | **R$ 301.850,00** |
 
 ### Detalhamento da Equipe de Desenvolvimento
 
-| Função                    | Regime        | Valor                 | Horas Mensais | Total Mensal     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| ------------------------- | ------------- | --------------------- | ------------- | ---------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CTO                       | Fixo          | R$ 12.000,00/mês      | -             | R$ 12.000,00n    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| Frontend                  | R$ 60,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 7.200,00      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| Backend                   | R$ 80,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 9.600,00      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| QA                        | R$ 30,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 3.600,00      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| Junior Fullstack          | R$ 30,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 3.600,00      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| **Total Desenvolvimento** |               |                       |               | **R$ 36.000,00** |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| Função                    | Regime        | Valor                 | Horas Mensais | Total Mensal     |
+| ------------------------- | ------------- | --------------------- | ------------- | ---------------- |
+| CTO                       | Fixo          | R$ 12.000,00/mês      | -             | R$ 12.000,00     |
+| Frontend                  | R$ 60,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 7.200,00      |
+| Backend                   | R$ 80,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 9.600,00      |
+| QA                        | R$ 30,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 3.600,00      |
+| Junior Fullstack          | R$ 30,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 3.600,00      |
+| **Total Desenvolvimento** |               |                       |               | **R$ 36.000,00** |
 
 ### Detalhamento das Equipes de Suporte
 
 | Função                    | Quantidade | Custo Mensal Individual | Total Mensal     |
 | ------------------------- | ---------- | ----------------------- | ---------------- |
 | **Equipe Fiscal**         |            |                         |                  |
-| Coordenador Tributário    | 1          | R$ 6.000,00 $           |                  |
-| Especialista em NCM       | 1          | R$ 10.000,00 $          |                  |
-| Analista Tributário       | 3          | R$ 2.000,00 $           |                  |
-| closer                    | 1          | 2200 + 22% HO           |                  |
+| Coordenador Tributário    | 1          | R$ 6.000,00             |                  |
+| Especialista em NCM       | 1          | R$ 10.000,00            |                  |
+| Analista Tributário       | 3          | R$ 2.000,00             |                  |
+| Closer                    | 1          | 2200 + 22% HO           |                  |
 | **Total Equipe Fiscal**   |            |                         | **R$ 18.000,00** |
 | **Suporte Técnico**       |            |                         |                  |
-| Coordenador de Suporte    | 1          | R$ 6.000,00 $           | R$ 6.000,00      |
-| Especialista L2           | 2          | R$ 5.000,00 $           | R$ 10.000,00     |
-| Analista de Suporte L1    | 5          | R$ 3.000,00 $           | R$ 15.000,00     |
+| Coordenador de Suporte    | 1          | R$ 6.000,00             | R$ 6.000,00      |
+| Especialista L2           | 2          | R$ 5.000,00             | R$ 10.000,00     |
+| Analista de Suporte L1    | 5          | R$ 3.000,00             | R$ 15.000,00     |
 | **Total Suporte Técnico** |            |                         | **R$ 31.000,00** |
 
 ### Detalhamento de Custos com LLMs
@@ -430,21 +318,15 @@ A equipe de desenvolvimento será responsável por implementar:
 
 ### Margens Operacionais Projetadas (Cenário Realista)
 
-```mermaid
-pie
-    title "Distribuição da Receita (Cenário 10%)"
-    "Custos Operacionais" : 301850.00
-    "Reinvestimento P&D" : 825450.00
-    "Margem Líquida" : 4020700.00
-```
+![Distribuição da Receita](fluxos/image.png)
 
 ### Comparativo de Cenários
 
-| Cenário     | Receita Mensal  | Custos Operacionais | Reinvestimento P&D | Margem Líquida  | % Margem |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| ----------- | --------------- | ------------------- | ------------------ | --------------- | -------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Otimista    | R$ 5.148.000,00 | R$ 122.100,00       | R$ 1.005.180,00    | R$ 4.020.720,00 | 78,1%    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| Realista    | R$ 5.148.000,00 | R$ 301.850,00       | R$ 825.450,00      | R$ 4.020.700,00 | 78,1%    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-| Conservador | R$ 5.148.000,00 | R$ 301.850,00       | R$ 2.550.000,00    | R$ 2.296.150,00 | 44,6%    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| Cenário     | Receita Mensal  | Custos Operacionais | Reinvestimento P&D | Margem Líquida  | % Margem |
+| ----------- | --------------- | ------------------- | ------------------ | --------------- | -------- |
+| Otimista    | R$ 5.148.000,00 | R$ 122.100,00       | R$ 1.005.180,00    | R$ 4.020.720,00 | 78,1%    |
+| Realista    | R$ 5.148.000,00 | R$ 301.850,00       | R$ 825.450,00      | R$ 4.020.700,00 | 78,1%    |
+| Conservador | R$ 5.148.000,00 | R$ 301.850,00       | R$ 2.550.000,00    | R$ 2.296.150,00 | 44,6%    |
 
 > **Nota:** O cenário conservador considera um reinvestimento substancialmente maior em P&D para manter vantagem competitiva e expandir funcionalidades, resultando em uma margem líquida menor, porém mais sustentável a longo prazo.
 

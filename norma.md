@@ -499,6 +499,7 @@ A cada etapa, atualize o campo "step" e o status de validação dos componentes 
    - Criar métricas para monitorar a qualidade das respostas da LLM
 
 2. **Estratégia de recuperação**:
+
    - Em caso de falha na normalização, usar dados parciais disponíveis
    - Estabelecer timeout para retry automático em caso de falta de resposta
 
@@ -558,6 +559,7 @@ Modifique o arquivo 'frontend/src/pages/HomePage/index.tsx' para:
    - Verificar transições entre estados
 
 3. **Teste end-to-end**:
+
    - Testar fluxo completo de pesquisa
    - Verificar comportamento com respostas reais da LLM
 
@@ -569,5 +571,6 @@ Modifique o arquivo 'frontend/src/pages/HomePage/index.tsx' para:
    - Usar tratamento assíncrono para não bloquear a UI
 
 2. **Minimizar re-renders**:
+
    - Usar useMemo/useCallback para componentes que consomem os dados normalizados
    - Considerar Context API para compartilhar estados entre componentes

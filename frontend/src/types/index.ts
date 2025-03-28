@@ -224,13 +224,11 @@ export interface SugerirNCM {
   /** Descrição do produto/mercadoria */
   descricao: string;
   /** Atributos gerais do produto */
-  atributos: string[];
-  /** Atributos específicos da TIPI */
-  atributos_tipi: string[];
+  atributos: string[] | null;
   /** Classificação tributária do produto */
-  classificacao_tributaria: ClassificacaoTributaria;
+  classificacao_tributaria: ClassificacaoTributaria | null;
   /** Valores de impostos aplicáveis */
-  valores_de_impostos: ValoresdeImpostos;
+  valores_de_impostos: ValoresdeImpostos | null;
   /** Resultado da validação via DeepResearch, se disponível */
   validacao_deepresearch?: ValidationDeepResearch;
 }

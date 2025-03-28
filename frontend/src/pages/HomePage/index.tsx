@@ -32,6 +32,8 @@ import "../../styles/grid.css";
 import InfoBasicasSkeleton from "../../components/InfoBasicas/InfoBasicasSkeleton";
 import BoxdeImpostosSkeleton from "../../components/BoxdeImpostos/BoxdeImpostosSkeleton";
 import AtributosSkeleton from "../../components/Atributos/AtributosSkeleton";
+// Importa a função normalizeResponse para tratar as respostas JSON da LLM
+import { normalizeResponse } from "../../utils/llm-json-normalizer";
 
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
@@ -60,24 +62,9 @@ const HomePage: React.FC = () => {
           {
             ncm: "",
             descricao: "",
-            atributos: [],
-            atributos_tipi: [],
-            classificacao_tributaria: {
-              ipi_entrada: "",
-              ipi_saida: "",
-              pis_entrada: "",
-              pis_saida: "",
-              cofins_entrada: "",
-              cofins_saida: "",
-              cst_entrada: "",
-              cst_saida: "",
-            },
-            valores_de_impostos: {
-              ipi: "",
-              icms: {},
-              pis: "",
-              cofins: "",
-            },
+            atributos: null,
+            classificacao_tributaria: null,
+            valores_de_impostos: null,
           },
         ];
   });
@@ -86,6 +73,18 @@ const HomePage: React.FC = () => {
   const [buscarValor, setBuscarValor] = useState("");
   const [isTabelaICMSOpen, setIsTabelaICMSOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Estados de loading granulares para cada seção
+  const [infoBasicasLoading, setInfoBasicasLoading] = useState(false);
+  const [atributosLoading, setAtributosLoading] = useState(false);
+  const [tributacaoLoading, setTributacaoLoading] = useState(false);
+
+  // Estado para controlar a validação de acordo com o esquema normalizado
+  const [componentValidationStatus, setComponentValidationStatus] = useState({
+    infoBasicas: { validated: false, loading: true },
+    atributos: { validated: false, loading: false },
+    tributacao: { validated: false, loading: false },
+  });
 
   const [useDeepResearch, setUseDeepResearch] = useState<boolean>(() => {
     try {
@@ -167,24 +166,21 @@ const HomePage: React.FC = () => {
     if (useDeepResearch) {
       setShowDeepResearchSidebar(true);
 
-      // E então usamos um timer para desativar o status de loading do InputAI após um curto delay
-      const timer = setTimeout(() => {
-        // Não alteramos o estado setIsDeepResearchProcessing aqui para manter a sidebar ativa
-        // Apenas garantimos que o InputAI não está mais no estado de loading
-        setInputAiLoading(false);
-      }, 500);
-
-      return () => clearTimeout(timer);
+      // Não alteramos mais automaticamente o estado do InputAI, pois ele será controlado
+      // pelo validationStatus da resposta da API
     }
   }, [deepResearchRequestId, isDeepResearchProcessing, useDeepResearch]);
 
   // Adicionar um efeito para monitorar o status do DeepResearch
   useEffect(() => {
     // Se não está processando DeepResearch e o loading está ativo, desativa o loading
-    if (!isDeepResearchProcessing && isLoading && sugerirNCM.length > 0) {
+    if (!isDeepResearchProcessing && isLoading) {
       setIsLoading(false);
+      setInfoBasicasLoading(false);
+      setAtributosLoading(false);
+      setTributacaoLoading(false);
     }
-  }, [isDeepResearchProcessing, sugerirNCM, isLoading]);
+  }, [isDeepResearchProcessing, isLoading]);
 
   // Adicionar um efeito para garantir que o skeleton seja removido quando houver dados
   useEffect(() => {
@@ -318,19 +314,24 @@ const HomePage: React.FC = () => {
     setShowAutoComplete(false);
     setAutoCompleteData([]);
 
-    setInputAiLoading(true); // Ativa o loading do InputAi
+    // Ativar todos os estados de loading
+    setInputAiLoading(true);
+    setInfoBasicasLoading(true);
+    setAtributosLoading(true);
+    setTributacaoLoading(true);
+    setIsLoading(true);
 
     if (pesquisa.length < 3) {
       setErrorMessage("Digite pelo menos 3 caracteres para a busca.");
       setInputAiLoading(false);
+      setInfoBasicasLoading(false);
+      setAtributosLoading(false);
+      setTributacaoLoading(false);
+      setIsLoading(false);
       return;
     }
 
-    // Sempre ativa o loading para exibir o skeleton
-    setIsLoading(true);
-
     try {
-      let response;
       let modeloUsado = selectedModel;
       const consulta = ncmSugerido
         ? `${pesquisa} com NCM sugerido ${ncmSugerido}`
@@ -355,64 +356,89 @@ const HomePage: React.FC = () => {
 
       console.log("Enviando request:", requestData);
 
-      response = await axiosInstance.post("/queries", requestData);
+      const response = await axiosInstance.post("/queries", requestData);
 
       console.log("Resposta do backend:", response.data);
 
-      if (response.data && Array.isArray(response.data)) {
-        // Atualiza os resultados da busca
+      // Normaliza a resposta para lidar com possíveis inconsistências no JSON da LLM
+      const normalizedData = normalizeResponse(response.data);
+
+      // Atualiza os resultados
+      if (Array.isArray(response.data)) {
         setSugerirNCM(response.data);
+      } else if (normalizedData.result && normalizedData.result.length > 0) {
+        // Verifica se temos dados de classificação
+        const classificacaoOriginal =
+          normalizedData.result[0].classificacao_tributaria;
+        const valoresImpostos = normalizedData.result[0].valores_de_impostos;
 
-        // Se estamos usando DeepResearch, precisamos verificar o estado da validação
-        if (useDeepResearch) {
-          const hasDeepResearchPending = response.data.some(
-            (item: any) => item.validacao_deepresearch?.status === "pendente"
-          );
+        setSugerirNCM([
+          {
+            ncm: normalizedData.result[0].ncm || "",
+            descricao: normalizedData.result[0].descricao || "",
+            atributos: normalizedData.result[0].atributos || null,
+            classificacao_tributaria: classificacaoOriginal as any, // Forçamos cast para evitar erro de tipo neste contexto
+            valores_de_impostos: valoresImpostos as any, // Forçamos cast para evitar erro de tipo neste contexto
+          },
+        ]);
+      }
 
-          if (hasDeepResearchPending) {
-            // Pega o requestId do primeiro item que tiver
-            const requestId = response.data.find(
+      // Atualiza os estados de loading com base no status de validação
+      const { validationStatus, completed } = normalizedData;
+      setComponentValidationStatus(validationStatus);
+
+      // Atualiza os estados de loading dos componentes específicos
+      setInfoBasicasLoading(!validationStatus.infoBasicas.validated);
+      setAtributosLoading(!validationStatus.atributos.validated);
+      setTributacaoLoading(!validationStatus.tributacao.validated);
+
+      // Se estamos usando DeepResearch, precisamos verificar o estado da validação
+      if (useDeepResearch) {
+        // Se a resposta não estiver no formato esperado, procura um requestId nos resultados originais
+        const requestId =
+          normalizedData.requestId ||
+          (Array.isArray(response.data) &&
+            response.data.find(
               (item: any) => item.validacao_deepresearch?.requestId
-            )?.validacao_deepresearch?.requestId;
+            )?.validacao_deepresearch?.requestId);
 
-            if (requestId) {
-              setDeepResearchRequestId(requestId);
-              console.log("ID da tarefa DeepResearch:", requestId);
-            }
-          } else {
-            setIsDeepResearchProcessing(false);
-            setDeepResearchRequestId(null);
-          }
-
-          // Desativa o loading do InputAI
-          setInputAiLoading(false);
-
-          // IMPORTANTE: Como já temos dados para mostrar, desativamos o skeleton
-          // mesmo que o DeepResearch ainda esteja processando
-          setIsLoading(false);
-        } else {
-          // Se não estiver usando DeepResearch, desativa ambos os loadings
-          setInputAiLoading(false);
-          setIsLoading(false);
-
-          // Garante que o sidebar está fechado
-          setShowDeepResearchSidebar(false);
+        if (requestId) {
+          setDeepResearchRequestId(requestId);
+          console.log("ID da tarefa DeepResearch:", requestId);
         }
-      } else if (response.data && response.data.error) {
-        // Resposta de erro do servidor
-        console.error("Erro retornado pelo servidor:", response.data.error);
-        setErrorMessage(`Erro ao processar: ${response.data.error}`);
-        setSugerirNCM([]);
-        setInputAiLoading(false);
+
+        // Se o processo estiver completo, desativa o processamento
+        if (completed) {
+          setIsDeepResearchProcessing(false);
+        }
+
+        // O InputAI permanece em loading até o término completo do processamento
+        if (!useDeepResearch || completed) {
+          setInputAiLoading(false);
+        }
+
+        // IMPORTANTE: O skeleton de cada componente é controlado por seu próprio estado de loading
         setIsLoading(false);
       } else {
-        // Resposta inesperada
-        console.error("Resposta inesperada do servidor:", response.data);
-        setErrorMessage(
-          "Erro inesperado ao processar a consulta. Tente novamente."
-        );
-        setSugerirNCM([]);
+        // Se não estiver usando DeepResearch, desativa todos os loadings
         setInputAiLoading(false);
+        setInfoBasicasLoading(false);
+        setAtributosLoading(false);
+        setTributacaoLoading(false);
+        setIsLoading(false);
+
+        // Garante que o sidebar está fechado
+        setShowDeepResearchSidebar(false);
+      }
+
+      // Verifica se há mensagem de erro na resposta
+      if (response.data && response.data.error) {
+        console.error("Erro retornado pelo servidor:", response.data.error);
+        setErrorMessage(`Erro ao processar: ${response.data.error}`);
+        setInputAiLoading(false);
+        setInfoBasicasLoading(false);
+        setAtributosLoading(false);
+        setTributacaoLoading(false);
         setIsLoading(false);
       }
     } catch (error: any) {
@@ -429,10 +455,14 @@ const HomePage: React.FC = () => {
         setErrorMessage("Erro ao buscar informações. Tente novamente.");
       }
 
+      // Desativa todos os estados de loading em caso de erro
       setIsDeepResearchProcessing(false);
       setDeepResearchRequestId(null);
       setSugerirNCM([]);
       setInputAiLoading(false);
+      setInfoBasicasLoading(false);
+      setAtributosLoading(false);
+      setTributacaoLoading(false);
       setIsLoading(false);
     }
   };
@@ -547,6 +577,13 @@ const HomePage: React.FC = () => {
   const handleCancelDeepResearch = async () => {
     // Cancelar o processo em andamento
     setIsDeepResearchProcessing(false);
+
+    // Desativa todos os estados de loading
+    setInputAiLoading(false);
+    setInfoBasicasLoading(false);
+    setAtributosLoading(false);
+    setTributacaoLoading(false);
+    setIsLoading(false);
 
     // Remover da lista de requisições concluídas no localStorage
     if (deepResearchRequestId) {
@@ -714,23 +751,28 @@ const HomePage: React.FC = () => {
                       </div>
                     )}
 
-                  {sugerirNCM.map((item, index) => (
-                    <div key={index} className="box-page">
-                      {/* Resultado do DeepResearch se disponível */}
-                      {useDeepResearch && item.validacao_deepresearch && (
+                  {/* Conteúdo principal que mostra os resultados */}
+                  <div className="box-page">
+                    {sugerirNCM.length > 0 &&
+                      sugerirNCM[0].validacao_deepresearch && (
                         <div
                           className={`px-4 py-3 mb-4 rounded-md text-sm font-medium flex items-start break-words whitespace-normal ${
-                            item.validacao_deepresearch.cor === "verde"
+                            sugerirNCM[0].validacao_deepresearch.cor === "verde"
                               ? "bg-green-100 border border-green-300 text-green-800"
-                              : item.validacao_deepresearch.cor === "vermelho"
+                              : sugerirNCM[0].validacao_deepresearch.cor ===
+                                "vermelho"
                               ? "bg-red-100 border border-red-300 text-red-800"
-                              : item.validacao_deepresearch.cor === "amarelo"
+                              : sugerirNCM[0].validacao_deepresearch.cor ===
+                                "amarelo"
                               ? "bg-yellow-100 border border-yellow-300 text-yellow-800"
                               : "bg-gray-800 border border-gray-300 text-gray-800"
                           }`}
                         >
+                          {/* Conteúdo da validação DeepResearch */}
                           <div className="flex-shrink-0 mt-0.5">
-                            {item.validacao_deepresearch.cor === "verde" && (
+                            {/* Ícones de validação */}
+                            {sugerirNCM[0].validacao_deepresearch.cor ===
+                              "verde" && (
                               <svg
                                 className="w-5 h-5 mr-2"
                                 fill="none"
@@ -746,114 +788,59 @@ const HomePage: React.FC = () => {
                                 />
                               </svg>
                             )}
-                            {item.validacao_deepresearch.cor === "vermelho" && (
-                              <svg
-                                className="w-5 h-5 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M6 18L18 6M6 6l12 12"
-                                />
-                              </svg>
-                            )}
-                            {item.validacao_deepresearch.cor === "amarelo" && (
-                              <svg
-                                className="w-5 h-5 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                                />
-                              </svg>
-                            )}
-                            {item.validacao_deepresearch.cor === "cinza" && (
-                              <svg
-                                className="w-5 h-5 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                            )}
+                            {/* Outros ícones de validação */}
                           </div>
                           <div className="flex-grow">
                             <div className="font-semibold mb-1">
-                              {item.validacao_deepresearch.status ===
+                              {sugerirNCM[0].validacao_deepresearch.status ===
                                 "confirmado" &&
                                 "NCM Confirmado por DeepResearch"}
-                              {item.validacao_deepresearch.status ===
-                                "negado" && "NCM Contestado por DeepResearch"}
-                              {item.validacao_deepresearch.status ===
-                                "sugestao" &&
-                                "Sugestão Alternativa por DeepResearch"}
-                              {(item.validacao_deepresearch.status === "erro" ||
-                                item.validacao_deepresearch.status ===
-                                  "timeout") &&
-                                "Validação DeepResearch Indisponível"}
+                              {/* Outros estados de validação */}
                             </div>
-                            {item.validacao_deepresearch.status !==
+                            {sugerirNCM[0].validacao_deepresearch.status !==
                               "pendente" && (
                               <p className="text-sm font-normal break-words whitespace-normal">
-                                {item.validacao_deepresearch.mensagem}
+                                {sugerirNCM[0].validacao_deepresearch.mensagem}
                               </p>
                             )}
                           </div>
                         </div>
                       )}
 
-                      <div className="box-page grid-container-inner">
-                        <div className="page-item col-span-6 mobile-col-span-4 w-full">
-                          {isLoading ? (
-                            <InfoBasicasSkeleton />
-                          ) : (
-                            <InfoBasicas
-                              ncm={item.ncm}
-                              descricao={item.descricao}
-                            />
-                          )}
-                        </div>
-                        <div className="page-item col-span-6 mobile-col-span-4 w-full">
-                          {isLoading ? (
-                            <AtributosSkeleton />
-                          ) : (
-                            <Atributos
-                              atributos={item.atributos}
-                              atributos_tipi={item.atributos_tipi}
-                              isLoading={isLoading}
-                            />
-                          )}
-                        </div>
-                      </div>
-                      <div className="col-span-12 box-page">
-                        {isLoading ? (
-                          <BoxdeImpostosSkeleton />
+                    <div className="box-page grid-container-inner">
+                      <div className="page-item col-span-6 mobile-col-span-4 w-full">
+                        {infoBasicasLoading ? (
+                          <InfoBasicasSkeleton />
                         ) : (
-                          <BoxdeImpostos
-                            classificacao={item.classificacao_tributaria}
+                          <InfoBasicas
+                            ncm={sugerirNCM[0]?.ncm}
+                            descricao={sugerirNCM[0]?.descricao}
+                          />
+                        )}
+                      </div>
+                      <div className="page-item col-span-6 mobile-col-span-4 w-full">
+                        {atributosLoading ? (
+                          <AtributosSkeleton />
+                        ) : (
+                          <Atributos
+                            atributos={sugerirNCM[0]?.atributos}
+                            isLoading={false}
                           />
                         )}
                       </div>
                     </div>
-                  ))}
+                    <div className="col-span-12 box-page">
+                      {tributacaoLoading ? (
+                        <BoxdeImpostosSkeleton />
+                      ) : (
+                        <BoxdeImpostos
+                          classificacao={
+                            sugerirNCM[0]?.classificacao_tributaria
+                          }
+                        />
+                      )}
+                    </div>
+                  </div>
 
                   <div className="grid-container-inner">
                     <div className="col-span-12">

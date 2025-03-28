@@ -80,42 +80,81 @@ abstract class BaseDeepResearch extends DeepResearch {
    */
   protected processModelResponse(rawContent: string): StepResult {
     try {
+      // Tenta extrair JSON da resposta do modelo
       const jsonContent = this.extractLastJSON(rawContent);
-      let content = JSON.parse(jsonContent);
 
-      // Normaliza a ação se necessário
+      // Tenta fazer o parse do JSON
+      const content = JSON.parse(jsonContent);
+
+      // Verifica se o objeto contém a estrutura esperada com o novo formato
+      if (content.step !== undefined && content.validationStatus) {
+        return {
+          success: true,
+          content: jsonContent,
+          error: null,
+        };
+      }
+
+      // Para compatibilidade com o formato antigo, verifica se há campos de ação
       if (content.action) {
         const normalizedAction = this.normalizeAction(content.action);
-        if (normalizedAction !== content.action) {
-          console.log(
-            `Normalizando ação de "${content.action}" para "${normalizedAction}"`
-          );
-          content.action = normalizedAction;
+
+        if (normalizedAction === "invalid") {
+          return {
+            success: false,
+            content: null,
+            error: `Ação inválida: ${content.action}`,
+          };
         }
-      }
 
-      // Validação do formato da ação
-      if (!["search", "answer", "reflect", "visit"].includes(content.action)) {
+        // Validação dos campos obrigatórios
+        if (content.action === "search" && !content.searchQuery) {
+          return {
+            success: false,
+            content: null,
+            error: "Campo searchQuery é obrigatório para ação search",
+          };
+        }
+
+        // Para manter compatibilidade, adapta o formato antigo para o novo formato
+        const adaptedContent = {
+          step: 1, // Por padrão, considera como passo 1
+          completed: false,
+          result: [
+            {
+              ncm: content.ncm || "",
+              descricao: content.descricao || "",
+              atributos: content.atributos || null,
+              classificacao_tributaria:
+                content.classificacao_tributaria || null,
+              valores_de_impostos: content.impostos || null,
+            },
+          ],
+          validationStatus: {
+            infoBasicas: { validated: !!content.ncm, loading: !content.ncm },
+            atributos: {
+              validated: !!content.atributos,
+              loading: !content.atributos,
+            },
+            tributacao: {
+              validated: !!content.impostos,
+              loading: !content.impostos,
+            },
+          },
+        };
+
         return {
-          success: false,
-          content: null,
-          error: `Ação inválida: ${content.action}`,
+          success: true,
+          content: JSON.stringify(adaptedContent),
+          error: null,
         };
       }
 
-      // Validação dos campos obrigatórios
-      if (content.action === "search" && !content.searchQuery) {
-        return {
-          success: false,
-          content: null,
-          error: "Campo searchQuery é obrigatório para ação search",
-        };
-      }
-
+      // Se chegou aqui, o formato não é reconhecido
       return {
-        success: true,
-        content: JSON.stringify(content),
-        error: null,
+        success: false,
+        content: null,
+        error: "Resposta não está no formato JSON esperado",
       };
     } catch (parseError) {
       console.error("Erro ao processar JSON:", parseError);

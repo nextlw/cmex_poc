@@ -360,6 +360,12 @@ export interface FastApiNCMResult {
     cst_entrada?: string;
     cst_saida?: string;
   };
+  // Status de validação dos componentes da UI
+  validation_status?: {
+    infoBasicas: { validated: boolean; loading: boolean };
+    atributos: { validated: boolean; loading: boolean };
+    tributacao: { validated: boolean; loading: boolean };
+  };
 }
 
 // ============ TIPOS DO ARQUIVO SESSION.TS ============

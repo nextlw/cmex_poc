@@ -157,22 +157,36 @@
   position: relative;
   padding-bottom: 1rem;
   transition: all 0.3s ease;
+  contain: layout;
 }
 
 .deep-research-step:last-child {
   padding-bottom: 0;
 }
 
-/* Linha vertical conectando os passos */
+/* Linhas verticais simplificadas para maior estabilidade */
 .deep-research-step:not(:last-child)::before {
   content: "";
   position: absolute;
   left: 1.25rem;
-  top: 2.5rem;
-  bottom: 0;
+  top: 3rem;
+  bottom: -0.5rem;
   width: 2px;
   background-color: var(--border-color);
   z-index: 1;
+  transform: translateX(-50%);
+}
+
+/* Linha de background que cobre todo o espaço potencial */
+.deep-research-step::after {
+  content: "";
+  position: absolute;
+  left: 1.25rem;
+  top: -0.5rem;
+  bottom: 100%;
+  width: 6px;
+  background-color: var(--background-color-tertiary);
+  z-index: 0;
   transform: translateX(-50%);
 }
 
@@ -193,6 +207,15 @@
   cursor: pointer;
   position: relative;
   z-index: 2;
+  padding: 6px 10px;
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.2s ease;
+  contain: layout;
+  will-change: transform;
+}
+
+.deep-research-step-header:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.05);
 }
 
 /* Indicador circular do passo */
@@ -202,6 +225,7 @@
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
+  min-width: 2.5rem;
   border-radius: 50%;
   background-color: var(--background-color-secondary);
   border: 2px solid var(--border-color);
@@ -209,7 +233,9 @@
   color: var(--text-primary);
   flex-shrink: 0;
   position: relative;
-  z-index: 2;
+  z-index: 4;
+  box-shadow: 0 0 0 5px var(--background-color-tertiary);
+  will-change: transform;
 }
 
 .deep-research-step.completed .deep-research-step-indicator {
@@ -230,103 +256,6 @@
   color: var(--color-error);
 }
 
-/* Animação de carregamento */
-.deep-research-step-loading {
-  width: 1.25rem;
-  height: 1.25rem;
-  border: 2px solid rgba(var(--color-primary-rgb), 0.3);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Adicionando os estilos do novo spinner */
-.step-spinner {
-  position: relative;
-  transform: none;
-  width: 16px;
-  height: 16px;
-  margin: 0;
-}
-
-.step-spinner div {
-  width: 2px;
-  height: 6px;
-  background: var(--color-primary);
-  border-radius: 2px;
-  opacity: 0.9;
-  transition: 1s ease-in-out;
-  animation: fade 0.5s linear infinite;
-}
-
-.step-spinner div:nth-child(1) {
-  transform: rotate(0deg) translateY(-6px);
-  animation-delay: 0s;
-}
-
-.step-spinner div:nth-child(2) {
-  transform: rotate(45deg) translateY(-6px);
-  animation-delay: 0.0625s;
-}
-
-.step-spinner div:nth-child(3) {
-  transform: rotate(90deg) translateY(-6px);
-  animation-delay: 0.125s;
-}
-
-.step-spinner div:nth-child(4) {
-  transform: rotate(135deg) translateY(-6px);
-  animation-delay: 0.1875s;
-}
-
-.step-spinner div:nth-child(5) {
-  transform: rotate(180deg) translateY(-6px);
-  animation-delay: 0.25s;
-}
-
-.step-spinner div:nth-child(6) {
-  transform: rotate(225deg) translateY(-6px);
-  animation-delay: 0.3125s;
-}
-
-.step-spinner div:nth-child(7) {
-  transform: rotate(270deg) translateY(-6px);
-  animation-delay: 0.375s;
-}
-
-.step-spinner div:nth-child(8) {
-  transform: rotate(315deg) translateY(-6px);
-  animation-delay: 0.4375s;
-}
-
-@keyframes fade {
-  0% {
-    opacity: 0;
-  }
-
-  25% {
-    opacity: 1;
-  }
-
-  75% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-}
-
 /* Título do passo */
 .deep-research-step-title {
   font-weight: 500;
@@ -335,68 +264,233 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 2.5rem;
+  will-change: transform;
 }
 
-/* Conteúdo do passo */
+/* Tratamento especial para o passo 2 que está quebrando */
+.deep-research-step:nth-child(2) {
+  contain: layout size;
+}
+
+.deep-research-step:nth-child(2) .deep-research-step-header {
+  contain: layout size;
+  transform: translateZ(0);
+}
+
+.deep-research-step:nth-child(2) .deep-research-step-indicator {
+  transform: translateZ(0);
+  position: relative;
+  z-index: 5;
+}
+
+.deep-research-step:nth-child(2) .deep-research-step-title {
+  transform: translateZ(0);
+}
+
+/* Conteúdo do passo com transições mais suaves */
 .deep-research-step-content {
   padding-left: 3.25rem;
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
-  transition: all 0.3s ease;
+  transition: max-height 0.3s ease, opacity 0.2s ease;
   max-height: 1000px;
-  overflow: auto;
+  opacity: 1;
+  overflow: hidden;
 }
 
-.deep-research-step.active .deep-research-step-content {
+.deep-research-step.minimized .deep-research-step-content {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Descrição do passo */
+.deep-research-step-description {
+  margin-bottom: 12px;
   color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+/* Barra de progresso */
+.deep-research-progress {
+  height: 6px;
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  border-radius: 3px;
+  margin: 10px 0 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.deep-research-progress-bar {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+  position: relative;
+}
+
+.deep-research-progress-text {
+  position: absolute;
+  top: -20px;
+  right: 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+/* Notificações de erro/sucesso */
+.deep-research-notification {
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin: 6px 0 12px;
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.deep-research-notification.error {
+  background-color: rgba(var(--color-error-rgb), 0.1);
+  color: var(--color-error);
+  border-left: 3px solid var(--color-error);
+}
+
+.deep-research-notification.success {
+  background-color: rgba(var(--color-success-rgb), 0.1);
+  color: var(--color-success);
+  border-left: 3px solid var(--color-success);
+}
+
+.deep-research-notification.warning {
+  background-color: rgba(var(--color-warning-rgb), 0.1);
+  color: var(--color-warning);
+  border-left: 3px solid var(--color-warning);
+}
+
+.deep-research-notification.info {
+  background-color: rgba(var(--color-info-rgb), 0.1);
+  color: var(--color-info);
+  border-left: 3px solid var(--color-info);
 }
 
 /* Detalhes dentro do passo */
 .deep-research-step-details {
-  margin-top: 0.75rem;
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 10px;
 }
 
 .deep-research-detail {
   background-color: var(--background-color-secondary);
-  border-radius: var(--border-radius-sm);
-  padding: 0.75rem;
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.deep-research-detail:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Cores diferentes por tipo de detalhe */
+.deep-research-detail.link {
+  border-left: 4px solid var(--color-info);
+}
+
+.deep-research-detail.text {
+  border-left: 4px solid var(--color-primary);
+}
+
+.deep-research-detail.law {
+  border-left: 4px solid var(--color-warning);
+}
+
+.deep-research-detail.question {
+  border-left: 4px solid var(--color-secondary);
 }
 
 .deep-research-detail-content {
   display: flex;
-  gap: 0.75rem;
   align-items: flex-start;
+  gap: 10px;
 }
 
 .deep-research-detail-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
   flex-shrink: 0;
   color: var(--color-primary);
-  opacity: 0.8;
+  margin-top: 2px;
+}
+
+.deep-research-detail.link .deep-research-detail-icon {
+  color: var(--color-info);
+}
+
+.deep-research-detail.text .deep-research-detail-icon {
+  color: var(--color-primary);
+}
+
+.deep-research-detail.law .deep-research-detail-icon {
+  color: var(--color-warning);
+}
+
+.deep-research-detail.question .deep-research-detail-icon {
+  color: var(--color-secondary);
 }
 
 .deep-research-detail-text {
-  margin: 0;
   font-size: var(--font-size-sm);
-  line-height: 1.4;
+  line-height: 1.5;
   color: var(--text-primary);
+  flex: 1;
   word-break: break-word;
-  white-space: normal;
-  flex-grow: 1;
 }
 
 .deep-research-detail-source {
-  margin: 0.25rem 0 0;
-  font-size: 0.75rem;
-  opacity: 0.7;
+  margin-top: 6px;
+  font-size: var(--font-size-xs);
   color: var(--text-secondary);
-  word-break: break-word;
-  white-space: normal;
-  flex-grow: 1;
+  padding-left: 30px;
+  font-style: italic;
+}
+
+/* Animação para expandir/colapsar */
+.deep-research-step-content {
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  max-height: 1000px;
+  opacity: 1;
+}
+
+.deep-research-step.minimized .deep-research-step-content {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* Contador de iterações */
@@ -410,20 +504,6 @@
   padding: 0.125rem 0.375rem;
   margin-left: 0.5rem;
   color: var(--color-primary);
-}
-
-/* Estados minimizados */
-.deep-research-step.minimized .deep-research-step-content {
-  max-height: 0;
-  margin-top: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-
-.deep-research-step.minimized .deep-research-step-header {
-  margin-bottom: 0;
 }
 
 /* Botão de alternar minimização */
@@ -446,7 +526,12 @@
 }
 
 .deep-research-toggle-btn:hover {
-  background-color: var(--hover-color);
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  color: var(--color-primary);
+}
+
+.deep-research-toggle-btn:active {
+  transform: scale(0.9);
 }
 
 /* Estado vazio */
@@ -880,19 +965,13 @@
   }
 }
 
-/* Estado de skeleton loading */
-.deep-research-sidebar.skeleton-loading .final-classification,
-.deep-research-sidebar.skeleton-loading .conclusion-section,
-.deep-research-sidebar.skeleton-loading .evidences-section,
-.deep-research-sidebar.skeleton-loading .alternative-cases {
+/* Estado de skeleton loading mais claro */
+.deep-research-sidebar.skeleton-loading .deep-research-step {
   position: relative;
   overflow: hidden;
 }
 
-.deep-research-sidebar.skeleton-loading .final-classification::before,
-.deep-research-sidebar.skeleton-loading .conclusion-section::before,
-.deep-research-sidebar.skeleton-loading .evidences-section::before,
-.deep-research-sidebar.skeleton-loading .alternative-cases::before {
+.deep-research-sidebar.skeleton-loading .deep-research-step::before {
   content: "";
   position: absolute;
   top: 0;
@@ -906,6 +985,7 @@
   animation: shimmer 1.5s infinite;
   z-index: 1;
   pointer-events: none;
+  border-radius: var(--border-radius-md);
 }
 
 @keyframes shimmer {
@@ -916,6 +996,20 @@
   100% {
     transform: translateX(100%);
   }
+}
+
+/* Estado de carregamento inicial */
+.deep-research-sidebar.skeleton-loading .deep-research-step-indicator {
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+  border-color: rgba(var(--color-primary-rgb), 0.2);
+}
+
+.deep-research-sidebar.skeleton-loading .deep-research-step-content {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
 }
 
 /* Estado de erro */
@@ -963,4 +1057,253 @@
 
 .deep-research-step.loading .deep-research-step-header {
   color: var(--color-primary);
+}
+
+/* Spinner e estilos de carregamento */
+.deep-research-step-loading {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid rgba(var(--color-primary-rgb), 0.3);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estilos do spinner */
+.step-spinner {
+  position: relative;
+  transform: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.step-spinner div {
+  width: 2px;
+  height: 6px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  opacity: 0.9;
+  transition: 1s ease-in-out;
+  animation: fade 0.5s linear infinite;
+}
+
+.step-spinner div:nth-child(1) {
+  transform: rotate(0deg) translateY(-6px);
+  animation-delay: 0s;
+}
+
+.step-spinner div:nth-child(2) {
+  transform: rotate(45deg) translateY(-6px);
+  animation-delay: 0.0625s;
+}
+
+.step-spinner div:nth-child(3) {
+  transform: rotate(90deg) translateY(-6px);
+  animation-delay: 0.125s;
+}
+
+.step-spinner div:nth-child(4) {
+  transform: rotate(135deg) translateY(-6px);
+  animation-delay: 0.1875s;
+}
+
+.step-spinner div:nth-child(5) {
+  transform: rotate(180deg) translateY(-6px);
+  animation-delay: 0.25s;
+}
+
+.step-spinner div:nth-child(6) {
+  transform: rotate(225deg) translateY(-6px);
+  animation-delay: 0.3125s;
+}
+
+.step-spinner div:nth-child(7) {
+  transform: rotate(270deg) translateY(-6px);
+  animation-delay: 0.375s;
+}
+
+.step-spinner div:nth-child(8) {
+  transform: rotate(315deg) translateY(-6px);
+  animation-delay: 0.4375s;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Estilos para passo ativo */
+.deep-research-step.active .deep-research-step-content {
+  color: var(--text-primary);
+}
+
+/* Melhorar espaçamento e animação dos detalhes */
+.deep-research-step-content {
+  padding-left: 36px;
+  position: relative;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  max-height: 2000px;
+  /* Valor alto para acomodar conteúdos grandes */
+  opacity: 1;
+}
+
+.deep-research-step.minimized .deep-research-step-content {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Animação de expandir/colapsar mais suave */
+.deep-research-step-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deep-research-step-header:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+}
+
+/* Indicador de passo com animação de loading */
+.deep-research-step.active .deep-research-step-indicator svg {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Transições suaves para os passos */
+.deep-research-step {
+  transition: all 0.3s ease;
+}
+
+.deep-research-step.completed .deep-research-step-indicator {
+  transition: all 0.3s ease-in-out;
+  animation: completedPulse 1s ease-in-out;
+}
+
+@keyframes completedPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--color-success-rgb), 0.7);
+  }
+
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(var(--color-success-rgb), 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--color-success-rgb), 0);
+  }
+}
+
+/* Melhorar a estilização do skeleton loading para cada parte do componente */
+.deep-research-sidebar.skeleton-loading .final-classification,
+.deep-research-sidebar.skeleton-loading .conclusion-section,
+.deep-research-sidebar.skeleton-loading .evidences-section,
+.deep-research-sidebar.skeleton-loading .alternative-cases {
+  position: relative;
+  overflow: hidden;
+}
+
+.deep-research-sidebar.skeleton-loading .final-classification::before,
+.deep-research-sidebar.skeleton-loading .conclusion-section::before,
+.deep-research-sidebar.skeleton-loading .evidences-section::before,
+.deep-research-sidebar.skeleton-loading .alternative-cases::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg,
+      rgba(var(--color-gray-900-rgb), 0.05) 0%,
+      rgba(var(--color-gray-900-rgb), 0.1) 40%,
+      rgba(var(--color-gray-900-rgb), 0.05) 100%);
+  animation: shimmer 1.5s infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Status atual da pesquisa */
+.deep-research-current-status {
+  margin-top: 10px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeIn 0.5s ease;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(var(--color-primary-rgb), 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0);
+  }
 }
