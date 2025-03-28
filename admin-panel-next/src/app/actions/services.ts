@@ -142,9 +142,12 @@ export async function checkServiceStatus(serviceId: ServiceId) {
         const portFilePath = "../deepsearch-ui-jina/.port.txt";
         if (fs.existsSync(portFilePath)) {
           const portFromFile = fs.readFileSync(portFilePath, "utf8").trim();
-          console.log(
-            `UI-Jina porta no arquivo: ${portFromFile}, usando porta fixa: ${port}`
-          );
+          // Só loga se a porta no arquivo for diferente da porta fixa
+          if (portFromFile !== "8080") {
+            console.log(
+              `UI-Jina porta no arquivo: ${portFromFile}, usando porta fixa: ${port}`
+            );
+          }
         }
       } catch (err) {
         console.log(
@@ -302,88 +305,101 @@ export async function stopService(serviceId: ServiceId, pid?: number | null) {
       } na porta ${portToUse}`
     );
 
-    // 1. Primeiro tenta usar a referência direta ao processo, se disponível
-    const processRef = runningProcesses[serviceId];
-    if (processRef) {
-      console.log(
-        `Usando referência direta para encerrar o processo ${serviceId}`
-      );
-      try {
-        processRef.kill("SIGTERM"); // Tenta primeiro com SIGTERM
-
-        // Aguarda um pouco e depois verifica
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        delete runningProcesses[serviceId];
-
-        const status = await checkServiceStatus(serviceId);
-        if (!status.running) {
-          stopped = true;
-          console.log(
-            `Serviço ${serviceId} parou com sucesso usando referência direta`
-          );
-        } else {
-          // Se ainda está rodando, tenta com SIGKILL
-          processRef.kill("SIGKILL");
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
-          const statusAfterKill = await checkServiceStatus(serviceId);
-          if (!statusAfterKill.running) {
-            stopped = true;
-            console.log(
-              `Serviço ${serviceId} parou com sucesso usando SIGKILL`
-            );
-          }
-        }
-      } catch (err) {
-        console.error(
-          `Erro ao matar processo ${serviceId} via referência:`,
-          err
-        );
-      }
-    }
-
-    // 2. Se não parou ainda e temos um PID específico, tenta matar diretamente
-    if (!stopped && pid) {
-      console.log(`Tentando matar o PID ${pid} diretamente`);
-      try {
-        // Tenta primeiro com um sinal normal
-        execSync(`kill ${pid}`);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        const status = await checkServiceStatus(serviceId);
-        if (!status.running) {
-          stopped = true;
-          console.log(
-            `Serviço ${serviceId} parou com sucesso usando kill no PID ${pid}`
-          );
-        } else {
-          // Se ainda está rodando, força com -9
-          execSync(`kill -9 ${pid}`);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
-          const statusAfterKill = await checkServiceStatus(serviceId);
-          if (!statusAfterKill.running) {
-            stopped = true;
-            console.log(
-              `Serviço ${serviceId} parou com sucesso usando kill -9 no PID ${pid}`
-            );
-          }
-        }
-      } catch (err) {
-        console.error(`Erro ao matar PID ${pid} diretamente:`, err);
-      }
-    }
-
-    // 3. Se ainda não parou, tenta encontrar e matar qualquer processo na porta
-    if (!stopped) {
-      console.log(`Tentando matar qualquer processo na porta ${portToUse}`);
-      const killedByPort = await killProcessOnPort(portToUse);
-
+    // Para UI-Jina, sempre tenta matar o processo na porta 8080 primeiro
+    if (serviceId === "ui-jina") {
+      console.log("UI-Jina detectado, tentando parar processo na porta 8080");
+      const killedByPort = await killProcessOnPort(8080);
       if (killedByPort) {
         stopped = true;
+        console.log("UI-Jina parado com sucesso via porta 8080");
+      }
+    }
+
+    // Se ainda não parou, tenta os outros métodos
+    if (!stopped) {
+      // 1. Primeiro tenta usar a referência direta ao processo, se disponível
+      const processRef = runningProcesses[serviceId];
+      if (processRef) {
         console.log(
-          `Serviço ${serviceId} parou com sucesso matando processos na porta ${portToUse}`
+          `Usando referência direta para encerrar o processo ${serviceId}`
         );
+        try {
+          processRef.kill("SIGTERM"); // Tenta primeiro com SIGTERM
+
+          // Aguarda um pouco e depois verifica
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          delete runningProcesses[serviceId];
+
+          const status = await checkServiceStatus(serviceId);
+          if (!status.running) {
+            stopped = true;
+            console.log(
+              `Serviço ${serviceId} parou com sucesso usando referência direta`
+            );
+          } else {
+            // Se ainda está rodando, tenta com SIGKILL
+            processRef.kill("SIGKILL");
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const statusAfterKill = await checkServiceStatus(serviceId);
+            if (!statusAfterKill.running) {
+              stopped = true;
+              console.log(
+                `Serviço ${serviceId} parou com sucesso usando SIGKILL`
+              );
+            }
+          }
+        } catch (err) {
+          console.error(
+            `Erro ao matar processo ${serviceId} via referência:`,
+            err
+          );
+        }
+      }
+
+      // 2. Se não parou ainda e temos um PID específico, tenta matar diretamente
+      if (!stopped && pid) {
+        console.log(`Tentando matar o PID ${pid} diretamente`);
+        try {
+          // Tenta primeiro com um sinal normal
+          execSync(`kill ${pid}`);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          const status = await checkServiceStatus(serviceId);
+          if (!status.running) {
+            stopped = true;
+            console.log(
+              `Serviço ${serviceId} parou com sucesso usando kill no PID ${pid}`
+            );
+          } else {
+            // Se ainda está rodando, força com -9
+            execSync(`kill -9 ${pid}`);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const statusAfterKill = await checkServiceStatus(serviceId);
+            if (!statusAfterKill.running) {
+              stopped = true;
+              console.log(
+                `Serviço ${serviceId} parou com sucesso usando kill -9 no PID ${pid}`
+              );
+            }
+          }
+        } catch (err) {
+          console.error(`Erro ao matar PID ${pid} diretamente:`, err);
+        }
+      }
+
+      // 3. Se ainda não parou, tenta encontrar e matar qualquer processo na porta
+      if (!stopped) {
+        console.log(`Tentando matar qualquer processo na porta ${portToUse}`);
+        const killedByPort = await killProcessOnPort(portToUse);
+
+        if (killedByPort) {
+          stopped = true;
+          console.log(
+            `Serviço ${serviceId} parou com sucesso matando processos na porta ${portToUse}`
+          );
+        }
       }
     }
 

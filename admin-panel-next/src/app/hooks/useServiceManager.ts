@@ -393,21 +393,58 @@ export function useServiceManager() {
   // Verificar status inicial e limpar portas na inicialização
   useEffect(() => {
     let isMounted = true;
+    let lastStatus: Record<ServiceId, boolean> = {
+      redis: false,
+      fastapi: false,
+      node: false,
+      frontend: false,
+      "node-jina": false,
+      "ui-jina": false,
+    };
 
     // Função de inicialização executada apenas uma vez - somente verificar status, sem limpar portas
     const init = async () => {
       if (isMounted) {
         console.log("Verificando status inicial dos serviços...");
-        await checkAllStatus();
+        const initialStatus = await checkAllStatus();
+
+        // Inicializa o lastStatus com o status atual
+        Object.entries(initialStatus).forEach(([id, status]) => {
+          if (status && typeof status === "object" && "running" in status) {
+            const serviceId = id as ServiceId;
+            lastStatus[serviceId] = Boolean(status.running);
+          }
+        });
       }
     };
 
     init();
 
     // Verificar periodicamente o status dos serviços
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       if (isMounted) {
-        checkAllStatus();
+        const currentStatus = await checkAllStatus();
+
+        // Só atualiza o status se houver mudança
+        Object.entries(currentStatus).forEach(([id, status]) => {
+          if (status && typeof status === "object" && "running" in status) {
+            const serviceId = id as ServiceId;
+            const isRunning = Boolean(status.running);
+            if (lastStatus[serviceId] !== isRunning) {
+              lastStatus[serviceId] = isRunning;
+              const pid =
+                status && typeof status === "object" && "pid" in status
+                  ? status.pid
+                  : null;
+              addLog(
+                serviceId,
+                `Status alterado: ${isRunning ? "Em execução" : "Parado"}${
+                  pid ? ` (PID: ${pid})` : ""
+                }`
+              );
+            }
+          }
+        });
       }
     }, 10000);
 
@@ -416,7 +453,7 @@ export function useServiceManager() {
       isMounted = false;
       clearInterval(interval);
     };
-  }, []); // Mantemos sem dependências para garantir que execute apenas uma vez
+  }, [checkAllStatus, addLog]); // Adicionamos as dependências necessárias
 
   return {
     services: Object.values(services),

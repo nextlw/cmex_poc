@@ -1,14 +1,21 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import api from "../../axiosConfig";
-import { DeepResearchSidebarProps } from "./types";
+import {
+  DeepResearchSidebarProps,
+  ResearchStep,
+  ResearchDetail,
+  ValidationResult,
+  FinalReport,
+  ValidationStatus,
+} from "./types";
 import "./styles.css";
+import Spinner from "../Spinner";
 import {
   FaProjectDiagram,
   FaArrowDown,
   FaArrowUp,
   FaTimes,
   FaCheck,
-  FaList,
   FaPencilAlt,
   FaBook,
   FaFile,
@@ -16,65 +23,6 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 import clsx from "clsx";
-
-interface ResearchStep {
-  id: number;
-  title: string;
-  content: string;
-  status: "waiting" | "processing" | "completed" | "error";
-  details?: ResearchDetail[];
-  iterations?: number;
-  minimized?: boolean;
-  hidden?: boolean;
-}
-
-interface ResearchDetail {
-  type: "link" | "text" | "law" | "question";
-  content: string;
-  source?: string;
-  timestamp: Date;
-}
-
-interface ValidationResult {
-  isValid: boolean;
-  suggestedNCM?: string;
-  originalNCM: string;
-  reason?: string;
-}
-
-// Interface para o relatório final
-interface FinalReport {
-  conclusion: string;
-  evidences: Array<{
-    source: string;
-    content: string;
-    type: "law" | "jurisprudence" | "technical" | "example";
-  }>;
-  alternativeCases: Array<{
-    scenario: string;
-    impact: string;
-    suggestedNCM?: string;
-  }>;
-  ncmCode: string;
-  ncmDescription: string;
-  taxationDetails?: {
-    ipi?: string;
-    icms?: string;
-    pis?: string;
-    cofins?: string;
-    importTax?: string;
-  };
-  attributes?: Record<string, string>;
-}
-
-// Interface para controlar quais campos estão em validação
-interface ValidationStatus {
-  ncmCode: boolean;
-  ncmDescription: boolean;
-  taxationDetails: boolean;
-  attributes: boolean;
-  conclusion: boolean;
-}
 
 // Mensagens pré-definidas para cada etapa do processo
 const PROGRESS_MESSAGES = [
@@ -363,18 +311,17 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         // Todos os passos anteriores estão completos
         for (let i = 0; i < step; i++) {
           updatedSteps[i].status = "completed";
-          // Não força minimização - preserva o estado definido pelo usuário
-          // updatedSteps[i].minimized = true;
+          // Minimiza os passos anteriores
+          updatedSteps[i].minimized = true;
         }
         // O passo atual está em processamento
         updatedSteps[step].status = "processing";
-        // Não força expansão - deixa o usuário controlar
-        // updatedSteps[step].minimized = false;
+        // Expande o passo atual
+        updatedSteps[step].minimized = false;
 
-        // Garante que todos os passos futuros também estão mantidos como estão
+        // Garante que todos os passos futuros também estão minimizados
         for (let i = step + 1; i < updatedSteps.length; i++) {
-          // Não força minimização - preserva o estado definido pelo usuário
-          // updatedSteps[i].minimized = true;
+          updatedSteps[i].minimized = true;
         }
 
         // Atualiza o conteúdo do passo atual com a mensagem de status
@@ -447,10 +394,9 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
       const finalUpdatedSteps = [...steps];
 
       finalUpdatedSteps.forEach((s, idx) => {
-        // Preserva o estado de minimizado, apenas definindo o status
-        // s.minimized = idx !== finalStepIndex;
+        // Define o status e minimização de cada passo
         s.status = idx <= finalStepIndex ? "completed" : "waiting";
-
+        s.minimized = idx !== finalStepIndex;
         // Garante que nenhum passo tenha a propriedade hidden ativa
         s.hidden = false;
       });
@@ -1088,7 +1034,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     }
 
     if (step.status === "processing") {
-      return <div className="deep-research-step-loading" />;
+      return <Spinner classes="step-spinner" />;
     }
 
     if (step.status === "error") {
@@ -1096,6 +1042,113 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     }
 
     return index + 1;
+  };
+
+  // Dentro do componente, antes do return principal:
+  const renderStepContent = (step: ResearchStep, index: number) => {
+    if (hasError) {
+      return (
+        <div className="deep-research-error-state">
+          <FaExclamationTriangle />
+          <p>{errorMessage || "Erro ao carregar dados do servidor"}</p>
+        </div>
+      );
+    }
+
+    if (isLoading && !step.content) {
+      return <Spinner classes="step-spinner" />;
+    }
+
+    return (
+      <>
+        <p>{step.content}</p>
+        {step.details && step.details.length > 0 && (
+          <div className="deep-research-step-details">
+            {step.details.map((detail, detailIndex) => (
+              <div
+                key={`${step.id}-${detailIndex}`}
+                className="deep-research-detail"
+              >
+                <div className="deep-research-detail-content">
+                  {detail.type === "link" && (
+                    <svg
+                      className="deep-research-detail-icon"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                      />
+                    </svg>
+                  )}
+
+                  {detail.type === "text" && (
+                    <svg
+                      className="deep-research-detail-icon"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  )}
+
+                  {detail.type === "law" && (
+                    <svg
+                      className="deep-research-detail-icon"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                      />
+                    </svg>
+                  )}
+
+                  {detail.type === "question" && (
+                    <svg
+                      className="deep-research-detail-icon"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  )}
+
+                  <span className="deep-research-detail-text">
+                    {detail.content}
+                  </span>
+                </div>
+                {detail.source && (
+                  <div className="deep-research-detail-source">
+                    {detail.source}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </>
+    );
   };
 
   // Retorna a estrutura visual do componente
@@ -1144,9 +1197,13 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
               step.hidden ? null : (
                 <li
                   key={step.id}
-                  className={`deep-research-step ${step.status} ${
-                    index === currentStepIndex ? "active" : ""
-                  } ${step.minimized ? "minimized" : ""}`}
+                  className={clsx("deep-research-step", {
+                    minimized: step.minimized,
+                    active: index === currentStepIndex,
+                    completed: index < currentStepIndex,
+                    error: hasError,
+                    loading: isLoading && index === currentStepIndex,
+                  })}
                 >
                   <div
                     className="deep-research-step-header"
@@ -1215,147 +1272,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
                   </div>
 
                   <div className="deep-research-step-content">
-                    <p>{step.content}</p>
-
-                    {step.details && step.details.length > 0 && (
-                      <div className="deep-research-step-details">
-                        {step.details.map((detail, detailIndex) => (
-                          <div
-                            key={`${step.id}-${detailIndex}`}
-                            className="deep-research-detail"
-                          >
-                            <div className="deep-research-detail-content">
-                              {detail.type === "link" && (
-                                <svg
-                                  className="deep-research-detail-icon"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                                  />
-                                </svg>
-                              )}
-
-                              {detail.type === "text" && (
-                                <svg
-                                  className="deep-research-detail-icon"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                  />
-                                </svg>
-                              )}
-
-                              {detail.type === "law" && (
-                                <svg
-                                  className="deep-research-detail-icon"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-                                  />
-                                </svg>
-                              )}
-
-                              {detail.type === "question" && (
-                                <svg
-                                  className="deep-research-detail-icon"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                  />
-                                </svg>
-                              )}
-
-                              <span className="deep-research-detail-text">
-                                {detail.content}
-                              </span>
-                            </div>
-                            {detail.source && (
-                              <div className="deep-research-detail-source">
-                                {detail.source}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Validação para o último passo */}
-                    {step.id === 6 &&
-                      step.status === "completed" &&
-                      validationResult && (
-                        <div className="validation-comparison">
-                          <div className="validation-item validation-original">
-                            <div className="validation-header">
-                              <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                              </svg>
-                              <span>NCM Original</span>
-                              <span className="validation-tag original">
-                                {validationResult.originalNCM}
-                              </span>
-                            </div>
-                            {validationResult.reason && (
-                              <p>{validationResult.reason}</p>
-                            )}
-                          </div>
-
-                          {validationResult.suggestedNCM &&
-                            validationResult.suggestedNCM !==
-                              validationResult.originalNCM && (
-                              <div className="validation-item validation-corrected">
-                                <div className="validation-header">
-                                  <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path d="M9 12l2 2 4-4" />
-                                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
-                                  </svg>
-                                  <span>NCM Sugerido</span>
-                                  <span className="validation-tag corrected">
-                                    {validationResult.suggestedNCM}
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-                        </div>
-                      )}
+                    {renderStepContent(step, index)}
                   </div>
                 </li>
               )

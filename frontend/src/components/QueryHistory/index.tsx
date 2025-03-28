@@ -4,6 +4,7 @@ import { QueryHistoryItem, QueryHistoryProps } from "./types";
 import ConfirmationModal from "../ConfirmationModal";
 import { LogsResponse } from "../../types/index";
 import { FiX } from "react-icons/fi";
+import Spinner from "../Spinner";
 // Importações diretas dos transformadores específicos
 import { transformQueryList } from "../../utils/transformers/queryTransformers";
 import { transformLogsResponse } from "../../utils/transformers/logsTransformers";
@@ -465,9 +466,11 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({
                 )}
               </div>
               <div className="query-details">
-                <span className="query-status" data-status={query.status}>
-                  {query.status}
-                </span>
+                <div className="query-status" data-status={query.status}>
+                  {query.status === "in_progress" && <Spinner />}
+                  {query.status === "completed" && "Concluído"}
+                  {query.status === "error" && "Erro"}
+                </div>
                 <span className="query-timestamp">
                   {new Date(query.timestamp).toLocaleDateString()}
                 </span>

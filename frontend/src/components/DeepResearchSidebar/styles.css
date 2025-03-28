@@ -250,6 +250,83 @@
   }
 }
 
+/* Adicionando os estilos do novo spinner */
+.step-spinner {
+  position: relative;
+  transform: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.step-spinner div {
+  width: 2px;
+  height: 6px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  opacity: 0.9;
+  transition: 1s ease-in-out;
+  animation: fade 0.5s linear infinite;
+}
+
+.step-spinner div:nth-child(1) {
+  transform: rotate(0deg) translateY(-6px);
+  animation-delay: 0s;
+}
+
+.step-spinner div:nth-child(2) {
+  transform: rotate(45deg) translateY(-6px);
+  animation-delay: 0.0625s;
+}
+
+.step-spinner div:nth-child(3) {
+  transform: rotate(90deg) translateY(-6px);
+  animation-delay: 0.125s;
+}
+
+.step-spinner div:nth-child(4) {
+  transform: rotate(135deg) translateY(-6px);
+  animation-delay: 0.1875s;
+}
+
+.step-spinner div:nth-child(5) {
+  transform: rotate(180deg) translateY(-6px);
+  animation-delay: 0.25s;
+}
+
+.step-spinner div:nth-child(6) {
+  transform: rotate(225deg) translateY(-6px);
+  animation-delay: 0.3125s;
+}
+
+.step-spinner div:nth-child(7) {
+  transform: rotate(270deg) translateY(-6px);
+  animation-delay: 0.375s;
+}
+
+.step-spinner div:nth-child(8) {
+  transform: rotate(315deg) translateY(-6px);
+  animation-delay: 0.4375s;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 /* Título do passo */
 .deep-research-step-title {
   font-weight: 500;
@@ -803,19 +880,6 @@
   }
 }
 
-/* Spinner de validação */
-.validation-spinner {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border: 2px solid rgba(var(--color-primary-rgb), 0.3);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-left: 6px;
-  vertical-align: middle;
-}
-
 /* Estado de skeleton loading */
 .deep-research-sidebar.skeleton-loading .final-classification,
 .deep-research-sidebar.skeleton-loading .conclusion-section,
@@ -852,4 +916,51 @@
   100% {
     transform: translateX(100%);
   }
+}
+
+/* Estado de erro */
+.deep-research-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  color: var(--color-danger);
+}
+
+.deep-research-error-state svg {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 0.5rem;
+}
+
+.deep-research-error-state p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* Estado de loading */
+.deep-research-step.loading .step-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.deep-research-step.loading .deep-research-step-content {
+  min-height: 60px;
+}
+
+/* Ajustes visuais para estados */
+.deep-research-step.error {
+  border-color: var(--color-danger);
+}
+
+.deep-research-step.error .deep-research-step-header {
+  color: var(--color-danger);
+}
+
+.deep-research-step.loading .deep-research-step-header {
+  color: var(--color-primary);
 }

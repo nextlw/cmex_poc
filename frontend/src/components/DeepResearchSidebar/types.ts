@@ -32,3 +32,62 @@ export interface DeepResearchSidebarProps {
    */
   onCancelRequest?: () => void;
 }
+
+export interface ResearchStep {
+  id: number;
+  title: string;
+  content: string;
+  status: "waiting" | "processing" | "completed" | "error";
+  details?: ResearchDetail[];
+  iterations?: number;
+  minimized?: boolean;
+  hidden?: boolean;
+}
+
+export interface ResearchDetail {
+  type: "link" | "text" | "law" | "question";
+  content: string;
+  source?: string;
+  timestamp: Date;
+}
+
+export interface ValidationResult {
+  isValid: boolean;
+  suggestedNCM?: string;
+  originalNCM: string;
+  reason?: string;
+}
+
+// Interface para o relatório final
+export interface FinalReport {
+  conclusion: string;
+  evidences: Array<{
+    source: string;
+    content: string;
+    type: "law" | "jurisprudence" | "technical" | "example";
+  }>;
+  alternativeCases: Array<{
+    scenario: string;
+    impact: string;
+    suggestedNCM?: string;
+  }>;
+  ncmCode: string;
+  ncmDescription: string;
+  taxationDetails?: {
+    ipi?: string;
+    icms?: string;
+    pis?: string;
+    cofins?: string;
+    importTax?: string;
+  };
+  attributes?: Record<string, string>;
+}
+
+// Interface para controlar quais campos estão em validação
+export interface ValidationStatus {
+  ncmCode: boolean;
+  ncmDescription: boolean;
+  taxationDetails: boolean;
+  attributes: boolean;
+  conclusion: boolean;
+}
