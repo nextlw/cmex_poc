@@ -1,47 +1,5 @@
 import { z } from "zod";
 
-// Definição dos tipos necessários
-export interface ValidationStatus {
-  validated: boolean;
-  loading: boolean;
-}
-
-export interface ComponentValidationStatus {
-  infoBasicas: ValidationStatus;
-  atributos: ValidationStatus;
-  tributacao: ValidationStatus;
-}
-
-export interface NCMResult {
-  ncm?: string;
-  descricao?: string;
-  atributos: string[] | null;
-  classificacao_tributaria: {
-    ipi_entrada?: string;
-    ipi_saida?: string;
-    pis_entrada?: string;
-    pis_saida?: string;
-    cofins_entrada?: string;
-    cofins_saida?: string;
-    cst_entrada?: string;
-    cst_saida?: string;
-  } | null;
-  valores_de_impostos: {
-    ipi?: string;
-    pis?: string;
-    cofins?: string;
-    icms: Record<string, string>;
-  } | null;
-}
-
-export interface DeepResearchResponse {
-  step: number;
-  completed: boolean;
-  result: NCMResult[];
-  validationStatus: ComponentValidationStatus;
-  requestId?: string;
-}
-
 // Schema de resposta principal
 export const ResponseSchema = z.object({
   step: z.number().default(0),
@@ -97,8 +55,49 @@ export const ResponseSchema = z.object({
       atributos: { validated: false, loading: false },
       tributacao: { validated: false, loading: false },
     }),
-  requestId: z.string().optional(),
 });
+
+// Tipos TypeScript para o frontend
+export type ValidationStatus = {
+  validated: boolean;
+  loading: boolean;
+};
+
+export type ComponentValidationStatus = {
+  infoBasicas: ValidationStatus;
+  atributos: ValidationStatus;
+  tributacao: ValidationStatus;
+};
+
+export type NCMResult = {
+  ncm?: string;
+  descricao?: string;
+  atributos: string[] | null;
+  classificacao_tributaria: {
+    ipi_entrada?: string;
+    ipi_saida?: string;
+    pis_entrada?: string;
+    pis_saida?: string;
+    cofins_entrada?: string;
+    cofins_saida?: string;
+    cst_entrada?: string;
+    cst_saida?: string;
+  } | null;
+  valores_de_impostos: {
+    ipi?: string;
+    pis?: string;
+    cofins?: string;
+    icms: Record<string, string>;
+  } | null;
+};
+
+export type DeepResearchResponse = {
+  step: number;
+  completed: boolean;
+  result: NCMResult[];
+  validationStatus: ComponentValidationStatus;
+  requestId?: string;
+};
 
 // Mapeamento de campos para lidar com variações nos nomes
 const fieldMappings = {
@@ -110,9 +109,6 @@ const fieldMappings = {
     "status",
     "componentStatus",
   ],
-  step: ["step", "currentStep", "passo", "etapa"],
-  completed: ["completed", "isCompleted", "concluido", "finalizado"],
-  requestId: ["requestId", "id", "taskId", "processId"],
 
   // Mapeamento de campos de componentes
   infoBasicas: ["infoBasicas", "basicInfo", "informacoesBasicas", "info"],
@@ -127,37 +123,7 @@ const fieldMappings = {
   // Mapeamento de estados
   validated: ["validated", "isValidated", "valid", "confirmado"],
   loading: ["loading", "isLoading", "carregando"],
-
-  // Mapeamento de campos de resultado
-  ncm: ["ncm", "codigo", "codigo_ncm", "codigoNCM"],
-  descricao: ["descricao", "description", "desc", "nome"],
-  classificacao_tributaria: [
-    "classificacao_tributaria",
-    "tributacao",
-    "taxation",
-    "impostos",
-  ],
-  valores_de_impostos: [
-    "valores_de_impostos",
-    "valores",
-    "values",
-    "aliquotas",
-  ],
 };
-
-/**
- * Função auxiliar para encontrar um campo em um objeto usando diferentes nomes possíveis
- */
-function findField(obj: any, fieldVariations: string[]): any {
-  if (!obj || typeof obj !== "object") return undefined;
-
-  for (const fieldName of fieldVariations) {
-    if (fieldName in obj) {
-      return obj[fieldName];
-    }
-  }
-  return undefined;
-}
 
 /**
  * Normaliza uma resposta LLM para um formato padronizado
@@ -168,14 +134,13 @@ export function normalizeResponse(llmResponse: any): DeepResearchResponse {
     return ResponseSchema.parse(llmResponse);
   } catch (error) {
     console.warn(
-      "Resposta da LLM não está no formato esperado, tentando normalizar...",
-      error
+      "Resposta da LLM não está no formato esperado, tentando normalizar..."
     );
 
     // Objeto normalizado base
     const normalized: DeepResearchResponse = {
-      step: 0,
-      completed: false,
+      step: llmResponse.step || llmResponse.currentStep || 0,
+      completed: llmResponse.completed || llmResponse.isCompleted || false,
       result: [],
       validationStatus: {
         infoBasicas: { validated: false, loading: true },
@@ -184,149 +149,70 @@ export function normalizeResponse(llmResponse: any): DeepResearchResponse {
       },
     };
 
-    // Normalizar campos de primeiro nível
-    normalized.step = findField(llmResponse, fieldMappings.step) || 0;
-    normalized.completed =
-      findField(llmResponse, fieldMappings.completed) || false;
-
-    // Extrair o requestId se disponível
-    const requestId = findField(llmResponse, fieldMappings.requestId);
-    if (requestId) {
-      normalized.requestId = requestId;
-    }
-
-    // Extrair o array de resultados
-    const resultField = findField(llmResponse, fieldMappings.result);
-    if (resultField) {
-      const results = Array.isArray(resultField) ? resultField : [resultField];
-
-      // Normalizar cada resultado individualmente
-      normalized.result = results.map((item) => {
-        const ncmResult: NCMResult = {
-          ncm: findField(item, fieldMappings.ncm) || undefined,
-          descricao: findField(item, fieldMappings.descricao) || undefined,
-          atributos: null,
-          classificacao_tributaria: null,
-          valores_de_impostos: null,
-        };
-
-        // Processar atributos
-        const atributos = findField(item, fieldMappings.atributos);
-        if (atributos) {
-          ncmResult.atributos = Array.isArray(atributos)
-            ? atributos
-            : [atributos];
-        }
-
-        // Processar classificação tributária
-        const classificacaoTributaria = findField(
-          item,
-          fieldMappings.classificacao_tributaria
-        );
-        if (
-          classificacaoTributaria &&
-          typeof classificacaoTributaria === "object"
-        ) {
-          ncmResult.classificacao_tributaria = {
-            ipi_entrada: classificacaoTributaria.ipi_entrada || "",
-            ipi_saida: classificacaoTributaria.ipi_saida || "",
-            pis_entrada: classificacaoTributaria.pis_entrada || "",
-            pis_saida: classificacaoTributaria.pis_saida || "",
-            cofins_entrada: classificacaoTributaria.cofins_entrada || "",
-            cofins_saida: classificacaoTributaria.cofins_saida || "",
-            cst_entrada: classificacaoTributaria.cst_entrada || "",
-            cst_saida: classificacaoTributaria.cst_saida || "",
-          };
-        }
-
-        // Processar valores de impostos
-        const valoresImpostos = findField(
-          item,
-          fieldMappings.valores_de_impostos
-        );
-        if (valoresImpostos && typeof valoresImpostos === "object") {
-          ncmResult.valores_de_impostos = {
-            ipi: valoresImpostos.ipi || "",
-            pis: valoresImpostos.pis || "",
-            cofins: valoresImpostos.cofins || "",
-            icms:
-              typeof valoresImpostos.icms === "object"
-                ? valoresImpostos.icms
-                : {},
-          };
-        }
-
-        return ncmResult;
-      });
+    // Extrair o array de resultados, buscando por diferentes possíveis nomes
+    for (const possibleField of fieldMappings.result) {
+      if (llmResponse[possibleField]) {
+        normalized.result = Array.isArray(llmResponse[possibleField])
+          ? llmResponse[possibleField]
+          : [llmResponse[possibleField]];
+        break;
+      }
     }
 
     // Extrair o status de validação
-    const validationObj = findField(
-      llmResponse,
-      fieldMappings.validationStatus
-    );
+    let validationObj = null;
+    for (const possibleField of fieldMappings.validationStatus) {
+      if (llmResponse[possibleField]) {
+        validationObj = llmResponse[possibleField];
+        break;
+      }
+    }
+
+    // Se encontrou o objeto de validação, normalizar seus campos
     if (validationObj) {
       // Processar cada componente (infoBasicas, atributos, tributacao)
-      const components = ["infoBasicas", "atributos", "tributacao"] as const;
+      for (const stdComponent of ["infoBasicas", "atributos", "tributacao"]) {
+        const componentVariations =
+          fieldMappings[stdComponent as keyof typeof fieldMappings];
 
-      for (const component of components) {
-        const componentVariations = fieldMappings[component];
-        const componentObj = findField(
-          validationObj,
-          componentVariations as string[]
-        );
+        // Buscar o componente entre as possíveis variações
+        let componentObj = null;
+        for (const variation of componentVariations as string[]) {
+          if (validationObj[variation]) {
+            componentObj = validationObj[variation];
+            break;
+          }
+        }
 
+        // Se encontrou o objeto do componente, extrair os estados
         if (componentObj) {
           let isValidated = false;
-          let isLoading = component === "infoBasicas"; // Por padrão, apenas infoBasicas começa em loading
+          let isLoading = true;
 
           // Buscar o estado 'validated' entre as possíveis variações
-          const validatedField = findField(
-            componentObj,
-            fieldMappings.validated as string[]
-          );
-          if (validatedField !== undefined) {
-            isValidated = Boolean(validatedField);
+          for (const validatedVar of fieldMappings.validated as string[]) {
+            if (typeof componentObj[validatedVar] !== "undefined") {
+              isValidated = Boolean(componentObj[validatedVar]);
+              break;
+            }
           }
 
           // Buscar o estado 'loading' entre as possíveis variações
-          const loadingField = findField(
-            componentObj,
-            fieldMappings.loading as string[]
-          );
-          if (loadingField !== undefined) {
-            isLoading = Boolean(loadingField);
+          for (const loadingVar of fieldMappings.loading as string[]) {
+            if (typeof componentObj[loadingVar] !== "undefined") {
+              isLoading = Boolean(componentObj[loadingVar]);
+              break;
+            }
           }
 
           // Atualizar o objeto normalizado
-          normalized.validationStatus[component] = {
+          normalized.validationStatus[
+            stdComponent as keyof typeof normalized.validationStatus
+          ] = {
             validated: isValidated,
             loading: isLoading,
           };
         }
-      }
-    }
-
-    // Verificar se os componentes estão validados com base nos dados disponíveis
-    if (normalized.result.length > 0) {
-      const result = normalized.result[0];
-
-      // Se temos NCM e descrição, infoBasicas pode ser considerado validado
-      if (result.ncm && result.descricao) {
-        normalized.validationStatus.infoBasicas.validated = true;
-        normalized.validationStatus.infoBasicas.loading = false;
-      }
-
-      // Se temos atributos, este componente pode ser considerado validado
-      if (result.atributos && result.atributos.length > 0) {
-        normalized.validationStatus.atributos.validated = true;
-        normalized.validationStatus.atributos.loading = false;
-      }
-
-      // Se temos classificação tributária ou valores de impostos, tributacao pode ser considerado validado
-      if (result.classificacao_tributaria || result.valores_de_impostos) {
-        normalized.validationStatus.tributacao.validated = true;
-        normalized.validationStatus.tributacao.loading = false;
       }
     }
 
@@ -335,38 +221,7 @@ export function normalizeResponse(llmResponse: any): DeepResearchResponse {
       return ResponseSchema.parse(normalized);
     } catch (parseError) {
       console.error("Erro ao normalizar resposta:", parseError);
-      // Retorna o melhor esforço de normalização mesmo que não passe na validação completa
-      return normalized;
-    }
-  }
-}
-
-/**
- * Função de utilidade que detecta se um JSON está malformado e tenta corrigi-lo
- * Útil para quando a LLM retorna um JSON parcialmente quebrado
- */
-export function tryFixMalformedJson(jsonString: string): any {
-  try {
-    // Primeiro tenta fazer parse direto
-    return JSON.parse(jsonString);
-  } catch (e) {
-    console.warn("JSON malformado detectado, tentando corrigir...");
-
-    // Tenta corrigir aspas inconsistentes
-    let fixedJson = jsonString
-      .replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":') // Corrige chaves sem aspas
-      .replace(/:\s*'([^']*)'/g, ':"$1"'); // Substitui aspas simples por duplas em valores
-
-    // Tenta adicionar aspas em valores não strings (exceto true, false, null, números)
-    fixedJson = fixedJson
-      .replace(/:(?!\s*["{\[0-9.tfn-])/g, ':"')
-      .replace(/([^"{\[0-9.tfn-\s])(?=\s*[,}])/g, '$1"');
-
-    try {
-      return JSON.parse(fixedJson);
-    } catch (e2) {
-      console.error("Não foi possível corrigir o JSON malformado:", e2);
-      throw new Error("JSON malformado não pôde ser corrigido");
+      return normalized; // Retorna o melhor esforço de normalização
     }
   }
 }

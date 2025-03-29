@@ -34,12 +34,13 @@ axiosInstance.interceptors.request.use((config) => {
     try {
       const parsedToken = JSON.parse(SUPABASE_TOKEN);
       if (parsedToken && parsedToken.access_token) {
-        // Garante que o token está formatado corretamente
-        const token = parsedToken.access_token.trim();
-        config.headers.Authorization = `Bearer ${token}`;
-        console.log("Token adicionado:", token.substring(0, 10) + "...");
+        config.headers.Authorization = `Bearer ${parsedToken.access_token}`;
+        console.log(
+          "Token adicionado:",
+          parsedToken.access_token.substring(0, 10) + "..."
+        );
       } else {
-        console.warn("Token inválido no localStorage:", parsedToken);
+        console.warn("Token inválido no localStorage");
       }
     } catch (error) {
       console.error("Erro ao processar token:", error);
@@ -50,10 +51,6 @@ axiosInstance.interceptors.request.use((config) => {
 
   // Define o tipo de dados passado nas requisições
   config.headers["Content-Type"] = "application/json";
-  config.headers["Accept"] = "application/json";
-
-  // Garante que as credenciais são enviadas
-  config.withCredentials = true;
 
   return config;
 });

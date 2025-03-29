@@ -393,23 +393,10 @@ async def get_task_status(request_id: str, request: Request):
         # Endpoint da API Node.js para verificar o status da tarefa
         task_url = f"http://localhost:3000/api/v1/task-status/{request_id}"
 
-        # Obter o token de autorização do cabeçalho da solicitação
-        auth_header = request.headers.get("Authorization")
-        request_headers = {}
-
-        # Se houver um token na solicitação original, repassá-lo para o Node.js
-        if auth_header:
-            request_headers["Authorization"] = auth_header
-            print(
-                f"[TaskStatus] Repassando token de autorização para o serviço Node.js"
-            )
-        else:
-            print(f"[TaskStatus] Nenhum token de autorização recebido do cliente")
-
         async with httpx.AsyncClient(timeout=10.0) as client:
             try:
-                # Faz a requisição com timeout para evitar bloqueios, repassando os headers
-                task_response = await client.get(task_url, headers=request_headers)
+                # Faz a requisição com timeout para evitar bloqueios
+                task_response = await client.get(task_url)
 
                 if task_response.status_code == 200:
                     task_data = task_response.json()

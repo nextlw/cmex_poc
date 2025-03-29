@@ -1,5 +1,5 @@
 export interface InfoBasicasProps {
-  ncm: string;
-  descricao: string;
+  ncm?: string;
+  descricao?: string;
   isLoading?: boolean;
 }

@@ -220,17 +220,33 @@ export interface ClassificacaoTributaria {
  */
 export interface SugerirNCM {
   /** Código NCM */
-  ncm: string;
+  ncm?: string;
   /** Descrição do produto/mercadoria */
-  descricao: string;
+  descricao?: string;
   /** Atributos gerais do produto */
   atributos: string[] | null;
   /** Classificação tributária do produto */
-  classificacao_tributaria: ClassificacaoTributaria | null;
+  classificacao_tributaria: {
+    ipi_entrada?: string;
+    ipi_saida?: string;
+    pis_entrada?: string;
+    pis_saida?: string;
+    cofins_entrada?: string;
+    cofins_saida?: string;
+    cst_entrada?: string;
+    cst_saida?: string;
+  } | null;
   /** Valores de impostos aplicáveis */
-  valores_de_impostos: ValoresdeImpostos | null;
+  valores_de_impostos: {
+    ipi?: string;
+    pis?: string;
+    cofins?: string;
+    icms: Record<string, string>;
+  } | null;
   /** Resultado da validação via DeepResearch, se disponível */
   validacao_deepresearch?: ValidationDeepResearch;
+  /** ID da requisição DeepResearch */
+  requestId?: string;
 }
 
 /**

@@ -65,7 +65,14 @@ function format_prompt(consulta: ConsultaProduto): string {
 Você é um especialista em Classificação Fiscal de Mercadorias, com conhecimento amplo do Sistema Harmonizado (SH), da Nomenclatura Comum do Mercosul (NCM) e da Tabela de Incidência do Imposto sobre Produtos Industrializados (TIPI).
 
 Sua tarefa é classificar o seguinte produto de acordo com sua NCM correta, descrevendo o raciocínio utilizado e listando as principais características que justificam a classificação.
+IMPORTANTE!
+1. Código NCM completo (8 dígitos)
+2. Descrição oficial do NCM
+3. Atributos relevantes do produto para esta classificação
+4. Quando disponíveis, os atributos específicos mencionados nas Notas Explicativas da TIPI para este NCM
+5. Valores padrão de impostos aplicáveis (IPI, ICMS, PIS e COFINS)
 
+!RESPONDA EM JSON EXATAMENTE COM A SEGUINTE ESTRUTURA!:
 PRODUTO A SER CLASSIFICADO: "${descricaoProduto}"
 
 PARÂMETROS ADICIONAIS:
@@ -74,30 +81,53 @@ PARÂMETROS ADICIONAIS:
 - Regime tributário: ${regimeTributario}
 - Tributação: ${tributacao}
 
-Com base nestas informações, forneça:
+Você DEVE retornar APENAS um JSON válido com a seguinte estrutura EXATA, sem comentários adicionais:
 
-1. Código NCM completo (8 dígitos)
-2. Descrição oficial do NCM
-3. Atributos relevantes do produto para esta classificação
-4. Quando disponíveis, os atributos específicos mencionados nas Notas Explicativas da TIPI para este NCM
-5. Valores padrão de impostos aplicáveis (IPI, ICMS, PIS e COFINS)
-
-RESPONDA EM JSON EXATAMENTE COM A SEGUINTE ESTRUTURA:
 {
-  "ncm": "CÓDIGO NCM",
-  "descricao": "DESCRIÇÃO OFICIAL DO NCM",
-  "atributos": ["LISTA", "DE", "ATRIBUTOS", "DO", "PRODUTO"],
-  "atributos_tipi": ["LISTA", "DE", "ATRIBUTOS", "MENCIONADOS", "NAS", "NOTAS", "EXPLICATIVAS"],
-  "valores_de_impostos": {
-    "ipi": "X%",
-    "icms": {"UF": "X%"},
-    "pis": "X%",
-    "cofins": "X%",
-    "importTax": "X%"
+  "step": número (0-5 indicando o passo atual do processamento),
+  "completed": booleano (true se o processamento estiver concluído),
+  "result": [
+    {
+      "ncm": string (código NCM),
+      "descricao": string (descrição do NCM),
+      "atributos": array de strings ou null,
+      "classificacao_tributaria": {
+        "ipi_entrada": string,
+        "ipi_saida": string,
+        "pis_entrada": string,
+        "pis_saida": string,
+        "cofins_entrada": string,
+        "cofins_saida": string,
+        "cst_entrada": string,
+        "cst_saida": string
+      },
+      "valores_de_impostos": {
+        "ipi": string,
+        "pis": string,
+        "cofins": string,
+        "icms": { <código-estado>: string, ... }
+      }
+    }
+  ],
+  "validationStatus": {
+    "infoBasicas": {
+      "validated": booleano,
+      "loading": booleano
+    },
+    "atributos": {
+      "validated": booleano,
+      "loading": booleano
+    },
+    "tributacao": {
+      "validated": booleano,
+      "loading": booleano
+    }
   }
 }
 
-NÃO INCLUA NENHUM OUTRO TEXTO OU EXPLICAÇÃO FORA DO JSON. MANTENHA A ESTRUTURA EXATA. SE ALGUM VALOR FOR DESCONHECIDO, USE UMA STRING VAZIA OU OBJETO VAZIO.
+Durante o processamento, preencha apenas os campos validados e defina os campos correspondentes como "validated": true. Mantenha os campos ainda não processados como null.
+
+A cada etapa, atualize o campo "step" e o status de validação dos componentes correspondentes.
 `;
 }
 
@@ -113,23 +143,75 @@ function processarRespostaModelo(content: string): any {
     if (jsonMatch) {
       const jsonContent = jsonMatch[0];
       const resultado = JSON.parse(jsonContent);
+
+      // Validação básica do formato
+      if (
+        !resultado.step ||
+        !resultado.completed ||
+        !resultado.result ||
+        !resultado.validationStatus
+      ) {
+        throw new Error("Formato de resposta inválido");
+      }
+
       return resultado;
     }
 
     // Se não encontrou com regex, tenta fazer parse direto
-    return JSON.parse(content);
+    const resultado = JSON.parse(content);
+
+    // Validação básica do formato
+    if (
+      !resultado.step ||
+      !resultado.completed ||
+      !resultado.result ||
+      !resultado.validationStatus
+    ) {
+      throw new Error("Formato de resposta inválido");
+    }
+
+    return resultado;
   } catch (error) {
     console.error("Erro ao processar resposta do modelo:", error);
     return {
-      ncm: "",
-      descricao: "",
-      atributos: [],
-      atributos_tipi: [],
-      valores_de_impostos: {
-        ipi: "0%",
-        icms: {},
-        pis: "1.65%",
-        cofins: "7.6%",
+      step: 0,
+      completed: false,
+      result: [
+        {
+          ncm: "",
+          descricao: "",
+          atributos: null,
+          classificacao_tributaria: {
+            ipi_entrada: "",
+            ipi_saida: "",
+            pis_entrada: "",
+            pis_saida: "",
+            cofins_entrada: "",
+            cofins_saida: "",
+            cst_entrada: "",
+            cst_saida: "",
+          },
+          valores_de_impostos: {
+            ipi: "",
+            pis: "",
+            cofins: "",
+            icms: {},
+          },
+        },
+      ],
+      validationStatus: {
+        infoBasicas: {
+          validated: false,
+          loading: true,
+        },
+        atributos: {
+          validated: false,
+          loading: false,
+        },
+        tributacao: {
+          validated: false,
+          loading: false,
+        },
       },
     };
   }

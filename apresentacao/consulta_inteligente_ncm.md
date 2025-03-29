@@ -18,7 +18,7 @@
 
 #### **CMEX é uma plataforma de consulta inteligente para códigos NCM (Nomenclatura Comum do Mercosul) que utiliza inteligência artificial avançada para auxiliar contadores e escritórios de contabilidade a classificar produtos de forma precisa e ágil, fornecendo informações detalhadas sobre tributação, alíquotas e requisitos fiscais.**
 
-![Tela principal do NCM](ImagensApresentação/CleanShot%202025-03-28%20at%2014.56.41@2x.png)
+![Tela principal do NCM](ImagensApresentação/Tela%20do%20NCM.png)
 
 ## Problema e Solução
 
@@ -372,7 +372,7 @@ _Taxa de câmbio considerada: US$ 1,00 = R$ 5,74_
 
 ### Detalhamento da Equipe de Desenvolvimento
 
-| Função                    | Regime        | Valor                 | Horas Mensais | Total Mensal     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| Função                    | Regime        | Valor                 | Horas Mensais | Total Mensal     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
 | ------------------------- | ------------- | --------------------- | ------------- | ---------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | CTO                       | Fixo          | R$ 12.000,00/mês      | -             | R$ 12.000,00n    |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
 | Frontend                  | R$ 60,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 7.200,00      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |

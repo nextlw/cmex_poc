@@ -70,7 +70,7 @@ const serviceConfig: Record<
     id: "node-jina",
     name: "DeepResearch Jina",
     description: "Servidor Node.js para DeepResearch com Jina AI",
-    port: getEnvPort("NODE_JINA_PORT", 3100),
+    port: getEnvPort("NODE_JINA_PORT", 3001),
     icon: "🔍",
   },
   "ui-jina": {

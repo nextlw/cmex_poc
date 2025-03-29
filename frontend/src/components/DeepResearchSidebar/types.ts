@@ -31,6 +31,24 @@ export interface DeepResearchSidebarProps {
    * Função chamada quando o usuário cancela a requisição
    */
   onCancelRequest?: () => void;
+
+  /**
+   * Estado de validação externo para controlar o componente
+   */
+  externalValidationStatus?: {
+    infoBasicas: { validated: boolean; loading: boolean };
+    atributos: { validated: boolean; loading: boolean };
+    tributacao: { validated: boolean; loading: boolean };
+  };
+
+  /**
+   * Callback chamado quando o estado de validação interno muda
+   */
+  onValidationStatusChange?: (status: {
+    infoBasicas: { validated: boolean; loading: boolean };
+    atributos: { validated: boolean; loading: boolean };
+    tributacao: { validated: boolean; loading: boolean };
+  }) => void;
 }
 
 /**

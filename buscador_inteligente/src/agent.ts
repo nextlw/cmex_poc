@@ -332,20 +332,71 @@ function getPrompt(
 ): string {
   const sections: string[] = [];
 
+  // Determinar se a pergunta é relacionada a assuntos fiscais
+  const fiscalKeywords = [
+    "tributário",
+    "fiscal",
+    "imposto",
+    "tributo",
+    "ncm",
+    "sped",
+    "nota fiscal",
+    "icms",
+    "ipi",
+    "pis",
+    "cofins",
+    "itbi",
+    "iptu",
+    "itr",
+    "itcmd",
+    "receita federal",
+    "legislação fiscal",
+    "código tributário",
+    "importação",
+    "exportação",
+    "siscomex",
+    "regulamento aduaneiro",
+    "classificação fiscal",
+    "alíquota",
+    "contribuinte",
+  ];
+
+  const isFiscalQuery = fiscalKeywords.some((keyword) =>
+    question.toLowerCase().includes(keyword.toLowerCase())
+  );
+
   sections.push(`Current date: ${new Date().toUTCString()}
 
-    You are an advanced AI research analyst specializing in multi-step reasoning. Using your training data and prior lessons learned, answer the following question with absolute certainty:
+    Você é um analista de pesquisa de IA avançado especializado em raciocínio de múltiplas etapas. Usando seus dados de treinamento e lições aprendidas anteriormente, responda à seguinte pergunta com absoluta certeza:
 
     <question>
     ${question}
     </question>
     `);
 
+  // Adiciona contexto específico para consultas fiscais
+  if (isFiscalQuery) {
+    sections.push(`
+    <fiscal-context>
+    Você é especialista em legislação fiscal e tributária brasileira. Para consultas relacionadas a impostos, 
+    classificação fiscal e regulamentações, siga estas diretrizes:
+    
+    1. Priorize fontes oficiais do governo como Receita Federal, Ministério da Fazenda, Planalto e portais governamentais
+    2. Verifique a data das informações para garantir que estão atualizadas com a legislação vigente
+    3. Para classificação fiscal (NCM), busque o código exato e justifique com base nas características do produto
+    4. Quando mencionar alíquotas de impostos, especifique a data de validade e jurisdição aplicável
+    5. Para interpretações tributárias complexas, referencie decisões do CARF ou tribunais superiores
+    6. Seja especialmente cuidadoso ao verificar exceções regionais nas leis estaduais (ICMS) e municipais (ISS)
+    7. Identifique claramente quando houver divergências na interpretação da legislação
+    </fiscal-context>
+    `);
+  }
+
   // Adiciona a seção de contexto se existir
   if (context?.length) {
     sections.push(`
-    You have conducted the following actions:
     <context>
+    Você realizou as seguintes ações:
     ${context.join("\n")}
     </context>
     `);
@@ -378,8 +429,9 @@ function getPrompt(
       .join("\n\n");
 
     sections.push(`
-    You have successfully gathered some knowledge which might be useful for answering the original question. Here is the knowledge you have gathered so far:
     <knowledge>
+    Você reuniu com sucesso alguns conhecimentos que podem ser úteis para responder à pergunta original. 
+    Aqui está o conhecimento que você reuniu até agora:
     ${knowledgeItems}
     </knowledge>
     `);
@@ -404,13 +456,13 @@ function getPrompt(
     const learnedStrategy = badContext.map((c) => c.improvement).join("\n");
 
     sections.push(`
-    Your have tried the following actions but failed to find the answer to the question:
-    <bad-attempts>    
+    <bad-attempts>
+    Você tentou as seguintes ações, mas não conseguiu encontrar a resposta para a pergunta:
     ${attempts}
     </bad-attempts>
 
-    Based on the failed attempts, you have learned the following strategy:
     <learned-strategy>
+    Com base nas tentativas fracassadas, você aprendeu a seguinte estratégia:
     ${learnedStrategy}
     </learned-strategy>
     `);
@@ -420,18 +472,58 @@ function getPrompt(
   const actions: string[] = [];
 
   if (allURLs && Object.keys(allURLs).length > 0 && allowRead) {
-    const urlList = Object.entries(allURLs)
-      .map(([url, desc]) => `  + "${url}": "${desc}"`)
-      .join("\n");
+    // Organizar URLs por relevância
+    let urlList = "";
+
+    if (isFiscalQuery) {
+      // Priorização especial para URLs fiscais
+      const priorityDomains = [
+        "gov.br",
+        "receita.fazenda.gov.br",
+        "planalto.gov.br",
+        "confaz.fazenda.gov.br",
+        "in.gov.br",
+        "siscomex.gov.br",
+      ];
+
+      // Organizar em grupos de prioridade
+      const priorityUrls: string[] = [];
+      const otherUrls: string[] = [];
+
+      Object.entries(allURLs).forEach(([url, desc]) => {
+        const urlObj = new URL(url);
+        const domain = urlObj.hostname;
+
+        if (priorityDomains.some((pd) => domain.includes(pd))) {
+          priorityUrls.push(`  +++ FONTE OFICIAL: "${url}": "${desc}"`);
+        } else {
+          otherUrls.push(`  + "${url}": "${desc}"`);
+        }
+      });
+
+      urlList = [...priorityUrls, ...otherUrls].join("\n");
+    } else {
+      // Organização padrão para URLs não fiscais
+      urlList = Object.entries(allURLs)
+        .map(([url, desc]) => `  + "${url}": "${desc}"`)
+        .join("\n");
+    }
 
     actions.push(`
     <action-visit>    
-    - Visit any URLs from below to gather external knowledge, choose the most relevant URLs that might contain the answer, explore most possible URLs to find the answer
+    - Visite URLs da lista abaixo para obter conhecimento externo
+    - Escolha as URLs mais relevantes que possam conter a resposta
+    - Explore o máximo de URLs possíveis para encontrar a resposta
     <url-list>
     ${urlList}
     </url-list>
-    - When you have enough search result in the context and want to deep dive into specific URLs
-    - It allows you to access the full content behind any URLs
+    - Use quando tiver resultados de busca suficientes no contexto e quiser explorar URLs específicas em profundidade
+    - Permite acessar o conteúdo completo por trás de qualquer URL
+    ${
+      isFiscalQuery
+        ? "- Para consultas fiscais, priorize fontes oficiais do governo marcadas como FONTE OFICIAL"
+        : ""
+    }
     </action-visit>
     `);
   }
@@ -439,39 +531,61 @@ function getPrompt(
   if (allowSearch) {
     actions.push(`
     <action-search>    
-    - Query external sources using a public search engine
-    - Focus on solving one specific aspect of the question
-    - Only give keywords search query, not full sentences
+    - Consulte fontes externas usando um mecanismo de busca público
+    - Concentre-se em resolver um aspecto específico da questão
+    - Forneça apenas palavras-chave de busca, não frases completas
+    ${
+      isFiscalQuery
+        ? `- Para buscas fiscais, inclua termos específicos como "legislação", "portaria", "instrução normativa" junto com os termos técnicos
+    - Considere adicionar termos como "site:gov.br" para limitar a fontes oficiais
+    - Se buscar por um NCM específico, inclua o código completo entre aspas, ex: "9503.00.99"`
+        : ""
+    }
     </action-search>
     `);
   }
 
   if (allowAnswer) {
-    actions.push(`
+    const answerSection = `
     <action-answer>
-    - Provide final response only when 96% certain
-    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)${
-      allowReflect ? "\n- If doubts remain, use <action-reflect> instead" : ""
+    - Forneça a resposta final apenas quando estiver 96% certo
+    - As respostas devem ser definitivas (sem ambiguidade, incerteza ou avisos)${
+      allowReflect
+        ? "\n    - Se ainda houver dúvidas, use <action-reflect>"
+        : ""
     }
-    - Format your answer in markdown with the following sections:
+    - Formate sua resposta em markdown com as seguintes seções:
       - **Resposta Direta**: Uma resposta clara e concisa à pergunta ou problema, levando em consideração o contexto e o conhecimento acumulado, podendo também ser uma negativa e explicar o porque vocie acha isso e onde procurou mas nnao encontrou.
       - **Nota Detalhada**: Explicação adicional com contexto ou raciocínio.
       - **Referências**: Liste todas as fontes relevantes em formato [Citação Exata](URL).
     - Use todo o conhecimento acumulado para garantir uma resposta abrangente
     - Inclua exemplos, dados numéricos e citações quando relevante
     - Mantenha a formatação consistente
+    ${
+      isFiscalQuery
+        ? `
+    - Para respostas fiscais, especifique sempre:
+      - A fonte legal exata (número da lei, decreto, instrução normativa)
+      - A data de vigência da informação
+      - Possíveis exceções ou casos especiais
+      - Jurisdição aplicável (federal, estadual, municipal)
+      - Se houver divergências na interpretação, mencione as diferentes posições`
+        : ""
+    }
     </action-answer>
-    `);
+    `;
+
+    actions.push(answerSection);
   }
 
   if (beastMode) {
     actions.push(`
     <action-answer>
-    - Any answer is better than no answer
-    - Partial answers are allowed, but make sure they are based on the context and knowledge you have gathered    
-    - When uncertain, educated guess based on the context and knowledge is allowed and encouraged.
-    - Responses must be definitive (no ambiguity, uncertainty, or disclaimers)
-    - Format your answer in markdown with the following sections:
+    - Qualquer resposta é melhor que nenhuma resposta
+    - Respostas parciais são permitidas, mas certifique-se de que sejam baseadas no contexto e no conhecimento que você reuniu
+    - Quando estiver incerto, suposições educadas baseadas no contexto e no conhecimento são permitidas e incentivadas
+    - As respostas devem ser definitivas (sem ambiguidade, incerteza ou avisos)
+    - Formate sua resposta em markdown com as seguintes seções:
       - **Resposta Direta**: Uma resposta clara e concisa à pergunta.
       - **Nota Detalhada**: Explicação adicional com contexto ou raciocínio.
       - **Referências**: Liste todas as fontes relevantes em formato [Citação Exata](URL).
@@ -482,36 +596,46 @@ function getPrompt(
   if (allowReflect) {
     actions.push(`
     <action-reflect>    
-    - Perform critical analysis through hypothetical scenarios or systematic breakdowns
-    - Identify knowledge gaps and formulate essential clarifying questions
-    - Questions must be:
-    - Original (not variations of existing questions)
-    - Focused on single concepts
-    - Under 20 words
-    - Non-compound/non-complex
+    - Realize análise crítica por meio de cenários hipotéticos ou decomposições sistemáticas
+    - Identifique lacunas de conhecimento e formule perguntas esclarecedoras essenciais
+    - As perguntas devem ser:
+      - Originais (não variações de perguntas existentes)
+      - Focadas em conceitos únicos
+      - Com menos de 20 palavras
+      - Não compostas/não complexas
+    ${
+      isFiscalQuery
+        ? `
+    - Para reflexões fiscais, considere:
+      - Especificidades de diferentes regimes fiscais
+      - Particularidades regionais da tributação
+      - Mudanças recentes na legislação
+      - Interpretações jurisprudenciais relevantes`
+        : ""
+    }
     </action-reflect>
     `);
   }
 
   sections.push(`
-    Based on the current context, you must choose one of the following actions:
+    Baseado no contexto atual, você deve escolher uma das seguintes ações:
     <actions>
     ${actions.join("\n\n")}
     </actions>
     `);
 
   // Adiciona o rodapé
-  sections.push(`Respond exclusively in valid JSON format matching exact JSON schema.
+  sections.push(`Responda exclusivamente em formato JSON válido correspondente ao esquema JSON exato.
 
-    Critical Requirements:
-    - Include ONLY ONE action type
-    - Never add unsupported keys
-    - Exclude all non-JSON text
-    - Maintain strict JSON syntax
-    - All text content must be in Portuguese (Brazil)
-    - Support UTF-8 encoding for special characters (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)`);
+    Requisitos Críticos:
+    - Inclua APENAS UM tipo de ação
+    - Nunca adicione chaves não suportadas
+    - Exclua todo texto que não seja JSON
+    - Mantenha sintaxe JSON estrita
+    - Todo conteúdo de texto deve estar em Português (Brasil)
+    - Suporta codificação UTF-8 para caracteres especiais (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)`);
 
-  return sections.join("\n\n");
+  return sections.join("\n");
 }
 const allContext: StepAction[] = []; // todos os passos na sessão atual, incluindo aqueles que levaram a resultados errados
 

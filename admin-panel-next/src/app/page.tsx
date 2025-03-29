@@ -183,7 +183,7 @@ export default function AdminPanel() {
 
         <StatusBar>
           Portas utilizadas: Redis (6378), FastAPI (10000), Node (3000),
-          Frontend (5173), Node-Jina (3100), UI-Jina (8080) | Última
+          Frontend (5173), Node-Jina (3001), UI-Jina (8080) | Última
           verificação: {lastChecked}
         </StatusBar>
 

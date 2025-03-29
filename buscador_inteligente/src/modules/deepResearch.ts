@@ -72,8 +72,8 @@ export class ModuloDeepResearch {
       // Prepara a consulta para o modelo específico
       const consultaFinal = this.prepararConsulta();
 
-      // Aqui entraria a lógica de análise de acordo com o modelo
-      // Implementação específica a ser feita pelos módulos derivados
+      // Aqui entraria a lógica de análise de acordo com o modelo, a ideia é me retornar o resultado da análise com base em conhecimento específico de humanos especialistas em tributação e classificação fiscal.
+      // Implementação específica a ser feita pelos módulos derivados, ou seja, cada módulo deve ter sua própria lógica de análise. Podendo agir de forma independente ou conjunta.
 
       // Simula resultado para desenvolvimento
       const resultadoAnalise = await this.simularAnalise(consultaFinal);
@@ -286,79 +286,17 @@ export abstract class DeepResearch {
   protected getPromptForStep(step: number, context: ResearchContext): string {
     const basePrompt = `Analise o produto: "${context.productDescription}"`;
 
-    // Instruções para o formato JSON esperado
-    const jsonInstructions = `
-Você DEVE retornar APENAS um JSON válido com a seguinte estrutura EXATA, sem comentários adicionais:
-
-{
-  "step": número (0-5 indicando o passo atual do processamento),
-  "completed": booleano (true se o processamento estiver concluído),
-  "result": [
-    {
-      "ncm": string (código NCM),
-      "descricao": string (descrição do NCM),
-      "atributos": array de strings ou null,
-      "classificacao_tributaria": {
-        "ipi_entrada": string,
-        "ipi_saida": string,
-        "pis_entrada": string,
-        "pis_saida": string,
-        "cofins_entrada": string,
-        "cofins_saida": string,
-        "cst_entrada": string,
-        "cst_saida": string
-      },
-      "valores_de_impostos": {
-        "ipi": string,
-        "pis": string,
-        "cofins": string,
-        "icms": { <código-estado>: string, ... }
-      }
-    }
-  ],
-  "validationStatus": {
-    "infoBasicas": {
-      "validated": booleano,
-      "loading": booleano
-    },
-    "atributos": {
-      "validated": booleano,
-      "loading": booleano
-    },
-    "tributacao": {
-      "validated": booleano,
-      "loading": booleano
-    }
-  }
-}
-
-Durante o processamento, preencha apenas os campos validados e defina os campos correspondentes como "validated": true. Mantenha os campos ainda não processados como null.
-
-A cada etapa, atualize o campo "step" e o status de validação dos componentes correspondentes.`;
-
-    let promptText = "";
-
     switch (step) {
       case 1:
-        promptText = `${basePrompt}\n\nIdentifique o código NCM mais apropriado para este produto. Forneça o código e uma breve justificativa.`;
-        // Atualizar validationStatus para infoBasicas
-        return `${promptText}\n\n${jsonInstructions}\n\nPara este passo, defina "step": 1, "completed": false, e "validationStatus.infoBasicas.validated": true.`;
+        return `${basePrompt}\n\nIdentifique o código NCM mais apropriado para este produto. Forneça o código e uma breve justificativa.`;
       case 2:
-        promptText = `${basePrompt}\n\nDescreva detalhadamente as características do produto que justificam sua classificação no NCM identificado.`;
-        // Atualizar validationStatus para atributos
-        return `${promptText}\n\n${jsonInstructions}\n\nPara este passo, defina "step": 2, "completed": false, e "validationStatus.atributos.validated": true.`;
+        return `${basePrompt}\n\nDescreva detalhadamente as características do produto que justificam sua classificação no NCM identificado.`;
       case 3:
-        promptText = `${basePrompt}\n\nDetalhe a tributação aplicável a este produto (IPI, ICMS, PIS, COFINS).`;
-        // Atualizar validationStatus para tributacao
-        return `${promptText}\n\n${jsonInstructions}\n\nPara este passo, defina "step": 3, "completed": false, e "validationStatus.tributacao.validated": true.`;
+        return `${basePrompt}\n\nDetalhe a tributação aplicável a este produto (IPI, ICMS, PIS, COFINS).`;
       case 4:
-        promptText = `${basePrompt}\n\nIdentifique atributos específicos do produto que possam impactar sua classificação fiscal.`;
-        // Atualizar validationStatus para tudo como validado
-        return `${promptText}\n\n${jsonInstructions}\n\nPara este passo, defina "step": 4, "completed": false, e defina todos os campos "validationStatus.*.validated" como true.`;
+        return `${basePrompt}\n\nIdentifique atributos específicos do produto que possam impactar sua classificação fiscal.`;
       case 5:
-        promptText = `${basePrompt}\n\nForneça uma conclusão final sobre a classificação, incluindo recomendações e observações importantes.`;
-        // Marcar processo como completo
-        return `${promptText}\n\n${jsonInstructions}\n\nPara este passo, defina "step": 5, "completed": true, e defina todos os campos "validationStatus.*.validated" como true e "validationStatus.*.loading" como false.`;
+        return `${basePrompt}\n\nForneça uma conclusão final sobre a classificação, incluindo recomendações e observações importantes.`;
       default:
         throw new Error(`Passo ${step} não definido no processo de pesquisa.`);
     }
@@ -418,11 +356,6 @@ A cada etapa, atualize o campo "step" e o status de validação dos componentes 
       confidence: 0,
       model_used: this.consulta.modelo || "",
       processing_time: 0,
-      validation_status: {
-        infoBasicas: { validated: false, loading: true },
-        atributos: { validated: false, loading: true },
-        tributacao: { validated: false, loading: true },
-      },
     };
 
     // Processa cada resultado
@@ -430,104 +363,24 @@ A cada etapa, atualize o campo "step" e o status de validação dos componentes 
       if (result.success && result.content) {
         try {
           const content = JSON.parse(result.content);
-
-          // Verifica se o conteúdo está no novo formato
-          if (
-            content.step !== undefined &&
-            content.result &&
-            Array.isArray(content.result) &&
-            content.validationStatus
-          ) {
-            const stepData = content.result[0] || {};
-            const currentStep = content.step;
-
-            // Atualiza status de validação dos componentes
-            if (content.validationStatus) {
-              ncmResult.validation_status = {
-                infoBasicas: content.validationStatus.infoBasicas || {
-                  validated: false,
-                  loading: true,
-                },
-                atributos: content.validationStatus.atributos || {
-                  validated: false,
-                  loading: true,
-                },
-                tributacao: content.validationStatus.tributacao || {
-                  validated: false,
-                  loading: true,
-                },
-              };
-            }
-
-            // Atualiza NCM e descrição se disponíveis
-            if (stepData.ncm) {
-              ncmResult.ncm_code = stepData.ncm;
-            }
-
-            if (stepData.descricao) {
-              ncmResult.description = stepData.descricao;
-            }
-
-            // Atualiza atributos se disponíveis
-            if (stepData.atributos) {
-              if (Array.isArray(stepData.atributos)) {
-                ncmResult.attributes = stepData.atributos.reduce(
-                  (acc: Record<string, string>, attr: string, i: number) => {
-                    acc[`attribute_${i + 1}`] = attr;
-                    return acc;
-                  },
-                  {}
-                );
-              }
-            }
-
-            // Atualiza valores de impostos se disponíveis
-            if (stepData.valores_de_impostos) {
-              const impostos = stepData.valores_de_impostos;
-
-              if (impostos.ipi) {
-                ncmResult.taxation.ipi = parseFloat(impostos.ipi) || 0;
-              }
-
-              if (impostos.pis) {
-                ncmResult.taxation.pis = parseFloat(impostos.pis) || 0;
-              }
-
-              if (impostos.cofins) {
-                ncmResult.taxation.cofins = parseFloat(impostos.cofins) || 0;
-              }
-
-              if (impostos.icms && impostos.icms.SP) {
-                ncmResult.taxation.icms = parseFloat(impostos.icms.SP) || 0;
-              }
-            }
-
-            // Para o último passo, adiciona dados de conclusão
-            if (currentStep === 5 || content.completed) {
-              ncmResult.conclusion = "Análise profunda finalizada com sucesso";
-              ncmResult.confidence = 0.95; // Valor padrão alto para conclusão bem-sucedida
-            }
-          } else {
-            // Processamento compatível com o formato antigo
-            switch (index + 1) {
-              case 1: // NCM e descrição inicial
-                ncmResult.ncm_code = content.ncm_code || "";
-                ncmResult.description = content.description || "";
-                break;
-              case 2: // Características
-                ncmResult.attributes = content.attributes || {};
-                break;
-              case 3: // Tributação
-                ncmResult.taxation = content.taxation || ncmResult.taxation;
-                break;
-              case 4: // Atributos específicos
-                Object.assign(ncmResult.attributes, content.attributes || {});
-                break;
-              case 5: // Conclusão
-                ncmResult.conclusion = content.conclusion || "";
-                ncmResult.confidence = content.confidence || 0;
-                break;
-            }
+          switch (index + 1) {
+            case 1: // NCM e descrição inicial
+              ncmResult.ncm_code = content.ncm_code || "";
+              ncmResult.description = content.description || "";
+              break;
+            case 2: // Características
+              ncmResult.attributes = content.attributes || {};
+              break;
+            case 3: // Tributação
+              ncmResult.taxation = content.taxation || ncmResult.taxation;
+              break;
+            case 4: // Atributos específicos
+              Object.assign(ncmResult.attributes, content.attributes || {});
+              break;
+            case 5: // Conclusão
+              ncmResult.conclusion = content.conclusion || "";
+              ncmResult.confidence = content.confidence || 0;
+              break;
           }
         } catch (error) {
           console.error(

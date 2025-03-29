@@ -54,7 +54,7 @@ const serviceConfig: Record<ServiceId, ServiceConfig> = {
   "node-jina": {
     command:
       "cd ../node-DeepResearch-jina && ./start-dev-server.sh > ./node-jina.log 2>&1 &",
-    port: getEnvPort("NODE_JINA_PORT", 3100),
+    port: getEnvPort("NODE_JINA_PORT", 3001),
   },
   "ui-jina": {
     command:

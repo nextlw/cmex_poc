@@ -4,6 +4,7 @@ import {
   DeepResearchSidebarProps,
   ResearchStep,
   ResearchDetail,
+  ValidationResult,
   FinalReport,
   ValidationStatus,
 } from "./types";
@@ -22,7 +23,6 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 import clsx from "clsx";
-import { normalizeResponse } from "../../utils/llm-json-normalizer";
 
 // Mensagens pré-definidas para cada etapa do processo
 const PROGRESS_MESSAGES = [
@@ -56,7 +56,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
       content: "Preparando análise detalhada do produto",
       status: "waiting",
       iterations: 0,
-      minimized: false,
+      minimized: true,
       hidden: false,
     },
     {
@@ -110,6 +110,8 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [prevStepIndex, setPrevStepIndex] = useState(-1);
+  const [validationResult, setValidationResult] =
+    useState<ValidationResult | null>(null);
   const [sidebarStatus, setSidebarStatus] = useState<
     "empty" | "processing" | "completed" | "error" | null
   >("empty"); // Adicionado estado "empty" para o estado inicial
@@ -134,13 +136,6 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     conclusion: true,
   });
 
-  // Estado para controlar a validação de acordo com o esquema normalizado
-  const [componentValidationStatus, setComponentValidationStatus] = useState({
-    infoBasicas: { validated: false, loading: true },
-    atributos: { validated: false, loading: false },
-    tributacao: { validated: false, loading: false },
-  });
-
   // Estado para armazenar informações parciais durante o processamento
   const [partialInfo, setPartialInfo] = useState({
     ncmCode: ncmCode,
@@ -154,30 +149,10 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
 
   // Efeito para sincronizar o estado de processamento com o InputAI
   useEffect(() => {
-    console.log("Estado de processamento mudou:", {
-      isProcessing,
-      requestId,
-      sidebarStatus,
-    });
-
     if (isProcessing) {
       setSidebarStatus("processing");
-
-      // Quando começa o processamento, garante que apenas o primeiro passo esteja expandido
-      const updatedSteps = [...steps];
-      updatedSteps.forEach((step, index) => {
-        step.minimized = index !== 0;
-      });
-      setSteps(updatedSteps);
     } else if (!isProcessing && !requestId) {
       setSidebarStatus("empty");
-
-      // No estado vazio, todos os passos estão minimizados
-      const updatedSteps = [...steps];
-      updatedSteps.forEach((step) => {
-        step.minimized = true;
-      });
-      setSteps(updatedSteps);
     }
   }, [isProcessing, requestId]);
 
@@ -193,19 +168,9 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
 
   // Efeito para verificar o status da tarefa quando o requestId muda
   useEffect(() => {
-    console.log("requestId mudou:", requestId, "sidebarStatus:", sidebarStatus);
-
     if (!requestId) {
       // Caso não tenhamos um requestId, mostramos o estado vazio
       setSidebarStatus("empty");
-
-      // No estado vazio, todos os passos estão minimizados
-      const updatedSteps = [...steps];
-      updatedSteps.forEach((step) => {
-        step.minimized = true;
-      });
-      setSteps(updatedSteps);
-
       return;
     }
 
@@ -214,9 +179,10 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
       setStatusMessage("Iniciando análise avançada com IA...");
       setCurrentStepIndex(0);
 
-      // Garante que apenas o primeiro passo esteja expandido no início
+      // Garante que apenas o primeiro passo esteja expandido (se estiver ativo)
       const updatedSteps = [...steps];
       updatedSteps.forEach((step, index) => {
+        // O primeiro passo só será expandido se estiver ativo
         step.minimized = index !== 0;
       });
       setSteps(updatedSteps);
@@ -247,62 +213,21 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
           return;
         }
 
-        // Extrai o token de forma mais segura
-        let token;
-        try {
-          const parsedSession = JSON.parse(session);
-          token = parsedSession.access_token;
-
-          if (!token) {
-            console.error("Token não encontrado na sessão");
-            setHasError(true);
-            setErrorMessage("Token de autenticação não encontrado");
-            return;
-          }
-        } catch (parseError) {
-          console.error("Erro ao fazer parse da sessão:", parseError);
-          setHasError(true);
-          setErrorMessage("Erro ao processar dados de autenticação");
-          return;
-        }
+        const token = JSON.parse(session).access_token;
 
         // Fazendo uma requisição normal para o endpoint existente
         const response = await api.get(`/task-status/${requestId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
           },
         });
 
         if (!isMounted) return;
 
-        // Normaliza a resposta para lidar com possíveis inconsistências no JSON da LLM
-        const normalizedData = normalizeResponse(response.data);
-
-        // Processa a resposta normalizada
-        const {
-          step = 0,
-          completed = false,
-          validationStatus: componentStatus = {
-            infoBasicas: { validated: false, loading: true },
-            atributos: { validated: false, loading: false },
-            tributacao: { validated: false, loading: false },
-          },
-          result = [],
-        } = normalizedData;
-
-        console.log("Dados normalizados:", {
-          step,
-          currentStep: currentStepIndex,
-          completed,
-          componentStatus,
-        });
+        // Processa a resposta
+        const data = response.data;
 
         setHasError(false);
-
-        // Atualiza o estado de validação dos componentes
-        setComponentValidationStatus(componentStatus);
 
         // Se recebemos dados pela primeira vez, removemos o skeleton
         if (!hasInitialData) {
@@ -310,55 +235,54 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         }
 
         // Atualiza informações parciais se disponíveis na resposta
-        if (result.length > 0) {
-          const resultData = result[0];
+        if (data.partialInfo) {
+          setPartialInfo((prev) => ({
+            ...prev,
+            ...data.partialInfo,
+          }));
 
-          // Atualiza as informações parciais baseado nos resultados
-          setPartialInfo({
-            ncmCode: resultData.ncm || ncmCode,
-            ncmDescription: resultData.descricao || "",
-            taxationDetails: {
-              ipi: resultData.valores_de_impostos?.ipi || "",
-              icms: resultData.valores_de_impostos?.icms || {},
-              pis: resultData.valores_de_impostos?.pis || "",
-              cofins: resultData.valores_de_impostos?.cofins || "",
-            },
-            attributes:
-              resultData.atributos?.reduce(
-                (acc: Record<string, string>, attr: string, index: number) => {
-                  acc[`atributo_${index + 1}`] = attr;
-                  return acc;
-                },
-                {} as Record<string, string>
-              ) || {},
-          });
-
-          // Atualiza o estado de validação para a UI baseado na validação dos componentes
-          setValidationStatus({
-            ncmCode: componentStatus.infoBasicas.loading,
-            ncmDescription: componentStatus.infoBasicas.loading,
-            attributes: componentStatus.atributos.loading,
-            taxationDetails: componentStatus.tributacao.loading,
-            conclusion: !completed,
-          });
+          // Atualiza o estado de validação se fornecido
+          if (data.validationStatus) {
+            setValidationStatus((prev) => ({
+              ...prev,
+              ...data.validationStatus,
+            }));
+          }
         }
 
-        // Atualiza os passos com base no status de validação
-        updateStepsWithValidationStatus(step, componentStatus);
+        const stepIndex = data.step !== undefined ? data.step : 0;
+        const step = Math.min(stepIndex, PROGRESS_MESSAGES.length - 1);
+
+        // Se o passo mudou, minimiza os passos anteriores
+        if (step > currentStepIndex) {
+          const updatedSteps = [...steps];
+          // Minimiza todos os passos anteriores
+          for (let i = 0; i < step; i++) {
+            updatedSteps[i].minimized = true;
+          }
+          setSteps(updatedSteps);
+        }
+
+        setCurrentStepIndex(step);
 
         // Atualiza a mensagem principal
-        let message = PROGRESS_MESSAGES[
-          Math.min(step, PROGRESS_MESSAGES.length - 1)
-        ]
-          .replace("{produto}", productName)
-          .replace("{ncm}", ncmCode);
-        setStatusMessage(message);
+        if (data.currentAction) {
+          setStatusMessage(data.currentAction);
+        } else {
+          let message = PROGRESS_MESSAGES[step]
+            .replace("{produto}", productName)
+            .replace("{ncm}", ncmCode);
+          setStatusMessage(message);
+        }
+
+        // Atualiza o status dos passos
+        updateStepsWithNewData(step, data);
 
         // Adiciona novas informações de pesquisa se disponíveis
-        updateResearchInfo(response.data);
+        updateResearchInfo(data);
 
         // Verifica se o processamento foi concluído
-        if (completed) {
+        if (data.completed) {
           setSidebarStatus("completed");
           setIsLoading(false);
 
@@ -369,7 +293,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
           }
 
           // Exibição do relatório final e outras ações de conclusão
-          handleCompletedProcess(step, normalizedData);
+          handleCompletedProcess(step, data);
         } else {
           setSidebarStatus("processing");
         }
@@ -380,197 +304,31 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
       }
     };
 
-    // Função para atualizar os passos com base no status de validação
-    const updateStepsWithValidationStatus = (
-      stepIndex: number,
-      componentStatus: {
-        infoBasicas: { validated: boolean; loading: boolean };
-        atributos: { validated: boolean; loading: boolean };
-        tributacao: { validated: boolean; loading: boolean };
-      }
-    ) => {
-      console.log(
-        "Atualizando passos com stepIndex:",
-        stepIndex,
-        "componentStatus:",
-        componentStatus
-      );
-
-      // Força progresso se o passo continuar o mesmo por muito tempo
-      if (stepIndex === currentStepIndex && prevStepIndex === stepIndex) {
-        // Incrementa o contador para forçar progresso
-        const forceProgressionCounter =
-          (window as any).forceProgressionCounter || 0;
-        if (forceProgressionCounter > 5) {
-          console.log("Forçando progresso para o próximo passo");
-          stepIndex = Math.min(stepIndex + 1, steps.length - 1);
-          (window as any).forceProgressionCounter = 0;
-        } else {
-          (window as any).forceProgressionCounter = forceProgressionCounter + 1;
-        }
-      } else {
-        (window as any).forceProgressionCounter = 0;
-      }
-
-      const updatedSteps = [...steps];
-
-      // Garante que o índice do passo seja válido
-      const safeStepIndex = Math.min(Math.max(0, stepIndex), steps.length - 1);
-
-      // Mapeamento entre os componentes e os passos
-      const stepMapping = {
-        infoBasicas: [0, 1], // Passos relacionados às informações básicas
-        atributos: [2, 3], // Passos relacionados aos atributos
-        tributacao: [4, 5], // Passos relacionados à tributação
-      };
-
-      // Atualizar cada passo com base no status do componente correspondente
-      for (const [component, stepIndices] of Object.entries(stepMapping)) {
-        const status =
-          componentStatus[component as keyof typeof componentStatus];
-
-        for (const idx of stepIndices) {
-          if (idx < updatedSteps.length) {
-            // Se o componente foi validado, marcar como completo
-            if (status.validated) {
-              // Se o status era processing, adiciona uma notificação de sucesso
-              if (updatedSteps[idx].status === "processing") {
-                updatedSteps[idx].notification = {
-                  type: "success",
-                  message: "Etapa concluída com sucesso",
-                  duration: 3000,
-                };
-              }
-
-              updatedSteps[idx].status = "completed";
-
-              // Apenas se estiver em processamento ativo, minimiza passos anteriores
-              // e não afeta passos que o usuário abriu manualmente
-              if (isProcessing && idx !== safeStepIndex) {
-                updatedSteps[idx].minimized =
-                  idx !== prevStepIndex || updatedSteps[idx].minimized;
-              }
-
-              // Adiciona progresso 100%
-              updatedSteps[idx].progress = {
-                percentage: 100,
-                text: "Concluído",
-              };
-            }
-            // Se está em loading, mostrar como processando
-            else if (status.loading) {
-              updatedSteps[idx].status = "processing";
-
-              // Durante o processamento ativo, expandimos apenas o passo atual
-              // sem fechar os que o usuário abriu manualmente
-              if (isProcessing) {
-                if (idx === safeStepIndex) {
-                  updatedSteps[idx].minimized = false;
-                }
-              }
-
-              // Adiciona progresso parcial
-              updatedSteps[idx].progress = {
-                percentage:
-                  idx < safeStepIndex ? 100 : idx === safeStepIndex ? 60 : 0,
-                text: idx === safeStepIndex ? "Processando..." : "",
-              };
-            }
-            // Caso contrário, está aguardando
-            else {
-              // Não alteramos o status para waiting se já estiver em processing/completed
-              if (updatedSteps[idx].status === "waiting") {
-                // Se for o passo atual ou um passo futuro que está dentro do componente atual em processamento
-                if (
-                  idx === safeStepIndex ||
-                  (idx > safeStepIndex && stepIndices.includes(safeStepIndex))
-                ) {
-                  updatedSteps[idx].status = "processing";
-
-                  // Adiciona progresso parcial para indicar que está relacionado ao componente atual
-                  updatedSteps[idx].progress = {
-                    percentage: idx === safeStepIndex ? 30 : 0,
-                    text: idx === safeStepIndex ? "Iniciando..." : "Aguardando",
-                  };
-                }
-              }
-
-              // Não alteramos o estado minimizado dos passos em espera
-            }
-          }
-        }
-      }
-
-      // Atualiza os passos baseado no passo atual
-      for (let i = 0; i < updatedSteps.length; i++) {
-        // Passos anteriores são sempre marcados como completos
-        if (i < safeStepIndex) {
+    // Função para atualizar os passos com os novos dados
+    const updateStepsWithNewData = (step: number, data: any) => {
+      if (step > 0) {
+        const updatedSteps = [...steps];
+        // Todos os passos anteriores estão completos
+        for (let i = 0; i < step; i++) {
           updatedSteps[i].status = "completed";
-          updatedSteps[i].progress = {
-            percentage: 100,
-            text: "Concluído",
-          };
+          // Minimiza os passos anteriores
+          updatedSteps[i].minimized = true;
         }
-        // O passo atual está sempre em processamento
-        else if (i === safeStepIndex) {
-          updatedSteps[i].status = "processing";
-          // O passo atual nunca é minimizado durante o processamento
-          if (isProcessing) {
-            updatedSteps[i].minimized = false;
-          }
-          // Se não tiver progresso definido, define um padrão
-          if (!updatedSteps[i].progress) {
-            updatedSteps[i].progress = {
-              percentage: 30,
-              text: "Processando...",
-            };
-          }
-        }
-      }
+        // O passo atual está em processamento
+        updatedSteps[step].status = "processing";
+        // Expande o passo atual
+        updatedSteps[step].minimized = false;
 
-      console.log(
-        "Passos atualizados:",
-        updatedSteps.map((s) => ({
-          id: s.id,
-          status: s.status,
-          minimized: s.minimized,
-        }))
-      );
-
-      setSteps(updatedSteps);
-      setCurrentStepIndex(safeStepIndex);
-      // Atualizamos o prevStepIndex para controlar as transições
-      setPrevStepIndex(safeStepIndex);
-    };
-
-    // Função para atualizar as informações de pesquisa e tratar erros
-    const updateResearchInfo = (data: any) => {
-      try {
-        if (data.error) {
-          // Trata o erro e mostra notificação no passo atual
-          const errorStep = [...steps];
-          if (currentStepIndex >= 0 && currentStepIndex < errorStep.length) {
-            errorStep[currentStepIndex].status = "error";
-            errorStep[currentStepIndex].notification = {
-              type: "error",
-              message: data.error.message || "Erro durante o processamento",
-              duration: 0, // Persistente
-            };
-
-            // Garantimos que o passo com erro esteja visível
-            errorStep[currentStepIndex].minimized = false;
-            setHasError(true);
-            setErrorMessage(
-              data.error.message || "Erro durante o processamento"
-            );
-          }
-          setSteps(errorStep);
-          console.error("Erro na resposta:", data.error);
-          return;
+        // Garante que todos os passos futuros também estão minimizados
+        for (let i = step + 1; i < updatedSteps.length; i++) {
+          updatedSteps[i].minimized = true;
         }
 
-        // Processa os detalhes de pesquisa
-        if (data.researchDetails) {
+        // Atualiza o conteúdo do passo atual com a mensagem de status
+        updatedSteps[step].content = statusMessage;
+
+        // Adiciona os detalhes da pesquisa ao passo atual
+        if (data.researchDetails && data.researchDetails.length > 0) {
           const newDetails = data.researchDetails.map((detail: any) => ({
             type: detail.type,
             content: detail.content,
@@ -578,58 +336,66 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
             timestamp: new Date(),
           }));
 
-          // Verifica se já temos esses detalhes para evitar duplicação
-          const existingContents = researchInfo.map((info) => info.content);
-          const uniqueNewDetails = newDetails.filter(
-            (detail: ResearchDetail) =>
-              !existingContents.includes(detail.content)
-          );
+          // Adiciona os novos detalhes apenas se não existirem já
+          if (!updatedSteps[step].details) {
+            updatedSteps[step].details = newDetails;
+          } else {
+            // Verifica se já temos esses detalhes para evitar duplicação
+            const existingContents =
+              updatedSteps[step].details?.map((d) => d.content) || [];
+            const uniqueNewDetails = newDetails.filter(
+              (detail: ResearchDetail) =>
+                !existingContents.includes(detail.content)
+            );
 
-          // Associa os detalhes ao passo correspondente
-          if (uniqueNewDetails.length > 0) {
-            setResearchInfo((prevInfo) => [...prevInfo, ...uniqueNewDetails]);
-
-            // Adiciona detalhes ao passo atual
-            const updatedStepsWithDetails = [...steps];
-            if (
-              currentStepIndex >= 0 &&
-              currentStepIndex < updatedStepsWithDetails.length
-            ) {
-              // Se o passo já tem detalhes, adiciona os novos
-              updatedStepsWithDetails[currentStepIndex].details = [
-                ...(updatedStepsWithDetails[currentStepIndex].details || []),
+            if (uniqueNewDetails.length > 0) {
+              updatedSteps[step].details = [
+                ...(updatedSteps[step].details || []),
                 ...uniqueNewDetails,
               ];
 
-              // Incrementa o contador de iterações
-              updatedStepsWithDetails[currentStepIndex].iterations =
-                (updatedStepsWithDetails[currentStepIndex].iterations || 0) + 1;
-
-              setSteps(updatedStepsWithDetails);
+              // Incrementa a iteração apenas quando novos detalhes são adicionados
+              updatedSteps[step].iterations =
+                (updatedSteps[step].iterations || 0) + 1;
             }
           }
         }
 
-        // Atualiza os dados de progresso parcial
-        if (data.validationStatus && data.step !== undefined) {
-          updateStepsWithValidationStatus(data.step, data.validationStatus);
+        setSteps(updatedSteps);
+      }
+    };
+
+    // Função para atualizar as informações de pesquisa
+    const updateResearchInfo = (data: any) => {
+      if (data.researchDetails) {
+        const newDetails = data.researchDetails.map((detail: any) => ({
+          type: detail.type,
+          content: detail.content,
+          source: detail.source,
+          timestamp: new Date(),
+        }));
+
+        // Verifica se já temos esses detalhes para evitar duplicação
+        const existingContents = researchInfo.map((info) => info.content);
+        const uniqueNewDetails = newDetails.filter(
+          (detail: ResearchDetail) => !existingContents.includes(detail.content)
+        );
+
+        if (uniqueNewDetails.length > 0) {
+          setResearchInfo((prevInfo) => [...prevInfo, ...uniqueNewDetails]);
         }
-      } catch (error) {
-        console.error("Erro ao processar resposta:", error);
-        setHasError(true);
-        setErrorMessage("Erro ao processar resposta do servidor");
       }
     };
 
     // Função para lidar com o processo concluído
-    const handleCompletedProcess = (step: number, normalizedData: any) => {
+    const handleCompletedProcess = (step: number, data: any) => {
       // Se completou, expande a última etapa e minimiza todas as outras
-      const finalStepIndex = steps.length - 1; // Sempre mostrar o último passo na conclusão
+      const finalStepIndex = step;
       const finalUpdatedSteps = [...steps];
 
       finalUpdatedSteps.forEach((s, idx) => {
         // Define o status e minimização de cada passo
-        s.status = "completed";
+        s.status = idx <= finalStepIndex ? "completed" : "waiting";
         s.minimized = idx !== finalStepIndex;
         // Garante que nenhum passo tenha a propriedade hidden ativa
         s.hidden = false;
@@ -637,73 +403,56 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
 
       setSteps(finalUpdatedSteps);
 
-      // Extrai os dados do resultado normalizado
-      const resultData =
-        normalizedData.result.length > 0 ? normalizedData.result[0] : null;
+      // Gerar relatório final com as informações coletadas
+      const detailsCollected = researchInfo.filter(
+        (info) => info.type !== "question"
+      );
 
-      if (resultData) {
-        // Gerar relatório final com as informações coletadas
-        const detailsCollected = researchInfo.filter(
-          (info) => info.type !== "question"
-        );
-
-        // Construção do relatório final com os dados normalizados
-        const report: FinalReport = {
-          conclusion: `Após análise detalhada, concluímos que o produto "${productName}" está corretamente classificado com o NCM ${
-            resultData.ncm || ncmCode
-          }.`,
-          evidences: detailsCollected
-            .filter((detail) => detail.source && detail.content)
-            .map((detail) => ({
-              source: detail.source || "Fonte não especificada",
-              content: detail.content,
-              type:
-                detail.content.includes("Lei") ||
-                detail.content.includes("Decreto")
-                  ? "law"
-                  : detail.content.includes("tribunal") ||
-                    detail.content.includes("decisão")
-                  ? "jurisprudence"
-                  : "technical",
-            })),
-          alternativeCases: [
-            {
-              scenario: "Se o produto tiver funcionalidade principal distinta",
-              impact:
-                "A classificação poderia mudar para outro capítulo da NCM",
-              suggestedNCM: normalizedData.alternativeNcm || undefined,
-            },
-            {
-              scenario: "Se o produto apresentar composição material diferente",
-              impact:
-                "Poderia haver alteração na alíquota tributária aplicável",
-            },
-          ],
-          ncmCode: resultData.ncm || ncmCode,
-          ncmDescription: resultData.descricao || "Descrição não disponível",
-          taxationDetails: {
-            ipi: resultData.valores_de_impostos?.ipi || "Conforme tabela TIPI",
-            icms: resultData.valores_de_impostos?.icms
-              ? Object.entries(resultData.valores_de_impostos.icms)
-                  .map(([estado, valor]) => `${estado}: ${valor}`)
-                  .join(", ")
-              : "Conforme regulamentação estadual",
-            pis: resultData.valores_de_impostos?.pis || "Regime normal",
-            cofins: resultData.valores_de_impostos?.cofins || "Regime normal",
-            importTax: "Consultar tabela vigente",
+      // Exemplo de construção do relatório final
+      const report: FinalReport = {
+        conclusion: `Após análise detalhada, concluímos que o produto "${productName}" está corretamente classificado com o NCM ${
+          data.finalNcm || ncmCode
+        }.`,
+        evidences: detailsCollected
+          .filter((detail) => detail.source && detail.content)
+          .map((detail) => ({
+            source: detail.source || "Fonte não especificada",
+            content: detail.content,
+            type:
+              detail.content.includes("Lei") ||
+              detail.content.includes("Decreto")
+                ? "law"
+                : detail.content.includes("tribunal") ||
+                  detail.content.includes("decisão")
+                ? "jurisprudence"
+                : "technical",
+          })),
+        alternativeCases: [
+          {
+            scenario: "Se o produto tiver funcionalidade principal distinta",
+            impact: "A classificação poderia mudar para outro capítulo da NCM",
+            suggestedNCM: data.alternativeNcm || undefined,
           },
-          attributes:
-            resultData.atributos?.reduce(
-              (acc: Record<string, string>, attr: string, index: number) => {
-                acc[`atributo_${index + 1}`] = attr;
-                return acc;
-              },
-              {} as Record<string, string>
-            ) || {},
-        };
+          {
+            scenario: "Se o produto apresentar composição material diferente",
+            impact: "Poderia haver alteração na alíquota tributária aplicável",
+          },
+        ],
+        ncmCode: data.finalNcm || ncmCode,
+        ncmDescription: data.ncmDescription || "Descrição não disponível",
+        taxationDetails: data.taxationDetails || {
+          ipi: "Conforme tabela TIPI",
+          icms: "Conforme regulamentação estadual",
+          pis: "Regime normal",
+          cofins: "Regime normal",
+          importTax: "Consultar tabela vigente",
+        },
+        attributes: data.attributes || {},
+      };
 
-        setFinalReport(report);
-      }
+      setFinalReport(report);
+      // Não redefine o modo de visualização para permitir que o usuário escolha qual visualização ver
+      // setShowDetailedSteps(false);
 
       // Define todos os estados de validação como concluídos
       setValidationStatus({
@@ -712,13 +461,6 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         taxationDetails: false,
         attributes: false,
         conclusion: false,
-      });
-
-      // Define todos os componentes como validados e não em loading
-      setComponentValidationStatus({
-        infoBasicas: { validated: true, loading: false },
-        atributos: { validated: true, loading: false },
-        tributacao: { validated: true, loading: false },
       });
     };
 
@@ -735,7 +477,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         window.clearInterval(intervalId);
       }
     };
-  }, [requestId, productName, ncmCode, steps]); // Adicionando steps para garantir atualização
+  }, [requestId, productName, ncmCode]); // Removendo steps da dependência
 
   // Função de cancelamento
   const handleCancelRequest = () => {
@@ -1008,12 +750,61 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    // Toggle minimizado para qualquer passo, permitindo que o usuário controle
-                    toggleStep(index);
+                    // Toggle minimizado apenas para passos concluídos ou anteriores ao atual
+                    if (
+                      step.status === "completed" ||
+                      index < currentStepIndex
+                    ) {
+                      const newSteps = [...steps];
+
+                      // Se vamos expandir um passo, minimiza todos os outros
+                      if (newSteps[index].minimized) {
+                        // Minimiza todos os passos
+                        newSteps.forEach((s, i) => {
+                          s.minimized = true;
+                        });
+                        // Expande apenas o passo clicado
+                        newSteps[index].minimized = false;
+                      } else {
+                        // Se estamos minimizando, apenas minimiza o atual
+                        newSteps[index].minimized = true;
+                      }
+
+                      setSteps(newSteps);
+                    }
                   }}
                 >
                   <div className="deep-research-step-indicator">
-                    {renderStepIndicator(step, index)}
+                    {step.status === "waiting" && step.id}
+                    {step.status === "processing" && (
+                      <div className="deep-research-step-loading"></div>
+                    )}
+                    {step.status === "completed" && (
+                      <svg
+                        className="deep-research-step-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    {step.status === "error" && (
+                      <svg
+                        className="deep-research-step-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                    )}
                   </div>
                   <div className="deep-research-step-title">
                     {step.title}
@@ -1026,7 +817,22 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
                       className="deep-research-toggle-btn"
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleStep(index);
+                        const newSteps = [...steps];
+
+                        // Se vamos expandir um passo, minimiza todos os outros
+                        if (newSteps[index].minimized) {
+                          // Minimiza todos os passos
+                          newSteps.forEach((s, i) => {
+                            s.minimized = true;
+                          });
+                          // Expande apenas o passo clicado
+                          newSteps[index].minimized = false;
+                        } else {
+                          // Se estamos minimizando, apenas minimiza o atual
+                          newSteps[index].minimized = true;
+                        }
+
+                        setSteps(newSteps);
                       }}
                     >
                       {step.minimized ? "+" : "−"}
@@ -1035,7 +841,147 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
                 </div>
 
                 <div className="deep-research-step-content">
-                  {!step.minimized && renderStepContent(step, index)}
+                  <p>{step.content}</p>
+
+                  {step.details && step.details.length > 0 && (
+                    <div className="deep-research-step-details">
+                      {step.details.map((detail, detailIndex) => (
+                        <div
+                          key={`${step.id}-${detailIndex}`}
+                          className="deep-research-detail"
+                        >
+                          <div className="deep-research-detail-content">
+                            {detail.type === "link" && (
+                              <svg
+                                className="deep-research-detail-icon"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                                />
+                              </svg>
+                            )}
+
+                            {detail.type === "text" && (
+                              <svg
+                                className="deep-research-detail-icon"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                />
+                              </svg>
+                            )}
+
+                            {detail.type === "law" && (
+                              <svg
+                                className="deep-research-detail-icon"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                                />
+                              </svg>
+                            )}
+
+                            {detail.type === "question" && (
+                              <svg
+                                className="deep-research-detail-icon"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                            )}
+
+                            <span className="deep-research-detail-text">
+                              {detail.content}
+                            </span>
+                          </div>
+                          {detail.source && (
+                            <div className="deep-research-detail-source">
+                              {detail.source}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Validação para o último passo */}
+                  {step.id === 6 &&
+                    step.status === "completed" &&
+                    validationResult && (
+                      <div className="validation-comparison">
+                        <div className="validation-item validation-original">
+                          <div className="validation-header">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            <span>NCM Original</span>
+                            <span className="validation-tag original">
+                              {validationResult.originalNCM}
+                            </span>
+                          </div>
+                          {validationResult.reason && (
+                            <p>{validationResult.reason}</p>
+                          )}
+                        </div>
+
+                        {validationResult.suggestedNCM &&
+                          validationResult.suggestedNCM !==
+                            validationResult.originalNCM && (
+                            <div className="validation-item validation-corrected">
+                              <div className="validation-header">
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M9 12l2 2 4-4" />
+                                  <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+                                </svg>
+                                <span>NCM Sugerido</span>
+                                <span className="validation-tag corrected">
+                                  {validationResult.suggestedNCM}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                      </div>
+                    )}
                 </div>
               </li>
             )
@@ -1098,17 +1044,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     return index + 1;
   };
 
-  // Função para alternar o estado minimizado de um passo
-  const toggleStep = (index: number) => {
-    const newSteps = [...steps];
-
-    // Apenas alterna o estado minimizado do passo clicado, sem afetar os outros
-    newSteps[index].minimized = !newSteps[index].minimized;
-
-    setSteps(newSteps);
-  };
-
-  // Renderização do conteúdo do passo com melhorias visuais e feedback
+  // Dentro do componente, antes do return principal:
   const renderStepContent = (step: ResearchStep, index: number) => {
     if (hasError) {
       return (
@@ -1125,67 +1061,13 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
 
     return (
       <>
-        <p className="deep-research-step-description">{step.content}</p>
-
-        {/* Barra de progresso, se disponível */}
-        {step.progress && (
-          <div className="deep-research-progress">
-            <div
-              className="deep-research-progress-bar"
-              style={{ width: `${step.progress.percentage}%` }}
-            >
-              {step.progress.text && (
-                <span className="deep-research-progress-text">
-                  {step.progress.text}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Notificação, se disponível */}
-        {step.notification && (
-          <div
-            className={`deep-research-notification ${step.notification.type}`}
-          >
-            {step.notification.type === "error" && (
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-            )}
-            {step.notification.type === "success" && (
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-            )}
-            {step.notification.message}
-          </div>
-        )}
-
-        {/* Detalhes do passo */}
+        <p>{step.content}</p>
         {step.details && step.details.length > 0 && (
           <div className="deep-research-step-details">
             {step.details.map((detail, detailIndex) => (
               <div
                 key={`${step.id}-${detailIndex}`}
-                className={`deep-research-detail ${detail.type}`}
+                className="deep-research-detail"
               >
                 <div className="deep-research-detail-content">
                   {detail.type === "link" && (
@@ -1298,13 +1180,6 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         <div className="deep-research-sidebar-subtitle">
           Análise detalhada do produto: {productName}
         </div>
-        {/* Status atual da pesquisa - visível durante o processamento */}
-        {(sidebarStatus === "processing" || isProcessing) && (
-          <div className="deep-research-current-status" aria-live="polite">
-            <span className="status-indicator"></span>
-            {statusMessage}
-          </div>
-        )}
       </div>
 
       <div className="deep-research-sidebar-content">
@@ -1335,8 +1210,28 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      // Toggle minimizado para qualquer passo, permitindo que o usuário controle
-                      toggleStep(index);
+                      // Toggle minimizado apenas para passos concluídos ou anteriores ao atual
+                      if (
+                        step.status === "completed" ||
+                        index < currentStepIndex
+                      ) {
+                        const newSteps = [...steps];
+
+                        // Se vamos expandir um passo, minimiza todos os outros
+                        if (newSteps[index].minimized) {
+                          // Minimiza todos os passos
+                          newSteps.forEach((s, i) => {
+                            s.minimized = true;
+                          });
+                          // Expande apenas o passo clicado
+                          newSteps[index].minimized = false;
+                        } else {
+                          // Se estamos minimizando, apenas minimiza o atual
+                          newSteps[index].minimized = true;
+                        }
+
+                        setSteps(newSteps);
+                      }
                     }}
                   >
                     <div className="deep-research-step-indicator">
@@ -1353,7 +1248,22 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
                         className="deep-research-toggle-btn"
                         onClick={(e) => {
                           e.stopPropagation();
-                          toggleStep(index);
+                          const newSteps = [...steps];
+
+                          // Se vamos expandir um passo, minimiza todos os outros
+                          if (newSteps[index].minimized) {
+                            // Minimiza todos os passos
+                            newSteps.forEach((s, i) => {
+                              s.minimized = true;
+                            });
+                            // Expande apenas o passo clicado
+                            newSteps[index].minimized = false;
+                          } else {
+                            // Se estamos minimizando, apenas minimiza o atual
+                            newSteps[index].minimized = true;
+                          }
+
+                          setSteps(newSteps);
                         }}
                       >
                         {step.minimized ? "+" : "−"}
@@ -1362,7 +1272,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
                   </div>
 
                   <div className="deep-research-step-content">
-                    {!step.minimized && renderStepContent(step, index)}
+                    {renderStepContent(step, index)}
                   </div>
                 </li>
               )

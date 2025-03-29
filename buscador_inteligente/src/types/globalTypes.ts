@@ -31,6 +31,14 @@ export type SchemaProperty = {
   minItems?: number;
 };
 
+export type SERPQuery = {
+  q: string;
+  hl?: string;
+  gl?: string;
+  location?: string;
+  tbs?: string;
+};
+
 // Definição correta de ResponseSchema para ser compatível com @google/generative-ai
 export type ResponseSchema = {
   type: SchemaType.OBJECT;
@@ -206,6 +214,7 @@ export interface ReadResponse {
     description: string;
     url: string;
     content: string;
+    links?: [string, string][];
     usage: { tokens: number };
   };
   name?: string;
@@ -250,6 +259,36 @@ export interface SearchResult {
   title: string;
   url: string;
   description: string;
+}
+
+export interface SearchSnippet {
+  title: string;
+  url: string;
+  description: string;
+  weight?: number;
+}
+
+export interface BoostedSearchSnippet extends SearchSnippet {
+  freqBoost?: number;
+  hostnameBoost?: number;
+  pathBoost?: number;
+  jinaRerankBoost?: number;
+  finalScore?: number;
+}
+
+export interface FiscalURL extends BoostedSearchSnippet {
+  isFiscal: boolean;
+  category?:
+    | "legislation"
+    | "regulation"
+    | "guidance"
+    | "jurisprudence"
+    | "news"
+    | "other";
+  trustScore?: number;
+  relevanceToQuery?: number;
+  lastUpdated?: string;
+  fiscalDomain?: boolean;
 }
 
 export interface QueryResult {
@@ -359,12 +398,6 @@ export interface FastApiNCMResult {
     cofins_saida?: string;
     cst_entrada?: string;
     cst_saida?: string;
-  };
-  // Status de validação dos componentes da UI
-  validation_status?: {
-    infoBasicas: { validated: boolean; loading: boolean };
-    atributos: { validated: boolean; loading: boolean };
-    tributacao: { validated: boolean; loading: boolean };
   };
 }
 

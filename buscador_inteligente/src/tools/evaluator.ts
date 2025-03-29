@@ -675,7 +675,7 @@ async function fetchSourceContent(
     const results = await Promise.all(
       urls.map(async (url): Promise<string> => {
         try {
-          const { response } = await readUrl(url, trackers[0]);
+          const { response } = await readUrl(url, false, trackers[0]);
           const content = response?.data?.content || "";
           return removeAllLineBreaks(content);
         } catch (error) {
