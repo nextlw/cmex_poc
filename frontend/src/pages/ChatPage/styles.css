@@ -10,12 +10,13 @@
 */
 
 body {
-  overflow: hidden;
+  overflow: auto;
 }
 
 .chat-page-container {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+  padding-bottom: 60px;
 }
 
 .empty-chat {
@@ -38,17 +39,31 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .chat-container {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+.iframe-container {
+  flex: 1;
+  margin-top: 66px;
   height: 100%;
-  max-height: calc(100vh - 60px);
-  background-color: var(--color-background-dark);
-  padding: 20px;
-  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.chat-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .page-header-container {
@@ -82,7 +97,7 @@ body {
   border-radius: 8px;
   box-shadow: 0 2px 4px var(--color-shadow);
   padding: 20px;
-  overflow: hidden;
+  overflow: auto;
   border: 1px solid var(--color-border);
   height: calc(100vh - 250px);
   max-height: calc(100vh - 250px);
@@ -409,8 +424,9 @@ body {
   width: 100%;
   max-width: 7xl;
   padding: 0 1rem;
-  height: calc(100vh - 60px);
-  overflow: hidden;
+  height: auto;
+  min-height: calc(100vh - 60px);
+  overflow: visible;
 }
 
 /* Wrapper do chat */
@@ -419,18 +435,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
-}
-
-/* Container do chat */
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  max-height: calc(100vh - 60px);
-  background-color: var(--color-background-dark);
-  padding: 20px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 /* Container de mensagens do chat */
@@ -514,3 +519,32 @@ body {
 }
 
 /* Não precisamos de estilos para tema escuro, pois os tokens já cuidam disso */
+
+/* Ajustes específicos para o Select no header do chat */
+.chat-container .section-header .select-wrapper {
+  min-width: 256px;
+}
+
+.chat-container .section-header .dark-select {
+  height: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px 0 16px;
+  font-size: 14px;
+  background-color: var(--color-select-background);
+  border: 1px solid var(--color-select-border);
+  color: var(--color-select-text);
+}
+
+.chat-container .section-header .options-list {
+  width: 256px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Ajuste para o ícone do modelo */
+.chat-container .section-header .icon-ai {
+  color: var(--color-primary);
+  margin: 8px;
+}

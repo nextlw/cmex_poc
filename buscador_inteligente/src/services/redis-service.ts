@@ -26,7 +26,9 @@ export const subscriber = new Redis(redisConfig);
 
 // Inicializar assinaturas
 export function initializeRedisSubscriptions(eventEmitter: EventEmitter) {
-  console.log(`Conectando ao Redis em ${redisConfig.host}:${redisConfig.port}`);
+  console.log(
+    `Assinado nos canais Redis com sucesso em ${redisConfig.host}:${redisConfig.port}`
+  );
 
   // Assinar aos canais relevantes usando Promise em vez de callback
   subscriber
@@ -36,7 +38,7 @@ export function initializeRedisSubscriptions(eventEmitter: EventEmitter) {
       CHANNELS.NCM_REQUEST
     )
     .then(() => {
-      console.log("Assinado nos canais Redis com sucesso");
+      // Mensagem já exibida acima
     })
     .catch((err) => {
       console.error("Erro ao assinar canais Redis:", err);
@@ -146,6 +148,21 @@ async function processNcmRequest(requestId: string, query: string) {
 
 // Função para encerrar conexões Redis
 export function closeRedisConnections() {
-  publisher.quit();
-  subscriber.quit();
+  try {
+    if (publisher && publisher.status === "ready") {
+      publisher
+        .quit()
+        .catch((err) => console.error("Erro ao fechar publisher Redis:", err));
+    }
+
+    if (subscriber && subscriber.status === "ready") {
+      subscriber
+        .quit()
+        .catch((err) => console.error("Erro ao fechar subscriber Redis:", err));
+    }
+
+    console.log("Conexões Redis encerradas com sucesso");
+  } catch (error) {
+    console.error("Erro ao encerrar conexões Redis:", error);
+  }
 }

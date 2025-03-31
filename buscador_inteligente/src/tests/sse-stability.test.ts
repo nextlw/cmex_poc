@@ -16,7 +16,7 @@ if (!fs.existsSync(TEST_RESULTS_DIR)) {
 
 // Configuração do teste
 const config = {
-  baseUrl: process.env.TEST_API_URL || "http://localhost:3000",
+  baseUrl: process.env.TEST_API_URL || "http://localhost:3001",
   connectionCount: process.env.NODE_ENV === "ci" ? 3 : 10, // Menos conexões em CI
   testDuration: process.env.NODE_ENV === "ci" ? 60000 : 30 * 60 * 1000, // 30min em desenvolvimento para teste
   logInterval: 60000, // Log a cada minuto

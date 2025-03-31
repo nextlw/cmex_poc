@@ -2,11 +2,18 @@
 
 import { exec, execSync } from "child_process";
 import { promisify } from "util";
+import fs from "fs";
 
 const execAsync = promisify(exec);
 
 // Tipo para serviços
-export type ServiceId = "redis" | "fastapi" | "node" | "frontend";
+export type ServiceId =
+  | "redis"
+  | "fastapi"
+  | "node"
+  | "frontend"
+  | "node-jina"
+  | "ui-jina";
 
 interface ServiceConfig {
   command: string;
@@ -38,26 +45,79 @@ const serviceConfig: Record<ServiceId, ServiceConfig> = {
   node: {
     command:
       "cd ../buscador_inteligente && nohup pnpm run dev > ./node.log 2>&1 &",
-    port: getEnvPort("NODE_PORT", 3000),
+    port: getEnvPort("NODE_PORT", 3001),
   },
   frontend: {
     command: "cd ../frontend && pnpm dev",
     port: getEnvPort("FRONTEND_PORT", 5173),
   },
+  "node-jina": {
+    command:
+      "cd ../node-DeepResearch-jina && ./start-dev-server.sh > ./node-jina.log 2>&1 &",
+    port: getEnvPort("NODE_JINA_PORT", 3001),
+  },
+  "ui-jina": {
+    command:
+      "cd ../deepsearch-ui-jina && ./start-dev-server.sh > ./ui-jina.log 2>&1 &",
+    port: getEnvPort("UI_JINA_PORT", 8080),
+  },
 };
 
-// Função para verificar e encerrar processos em determinada porta antes de iniciar
+// Função para verificar e encerrar processos em determinada porta
 async function killProcessOnPort(port: number): Promise<boolean> {
   try {
     const { stdout } = await execAsync(`lsof -i :${port} -P -n -t`);
-    if (stdout.trim()) {
-      const pid = stdout.trim();
-      console.log(`Encerrando processo ${pid} na porta ${port}`);
-      execSync(`kill -9 ${pid}`);
-      return true;
+    if (!stdout.trim()) {
+      return false;
     }
-    return false;
+
+    const pids = stdout.trim().split("\n");
+    console.log(
+      `Encontrados ${pids.length} processos na porta ${port}: ${pids.join(
+        ", "
+      )}`
+    );
+
+    for (const pid of pids) {
+      try {
+        console.log(`Encerrando processo ${pid} na porta ${port}`);
+        // Primeiro tenta com SIGTERM para encerramento gracioso
+        execSync(`kill ${pid}`);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        // Verifica se o processo ainda existe
+        try {
+          execSync(`ps -p ${pid} > /dev/null`);
+          // Se chegou aqui, o processo ainda existe, tenta com SIGKILL
+          console.log(`Processo ${pid} resistente, usando SIGKILL`);
+          execSync(`kill -9 ${pid}`);
+        } catch (err) {
+          // Erro significa que o processo já não existe, o que é bom
+          console.log(`Processo ${pid} encerrado com sucesso via SIGTERM`);
+        }
+      } catch (err) {
+        console.error(`Falha ao encerrar o processo ${pid}:`, err);
+      }
+    }
+
+    // Verifica novamente para ter certeza que todos os processos foram encerrados
+    try {
+      const { stdout: checkStdout } = await execAsync(
+        `lsof -i :${port} -P -n -t`
+      );
+      if (checkStdout.trim()) {
+        console.warn(
+          `Ainda existem processos na porta ${port} após tentativas de encerramento`
+        );
+        return false;
+      }
+    } catch (err) {
+      // Se der erro aqui, provavelmente é porque não há mais processos, o que é bom
+    }
+
+    return true;
   } catch (error) {
+    console.error(`Erro ao verificar/matar processos na porta ${port}:`, error);
     return false;
   }
 }
@@ -70,20 +130,45 @@ const runningProcesses: Record<string, any> = {};
  */
 export async function checkServiceStatus(serviceId: ServiceId) {
   try {
-    const { port } = serviceConfig[serviceId];
+    const { port: configPort } = serviceConfig[serviceId];
+    let port = configPort;
+
+    // UI-Jina sempre usa porta 8080 fixa
+    if (serviceId === "ui-jina") {
+      port = 8080; // Porta fixa para UI-Jina
+
+      // Tentativa de leitura do arquivo .port.txt apenas para log
+      try {
+        const portFilePath = "../deepsearch-ui-jina/.port.txt";
+        if (fs.existsSync(portFilePath)) {
+          const portFromFile = fs.readFileSync(portFilePath, "utf8").trim();
+          // Só loga se a porta no arquivo for diferente da porta fixa
+          if (portFromFile !== "8080") {
+            console.log(
+              `UI-Jina porta no arquivo: ${portFromFile}, usando porta fixa: ${port}`
+            );
+          }
+        }
+      } catch (err) {
+        console.log(
+          "Não foi possível ler o arquivo de porta para UI-Jina, usando porta fixa 8080"
+        );
+      }
+    }
 
     // Verifica se há um processo rodando na porta especificada
     const { stdout } = await execAsync(`lsof -i :${port} -P -n -t`);
 
     if (stdout.trim()) {
-      const pid = parseInt(stdout.trim(), 10);
-      return { running: true, pid };
+      const pids = stdout.trim().split("\n");
+      const pid = parseInt(pids[0], 10); // Usar o primeiro PID se houver múltiplos
+      return { running: true, pid, actualPort: port };
     }
 
-    return { running: false, pid: null };
+    return { running: false, pid: null, actualPort: port };
   } catch (error) {
     // Se lsof não encontrar nada, retorna código de erro
-    return { running: false, pid: null };
+    return { running: false, pid: null, actualPort: null };
   }
 }
 
@@ -130,8 +215,17 @@ export async function startService(serviceId: ServiceId) {
     // Armazena a referência ao processo
     runningProcesses[serviceId] = childProcess;
 
-    // Tempo de espera aumentado para o Node.js
-    const waitTime = serviceId === "node" ? 6000 : 3000;
+    // Tempo de espera personalizado por serviço
+    const waitTimeMap: Record<ServiceId, number> = {
+      node: 6000,
+      "node-jina": 5000,
+      "ui-jina": 4000,
+      redis: 3001,
+      frontend: 4000,
+      fastapi: 5000,
+    };
+
+    const waitTime = waitTimeMap[serviceId] || 3001;
     console.log(
       `Aguardando ${
         waitTime / 1000
@@ -142,38 +236,47 @@ export async function startService(serviceId: ServiceId) {
     await new Promise((resolve) => setTimeout(resolve, waitTime));
     const newStatus = await checkServiceStatus(serviceId);
 
+    // Para interfaces web, tentamos verificar com mais calma
+    let attempts = 0;
+    const maxAttempts = serviceId === "ui-jina" ? 3 : 1;
+    const retryDelay = 2000;
+
     if (newStatus.running) {
       return {
         success: true,
         pid: newStatus.pid,
         message: `Serviço iniciado com sucesso (PID: ${newStatus.pid})`,
       };
-    } else {
-      // Para node, tenta uma segunda verificação após mais tempo
-      if (serviceId === "node") {
-        console.log(
-          "Aguardando mais 4 segundos para verificar novamente o Node.js..."
-        );
-        await new Promise((resolve) => setTimeout(resolve, 4000));
-        const finalStatus = await checkServiceStatus(serviceId);
+    }
 
-        if (finalStatus.running) {
-          return {
-            success: true,
-            pid: finalStatus.pid,
-            message: `Serviço iniciado com sucesso (PID: ${finalStatus.pid})`,
-          };
-        }
+    // Para node, podemos tentar mais vezes
+    while (attempts < maxAttempts) {
+      console.log(
+        `Tentativa ${attempts + 1}/${maxAttempts}: aguardando mais ${
+          retryDelay / 1000
+        }s para verificar ${serviceId}...`
+      );
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      const retryStatus = await checkServiceStatus(serviceId);
+
+      if (retryStatus.running) {
+        return {
+          success: true,
+          pid: retryStatus.pid,
+          message: `Serviço iniciado com sucesso após ${
+            attempts + 1
+          } tentativas (PID: ${retryStatus.pid})`,
+        };
       }
 
-      return {
-        success: false,
-        message: `Falha ao iniciar serviço após ${
-          waitTime / 1000
-        } segundos. Verifique os logs para mais detalhes.`,
-        pid: null,
-      };
+      attempts++;
     }
+
+    return {
+      success: false,
+      message: `Falha ao iniciar serviço após ${maxAttempts} tentativas. Verifique os logs para mais detalhes.`,
+      pid: null,
+    };
   } catch (error) {
     console.error("Erro ao iniciar serviço:", error);
     return {
@@ -189,38 +292,129 @@ export async function startService(serviceId: ServiceId) {
  */
 export async function stopService(serviceId: ServiceId, pid?: number | null) {
   try {
-    const { port } = serviceConfig[serviceId];
-    const processRef = runningProcesses[serviceId];
+    // Verificar qual é a porta real que o serviço está usando
+    const statusCheck = await checkServiceStatus(serviceId);
+    // Obter a porta real do status ou usar a porta configurada como fallback
+    const portToUse = statusCheck.actualPort || serviceConfig[serviceId].port;
 
-    if (processRef) {
-      // Se temos uma referência direta ao processo, podemos usar kill
-      processRef.kill();
-      delete runningProcesses[serviceId];
+    let stopped = false;
 
-      // Espera um pouco para o serviço parar e verifica
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const status = await checkServiceStatus(serviceId);
+    console.log(
+      `Tentando parar o serviço ${serviceId} com PID ${
+        pid || "desconhecido"
+      } na porta ${portToUse}`
+    );
 
-      if (!status.running) {
-        return { success: true, message: "Serviço parado com sucesso" };
+    // Para UI-Jina, sempre tenta matar o processo na porta 8080 primeiro
+    if (serviceId === "ui-jina") {
+      console.log("UI-Jina detectado, tentando parar processo na porta 8080");
+      const killedByPort = await killProcessOnPort(8080);
+      if (killedByPort) {
+        stopped = true;
+        console.log("UI-Jina parado com sucesso via porta 8080");
       }
     }
 
-    // Se temos um PID específico ou se a referência direta não funcionou
-    if (pid) {
-      try {
-        execSync(`kill -9 ${pid}`);
-        return { success: true, message: `Processo PID ${pid} encerrado` };
-      } catch (err) {
-        console.error(`Erro ao matar processo ${pid}:`, err);
+    // Se ainda não parou, tenta os outros métodos
+    if (!stopped) {
+      // 1. Primeiro tenta usar a referência direta ao processo, se disponível
+      const processRef = runningProcesses[serviceId];
+      if (processRef) {
+        console.log(
+          `Usando referência direta para encerrar o processo ${serviceId}`
+        );
+        try {
+          processRef.kill("SIGTERM"); // Tenta primeiro com SIGTERM
+
+          // Aguarda um pouco e depois verifica
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          delete runningProcesses[serviceId];
+
+          const status = await checkServiceStatus(serviceId);
+          if (!status.running) {
+            stopped = true;
+            console.log(
+              `Serviço ${serviceId} parou com sucesso usando referência direta`
+            );
+          } else {
+            // Se ainda está rodando, tenta com SIGKILL
+            processRef.kill("SIGKILL");
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const statusAfterKill = await checkServiceStatus(serviceId);
+            if (!statusAfterKill.running) {
+              stopped = true;
+              console.log(
+                `Serviço ${serviceId} parou com sucesso usando SIGKILL`
+              );
+            }
+          }
+        } catch (err) {
+          console.error(
+            `Erro ao matar processo ${serviceId} via referência:`,
+            err
+          );
+        }
+      }
+
+      // 2. Se não parou ainda e temos um PID específico, tenta matar diretamente
+      if (!stopped && pid) {
+        console.log(`Tentando matar o PID ${pid} diretamente`);
+        try {
+          // Tenta primeiro com um sinal normal
+          execSync(`kill ${pid}`);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          const status = await checkServiceStatus(serviceId);
+          if (!status.running) {
+            stopped = true;
+            console.log(
+              `Serviço ${serviceId} parou com sucesso usando kill no PID ${pid}`
+            );
+          } else {
+            // Se ainda está rodando, força com -9
+            execSync(`kill -9 ${pid}`);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const statusAfterKill = await checkServiceStatus(serviceId);
+            if (!statusAfterKill.running) {
+              stopped = true;
+              console.log(
+                `Serviço ${serviceId} parou com sucesso usando kill -9 no PID ${pid}`
+              );
+            }
+          }
+        } catch (err) {
+          console.error(`Erro ao matar PID ${pid} diretamente:`, err);
+        }
+      }
+
+      // 3. Se ainda não parou, tenta encontrar e matar qualquer processo na porta
+      if (!stopped) {
+        console.log(`Tentando matar qualquer processo na porta ${portToUse}`);
+        const killedByPort = await killProcessOnPort(portToUse);
+
+        if (killedByPort) {
+          stopped = true;
+          console.log(
+            `Serviço ${serviceId} parou com sucesso matando processos na porta ${portToUse}`
+          );
+        }
       }
     }
 
-    // Tenta encontrar e matar qualquer processo na porta
-    return (await killProcessOnPort(port))
-      ? { success: true, message: `Processos na porta ${port} encerrados` }
-      : { success: true, message: "Nenhum processo encontrado para parar" };
+    // Verifica o status final
+    const finalStatus = await checkServiceStatus(serviceId);
+    if (!finalStatus.running) {
+      return { success: true, message: "Serviço parado com sucesso" };
+    } else {
+      return {
+        success: false,
+        message: `Não foi possível parar completamente o serviço ${serviceId}. Tente matar o processo manualmente (PID: ${finalStatus.pid})`,
+      };
+    }
   } catch (error) {
+    console.error(`Erro ao tentar parar serviço ${serviceId}:`, error);
     return {
       success: false,
       message: error instanceof Error ? error.message : String(error),
@@ -233,8 +427,10 @@ export async function stopService(serviceId: ServiceId, pid?: number | null) {
  */
 export async function checkAllServices() {
   const services = Object.keys(serviceConfig) as ServiceId[];
-  const results: Record<ServiceId, { running: boolean; pid: number | null }> =
-    {} as any;
+  const results: Record<
+    ServiceId,
+    { running: boolean; pid: number | null; actualPort?: number | null }
+  > = {} as any;
 
   for (const serviceId of services) {
     results[serviceId] = await checkServiceStatus(serviceId);
@@ -250,10 +446,20 @@ export async function killAllServiceProcesses() {
   const services = Object.keys(serviceConfig) as ServiceId[];
   const results: Record<ServiceId, boolean> = {} as any;
 
+  console.log("Iniciando processo de limpeza de todas as portas...");
+
+  // Primeiro verificar o status atual de todos os serviços
+  const statusResults = await checkAllServices();
+
   for (const serviceId of services) {
-    const { port } = serviceConfig[serviceId];
-    results[serviceId] = await killProcessOnPort(port);
+    // Usar a porta real verificada, se disponível, ou a porta da configuração
+    const portStatus = statusResults[serviceId];
+    const portToUse = portStatus.actualPort || serviceConfig[serviceId].port;
+
+    console.log(`Limpando porta ${portToUse} para o serviço ${serviceId}...`);
+    results[serviceId] = await killProcessOnPort(portToUse);
   }
 
+  console.log("Processo de limpeza concluído:", results);
   return results;
 }

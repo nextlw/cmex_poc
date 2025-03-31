@@ -32,6 +32,10 @@ import "../../styles/grid.css";
 import InfoBasicasSkeleton from "../../components/InfoBasicas/InfoBasicasSkeleton";
 import BoxdeImpostosSkeleton from "../../components/BoxdeImpostos/BoxdeImpostosSkeleton";
 import AtributosSkeleton from "../../components/Atributos/AtributosSkeleton";
+import {
+  normalizeResponse,
+  DeepResearchResponse,
+} from "../../utils/llm-json-normalizer";
 
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
@@ -61,7 +65,6 @@ const HomePage: React.FC = () => {
             ncm: "",
             descricao: "",
             atributos: [],
-            atributos_tipi: [],
             classificacao_tributaria: {
               ipi_entrada: "",
               ipi_saida: "",
@@ -78,6 +81,7 @@ const HomePage: React.FC = () => {
               pis: "",
               cofins: "",
             },
+            requestId: undefined,
           },
         ];
   });
@@ -116,6 +120,10 @@ const HomePage: React.FC = () => {
 
   // Estado para controlar quando o InputAi deve sair do loading
   const [inputAiLoading, setInputAiLoading] = useState(false);
+
+  const [infoBasicasLoading, setInfoBasicasLoading] = useState(false);
+  const [atributosLoading, setAtributosLoading] = useState(false);
+  const [tributacaoLoading, setTributacaoLoading] = useState(false);
 
   // Salva os estados no localStorage quando mudam
   useEffect(() => {
@@ -186,6 +194,14 @@ const HomePage: React.FC = () => {
     }
   }, [isDeepResearchProcessing, sugerirNCM, isLoading]);
 
+  // Adicionar um efeito para garantir que o skeleton seja removido quando houver dados
+  useEffect(() => {
+    // Se temos resultados mas o skeleton ainda está ativo, desativá-lo
+    if (sugerirNCM.length > 0 && isLoading) {
+      setIsLoading(false);
+    }
+  }, [sugerirNCM, isLoading]);
+
   const handleDropdownChange = (selection: SelectionData) => {
     setDropdownSelection(selection);
   };
@@ -194,21 +210,24 @@ const HomePage: React.FC = () => {
     setSelectedModel(value);
   };
 
-  // Função para alternar DeepResearch com os resultados existentes
-  const toggleDeepResearchWithExistingResults = async () => {
-    // Altera o estado para o oposto do atual
-    setUseDeepResearch(!useDeepResearch);
+  // Função personalizada para lidar com a alteração do DeepResearch
+  const handleDeepResearchChange = (enabled: boolean) => {
+    setUseDeepResearch(enabled);
 
-    // Se estamos ativando o DeepResearch e temos resultados de pesquisa
-    if (!useDeepResearch && sugerirNCM.length > 0) {
-      // Ativa o estado de processamento
+    // Se estamos ativando o DeepResearch e temos resultados atuais
+    if (enabled && sugerirNCM.length > 0 && pesquisa.length >= 3) {
+      // Ativamos os indicadores visuais quando temos resultados e precisamos validá-los com DeepResearch
       setIsDeepResearchProcessing(true);
-      // Mostra o sidebar imediatamente, mesmo sem requestId definido
       setShowDeepResearchSidebar(true);
 
-      // Tenta executar uma pesquisa com DeepResearch no último termo de pesquisa
+      // Importante: o skeleton não deve aparecer quando já temos resultados
+      // pois isso impede a visualização dos componentes
+      setIsLoading(false);
+
+      // Importante: Se já temos resultados, vamos validar diretamente com DeepResearch
+      // ao invés de fazer uma nova busca completa
       try {
-        // Substitua este objeto com as informações corretas que você precisa enviar
+        // Configuração para validação de resultados existentes
         const deepResearchRequestData = {
           consulta: pesquisa,
           modelo: selectedModel,
@@ -221,131 +240,81 @@ const HomePage: React.FC = () => {
           deepResearchRequestData
         );
 
-        const deepResearchResponse = await axiosInstance.post(
-          "/queries",
-          deepResearchRequestData
-        );
+        // Realiza a requisição de validação dos resultados já existentes
+        axiosInstance
+          .post("/queries", deepResearchRequestData)
+          .then((deepResearchResponse) => {
+            console.log(
+              "Resposta do DeepResearch para resultados existentes:",
+              deepResearchResponse.data
+            );
 
-        console.log(
-          "Resposta do DeepResearch para resultados existentes:",
-          deepResearchResponse.data
-        );
-
-        if (
-          deepResearchResponse.data &&
-          Array.isArray(deepResearchResponse.data) &&
-          deepResearchResponse.data.length > 0
-        ) {
-          const hasDeepResearchPending = deepResearchResponse.data.some(
-            (item: any) => item.validacao_deepresearch?.status === "pendente"
-          );
-
-          if (hasDeepResearchPending) {
-            // Pega o requestId do primeiro item que tiver
-            const requestId = deepResearchResponse.data.find(
-              (item: any) => item.validacao_deepresearch?.requestId
-            )?.validacao_deepresearch?.requestId;
-
-            if (requestId) {
-              setDeepResearchRequestId(requestId);
-              console.log(
-                "ID da tarefa DeepResearch para resultados existentes:",
-                requestId
+            if (
+              deepResearchResponse.data &&
+              Array.isArray(deepResearchResponse.data) &&
+              deepResearchResponse.data.length > 0
+            ) {
+              const hasDeepResearchPending = deepResearchResponse.data.some(
+                (item: any) =>
+                  item.validacao_deepresearch?.status === "pendente"
               );
+
+              if (hasDeepResearchPending) {
+                // Pega o requestId do primeiro item que tiver
+                const requestId = deepResearchResponse.data.find(
+                  (item: any) => item.validacao_deepresearch?.requestId
+                )?.validacao_deepresearch?.requestId;
+
+                if (requestId) {
+                  setDeepResearchRequestId(requestId);
+                  console.log(
+                    "ID da tarefa DeepResearch para resultados existentes:",
+                    requestId
+                  );
+                }
+              } else {
+                setIsDeepResearchProcessing(false);
+                setDeepResearchRequestId(null);
+              }
+
+              // Atualizamos a lista de sugestões com os resultados enriquecidos do DeepResearch
+              setSugerirNCM(deepResearchResponse.data);
+
+              // Garantimos que o skeleton não está ativo, pois já temos dados
+              setIsLoading(false);
             }
-          } else {
+          })
+          .catch((error) => {
+            console.error(
+              "Erro ao fazer pesquisa com DeepResearch para resultados existentes:",
+              error
+            );
+
+            // Se falhar, ainda desativamos o estado de processamento
             setIsDeepResearchProcessing(false);
             setDeepResearchRequestId(null);
-          }
-
-          // Atualizamos a lista de sugestões com os resultados enriquecidos do DeepResearch
-          setSugerirNCM(deepResearchResponse.data);
-        }
+            setIsLoading(false);
+          });
       } catch (error: any) {
         console.error(
-          "Erro ao fazer pesquisa com DeepResearch para resultados existentes:",
+          "Erro ao iniciar validação DeepResearch para resultados existentes:",
           error
         );
-
-        // Se falhar, ainda desativamos o estado de processamento
         setIsDeepResearchProcessing(false);
         setDeepResearchRequestId(null);
+        setIsLoading(false);
       }
-    } else {
-      // Se estamos desativando, limpa os estados relacionados
+    } else if (!enabled) {
+      // Se estamos desativando, limpamos os estados relacionados
       setIsDeepResearchProcessing(false);
       setDeepResearchRequestId(null);
       setShowDeepResearchSidebar(false);
-    }
-  };
 
-  // Função para cancelar o processo de DeepResearch
-  const handleCancelDeepResearch = async () => {
-    // Cancelar o processo em andamento
-    setIsDeepResearchProcessing(false);
-
-    // Remover da lista de requisições concluídas no localStorage
-    if (deepResearchRequestId) {
-      const completedRequestsStr = localStorage.getItem(
-        "completedDeepResearchRequests"
-      );
-      if (completedRequestsStr) {
-        const completedRequests = JSON.parse(completedRequestsStr);
-        const updatedRequests = completedRequests.filter(
-          (id: string) => id !== deepResearchRequestId
-        );
-        localStorage.setItem(
-          "completedDeepResearchRequests",
-          JSON.stringify(updatedRequests)
-        );
+      // Garantimos que o skeleton não está ativo, pois já temos dados
+      if (sugerirNCM.length > 0) {
+        setIsLoading(false);
       }
     }
-
-    // Cancelar via nova API se tivermos um requestId
-    if (deepResearchRequestId) {
-      try {
-        const API_URL =
-          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
-        const API_FASTAPI =
-          import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
-
-        // Tenta cancelar via FastAPI primeiro
-        try {
-          await fetch(`${API_FASTAPI}/cancel`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // Adiciona token se autenticado
-            },
-            body: JSON.stringify({ requestId: deepResearchRequestId }),
-          });
-          console.log(
-            "Solicitação de cancelamento de DeepResearch enviada ao FastAPI"
-          );
-        } catch (error) {
-          console.error("Erro ao cancelar DeepResearch via FastAPI:", error);
-        }
-
-        // Depois tenta usar a rota de cancelamento direta do Node.js
-        await fetch(`${API_URL}/api/v1/cancel`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ requestId: deepResearchRequestId }),
-        });
-        console.log(`DeepResearch cancelado com ID: ${deepResearchRequestId}`);
-      } catch (error) {
-        console.error("Erro ao cancelar DeepResearch:", error);
-      }
-    }
-
-    setDeepResearchRequestId(null);
-    setShowDeepResearchSidebar(false);
-    setInputAiLoading(false);
-
-    // Usar alert em vez de toast
-    alert("A pesquisa profunda foi cancelada.");
   };
 
   // Função para realizar a busca com base na entrada do usuário
@@ -357,31 +326,20 @@ const HomePage: React.FC = () => {
     setShowAutoComplete(false);
     setAutoCompleteData([]);
 
-    // Preservamos o requestId e o estado da sidebar se já estiverem definidos
-    // e estivermos apenas alterando o estado do DeepResearch
-    const isTogglingDeepResearch = useDeepResearch && sugerirNCM.length > 0;
-
-    if (!isTogglingDeepResearch) {
-      setDeepResearchRequestId(null);
-      setShowDeepResearchSidebar(false);
-    }
-
-    setInputAiLoading(true); // Ativa o loading do InputAi
+    // Ativar todos os estados de loading
+    setInputAiLoading(true);
+    setInfoBasicasLoading(true);
+    setAtributosLoading(true);
+    setTributacaoLoading(true);
 
     if (pesquisa.length < 3) {
       setErrorMessage("Digite pelo menos 3 caracteres para a busca.");
-
-      // Não limpa os resultados existentes se estivermos apenas alterando o DeepResearch
-      if (!isTogglingDeepResearch) {
-        setSugerirNCM([]);
-      }
-
       setInputAiLoading(false);
+      setInfoBasicasLoading(false);
+      setAtributosLoading(false);
+      setTributacaoLoading(false);
       return;
     }
-
-    // Sempre ativa o loading para exibir o skeleton
-    setIsLoading(true);
 
     try {
       let response;
@@ -390,114 +348,80 @@ const HomePage: React.FC = () => {
         ? `${pesquisa} com NCM sugerido ${ncmSugerido}`
         : pesquisa;
 
-      // Primeiro fazemos a busca normal sem DeepResearch
-      const requestData = {
+      // Configura os dados da requisição
+      const requestData: any = {
         consulta: consulta,
         autocomplete: autocomplete,
         modelo: modeloUsado,
         ...dropdownSelection,
       };
 
-      console.log("Enviando request inicial:", requestData);
+      // Verifica se deve usar DeepResearch direto na requisição inicial
+      if (useDeepResearch) {
+        requestData.useDeepResearch = true;
+        setIsDeepResearchProcessing(true);
+        setShowDeepResearchSidebar(true);
+      }
+
+      console.log("Enviando request:", requestData);
 
       response = await axiosInstance.post("/queries", requestData);
 
-      console.log("Resposta inicial do backend:", response.data);
+      console.log("Resposta do backend:", response.data);
 
       if (response.data && Array.isArray(response.data)) {
-        // Atualiza os resultados da busca normal
-        setSugerirNCM(response.data);
+        // Normalizar a resposta para lidar com possíveis inconsistências no JSON da LLM
+        const normalizedData: DeepResearchResponse = normalizeResponse(
+          response.data
+        );
 
-        // Se DeepResearch está ativado, mantém o skeleton ativo e mostra o sidebar imediatamente
+        // Atualizar os resultados
+        setSugerirNCM(normalizedData.result);
+
+        // Atualizar os estados de loading com base no status de validação
+        const { validationStatus } = normalizedData;
+        setInfoBasicasLoading(!validationStatus.infoBasicas.validated);
+        setAtributosLoading(!validationStatus.atributos.validated);
+        setTributacaoLoading(!validationStatus.tributacao.validated);
+
+        // Se estamos usando DeepResearch, o InputAI permanece em loading até o fim
+        if (!useDeepResearch || normalizedData.completed) {
+          setInputAiLoading(false);
+        }
+
+        // Se o DeepResearch está ativo, monitore o progresso
         if (useDeepResearch) {
-          // Ativa o processamento e mostra o sidebar imediatamente
           setIsDeepResearchProcessing(true);
           setShowDeepResearchSidebar(true);
 
-          // Fazemos uma segunda requisição incluindo o parâmetro useDeepResearch
-          const deepResearchRequestData = {
-            ...requestData,
-            useDeepResearch: true,
-          };
-
-          console.log(
-            "Enviando request com DeepResearch:",
-            deepResearchRequestData
-          );
-
-          const deepResearchResponse = await axiosInstance.post(
-            "/queries",
-            deepResearchRequestData
-          );
-
-          console.log("Resposta do DeepResearch:", deepResearchResponse.data);
-
-          if (
-            deepResearchResponse.data &&
-            Array.isArray(deepResearchResponse.data) &&
-            deepResearchResponse.data.length > 0
-          ) {
-            const hasDeepResearchPending = deepResearchResponse.data.some(
-              (item: any) => item.validacao_deepresearch?.status === "pendente"
-            );
-
-            if (hasDeepResearchPending) {
-              // Pega o requestId do primeiro item que tiver
-              const requestId = deepResearchResponse.data.find(
-                (item: any) => item.validacao_deepresearch?.requestId
-              )?.validacao_deepresearch?.requestId;
-
-              if (requestId) {
-                setDeepResearchRequestId(requestId);
-                console.log("ID da tarefa DeepResearch:", requestId);
-              }
-            } else {
-              setIsDeepResearchProcessing(false);
-              setDeepResearchRequestId(null);
-            }
-
-            // Atualizamos a lista de sugestões com os resultados enriquecidos do DeepResearch
-            setSugerirNCM(deepResearchResponse.data);
+          // Extrair o requestId se disponível
+          if (normalizedData.requestId) {
+            setDeepResearchRequestId(normalizedData.requestId);
+            console.log("ID da tarefa DeepResearch:", normalizedData.requestId);
           }
-
-          // Desativa o loading do InputAI, mas mantém o skeleton ativo se
-          // o DeepResearch estiver em processamento (status pendente)
-          setInputAiLoading(false);
-
-          // Só desativa o loading (skeleton) se não houver DeepResearch pendente
-          if (
-            !deepResearchResponse.data?.some(
-              (item: any) => item.validacao_deepresearch?.status === "pendente"
-            )
-          ) {
-            setIsLoading(false);
-          }
-        } else {
-          // Se não estiver usando DeepResearch, desativa ambos os loadings
-          setInputAiLoading(false);
-          setIsLoading(false);
         }
       } else if (response.data && response.data.error) {
-        // Resposta de erro do servidor
         console.error("Erro retornado pelo servidor:", response.data.error);
         setErrorMessage(`Erro ao processar: ${response.data.error}`);
         setSugerirNCM([]);
         setInputAiLoading(false);
-        setIsLoading(false);
+        setInfoBasicasLoading(false);
+        setAtributosLoading(false);
+        setTributacaoLoading(false);
       } else {
-        // Resposta inesperada
         console.error("Resposta inesperada do servidor:", response.data);
         setErrorMessage(
           "Erro inesperado ao processar a consulta. Tente novamente."
         );
         setSugerirNCM([]);
         setInputAiLoading(false);
-        setIsLoading(false);
+        setInfoBasicasLoading(false);
+        setAtributosLoading(false);
+        setTributacaoLoading(false);
       }
     } catch (error: any) {
       console.error("Erro ao buscar sugestões:", error);
 
-      // Mensagem de erro mais detalhada
       if (error.response && error.response.data && error.response.data.error) {
         setErrorMessage(`Erro: ${error.response.data.error}`);
       } else if (error.message === "Network Error") {
@@ -512,7 +436,9 @@ const HomePage: React.FC = () => {
       setDeepResearchRequestId(null);
       setSugerirNCM([]);
       setInputAiLoading(false);
-      setIsLoading(false);
+      setInfoBasicasLoading(false);
+      setAtributosLoading(false);
+      setTributacaoLoading(false);
     }
   };
 
@@ -592,22 +518,6 @@ const HomePage: React.FC = () => {
     }
   };
 
-  // Função personalizada para lidar com a alteração do DeepResearch
-  const handleDeepResearchChange = (enabled: boolean) => {
-    setUseDeepResearch(enabled);
-
-    // Se estamos ativando o DeepResearch e temos resultados atuais
-    if (enabled && sugerirNCM.length > 0) {
-      // Executa a função que garante a consistência dos resultados
-      toggleDeepResearchWithExistingResults();
-    } else if (!enabled) {
-      // Se estamos desativando, limpamos os estados relacionados
-      setIsDeepResearchProcessing(false);
-      setDeepResearchRequestId(null);
-      setShowDeepResearchSidebar(false);
-    }
-  };
-
   // Função que garante que nenhuma barra branca será exibida durante o processamento
   const ensureNoWhiteBar = () => {
     // Adiciona uma classe ao corpo que oculta qualquer elemento com texto "Análise em andamento"
@@ -637,6 +547,75 @@ const HomePage: React.FC = () => {
       return ensureNoWhiteBar();
     }
   }, [useDeepResearch]);
+
+  // Função para cancelar o processo de DeepResearch
+  const handleCancelDeepResearch = async () => {
+    // Cancelar o processo em andamento
+    setIsDeepResearchProcessing(false);
+
+    // Remover da lista de requisições concluídas no localStorage
+    if (deepResearchRequestId) {
+      const completedRequestsStr = localStorage.getItem(
+        "completedDeepResearchRequests"
+      );
+      if (completedRequestsStr) {
+        const completedRequests = JSON.parse(completedRequestsStr);
+        const updatedRequests = completedRequests.filter(
+          (id: string) => id !== deepResearchRequestId
+        );
+        localStorage.setItem(
+          "completedDeepResearchRequests",
+          JSON.stringify(updatedRequests)
+        );
+      }
+    }
+
+    // Cancelar via nova API se tivermos um requestId
+    if (deepResearchRequestId) {
+      try {
+        const API_URL =
+          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3001";
+        const API_FASTAPI =
+          import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+
+        // Tenta cancelar via FastAPI primeiro
+        try {
+          await fetch(`${API_FASTAPI}/cancel`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Adiciona token se autenticado
+            },
+            body: JSON.stringify({ requestId: deepResearchRequestId }),
+          });
+          console.log(
+            "Solicitação de cancelamento de DeepResearch enviada ao FastAPI"
+          );
+        } catch (error) {
+          console.error("Erro ao cancelar DeepResearch via FastAPI:", error);
+        }
+
+        // Depois tenta usar a rota de cancelamento direta do Node.js
+        await fetch(`${API_URL}/api/v1/cancel`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ requestId: deepResearchRequestId }),
+        });
+        console.log(`DeepResearch cancelado com ID: ${deepResearchRequestId}`);
+      } catch (error) {
+        console.error("Erro ao cancelar DeepResearch:", error);
+      }
+    }
+
+    setDeepResearchRequestId(null);
+    setShowDeepResearchSidebar(false);
+    setInputAiLoading(false);
+
+    // Usar alert em vez de toast
+    alert("A pesquisa profunda foi cancelada.");
+  };
 
   // Retorna a estrutura visual do componente
   return (
@@ -848,7 +827,7 @@ const HomePage: React.FC = () => {
 
                       <div className="box-page grid-container-inner">
                         <div className="page-item col-span-6 mobile-col-span-4 w-full">
-                          {isLoading ? (
+                          {infoBasicasLoading ? (
                             <InfoBasicasSkeleton />
                           ) : (
                             <InfoBasicas
@@ -858,19 +837,18 @@ const HomePage: React.FC = () => {
                           )}
                         </div>
                         <div className="page-item col-span-6 mobile-col-span-4 w-full">
-                          {isLoading ? (
+                          {atributosLoading ? (
                             <AtributosSkeleton />
                           ) : (
                             <Atributos
                               atributos={item.atributos}
-                              atributos_tipi={item.atributos_tipi}
-                              isLoading={isLoading}
+                              isLoading={false}
                             />
                           )}
                         </div>
                       </div>
                       <div className="col-span-12 box-page">
-                        {isLoading ? (
+                        {tributacaoLoading ? (
                           <BoxdeImpostosSkeleton />
                         ) : (
                           <BoxdeImpostos

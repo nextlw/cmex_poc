@@ -109,7 +109,7 @@ Este guia descreve como configurar o ambiente de desenvolvimento para o projeto 
    ```bash
    pnpm run server
    ```
-   O buscador inteligente estará disponível em `http://localhost:3000`.
+   O buscador inteligente estará disponível em `http://localhost:3001`.
 
 ## Configuração do Redis
 
@@ -165,14 +165,14 @@ Para verificar se tudo está funcionando corretamente:
 
 1. Acesse o frontend em `http://localhost:5173`
 2. Verifique a documentação Swagger do FastAPI em `http://localhost:10000/api/docs`
-3. Verifique a documentação Swagger do Buscador Inteligente em `http://localhost:3000/api/docs`
+3. Verifique a documentação Swagger do Buscador Inteligente em `http://localhost:3001/api/docs`
 4. Teste a conexão com o Redis:
    ```bash
    redis-cli ping
    ```
 5. Verifique se o Server-Sent Events (SSE) está funcionando acessando:
    ```
-   http://localhost:3000/api/v1/sse/connect/test
+   http://localhost:3001/api/v1/sse/connect/test
    ```
    Você deverá ver uma conexão SSE estabelecida no console do navegador.
 

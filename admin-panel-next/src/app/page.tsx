@@ -127,12 +127,14 @@ export default function AdminPanel() {
     stopAll,
     checkAllStatus,
     cleanupAllPorts,
+    toggleJinaServices,
   } = useServiceManager();
 
   const [selectedServiceLogs, setSelectedServiceLogs] =
     useState<ServiceId | null>(null);
   const [lastChecked, setLastChecked] = useState<string>("");
   const [isCleaningPorts, setIsCleaningPorts] = useState<boolean>(false);
+  const [statusBarText, setStatusBarText] = useState<string>("");
 
   const handleViewLogs = (serviceId: ServiceId) => {
     setSelectedServiceLogs(serviceId);
@@ -164,8 +166,11 @@ export default function AdminPanel() {
   };
 
   useEffect(() => {
+    setStatusBarText(
+      "Portas utilizadas: Redis (6378), FastAPI (10000), Node (3001), Frontend (5173), Node-Jina (3001), UI-Jina (8080)"
+    );
     setLastChecked(new Date().toLocaleTimeString());
-  }, [services]);
+  }, []);
 
   const selectedService = selectedServiceLogs
     ? services.find((service) => service.id === selectedServiceLogs)
@@ -181,8 +186,7 @@ export default function AdminPanel() {
         />
 
         <StatusBar>
-          Portas utilizadas: Redis (6378), FastAPI (10000), Node (3000),
-          Frontend (5173) | Última verificação: {lastChecked}
+          {statusBarText} | Última verificação: {lastChecked}
         </StatusBar>
 
         <ButtonBar>
@@ -194,6 +198,14 @@ export default function AdminPanel() {
             {isCleaningPorts
               ? "Limpando portas..."
               : "Limpar todas as portas manualmente"}
+          </Button>
+
+          <Button $primary onClick={() => toggleJinaServices("start")}>
+            Iniciar DeepSearch Jina
+          </Button>
+
+          <Button onClick={() => toggleJinaServices("stop")}>
+            Parar DeepSearch Jina
           </Button>
         </ButtonBar>
 

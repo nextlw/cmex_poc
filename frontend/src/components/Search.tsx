@@ -56,7 +56,7 @@ const Search: React.FC<SearchProps> = () => {
         } catch (error) {
           console.error("Erro ao verificar status:", error);
         }
-      }, 3000); // Verificar a cada 3 segundos
+      }, 3001); // Verificar a cada 3 segundos
     }
 
     return () => {

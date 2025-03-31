@@ -44,7 +44,7 @@ const TEST_CASE = {
 };
 
 // Configuração do servidor local
-const SERVER_PORT = 3000;
+const SERVER_PORT = 3001;
 const SERVER_URL = `http://localhost:${SERVER_PORT}`;
 const SERVER_READY_TIMEOUT = 10000; // 10 segundos para o servidor iniciar
 

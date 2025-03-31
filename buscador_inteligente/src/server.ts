@@ -29,6 +29,155 @@ import { ensureModelClientInitialized } from "./agent";
 import { ncmRouter } from "./controllers/ncm";
 import { processarDeepResearch } from "./controllers/deepResearchNCM";
 import { modelRouter } from "./controllers/modelController";
+import figlet from "figlet";
+import jinaApiRoutes from "./routes/jina-api-routes";
+
+// Sobrescrever console.log antes de qualquer outra parte do código para filtrar todas as mensagens
+const originalConsoleLog = console.log;
+const capturedMessages = {
+  modelStatus: "",
+  redisConnection: "",
+  serverRunning: "",
+};
+
+console.log = function (...args) {
+  // Converte os argumentos para string para facilitar a verificação
+  const logMessage = args.join(" ");
+
+  // Captura mensagens específicas para mostrar após o banner
+  if (logMessage.includes("Modelos inicializados")) {
+    // Não capturamos nem exibimos esta mensagem
+    return;
+  }
+  if (logMessage.includes("Assinado nos canais Redis com sucesso")) {
+    capturedMessages.redisConnection = logMessage;
+    return; // Não exibe agora
+  }
+  if (logMessage.includes("Servidor rodando na porta")) {
+    capturedMessages.serverRunning = logMessage;
+    return; // Não exibe agora
+  }
+
+  // Continua filtrando logs indesejados
+  if (
+    logMessage.includes("Modelo registrado:") ||
+    logMessage.includes("Configuration Summary:") ||
+    logMessage.includes("Endpoint local") ||
+    (logMessage.includes("Modo de modelo:") && !logMessage.includes("eL.ia"))
+  ) {
+    return; // Não exibe estes logs
+  }
+
+  // Exibe o restante dos logs normalmente
+  originalConsoleLog.apply(console, args);
+};
+
+// Exibe o banner eL.ia no início da aplicação com linhas de separação
+console.log("\n" + "=".repeat(80) + "\n");
+
+// ASCII art da nave espacial
+const spaceshipArt = `
+     /\\
+    /  \\
+   |    |
+  /|    |\\
+ / |    | \\
+/__|____|__\\
+   /    \\
+  /      \\
+`;
+
+figlet.text(
+  "eL.ia",
+  {
+    font: "Larry 3D",
+    horizontalLayout: "full",
+    verticalLayout: "default",
+    width: 80,
+    whitespaceBreak: false,
+  },
+  (err: Error | null, result?: string) => {
+    if (err) {
+      console.log("Algo deu errado ao gerar o banner...");
+      console.dir(err);
+      return;
+    }
+
+    if (result) {
+      // Adiciona a nave ao final de cada linha do logo
+      const logoLines = result.split("\n");
+      const spaceshipLines = spaceshipArt.split("\n");
+
+      // Calcula a largura do logo para posicionar a nave
+      const logoWidth = Math.max(...logoLines.map((line) => line.length));
+
+      // Calcula a largura total da arte (logo + nave)
+      const totalArtWidth =
+        logoWidth +
+        Math.max(...spaceshipLines.map((line) => line.trim().length)) +
+        2;
+
+      // Calcula o padding para centralizar na tela de 80 caracteres
+      const sidePadding = Math.floor((80 - totalArtWidth) / 2);
+
+      // Combina o logo e a nave
+      const combinedLines = logoLines.map((line, index) => {
+        // Preenche a linha do logo até a largura máxima
+        const paddedLine = line.padEnd(logoWidth);
+        // Adiciona a linha correspondente da nave (se existir)
+        if (index < spaceshipLines.length && spaceshipLines[index]) {
+          // Adiciona padding à esquerda para centralizar a arte completa
+          return (
+            " ".repeat(sidePadding) + paddedLine + "  " + spaceshipLines[index]
+          );
+        }
+        // Se não há linha correspondente da nave, apenas centraliza a linha do logo
+        return " ".repeat(sidePadding) + paddedLine;
+      });
+
+      // Exibe o resultado combinado
+      console.log(combinedLines.join("\n"));
+
+      // Adiciona a frase centralizada
+      const subtitle = "Seu buscador inteligente";
+      const padding = Math.floor((80 - subtitle.length) / 2);
+      console.log("\n" + " ".repeat(padding) + subtitle + "\n");
+
+      // Linha de separação inferior
+      console.log("=".repeat(80) + "\n");
+
+      // Arte ASCII de botões com os dizeres solicitados
+      const buttons = [
+        "┌────────────┐ ┌─────────┐ ┌─────────────┐ ┌────────────┐",
+        "│    Busque   │ │   Use   │ │ Codefique  │ │   Acesse   │",
+        "└────────────┘ └─────────┘ └─────────────┘ └────────────┘",
+      ];
+
+      // Centraliza e exibe os botões
+      buttons.forEach((line) => {
+        const centerPadding = Math.floor((80 - line.length) / 2);
+        originalConsoleLog(" ".repeat(centerPadding) + line);
+      });
+
+      // Adiciona uma linha em branco após os botões
+      originalConsoleLog("");
+
+      // Exibe apenas as mensagens relevantes capturadas
+      if (capturedMessages.redisConnection) {
+        // Centraliza a mensagem de conexão Redis
+        const redisMsg = capturedMessages.redisConnection;
+        const centerPadding = Math.floor((80 - redisMsg.length) / 2);
+        originalConsoleLog(" ".repeat(centerPadding) + redisMsg);
+      }
+      if (capturedMessages.serverRunning) {
+        // Centraliza a mensagem de servidor rodando
+        const serverMsg = capturedMessages.serverRunning;
+        const centerPadding = Math.floor((80 - serverMsg.length) / 2);
+        originalConsoleLog(" ".repeat(centerPadding) + serverMsg);
+      }
+    }
+  }
+);
 
 // Importar serviço Redis
 import {
@@ -60,7 +209,7 @@ interface ServerLog {
 /**
  * Tamanho máximo do array de logs para evitar crescimento ilimitado.
  */
-const MAX_LOGS = 1000;
+const MAX_LOGS = 10000;
 
 /**
  * Array para armazenar os logs do servidor.
@@ -109,9 +258,9 @@ const app: express.Application = express();
 /**
  * Porta da aplicação.
  * Usando a variável de ambiente NODE_PORT do .env ou PORT diretamente,
- * com fallback para 3000.
+ * com fallback para 3001.
  */
-const port = process.env.NODE_PORT || process.env.PORT || 3000;
+const port = 3001;
 
 /**
  * Middleware de CORS.
@@ -120,9 +269,10 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // Frontend
-      "http://localhost:3000", // Node/Next
-      "http://localhost:3001", // Node alternativo
+      "http://localhost:3001", // Node/Next
+      "http://localhost:3000", // Node alternativo
       "http://localhost:3003", // Admin Panel
+      "http://localhost:8080", // UI-Jina
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
@@ -133,6 +283,9 @@ app.use(
  */
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+// Importar e registrar o roteador de API Jina
+app.use("/v1", jinaApiRoutes);
 
 // Middleware para adicionar o campo 'definitive' em requisições para /api/v1/query
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -1626,17 +1779,40 @@ function cleanupCompletedTasks() {
 setInterval(cleanupCompletedTasks, 30 * 60 * 1000);
 
 // Adicionar manipulador para encerrar conexões Redis ao fechar o servidor
-process.on("SIGTERM", () => {
-  console.log("Encerrando servidor...");
-  closeRedisConnections();
-  // Outros procedimentos de encerramento
-  // ...
+process.on("SIGTERM", async () => {
+  console.log("Encerrando servidor... (SIGTERM)");
+  try {
+    // Encerra conexões Redis
+    closeRedisConnections();
+
+    // Espera um momento para as operações em andamento terminarem
+    console.log("Aguardando operações em andamento...");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log("Servidor encerrado com sucesso");
+    process.exit(0);
+  } catch (error) {
+    console.error("Erro ao encerrar servidor:", error);
+    process.exit(1);
+  }
 });
 
-process.on("SIGINT", () => {
-  console.log("Encerrando servidor...");
-  closeRedisConnections();
-  process.exit(0);
+process.on("SIGINT", async () => {
+  console.log("Encerrando servidor... (SIGINT)");
+  try {
+    // Encerra conexões Redis
+    closeRedisConnections();
+
+    // Espera um momento para as operações em andamento terminarem
+    console.log("Aguardando operações em andamento...");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log("Servidor encerrado com sucesso");
+    process.exit(0);
+  } catch (error) {
+    console.error("Erro ao encerrar servidor:", error);
+    process.exit(1);
+  }
 });
 
 // Adicionar o modelRouter como middleware para processar as rotas relacionadas a modelos
@@ -1886,3 +2062,143 @@ function generateResearchDetails(
 
   return details;
 }
+
+// Endpoints para modelos compatíveis com a API Jina
+/**
+ * @swagger
+ * /v1/models:
+ *   get:
+ *     tags:
+ *       - JinaUI
+ *     summary: Lista os modelos disponíveis
+ *     description: Retorna a lista de modelos disponíveis para uso com a API Jina
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       "200":
+ *         description: Lista de modelos obtida com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 object:
+ *                   type: string
+ *                   example: "list"
+ *                   description: Tipo do objeto retornado
+ *                 data:
+ *                   type: array
+ *                   description: Lista de modelos disponíveis
+ *                   items:
+ *                     $ref: "#/components/schemas/Model"
+ */
+app.get("/v1/models", (async (_req: Request, res: Response) => {
+  const models = [
+    {
+      id: "jina-deepsearch-v1",
+      object: "model",
+      created: 1686935002,
+      owned_by: "jina-ai",
+    },
+  ];
+
+  res.json({
+    object: "list",
+    data: models,
+  });
+}) as RequestHandler);
+
+/**
+ * @swagger
+ * /v1/models/{model}:
+ *   get:
+ *     tags:
+ *       - JinaUI
+ *     summary: Obtém informações de um modelo específico
+ *     description: Retorna detalhes sobre um modelo específico pelo seu ID
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: model
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do modelo
+ *         example: "jina-deepsearch-v1"
+ *     responses:
+ *       "200":
+ *         description: Informações do modelo obtidas com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Model"
+ *       "404":
+ *         description: Modelo não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: "Model 'model-id' not found"
+ *                     type:
+ *                       type: string
+ *                       example: "invalid_request_error"
+ *                     param:
+ *                       type: string
+ *                       nullable: true
+ *                     code:
+ *                       type: string
+ *                       example: "model_not_found"
+ */
+app.get("/v1/models/:model", (async (req: Request, res: Response) => {
+  const modelId = req.params.model;
+
+  if (modelId === "jina-deepsearch-v1") {
+    res.json({
+      id: "jina-deepsearch-v1",
+      object: "model",
+      created: 1686935002,
+      owned_by: "jina-ai",
+    });
+  } else {
+    res.status(404).json({
+      error: {
+        message: `Model '${modelId}' not found`,
+        type: "invalid_request_error",
+        param: null,
+        code: "model_not_found",
+      },
+    });
+  }
+}) as RequestHandler);
+
+/**
+ * @swagger
+ * /v1/health:
+ *   get:
+ *     tags:
+ *       - JinaUI
+ *     summary: Verifica o status da API
+ *     description: Endpoint para verificação de saúde do serviço
+ *     responses:
+ *       "200":
+ *         description: Serviço está funcionando corretamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "ok"
+ *                   description: Status do serviço
+ */
+app.get("/v1/health", (req, res) => {
+  res.json({ status: "ok" });
+});

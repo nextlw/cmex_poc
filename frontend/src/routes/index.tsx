@@ -4,6 +4,7 @@ import HomePage from "../pages/HomePage";
 import HistoricoPage from "../pages/Historico";
 import BuscaPage from "../pages/BuscaPage";
 import ChatPage from "../pages/ChatPage";
+
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
@@ -15,4 +16,4 @@ const AppRoutes: React.FC = () => {
   );
 };
 
-export default AppRoutes; 
+export default AppRoutes;

@@ -1,22 +1,27 @@
 .spinner {
-  position: absolute;
-  transition: 1s ease-in-out;
-  transform: translate(46%, 34%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 24px;
   height: 24px;
-  margin: 2px auto; /* Centraliza o spinner na página */
+  margin: auto;
+  /* Centraliza o spinner na página */
 }
 
 .spinner div {
   /* Cada "traço" do spinner */
   position: absolute;
-  width: 2.5px;
+  width: 2px;
   height: 8px;
-  background: #4ecaff; /* Cor do traço */
-  border-radius: 2px; /* Bordas arredondadas */
-  opacity: 0.9; /* Cada traço começa invisível */
-  transition: 1s ease-in-out;
-  animation: fade 0.5s linear infinite; /* Ajuste a duração da animação aqui */
+  background: var(--color-primary, #4ecaff);
+  /* Cor do traço */
+  border-radius: 1px;
+  /* Bordas arredondadas */
+  opacity: 0;
+  /* Cada traço começa invisível */
+  animation: spinner-fade 0.2s linear infinite;
+  /* Ajuste a duração da animação aqui */
 }
 
 /* 
@@ -27,47 +32,51 @@
   transform: rotate(0deg) translateY(-10px);
   animation-delay: 0s;
 }
+
 .spinner div:nth-child(2) {
   transform: rotate(45deg) translateY(-10px);
-  animation-delay: 0.0625s; /* Ajuste o delay proporcionalmente */
-}
-.spinner div:nth-child(3) {
-  transform: rotate(90deg) translateY(-10px);
-  animation-delay: 0.125s;
-}
-.spinner div:nth-child(4) {
-  transform: rotate(135deg) translateY(-10px);
-  animation-delay: 0.1875s;
-}
-.spinner div:nth-child(5) {
-  transform: rotate(180deg) translateY(-10px);
-  animation-delay: 0.25s;
-}
-.spinner div:nth-child(6) {
-  transform: rotate(225deg) translateY(-10px);
-  animation-delay: 0.3125s;
-}
-.spinner div:nth-child(7) {
-  transform: rotate(270deg) translateY(-10px);
-  animation-delay: 0.375s;
-}
-.spinner div:nth-child(8) {
-  transform: rotate(315deg) translateY(-10px);
-  animation-delay: 0.4375s;
+  animation-delay: 1.1s;
 }
 
-/* Animação que faz cada traço “acender” e “apagar” */
-@keyframes fade {
-  0% {
-    opacity: 0;
-  }
-  25% {
-    opacity: 1;
-  }
-  75% {
-    opacity: 1;
-  }
+.spinner div:nth-child(3) {
+  transform: rotate(90deg) translateY(-10px);
+  animation-delay: 1.2s;
+}
+
+.spinner div:nth-child(4) {
+  transform: rotate(135deg) translateY(-10px);
+  animation-delay: 1.3s;
+}
+
+.spinner div:nth-child(5) {
+  transform: rotate(180deg) translateY(-10px);
+  animation-delay: 1.4s;
+}
+
+.spinner div:nth-child(6) {
+  transform: rotate(225deg) translateY(-10px);
+  animation-delay: 1.5s;
+}
+
+.spinner div:nth-child(7) {
+  transform: rotate(270deg) translateY(-10px);
+  animation-delay: 1.6s;
+}
+
+.spinner div:nth-child(8) {
+  transform: rotate(315deg) translateY(-10px);
+  animation-delay: 1.7s;
+}
+
+/* Animação que faz cada traço "acender" e "apagar" */
+@keyframes spinner-fade {
+
+  0%,
   100% {
     opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
   }
 }

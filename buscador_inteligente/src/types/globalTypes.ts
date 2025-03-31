@@ -31,6 +31,14 @@ export type SchemaProperty = {
   minItems?: number;
 };
 
+export type SERPQuery = {
+  q: string;
+  hl?: string;
+  gl?: string;
+  location?: string;
+  tbs?: string;
+};
+
 // Definição correta de ResponseSchema para ser compatível com @google/generative-ai
 export type ResponseSchema = {
   type: SchemaType.OBJECT;
@@ -92,6 +100,7 @@ export interface AlertBlock extends ContentBlock {
 export interface Reference {
   exactQuote: string;
   url: string;
+  title?: string;
 }
 
 // Tipos de Ação
@@ -150,7 +159,9 @@ export type EvaluationType =
   | "definitive"
   | "freshness"
   | "plurality"
-  | "attribution";
+  | "attribution"
+  | "completeness"
+  | "strict";
 export type EvaluationCriteria = {
   types: EvaluationType[];
   languageStyle: string;
@@ -206,6 +217,7 @@ export interface ReadResponse {
     description: string;
     url: string;
     content: string;
+    links?: [string, string][];
     usage: { tokens: number };
   };
   name?: string;
@@ -218,7 +230,13 @@ export type EvaluationResponse = {
   pass: boolean;
   think: string;
   tokens?: number;
-  type?: "definitive" | "freshness" | "plurality" | "attribution";
+  type?:
+    | "definitive"
+    | "freshness"
+    | "plurality"
+    | "attribution"
+    | "completeness"
+    | "strict";
   freshness_analysis?: {
     likely_outdated: boolean;
     dates_mentioned: string[];
@@ -250,6 +268,36 @@ export interface SearchResult {
   title: string;
   url: string;
   description: string;
+}
+
+export interface SearchSnippet {
+  title: string;
+  url: string;
+  description: string;
+  weight?: number;
+}
+
+export interface BoostedSearchSnippet extends SearchSnippet {
+  freqBoost?: number;
+  hostnameBoost?: number;
+  pathBoost?: number;
+  jinaRerankBoost?: number;
+  finalScore?: number;
+}
+
+export interface FiscalURL extends BoostedSearchSnippet {
+  isFiscal: boolean;
+  category?:
+    | "legislation"
+    | "regulation"
+    | "guidance"
+    | "jurisprudence"
+    | "news"
+    | "other";
+  trustScore?: number;
+  relevanceToQuery?: number;
+  lastUpdated?: string;
+  fiscalDomain?: boolean;
 }
 
 export interface QueryResult {

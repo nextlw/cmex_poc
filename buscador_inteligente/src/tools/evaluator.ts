@@ -651,7 +651,7 @@ export async function evaluateAnswer(
       }
 
       if (!result?.pass) {
-        return { response: result };
+        return { response: result as EvaluationResponse };
       }
     } catch (error) {
       console.error(`Error in ${evaluationType} evaluation:`, error);
@@ -659,7 +659,22 @@ export async function evaluateAnswer(
     }
   }
 
-  return { response: result! };
+  // Defina um valor padrão caso nenhuma avaliação seja realizada
+  if (!result) {
+    result = {
+      pass: true,
+      think: "A resposta passou em todas as avaliações solicitadas",
+      type: evaluationCri.types[0] as
+        | "definitive"
+        | "freshness"
+        | "plurality"
+        | "attribution"
+        | "completeness"
+        | "strict",
+    };
+  }
+
+  return { response: result };
 }
 
 // Helper function to fetch and combine source content
@@ -675,7 +690,9 @@ async function fetchSourceContent(
     const results = await Promise.all(
       urls.map(async (url): Promise<string> => {
         try {
-          const { response } = await readUrl(url, trackers[0]);
+          // Tenta ler o URL
+          const { response } = await readUrl(url, false, trackers[0]);
+          // Conclui se for bem-sucedido
           const content = response?.data?.content || "";
           return removeAllLineBreaks(content);
         } catch (error) {

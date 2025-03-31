@@ -1,6 +1,7 @@
 # Documentação da API de Logs
 
 ## Visão Geral
+
 A API de Logs fornece acesso aos logs do servidor, permitindo filtragem e paginação. Esta documentação detalha o formato da resposta e as alterações recentes para compatibilidade com o pacote `@cmex/shared-types`.
 
 ## Endpoint
@@ -11,11 +12,11 @@ GET /api/v1/logs
 
 ## Parâmetros de Consulta
 
-| Parâmetro | Tipo   | Descrição                                  | Obrigatório |
-|-----------|--------|--------------------------------------------|-----------  |
-| level     | string | Filtrar por nível de log (debug, info, warn, error) | Não |
-| since     | string | Filtrar logs a partir de uma data (ISO 8601) | Não |
-| limit     | number | Limitar número de logs retornados (padrão: 100) | Não |
+| Parâmetro | Tipo   | Descrição                                           | Obrigatório |
+| --------- | ------ | --------------------------------------------------- | ----------- |
+| level     | string | Filtrar por nível de log (debug, info, warn, error) | Não         |
+| since     | string | Filtrar logs a partir de uma data (ISO 8601)        | Não         |
+| limit     | number | Limitar número de logs retornados (padrão: 100)     | Não         |
 
 ## Formato da Resposta
 
@@ -42,16 +43,17 @@ GET /api/v1/logs
 
 ## Campos da Resposta
 
-| Campo       | Tipo   | Descrição                                      |
-|-------------|--------|-------------------------------------------------|
-| logs        | array  | **Obrigatório.** Array principal de logs do servidor |
-| serverLogs  | array  | **Obrigatório.** Mesmo conteúdo que logs (para compatibilidade) |
-| count       | number | Número de logs retornados após filtragem |
-| total       | number | Número total de logs no servidor |
+| Campo      | Tipo   | Descrição                                                       |
+| ---------- | ------ | --------------------------------------------------------------- |
+| logs       | array  | **Obrigatório.** Array principal de logs do servidor            |
+| serverLogs | array  | **Obrigatório.** Mesmo conteúdo que logs (para compatibilidade) |
+| count      | number | Número de logs retornados após filtragem                        |
+| total      | number | Número total de logs no servidor                                |
 
 ## Alterações Recentes
 
 ### Versão 1.0.1 (25/02/2025)
+
 - O campo `logs` agora é **obrigatório** na resposta
 - O campo `logs` contém o mesmo conteúdo que `serverLogs` para manter compatibilidade com implementações existentes
 - Esta alteração foi feita para alinhar com a atualização do pacote `@cmex/shared-types`, onde a interface `LogsResponse` agora exige o campo `logs` como obrigatório
@@ -61,7 +63,7 @@ GET /api/v1/logs
 ### Requisição
 
 ```bash
-curl -X GET "http://localhost:3000/api/v1/logs?level=info&limit=10"
+curl -X GET "http://localhost:3001/api/v1/logs?level=info&limit=10"
 ```
 
 ### Resposta
@@ -110,10 +112,10 @@ A API retorna códigos HTTP padrão:
 Para consumir esta API usando o pacote compartilhado:
 
 ```typescript style="background-color: #161921"
-import { Logs } from '@cmex/shared-types';
+import { Logs } from "@cmex/shared-types";
 
 // Obter logs do backend
-const response = await fetch('/api/v1/logs');
+const response = await fetch("/api/v1/logs");
 const data = await response.json();
 
 // Transformar a resposta para garantir compatibilidade

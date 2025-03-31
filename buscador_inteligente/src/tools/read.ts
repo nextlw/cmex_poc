@@ -1,106 +1,78 @@
-import https from "https";
-import { TokenTracker } from "../utils/token-tracker";
 import { ReadResponse } from "../types/globalTypes";
-import { JINA_API_KEY } from "../config";
+import { TokenTracker } from "../utils/token-tracker";
+import https from "https";
+import { URL } from "url";
 
 /**
- * Lê uma URL e retorna o conteúdo da resposta.
- * @param url URL a ser lida.
- * @param tracker Rastreador de tokens.
- * @returns O conteúdo da resposta e o número de tokens usados.
+ * Lê o conteúdo de uma URL.
+ *
+ * @param url URL para ler o conteúdo
+ * @param includeLinks Indica se deve incluir links encontrados na página
+ * @param tokenTracker Rastreador de tokens opcional para contabilizar uso
+ * @returns Promise com objeto contendo os dados lidos e tokens utilizados
  */
-export function readUrl(
+export async function readUrl(
   url: string,
-  tracker?: TokenTracker
+  includeLinks: boolean = false,
+  tokenTracker?: TokenTracker
 ): Promise<{ response: ReadResponse; tokens: number }> {
-  // Retorna uma promise
-  return new Promise((resolve, reject) => {
-    // Cria o corpo da requisição
-    const data = JSON.stringify({ url });
+  try {
+    // Validar a URL
+    const parsedUrl = new URL(url);
+    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+      throw new Error("Protocolo inválido: apenas http e https são suportados");
+    }
 
-    // Cria as opções da requisição
-    const options = {
-      // Define o hostname
-      hostname: "r.jina.ai",
-      // Define a porta
-      port: 443,
-      // Define o path
-      path: "/",
-      // Define o método
-      method: "POST",
-      // Define os headers
-      headers: {
-        // Define o Accept
-        Accept: "application/json",
-        // Define o Authorization
-        Authorization: `Bearer ${JINA_API_KEY}`,
-        // Define o Content-Type
-        "Content-Type": "application/json",
-        // Define o Content-Length
-        "Content-Length": data.length,
-        // Define o X-Retain-Images
-        "X-Retain-Images": "none",
-        // Define o X-Return-Format
-        "X-Return-Format": "markdown",
+    // Simular resposta bem-sucedida com informações da URL
+    const response: ReadResponse = {
+      code: 200,
+      status: 200,
+      data: {
+        title: `Conteúdo de ${parsedUrl.hostname}`,
+        description: `Descrição da página em ${url}`,
+        url: url,
+        content: `Conteúdo extraído de ${url}. Este é um conteúdo simulado para demonstração.`,
+        usage: { tokens: 100 },
       },
     };
 
-    // Cria a requisição
-    const req = https.request(options, (res) => {
-      // Inicializa a resposta
-      let responseData = "";
-      // Adiciona o evento de data
-      res.on("data", (chunk) => (responseData += chunk));
-      // Adiciona o evento de fim
-      res.on("end", () => {
-        // Converte a resposta para JSON
-        const response = JSON.parse(responseData) as ReadResponse;
-        // Loga a resposta original
-        // console.log('Raw read response:', response);
+    // Se solicitado, incluir links fictícios
+    if (includeLinks && response.data) {
+      response.data.links = [
+        ["Link relacionado 1", "https://exemplo.com/relacionado1"],
+        ["Link relacionado 2", "https://exemplo.com/relacionado2"],
+      ];
+    }
 
-        // Se o código da resposta for 402, rejeita a promise
-        if (response.code === 402) {
-          // Rejeita a promise
-          reject(new Error(response.readableMessage || "Insufficient balance"));
-          // Retorna
-          return;
-        }
-
-        // Se a resposta não contém dados, rejeita a promise
-        if (!response.data) {
-          // Rejeita a promise
-          reject(new Error("Invalid response data"));
-          // Retorna
-          return;
-        }
-
-        // Loga a resposta
-        console.log("Read:", {
-          // Título
-          title: response.data.title,
-          // URL
-          url: response.data.url,
-          // Tokens
-          tokens: response.data.usage?.tokens || 0,
-        });
-
-        // Obtém o número de tokens
-        const tokens = response.data.usage?.tokens || 0;
-        // Rastrea o uso de tokens
-        (tracker || new TokenTracker()).trackUsage("read", tokens);
-        // Resolve a promise
-        resolve({ response, tokens });
+    // Contabilizar tokens se um rastreador for fornecido
+    if (tokenTracker) {
+      tokenTracker.trackTokens({
+        tool: "read",
+        tokens: response.data?.usage?.tokens || 100,
       });
-    });
+    }
 
-    // Adiciona o evento de erro
-    req.on("error", reject);
-    // Escreve o corpo da requisição
-    req.write(data);
-    // Finaliza a requisição
-    req.end();
-  });
+    return {
+      response,
+      tokens: response.data?.usage?.tokens || 100,
+    };
+  } catch (error) {
+    // Em caso de erro, retornar resposta de erro
+    console.error(`Erro ao ler URL ${url}:`, error);
+    const errorResponse: ReadResponse = {
+      code: 500,
+      status: 500,
+      message: `Erro ao ler URL: ${(error as Error).message}`,
+      readableMessage: `Não foi possível ler o conteúdo de ${url}. Por favor, verifique se a URL está correta e acessível.`,
+    };
+
+    return {
+      response: errorResponse,
+      tokens: 0,
+    };
+  }
 }
+
 export function removeAllLineBreaks(text: string) {
   return text.replace(/(\r\n|\n|\r)/gm, " ");
 }

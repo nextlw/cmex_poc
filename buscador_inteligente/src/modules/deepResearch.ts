@@ -72,8 +72,8 @@ export class ModuloDeepResearch {
       // Prepara a consulta para o modelo específico
       const consultaFinal = this.prepararConsulta();
 
-      // Aqui entraria a lógica de análise de acordo com o modelo
-      // Implementação específica a ser feita pelos módulos derivados
+      // Aqui entraria a lógica de análise de acordo com o modelo, a ideia é me retornar o resultado da análise com base em conhecimento específico de humanos especialistas em tributação e classificação fiscal.
+      // Implementação específica a ser feita pelos módulos derivados, ou seja, cada módulo deve ter sua própria lógica de análise. Podendo agir de forma independente ou conjunta.
 
       // Simula resultado para desenvolvimento
       const resultadoAnalise = await this.simularAnalise(consultaFinal);

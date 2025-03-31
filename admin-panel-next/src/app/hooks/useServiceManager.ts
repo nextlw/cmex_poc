@@ -56,7 +56,7 @@ const serviceConfig: Record<
     name: "Node.js Backend",
     description:
       "Servidor Node.js para buscador inteligente e integração com Jina",
-    port: getEnvPort("NODE_PORT", 3000),
+    port: getEnvPort("NODE_PORT", 3001),
     icon: "🟢",
   },
   frontend: {
@@ -65,6 +65,20 @@ const serviceConfig: Record<
     description: "Interface de usuário React com Vite",
     port: getEnvPort("FRONTEND_PORT", 5173),
     icon: "⚛️",
+  },
+  "node-jina": {
+    id: "node-jina",
+    name: "DeepResearch Jina",
+    description: "Servidor Node.js para DeepResearch com Jina AI",
+    port: getEnvPort("NODE_JINA_PORT", 3001),
+    icon: "🔍",
+  },
+  "ui-jina": {
+    id: "ui-jina",
+    name: "DeepSearch UI Jina",
+    description: "Interface de usuário para DeepSearch com Jina AI",
+    port: getEnvPort("UI_JINA_PORT", 8080),
+    icon: "🔎",
   },
 };
 
@@ -81,6 +95,18 @@ export function useServiceManager() {
     node: { ...serviceConfig.node, status: "unknown", pid: null, logs: [] },
     frontend: {
       ...serviceConfig.frontend,
+      status: "unknown",
+      pid: null,
+      logs: [],
+    },
+    "node-jina": {
+      ...serviceConfig["node-jina"],
+      status: "unknown",
+      pid: null,
+      logs: [],
+    },
+    "ui-jina": {
+      ...serviceConfig["ui-jina"],
       status: "unknown",
       pid: null,
       logs: [],
@@ -283,34 +309,74 @@ export function useServiceManager() {
   }, [services, start]);
 
   const stopAll = useCallback(async () => {
-    // Primeiro para os serviços que dependem de outros
-    // Frontend → Node → FastAPI → Redis
+    // Primeiro para os serviços na ordem de dependência
+    // Frontend → Node → Node-Jina → UI-Jina → FastAPI → Redis
+
+    // Primeiro parar as interfaces de usuário
     await stop("frontend");
     await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Depois parar o UI-Jina se estiver em execução
+    await stop("ui-jina");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Depois parar os backends Node
     await stop("node");
     await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Depois parar o Node-Jina
+    await stop("node-jina");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Por fim, parar os serviços de infraestrutura
     await stop("fastapi");
     await new Promise((resolve) => setTimeout(resolve, 1000));
+
     await stop("redis");
-  }, [stop]);
+
+    // Verificar se realmente todos pararam
+    await checkAllStatus();
+  }, [stop, checkAllStatus]);
+
+  // Função específica para lidar com serviços Jina
+  const toggleJinaServices = useCallback(
+    async (action: "start" | "stop") => {
+      if (action === "start") {
+        // Inicia os serviços Jina na ordem correta
+        await start("node-jina");
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await start("ui-jina");
+      } else {
+        // Para os serviços Jina na ordem inversa
+        await stop("ui-jina");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await stop("node-jina");
+      }
+
+      await checkAllStatus();
+    },
+    [start, stop, checkAllStatus]
+  );
 
   // Encerrar todos os processos em todas as portas utilizadas
   const cleanupAllPorts = useCallback(async () => {
     try {
-      addLog("redis", "Limpando todas as portas...");
-      addLog("fastapi", "Limpando todas as portas...");
-      addLog("node", "Limpando todas as portas...");
-      addLog("frontend", "Limpando todas as portas...");
+      for (const service of Object.values(services)) {
+        addLog(service.id, "Limpando todas as portas...");
+      }
 
       const results = await killAllServiceProcesses();
 
       Object.entries(results).forEach(([id, killed]) => {
         const serviceId = id as ServiceId;
-        if (killed) {
-          addLog(
-            serviceId,
-            `Processos anteriores encerrados na porta ${services[serviceId].port}`
-          );
+        const service = services[serviceId];
+        if (killed && service) {
+          const portMsg =
+            service.id === "ui-jina"
+              ? `(porta real detectada ou configurada: ${service.port})`
+              : `(porta: ${service.port})`;
+
+          addLog(serviceId, `Processos anteriores encerrados ${portMsg}`);
           updateServiceStatus(serviceId, "stopped", null);
         }
       });
@@ -327,21 +393,58 @@ export function useServiceManager() {
   // Verificar status inicial e limpar portas na inicialização
   useEffect(() => {
     let isMounted = true;
+    let lastStatus: Record<ServiceId, boolean> = {
+      redis: false,
+      fastapi: false,
+      node: false,
+      frontend: false,
+      "node-jina": false,
+      "ui-jina": false,
+    };
 
     // Função de inicialização executada apenas uma vez - somente verificar status, sem limpar portas
     const init = async () => {
       if (isMounted) {
         console.log("Verificando status inicial dos serviços...");
-        await checkAllStatus();
+        const initialStatus = await checkAllStatus();
+
+        // Inicializa o lastStatus com o status atual
+        Object.entries(initialStatus).forEach(([id, status]) => {
+          if (status && typeof status === "object" && "running" in status) {
+            const serviceId = id as ServiceId;
+            lastStatus[serviceId] = Boolean(status.running);
+          }
+        });
       }
     };
 
     init();
 
     // Verificar periodicamente o status dos serviços
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       if (isMounted) {
-        checkAllStatus();
+        const currentStatus = await checkAllStatus();
+
+        // Só atualiza o status se houver mudança
+        Object.entries(currentStatus).forEach(([id, status]) => {
+          if (status && typeof status === "object" && "running" in status) {
+            const serviceId = id as ServiceId;
+            const isRunning = Boolean(status.running);
+            if (lastStatus[serviceId] !== isRunning) {
+              lastStatus[serviceId] = isRunning;
+              const pid =
+                status && typeof status === "object" && "pid" in status
+                  ? status.pid
+                  : null;
+              addLog(
+                serviceId,
+                `Status alterado: ${isRunning ? "Em execução" : "Parado"}${
+                  pid ? ` (PID: ${pid})` : ""
+                }`
+              );
+            }
+          }
+        });
       }
     }, 10000);
 
@@ -350,7 +453,7 @@ export function useServiceManager() {
       isMounted = false;
       clearInterval(interval);
     };
-  }, []); // Mantemos sem dependências para garantir que execute apenas uma vez
+  }, [checkAllStatus, addLog]); // Adicionamos as dependências necessárias
 
   return {
     services: Object.values(services),
@@ -361,6 +464,7 @@ export function useServiceManager() {
     checkAllStatus,
     startAll,
     stopAll,
+    toggleJinaServices,
     cleanupAllPorts, // Mantemos esta função disponível para uso manual via botão
   };
 }

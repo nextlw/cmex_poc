@@ -3,35 +3,35 @@
   --text-color-primary: rgb(255 255 255);
   --text-color-accent: #86abff;
   --text-color-muted: #384766;
-  
+
   --background-color-primary: rgb(17 24 39);
   --background-color-secondary: rgb(55 65 81 / 0.5);
   --background-color-tertiary: #18212f;
   --background-color-hover: rgba(25, 26, 50, 0.5);
   --background-color-tooltip: #1f1f1f;
-  
+
   --border-color-primary: rgba(71, 131, 208, 0.5);
   --border-color-secondary: #476171;
   --border-color-loading: #8196b526;
   --border-color-loading-accent: #8196b5;
-  
+
   /* Cores dos modelos */
   --color-gemini: #4285f4;
   --color-gpt4: #10a37f;
   --color-claude: #7c3aed;
   --color-nex: #2775cf;
-  
+
   /* Cores do scrollbar */
-  --scrollbar-track-color: #2d2d2d;
-  --scrollbar-thumb-color: #4a4a4a;
-  --scrollbar-thumb-hover-color: #273a46;
-  
+  --scrollbar-track-color: transparent;
+  --scrollbar-thumb-color: rgba(120, 120, 120, 0.5);
+  --scrollbar-thumb-hover-color: rgba(120, 120, 120, 0.8);
+
   /* Tamanhos de fonte */
   --font-size-sm: 0.875rem;
-  
+
   /* Border radius */
   --border-radius-sm: 0.25rem;
-  
+
   /* Box shadow */
   --box-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.2);
 
@@ -61,9 +61,9 @@
   --color-gradient-end: #3837428e;
   --color-icon: #fff;
   --color-placeholder: #aaa;
-  --color-scrollbar-track: #2d2d2d;
-  --color-scrollbar-thumb: #4a4a4a;
-  --color-scrollbar-thumb-hover: #273a46;
+  --color-scrollbar-track: transparent;
+  --color-scrollbar-thumb: rgba(120, 120, 120, 0.5);
+  --color-scrollbar-thumb-hover: rgba(120, 120, 120, 0.8);
   --color-badge-gemini: #4285f4;
   --color-badge-gpt4: #10a37f;
   --color-badge-claude: #7c3aed;
@@ -75,10 +75,9 @@
   --color-gray-900-transparent: rgba(17, 24, 39, 0.9);
   --color-gray-900: rgb(21, 29, 41);
   --color-header: var(--color-background-dark);
-  --color-background: linear-gradient(to bottom right, 
-  var(--color-gray-900), 
-  var(--color-gray-900-transparent)
-);
+  --color-background: linear-gradient(to bottom right,
+      var(--color-gray-900),
+      var(--color-gray-900-transparent));
 
   /* Cores de Select */
   --color-select-background: #19222e;
@@ -137,25 +136,25 @@
   --color-info: #0288d1;
   --color-info-dark: #0277bd;
   --color-info-darker: #01579b;
-  
+
   /* Variáveis para documentação */
   --primary-color: #2775cf;
   --primary-color-light: rgba(39, 117, 207, 0.1);
   --primary-color-dark: #1c5aa0;
-  
+
   --bg-primary: var(--background-color-primary);
   --bg-secondary: var(--background-color-secondary);
   --bg-tertiary: var(--background-color-tertiary);
-  
+
   --text-primary: var(--text-color-primary);
   --text-secondary: var(--text-color-secondary);
-  
+
   --border-color: var(--border-color-primary);
   --hover-color: var(--background-color-hover);
-  
+
   --error-color: var(--color-error);
   --error-bg: rgba(244, 67, 54, 0.1);
-  
+
   --code-bg: #161616;
 }
 
@@ -163,105 +162,164 @@
 :root[data-theme="light"] {
   /* Cores padrão (tema light) */
 
-  --color-gray-300: rgb(96, 110, 130); /* Mantém igual */
-  --color-gray-400: rgb(75, 86, 106); /* Mantém igual */
-  --color-gray-500: rgb(66, 73, 84); /* Mantém igual */
-  --color-gray-600: rgb(35, 57, 88); /* Mantém igual */
-  --color-gray-100: rgb(201, 207, 232); /* Mantém igual */
-  --color-shadow: rgba(0, 0, 0, 0.05); /* Sombra mais clara */
-  --color-shadow-md: rgba(0, 0, 0, 0.1); /* Sombra mais clara */
-  --color-text-primary-30: rgba(0, 0, 0, 0.3); /* Ajustado para contraste no tema claro */
-  --color-input-background: rgb(255, 255, 255); /* Fundo branco */
+  --color-gray-300: rgb(96, 110, 130);
+  /* Mantém igual */
+  --color-gray-400: rgb(75, 86, 106);
+  /* Mantém igual */
+  --color-gray-500: rgb(66, 73, 84);
+  /* Mantém igual */
+  --color-gray-600: rgb(35, 57, 88);
+  /* Mantém igual */
+  --color-gray-100: rgb(201, 207, 232);
+  /* Mantém igual */
+  --color-shadow: rgba(0, 0, 0, 0.05);
+  /* Sombra mais clara */
+  --color-shadow-md: rgba(0, 0, 0, 0.1);
+  /* Sombra mais clara */
+  --color-text-primary-30: rgba(0, 0, 0, 0.3);
+  /* Ajustado para contraste no tema claro */
+  --color-input-background: rgb(255, 255, 255);
+  /* Fundo branco */
 
-  --color-primary: rgb(37, 99, 235); /* Mantém igual */
-  --color-primary-hover: rgb(59, 130, 246); /* Invertido com o dark */
-  --color-secondary: rgb(107, 114, 128); /* Mantém igual */
-  --color-secondary-hover: rgb(75, 85, 99); /* Mantém igual */
-  --color-danger: rgb(220, 38, 38); /* Ajustado para contraste */
-  --color-danger-hover: rgb(239, 68, 68); /* Ajustado para contraste */
-  --color-background-dark: rgb(240, 240, 240); /* Fundo mais claro */
-  --color-background-light: #ffffff; /* Mantém branco */
-  --color-text-primary: rgb(0, 0, 0); /* Texto preto */
-  --color-text-secondary: rgb(55, 65, 81); /* Texto secundário mais escuro */
-  --color-text-muted: rgb(107, 114, 128); /* Ajustado para contraste */
-  --color-border: rgba(71, 131, 208, 0.7); /* Maior visibilidade */
-  --color-gradient-start: #007bff; /* Azul mais intenso */
-  --color-gradient-end: #d1e8ff; /* Azul muito claro */
-  --color-icon: #333; /* Ícone escuro */
-  --color-placeholder: #666; /* Placeholder mais visível */
-  --color-scrollbar-track: #e5e5e5; /* Track clara */
-  --color-scrollbar-thumb: #c0c0c0; /* Thumb clara */
-  --color-scrollbar-thumb-hover: #a0a0a0; /* Thumb no hover mais escura */
-  --color-badge-gemini: #4285f4; /* Mantém igual */
-  --color-badge-gpt4: #10a37f; /* Mantém igual */
-  --color-badge-claude: #7c3aed; /* Mantém igual */
-  --color-badge-nex: #2775cf; /* Mantém igual */
-  --color-gray-700: #e5e7eb; /* Cinza claro */
-  --color-blue-500: #3b82f6; /* Mantém igual */
-  --color-blue-600: #2563eb; /* Mantém igual */
-  --color-gray-800-50: rgba(55, 65, 81, 0.2); /* Menor opacidade */
-  --color-gray-900-transparent: rgba(57, 82, 107, 0.682); /* Fundo claro translúcido */
-  --color-gray-900: rgb(139, 162, 188); /* Fundo cinza claro */
-  --color-header: var(--color-background-light); /* Fundo claro */
-  --color-background: linear-gradient(to bottom right, 
-    var(--color-gray-100), 
-    var(--color-gray-900-transparent)
-  );
+  --color-primary: rgb(37, 99, 235);
+  /* Mantém igual */
+  --color-primary-hover: rgb(59, 130, 246);
+  /* Invertido com o dark */
+  --color-secondary: rgb(107, 114, 128);
+  /* Mantém igual */
+  --color-secondary-hover: rgb(75, 85, 99);
+  /* Mantém igual */
+  --color-danger: rgb(220, 38, 38);
+  /* Ajustado para contraste */
+  --color-danger-hover: rgb(239, 68, 68);
+  /* Ajustado para contraste */
+  --color-background-dark: rgb(240, 240, 240);
+  /* Fundo mais claro */
+  --color-background-light: #ffffff;
+  /* Mantém branco */
+  --color-text-primary: rgb(0, 0, 0);
+  /* Texto preto */
+  --color-text-secondary: rgb(55, 65, 81);
+  /* Texto secundário mais escuro */
+  --color-text-muted: rgb(107, 114, 128);
+  /* Ajustado para contraste */
+  --color-border: rgba(71, 131, 208, 0.7);
+  /* Maior visibilidade */
+  --color-gradient-start: #007bff;
+  /* Azul mais intenso */
+  --color-gradient-end: #d1e8ff;
+  /* Azul muito claro */
+  --color-icon: #333;
+  /* Ícone escuro */
+  --color-placeholder: #666;
+  /* Placeholder mais visível */
+  --color-scrollbar-track: transparent;
+  --color-scrollbar-thumb: rgba(100, 100, 100, 0.4);
+  --color-scrollbar-thumb-hover: rgba(100, 100, 100, 0.7);
+  --color-badge-gemini: #4285f4;
+  /* Mantém igual */
+  --color-badge-gpt4: #10a37f;
+  /* Mantém igual */
+  --color-badge-claude: #7c3aed;
+  /* Mantém igual */
+  --color-badge-nex: #2775cf;
+  /* Mantém igual */
+  --color-gray-700: #e5e7eb;
+  /* Cinza claro */
+  --color-blue-500: #3b82f6;
+  /* Mantém igual */
+  --color-blue-600: #2563eb;
+  /* Mantém igual */
+  --color-gray-800-50: rgba(55, 65, 81, 0.2);
+  /* Menor opacidade */
+  --color-gray-900-transparent: rgba(57, 82, 107, 0.682);
+  /* Fundo claro translúcido */
+  --color-gray-900: rgb(139, 162, 188);
+  /* Fundo cinza claro */
+  --color-header: var(--color-background-light);
+  /* Fundo claro */
+  --color-background: linear-gradient(to bottom right,
+      var(--color-gray-100),
+      var(--color-gray-900-transparent));
 
   /* Cores de Select */
-  --color-select-background: #ffffff; /* Fundo branco */
-  --color-select-border: #5f8be2; /* Borda cinza clara */
-  --color-select-text: #4a4a4a; /* Texto escuro */
-  --color-select-hover-background: #f0f0f0; /* Fundo hover claro */
-  --color-select-hover-border: #007bff; /* Azul no hover */
+  --color-select-background: #ffffff;
+  /* Fundo branco */
+  --color-select-border: #5f8be2;
+  /* Borda cinza clara */
+  --color-select-text: #4a4a4a;
+  /* Texto escuro */
+  --color-select-hover-background: #f0f0f0;
+  /* Fundo hover claro */
+  --color-select-hover-border: #007bff;
+  /* Azul no hover */
 
   /* Cores de Atributos */
-  --color-atributos-background: rgba(240, 240, 240, 0.5); /* Fundo claro translúcido */
-  --color-atributos-loading: rgb(107, 114, 128); /* Texto cinza para contraste */
-  --color-atributos-text: #000; /* Texto preto */
-  --color-atributos-item-background: rgb(220, 225, 230); /* Fundo de item mais claro */
-  --color-atributos-item-border: rgba(71, 131, 208, 0.7); /* Borda mais visível */
+  --color-atributos-background: rgba(240, 240, 240, 0.5);
+  /* Fundo claro translúcido */
+  --color-atributos-loading: rgb(107, 114, 128);
+  /* Texto cinza para contraste */
+  --color-atributos-text: #000;
+  /* Texto preto */
+  --color-atributos-item-background: rgb(220, 225, 230);
+  /* Fundo de item mais claro */
+  --color-atributos-item-border: rgba(71, 131, 208, 0.7);
+  /* Borda mais visível */
 
   /* Cores de HomePage Tailwind */
-  --color-border-search: rgba(24, 56, 98, 0.787); /* Borda mais visível */
-  --color-background-search: rgba(32, 79, 154, 0.657); /* Fundo cinza muito claro */
-  --color-text-gray-500: rgb(72, 80, 96); /* Texto secundário */
-  --color-border-hr: rgb(209, 213, 219); /* Borda cinza clara */
+  --color-border-search: rgba(24, 56, 98, 0.787);
+  /* Borda mais visível */
+  --color-background-search: rgba(32, 79, 154, 0.657);
+  /* Fundo cinza muito claro */
+  --color-text-gray-500: rgb(72, 80, 96);
+  /* Texto secundário */
+  --color-border-hr: rgb(209, 213, 219);
+  /* Borda cinza clara */
 
   /* Cores de InfoBasicas e BoxdeImpostos */
-  --color-info-basicas-border: rgba(71, 131, 208, 0.7); /* Ajustado para contraste */
-  --color-info-basicas-background: rgba(240, 240, 240, 0.5); /* Fundo claro translúcido */
-  --color-box-resultado-border: rgba(71, 131, 208, 0.7); /* Mantém igual */
-  --color-box-resultado-background: rgb(220, 225, 230); /* Fundo mais claro */
-  --color-text-green-500: rgb(34, 197, 94); /* Mantém igual */
-  --color-text-red-500: rgb(220, 38, 38); /* Mantém igual */
+  --color-info-basicas-border: rgba(71, 131, 208, 0.7);
+  /* Ajustado para contraste */
+  --color-info-basicas-background: rgba(240, 240, 240, 0.5);
+  /* Fundo claro translúcido */
+  --color-box-resultado-border: rgba(71, 131, 208, 0.7);
+  /* Mantém igual */
+  --color-box-resultado-background: rgb(220, 225, 230);
+  /* Fundo mais claro */
+  --color-text-green-500: rgb(34, 197, 94);
+  /* Mantém igual */
+  --color-text-red-500: rgb(220, 38, 38);
+  /* Mantém igual */
 
   /* Cores de InputField */
-  --color-input-field-border: #a4a8aa; /* Borda cinza clara */
-  --color-input-field-border-focus: #007bff; /* Azul no foco */
-  --color-input-field-icon: #007bff; /* Ícone azul */
-  --color-input-field-placeholder: #5c6a71; /* Placeholder mais visível */
+  --color-input-field-border: #a4a8aa;
+  /* Borda cinza clara */
+  --color-input-field-border-focus: #007bff;
+  /* Azul no foco */
+  --color-input-field-icon: #007bff;
+  /* Ícone azul */
+  --color-input-field-placeholder: #5c6a71;
+  /* Placeholder mais visível */
   --color-border-gray: #7687a0;
   --color-text-gray-400: #6b7280;
   --color-text-gray-100: #232d43;
-  
+
   /* Variáveis para documentação no tema claro */
   --primary-color: #2775cf;
   --primary-color-light: rgba(58, 139, 230, 0.2);
   --primary-color-dark: #1c5aa0;
-  
+
   --bg-primary: #ffffff;
   --bg-secondary: #f8f9fc;
   --bg-tertiary: #edf2f7;
-  
+
   --text-primary: rgb(0, 0, 0);
   --text-secondary: rgb(55, 65, 81);
-  
+
   --border-color: rgba(71, 131, 208, 0.7);
   --hover-color: #f3f4f6;
-  
+
   --error-bg: rgba(244, 67, 54, 0.2);
-  
+
   --code-bg: #f1f1f1;
 }
 

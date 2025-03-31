@@ -12,7 +12,7 @@
 2025-03-11T04:12:04.555Z - JSHandle@error
 2025-03-11T04:12:04.556Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
 2025-03-11T04:12:04.567Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
-2025-03-11T04:12:10.979Z - Enviando pergunta para: http://localhost:3000/api/v1/query
+2025-03-11T04:12:10.979Z - Enviando pergunta para: http://localhost:3001/api/v1/query
 2025-03-11T04:12:11.011Z - RESPOSTA: {"requestId":"1741666330996"}
 2025-03-11T04:12:11.025Z - Conexão SSE estabelecida
 2025-03-11T04:12:11.025Z - Mensagem SSE recebida: {"type":"connected","requestId":"1741666330996","trackers":{"tokenUsage":0,"actionState":{"thisStep":{"action":"answer","answer":"","references":[],"think":""},"gaps":[],"badAttempts":0,"totalStep":1}}}

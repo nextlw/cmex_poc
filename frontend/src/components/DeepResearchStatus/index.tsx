@@ -152,7 +152,7 @@ const DeepResearchStatus: React.FC<DeepResearchStatusProps> = ({
         } else if (isMounted) {
           setHasError(true);
           setStatusMessage("Erro ao verificar status. Tentando novamente...");
-          setTimeout(checkStatus, 3000);
+          setTimeout(checkStatus, 3001);
         }
       }
     };

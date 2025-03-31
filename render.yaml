@@ -30,7 +30,7 @@ version: "1"
     - key: NODE_ENV
       value: production
     - key: PORT
-      value: 3000
+      value: 3001
     - key: REDIS_HOST
       fromService:
         type: redis

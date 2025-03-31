@@ -24,20 +24,9 @@ const AtributosSkeleton: React.FC = () => {
             <Skeleton height="20px" />
           </div>
         </div>
-        <div>
-          <h3 className="text-[var(--color-atributos-text)] text-sm pb-2">Atributos TIPI</h3>
-          <div className="space-y-2">
-            <div className="skeleton-input">
-              <Skeleton height="20px" />
-            </div>
-            <div className="skeleton-input">
-              <Skeleton height="20px" />
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
 };
 
-export default AtributosSkeleton; 
+export default AtributosSkeleton;

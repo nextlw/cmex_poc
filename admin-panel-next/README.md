@@ -10,7 +10,7 @@ O painel gerencia os seguintes serviços:
 | -------------- | ----- | --------------------------------------- |
 | Redis          | 6378  | Banco de dados em memória para cache    |
 | FastAPI        | 10000 | Backend Python com FastAPI              |
-| Node.js        | 3000  | Servidor Node.js para busca inteligente |
+| Node.js        | 3001  | Servidor Node.js para busca inteligente |
 | Frontend React | 5173  | Interface web em React                  |
 | Admin Panel    | 3003  | O próprio painel administrativo         |
 
@@ -71,7 +71,7 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

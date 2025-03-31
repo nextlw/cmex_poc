@@ -11,7 +11,7 @@
 2025-03-11T04:13:56.288Z - Nova query recebida via props: JSHandle@object
 2025-03-11T04:13:56.290Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
 2025-03-11T04:13:56.306Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
-2025-03-11T04:14:02.714Z - Enviando pergunta para: http://localhost:3000/api/v1/query
+2025-03-11T04:14:02.714Z - Enviando pergunta para: http://localhost:3001/api/v1/query
 2025-03-11T04:14:02.741Z - RESPOSTA: {"requestId":"1741666442729"}
 2025-03-11T04:14:02.757Z - Conexão SSE estabelecida
 2025-03-11T04:14:02.760Z - Mensagem SSE recebida: {"type":"connected","requestId":"1741666442729","trackers":{"tokenUsage":0,"actionState":{"thisStep":{"action":"answer","answer":"","references":[],"think":""},"gaps":[],"badAttempts":0,"totalStep":1}}}

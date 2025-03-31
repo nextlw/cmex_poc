@@ -1,10 +1,7 @@
 import "./styles.css";
+import { SpinnerProps } from "./types";
 
-interface SpinnerProps {
-  classes?: string
-}
-
-const Spinner = (props:SpinnerProps) => {
+const Spinner = (props: SpinnerProps) => {
   return (
     <div className={`spinner ${props.classes}`}>
       <div></div>

@@ -8,11 +8,17 @@ info:
 servers:
   - url: /api/v1
     description: Servidor de desenvolvimento
+  - url: /v1
+    description: Servidor para integração Jina UI
 tags:
   - name: NCM
     description: Operações relacionadas à consulta de NCM
   - name: DeepResearch
     description: Operações relacionadas à análise profunda de NCM
+  - name: JinaUI
+    description: Operações para integração com Jina UI
+  - name: JinaUI-Node
+    description: Operações específicas da implementação node-DeepResearch-jina
 paths:
   /ncm:
     post:
@@ -91,7 +97,423 @@ paths:
           description: Análise não encontrada
         "500":
           description: Erro interno do servidor
+  /v1/chat/completions:
+    post:
+      tags:
+        - JinaUI
+        - JinaUI-Node
+      summary: Solicita uma nova completação de chat
+      description: |-
+        Endpoint compatível com Jina UI para obter respostas de chat com suporte a streaming.
+
+        Implementado em:
+        - buscador_inteligente (jina-api-routes.ts)
+        - node-DeepResearch-jina (app.ts)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatCompletionRequest"
+      responses:
+        "200":
+          description: Resposta de chat gerada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatCompletionResponse"
+            text/event-stream:
+              schema:
+                type: string
+                description: Stream de eventos contendo chunks de resposta (quando stream=true)
+        "400":
+          description: Parâmetros inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Descrição do erro
+        "401":
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Erro de autenticação
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Descrição do erro
+  /deep-research:
+    post:
+      tags:
+        - DeepResearch
+      summary: Inicia uma pesquisa profunda
+      description: Inicia um processo de pesquisa profunda com base em uma consulta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - query
+              properties:
+                query:
+                  type: string
+                  description: Consulta a ser pesquisada
+                  example: "Como funciona a tributação de importação de smartphones?"
+      responses:
+        "200":
+          description: Pesquisa iniciada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requestId:
+                    type: string
+                    description: ID da requisição para acompanhamento
+                  message:
+                    type: string
+                    description: Mensagem de sucesso
+        "400":
+          description: Parâmetros inválidos
+        "500":
+          description: Erro interno do servidor
+  /deep-research/{requestId}:
+    get:
+      tags:
+        - DeepResearch
+      summary: Obtém o resultado de uma pesquisa profunda
+      description: Retorna o resultado de uma pesquisa profunda com base no ID da requisição
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID da requisição de pesquisa profunda
+      responses:
+        "200":
+          description: Resultado obtido com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [pending, processing, completed, error]
+                    description: Status da pesquisa
+                  result:
+                    type: object
+                    description: Resultado da pesquisa (quando completada)
+        "404":
+          description: Pesquisa não encontrada
+        "500":
+          description: Erro interno do servidor
+    delete:
+      tags:
+        - DeepResearch
+      summary: Cancela uma pesquisa profunda
+      description: Cancela uma pesquisa profunda em andamento
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID da requisição de pesquisa profunda
+      responses:
+        "200":
+          description: Pesquisa cancelada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Mensagem de sucesso
+        "404":
+          description: Pesquisa não encontrada ou já concluída
+        "500":
+          description: Erro interno do servidor
+  /api/v1/query:
+    post:
+      summary: Inicia uma nova consulta à LLM
+      tags:
+        - Consultas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Query"
+      responses:
+        "200":
+          description: ID da requisição gerado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requestId:
+                    type: string
+        "400":
+          description: Parâmetros inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /api/v1/outputs:
+    get:
+      summary: Obtém todas as saídas da LLM
+      tags:
+        - Monitoramento
+      responses:
+        "200":
+          description: Lista de todas as saídas da LLM
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LLMOutput"
+
+  /api/v1/task/{requestId}:
+    get:
+      summary: Obtém o resultado de uma tarefa específica
+      tags:
+        - Resultados
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+          description: ID da requisição
+      responses:
+        "200":
+          description: Resultado da tarefa encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskResult"
+        "404":
+          description: Tarefa não encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /api/v1/stream/{requestId}:
+    get:
+      summary: Acompanha o progresso de uma consulta em tempo real
+      tags:
+        - Monitoramento
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+          description: ID da requisição
+      responses:
+        "200":
+          description: Stream de eventos SSE estabelecido
+          content:
+            text/event-stream:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [connected, progress, answer, error]
+                  data:
+                    type: object
+                  trackers:
+                    type: object
+                    properties:
+                      tokenUsage:
+                        type: number
+                      actionState:
+                        type: object
+                  outputs:
+                    type: array
+                    items:
+                      type: object
+
+  /api/v1/logs:
+    get:
+      summary: Obtém todos os logs do servidor e conteúdos dos prompts
+      tags:
+        - Logs
+      responses:
+        "200":
+          description: Logs do servidor e conteúdos dos prompts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogsResponse"
+
+  /api-docs:
+    get:
+      summary: Documentação da API
+      tags:
+        - Documentation
+      responses:
+        "200":
+          description: Documentação da API
+
+  /v1/models:
+    get:
+      tags:
+        - JinaUI
+        - JinaUI-Node
+      summary: Lista os modelos disponíveis
+      description: |-
+        Retorna a lista de modelos disponíveis para uso com a API Jina.
+
+        Implementado em:
+        - buscador_inteligente (server.ts)
+        - node-DeepResearch-jina (app.ts)
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Lista de modelos obtida com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  object:
+                    type: string
+                    example: "list"
+                    description: Tipo do objeto retornado
+                  data:
+                    type: array
+                    description: Lista de modelos disponíveis
+                    items:
+                      $ref: "#/components/schemas/Model"
+  /v1/models/{model}:
+    get:
+      tags:
+        - JinaUI
+        - JinaUI-Node
+      summary: Obtém informações de um modelo específico
+      description: |-
+        Retorna detalhes sobre um modelo específico pelo seu ID.
+
+        Implementado em:
+        - buscador_inteligente (server.ts)
+        - node-DeepResearch-jina (app.ts)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: model
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID do modelo
+          example: "jina-deepsearch-v1"
+      responses:
+        "200":
+          description: Informações do modelo obtidas com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Model"
+        "404":
+          description: Modelo não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Model 'model-id' not found"
+                      type:
+                        type: string
+                        example: "invalid_request_error"
+                      param:
+                        type: string
+                        nullable: true
+                      code:
+                        type: string
+                        example: "model_not_found"
+  /v1/health:
+    get:
+      tags:
+        - JinaUI
+      summary: Verifica o status da API (buscador_inteligente)
+      description: Endpoint para verificação de saúde do serviço no projeto buscador_inteligente
+      responses:
+        "200":
+          description: Serviço está funcionando corretamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                    description: Status do serviço
+
+  /health:
+    get:
+      tags:
+        - JinaUI-Node
+      summary: Verificação de saúde (node-DeepResearch-jina)
+      description: Endpoint para verificação de saúde do contêiner Docker no projeto node-DeepResearch-jina
+      responses:
+        "200":
+          description: Serviço está funcionando corretamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                    description: Status do serviço
+
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     NCMRequest:
       type: object
@@ -226,137 +648,390 @@ components:
               type: string
               description: Justificativa da validação
               example: "O produto descrito corresponde à classificação de smartphones conforme a TIPI"
-
-  /api/v1/query:
-    post:
-      summary: Inicia uma nova consulta à LLM
-      tags:
-        - Consultas
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Query"
-      responses:
-        "200":
-          description: ID da requisição gerado com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  requestId:
-                    type: string
-        "400":
-          description: Parâmetros inválidos
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-
-  /api/v1/outputs:
-    get:
-      summary: Obtém todas as saídas da LLM
-      tags:
-        - Monitoramento
-      responses:
-        "200":
-          description: Lista de todas as saídas da LLM
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/LLMOutput"
-
-  /api/v1/task/{requestId}:
-    get:
-      summary: Obtém o resultado de uma tarefa específica
-      tags:
-        - Resultados
-      parameters:
-        - in: path
-          name: requestId
-          required: true
-          schema:
-            type: string
-          description: ID da requisição
-      responses:
-        "200":
-          description: Resultado da tarefa encontrado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TaskResult"
-        "404":
-          description: Tarefa não encontrada
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-
-  /api/v1/stream/{requestId}:
-    get:
-      summary: Acompanha o progresso de uma consulta em tempo real
-      tags:
-        - Monitoramento
-      parameters:
-        - in: path
-          name: requestId
-          required: true
-          schema:
-            type: string
-          description: ID da requisição
-      responses:
-        "200":
-          description: Stream de eventos SSE estabelecido
-          content:
-            text/event-stream:
-              schema:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    enum: [connected, progress, answer, error]
-                  data:
-                    type: object
-                  trackers:
-                    type: object
-                    properties:
-                      tokenUsage:
-                        type: number
-                      actionState:
-                        type: object
-                  outputs:
-                    type: array
+    ChatCompletionRequest:
+      type: object
+      required:
+        - messages
+      properties:
+        messages:
+          type: array
+          description: Lista de mensagens da conversa
+          items:
+            type: object
+            required:
+              - role
+              - content
+            properties:
+              role:
+                type: string
+                enum: [system, user, assistant]
+                description: Papel do autor da mensagem
+              content:
+                oneOf:
+                  - type: string
+                    description: Conteúdo da mensagem em texto
+                  - type: array
+                    description: Conteúdo da mensagem em formato multimídia
                     items:
                       type: object
-
-  /api/v1/logs:
-    get:
-      summary: Obtém todos os logs do servidor e conteúdos dos prompts
-      tags:
-        - Logs
-      responses:
-        "200":
-          description: Logs do servidor e conteúdos dos prompts
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LogsResponse"
-
-  /api-docs:
-    get:
-      summary: Documentação da API
-      tags:
-        - Documentation
-      responses:
-        "200":
-          description: Documentação da API
+                      properties:
+                        type:
+                          type: string
+                          enum: [text, image, image_url]
+                          description: Tipo do conteúdo
+                        text:
+                          type: string
+                          description: Texto da mensagem (quando type=text)
+                        image:
+                          type: string
+                          description: URL da imagem codificada em base64 (quando type=image)
+                        image_url:
+                          type: object
+                          properties:
+                            url:
+                              type: string
+                              description: URL da imagem (quando type=image_url)
+        stream:
+          type: boolean
+          description: Se verdadeiro, retorna a resposta como stream de eventos
+          default: false
+        reasoning_effort:
+          type: string
+          enum: [low, medium, high]
+          description: Nível de esforço para raciocínio
+          default: medium
+        max_completion_tokens:
+          type: integer
+          description: Número máximo de tokens para a resposta
+          example: 100000
+        budget_tokens:
+          type: integer
+          description: Orçamento de tokens para a resposta
+          example: 150000
+        max_attempts:
+          type: integer
+          description: Número máximo de tentativas
+          example: 3
+        max_returned_urls:
+          type: integer
+          description: Número máximo de URLs retornadas
+          example: 10
+        no_direct_answer:
+          type: boolean
+          description: Se verdadeiro, não fornece resposta direta
+          default: false
+        boost_hostnames:
+          type: array
+          items:
+            type: string
+          description: Lista de hostnames a serem priorizados
+          example: ["gov.br", "receita.fazenda.gov.br"]
+        bad_hostnames:
+          type: array
+          items:
+            type: string
+          description: Lista de hostnames a serem evitados
+          example: ["exemplo.com"]
+        only_hostnames:
+          type: array
+          items:
+            type: string
+          description: Lista de hostnames exclusivos para pesquisa
+          example: ["gov.br"]
+        model:
+          type: string
+          description: Nome do modelo a ser utilizado
+          example: "agent"
+    ChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID da requisição
+          example: "1638489786"
+        object:
+          type: string
+          description: Tipo do objeto
+          example: "chat.completion"
+        created:
+          type: integer
+          description: Timestamp da criação (Unix time)
+          example: 1638489786
+        model:
+          type: string
+          description: Nome do modelo utilizado
+          example: "agent"
+        system_fingerprint:
+          type: string
+          description: Identificador do sistema
+          example: "fp_1638489786"
+        choices:
+          type: array
+          description: Lista de escolhas/respostas
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+                description: Índice da escolha
+                example: 0
+              message:
+                type: object
+                properties:
+                  role:
+                    type: string
+                    description: Papel do autor da mensagem
+                    example: "assistant"
+                  content:
+                    type: string
+                    description: Conteúdo da mensagem
+                    example: "Esta é a resposta do assistente."
+                  type:
+                    type: string
+                    description: Tipo da mensagem
+                    example: "text"
+                  annotations:
+                    type: array
+                    description: Anotações adicionais
+                    items:
+                      type: object
+              logprobs:
+                type: object
+                nullable: true
+                description: Probabilidades de log (não utilizado)
+              finish_reason:
+                type: string
+                description: Razão para finalização da resposta
+                example: "stop"
+        usage:
+          type: object
+          description: Informações de uso de tokens
+          properties:
+            prompt_tokens:
+              type: integer
+              description: Tokens utilizados no prompt
+              example: 56
+            completion_tokens:
+              type: integer
+              description: Tokens utilizados na resposta
+              example: 31
+            total_tokens:
+              type: integer
+              description: Total de tokens utilizados
+              example: 87
+        visitedURLs:
+          type: array
+          description: URLs visitadas durante o processamento
+          items:
+            type: string
+          example: ["https://www.gov.br/receitafederal/pt-br"]
+        readURLs:
+          type: array
+          description: URLs lidas durante o processamento
+          items:
+            type: string
+          example:
+            [
+              "https://www.gov.br/receitafederal/pt-br/assuntos/aduana-e-comercio-exterior",
+            ]
+        numURLs:
+          type: integer
+          description: Número de URLs visitadas
+          example: 5
+    Query:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          description: Consulta ao modelo de IA
+          example: "Qual a classificação fiscal para um smartphone?"
+    LLMOutput:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: ID da requisição
+          example: "req-1234567890"
+        timestamp:
+          type: string
+          description: Timestamp da saída
+          format: date-time
+          example: "2023-03-15T14:30:00Z"
+        prompt:
+          type: string
+          description: Prompt enviado ao modelo
+          example: "Qual a classificação fiscal para um smartphone?"
+        response:
+          type: string
+          description: Resposta gerada pelo modelo
+          example: "A classificação fiscal (NCM) para smartphones é 8517.12.31"
+        model:
+          type: string
+          description: Modelo utilizado
+          example: "gemini-2.0-flash"
+        tokenUsage:
+          type: object
+          properties:
+            promptTokens:
+              type: integer
+              description: Tokens utilizados no prompt
+              example: 12
+            completionTokens:
+              type: integer
+              description: Tokens utilizados na resposta
+              example: 24
+            totalTokens:
+              type: integer
+              description: Total de tokens utilizados
+              example: 36
+    TaskResult:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: ID da requisição
+          example: "req-1234567890"
+        status:
+          type: string
+          enum: [pending, processing, completed, error]
+          description: Status da tarefa
+          example: "completed"
+        progress:
+          type: integer
+          description: Progresso em porcentagem
+          minimum: 0
+          maximum: 100
+          example: 100
+        result:
+          type: object
+          description: Resultado da tarefa
+          properties:
+            answer:
+              type: string
+              description: Resposta final
+              example: "A classificação fiscal (NCM) para smartphones é 8517.12.31"
+            references:
+              type: array
+              description: Referências utilizadas
+              items:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: URL da referência
+                    example: "https://www.gov.br/receitafederal/pt-br/assuntos/aduana-e-comercio-exterior"
+                  title:
+                    type: string
+                    description: Título da referência
+                    example: "Portal da Receita Federal - Comércio Exterior"
+        tokenUsage:
+          type: object
+          properties:
+            promptTokens:
+              type: integer
+              description: Tokens utilizados no prompt
+              example: 12
+            completionTokens:
+              type: integer
+              description: Tokens utilizados na resposta
+              example: 24
+            totalTokens:
+              type: integer
+              description: Total de tokens utilizados
+              example: 36
+        createdAt:
+          type: string
+          format: date-time
+          description: Data e hora de criação
+          example: "2023-03-15T14:30:00Z"
+        completedAt:
+          type: string
+          format: date-time
+          description: Data e hora de conclusão
+          example: "2023-03-15T14:30:45Z"
+    LogsResponse:
+      type: object
+      properties:
+        serverLogs:
+          type: array
+          description: Logs do servidor
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+                description: Data e hora do log
+                example: "2023-03-15T14:30:00Z"
+              level:
+                type: string
+                enum: [log, error, warn, info]
+                description: Nível do log
+                example: "info"
+              message:
+                type: string
+                description: Mensagem do log
+                example: "Iniciando processamento da requisição req-1234567890"
+              context:
+                type: object
+                properties:
+                  pid:
+                    type: integer
+                    description: ID do processo
+                    example: 12345
+                  env:
+                    type: string
+                    description: Ambiente
+                    example: "development"
+                  requestId:
+                    type: string
+                    description: ID da requisição relacionada
+                    example: "req-1234567890"
+        promptLogs:
+          type: array
+          description: Logs de prompts
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+                description: Data e hora do prompt
+                example: "2023-03-15T14:30:00Z"
+              requestId:
+                type: string
+                description: ID da requisição
+                example: "req-1234567890"
+              modelName:
+                type: string
+                description: Nome do modelo
+                example: "gemini-2.0-flash"
+              prompt:
+                type: string
+                description: Conteúdo do prompt
+                example: "Qual a classificação fiscal para um smartphone?"
+              response:
+                type: string
+                description: Resposta do modelo
+                example: "A classificação fiscal (NCM) para smartphones é 8517.12.31"
+    Model:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador único do modelo
+          example: "jina-deepsearch-v1"
+        object:
+          type: string
+          description: Tipo do objeto
+          example: "model"
+        created:
+          type: integer
+          description: Timestamp da criação (Unix time)
+          example: 1686935002
+        owned_by:
+          type: string
+          description: Proprietário do modelo
+          example: "jina-ai"

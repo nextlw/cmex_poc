@@ -1,0 +1,79 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6378:6379"
+    networks:
+      - cmex-network
+    volumes:
+      - redis-data:/data
+
+  buscador:
+    build:
+      context: ./buscador_inteligente
+      dockerfile: Dockerfile
+    env_file: ./buscador_inteligente/.env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - "3001:3001"
+    depends_on:
+      - shared-types
+      - redis
+    networks:
+      - cmex-network
+
+  admin-panel:
+    build: ./admin-panel-next
+    environment:
+      - ADMIN_PANEL_PORT=3003
+    ports:
+      - "3003:3003"
+    networks:
+      - cmex-network
+
+  fastapi:
+    build: ./fastapi
+    env_file: ./fastapi/.env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - "8001:8000"
+    depends_on:
+      - redis
+    networks:
+      - cmex-network
+
+  frontend:
+    build: ./frontend
+    env_file: ./frontend/.env
+    environment:
+      - FASTAPI_URL=http://fastapi:8000
+      - BUSCADOR_URL=http://buscador:3001
+    ports:
+      - "3002:3001"
+    depends_on:
+      - fastapi
+      - buscador
+      - shared-types
+    networks:
+      - cmex-network
+
+  shared-types:
+    build: ./shared-types
+    volumes:
+      - shared-types-build:/app/dist
+    networks:
+      - cmex-network
+
+networks:
+  cmex-network:
+    driver: bridge
+
+volumes:
+  shared-types-build:
+  redis-data:

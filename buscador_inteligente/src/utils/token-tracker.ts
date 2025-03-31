@@ -3,24 +3,34 @@ import { EventEmitter } from "events";
 /**
  * Interface para armazenar informações de uso de tokens por modelo
  */
-interface TokenUsage {
+interface ModelTokenUsage {
   [modelName: string]: number;
+}
+
+/**
+ * Interface para rastrear o uso de tokens por ferramenta
+ */
+interface ToolTokenUsage {
+  tool: string;
+  tokens: number;
 }
 
 /**
  * Classe para rastrear o uso de tokens pelos modelos de IA
  */
 export class TokenTracker extends EventEmitter {
-  private usage: TokenUsage = {};
-  private tokenBudget?: number;
+  private modelUsage: ModelTokenUsage = {};
+  private toolUsages: ToolTokenUsage[] = [];
+  private totalUsage = 0;
+  private budget: number;
 
   /**
    * Construtor da classe
-   * @param tokenBudget Orçamento opcional de tokens para este rastreador
+   * @param budget Orçamento opcional de tokens para este rastreador
    */
-  constructor(tokenBudget?: number) {
+  constructor(budget = 1_000_000) {
     super();
-    this.tokenBudget = tokenBudget;
+    this.budget = budget;
   }
 
   /**
@@ -29,10 +39,8 @@ export class TokenTracker extends EventEmitter {
    * @param count Número de tokens a adicionar
    */
   addTokens(modelName: string, count: number): void {
-    if (!this.usage[modelName]) {
-      this.usage[modelName] = 0;
-    }
-    this.usage[modelName] += count;
+    this.modelUsage[modelName] = (this.modelUsage[modelName] || 0) + count;
+    this.totalUsage += count;
     this.emit("tokensAdded", { modelName, count });
   }
 
@@ -66,15 +74,24 @@ export class TokenTracker extends EventEmitter {
    * @param tokens Número de tokens utilizados
    */
   trackUsage(source: string, tokens: number): void {
-    this.addTokens(source, tokens);
+    this.toolUsages.push({ tool: source, tokens });
+    this.totalUsage += tokens;
 
     // Verifica se o orçamento foi excedido
-    if (this.tokenBudget && this.getTotalUsage() > this.tokenBudget) {
+    if (this.budget && this.getTotalUsage() > this.budget) {
       this.emit("budgetExceeded", {
-        budget: this.tokenBudget,
+        budget: this.budget,
         current: this.getTotalUsage(),
       });
     }
+  }
+
+  /**
+   * Rastreia o uso de tokens (método alternativo)
+   * @param usage Dados de uso de tokens
+   */
+  trackTokens(usage: { tool: string; tokens: number }): void {
+    this.trackUsage(usage.tool, usage.tokens);
   }
 
   /**
@@ -82,22 +99,26 @@ export class TokenTracker extends EventEmitter {
    */
   printSummary(): void {
     console.log("=== Resumo de Uso de Tokens ===");
-    const usage = this.getUsageByModel();
 
-    Object.entries(usage).forEach(([source, tokens]) => {
-      console.log(`${source}: ${tokens} tokens`);
+    // Uso por modelo
+    const modelUsage = this.getUsageByModel();
+    Object.entries(modelUsage).forEach(([source, tokens]) => {
+      console.log(`Modelo ${source}: ${tokens} tokens`);
+    });
+
+    // Uso por ferramenta
+    this.toolUsages.forEach(({ tool, tokens }) => {
+      console.log(`Ferramenta ${tool}: ${tokens} tokens`);
     });
 
     console.log(`Total: ${this.getTotalUsage()} tokens`);
 
-    if (this.tokenBudget) {
+    if (this.budget) {
       const percentUsed = Math.round(
-        (this.getTotalUsage() / this.tokenBudget) * 100
+        (this.getTotalUsage() / this.budget) * 100
       );
       console.log(
-        `Orçamento: ${this.getTotalUsage()}/${
-          this.tokenBudget
-        } (${percentUsed}%)`
+        `Orçamento: ${this.getTotalUsage()}/${this.budget} (${percentUsed}%)`
       );
     }
 
@@ -109,25 +130,52 @@ export class TokenTracker extends EventEmitter {
    * @returns Número total de tokens
    */
   getTotalUsage(): number {
-    return Object.values(this.usage).reduce((total, count) => total + count, 0);
+    return this.totalUsage;
   }
 
   /**
-   * Obtém o histórico de uso de tokens
+   * Obtém o histórico de uso de tokens por modelo
+   * @param modelName Nome opcional do modelo para filtrar
    * @returns Objeto com o histórico de uso
    */
-  getUsageByModel(modelName?: string): TokenUsage {
+  getUsageByModel(modelName?: string): ModelTokenUsage {
     if (modelName) {
-      return { [modelName]: this.usage[modelName] || 0 };
+      return { [modelName]: this.modelUsage[modelName] || 0 };
     }
-    return { ...this.usage };
+    return { ...this.modelUsage };
+  }
+
+  /**
+   * Obtém o histórico de uso de tokens por ferramenta
+   * @returns Array com o histórico de uso por ferramenta
+   */
+  getUsageByTool(): ToolTokenUsage[] {
+    return [...this.toolUsages];
   }
 
   /**
    * Limpa o histórico de uso
    */
   resetUsage(): void {
-    this.usage = {};
+    this.modelUsage = {};
+    this.toolUsages = [];
+    this.totalUsage = 0;
     this.emit("usageReset");
+  }
+
+  /**
+   * Retorna o orçamento disponível de tokens
+   * @returns Orçamento disponível
+   */
+  getBudget(): number {
+    return this.budget;
+  }
+
+  /**
+   * Define um novo orçamento de tokens
+   * @param budget Novo orçamento
+   */
+  setBudget(budget: number): void {
+    this.budget = budget;
   }
 }

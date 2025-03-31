@@ -285,7 +285,7 @@ describe("Teste de Conversa com IA", () => {
             });
           }
 
-          await sleep(3000);
+          await sleep(3001);
           await saveScreenshot(page, "04-apos-login");
           console.log("Login concluído, verificando redirecionamento...");
         } else {
@@ -365,13 +365,13 @@ describe("Teste de Conversa com IA", () => {
         }
 
         // Aguardar navegação para a página de chat
-        await sleep(3000);
+        await sleep(3001);
         await saveScreenshot(page, "07-pagina-chat");
 
         // Não vamos mais procurar por algo para clicar em "inputai", pois agora sabemos que é o campo de mensagem
 
         // Aguardar até que a página carregue completamente
-        await sleep(3000);
+        await sleep(3001);
         await saveScreenshot(page, "08-pagina-carregada");
 
         // Procurar pelo campo de mensagem InputAi
@@ -813,7 +813,7 @@ describe("Teste de Conversa com IA", () => {
       }
 
       // Aguardar até que a página carregue completamente
-      await sleep(3000);
+      await sleep(3001);
       await saveScreenshot(page, "10-pagina-query");
 
       // Procurar por diferentes seletores possíveis para o campo de mensagem

@@ -11,7 +11,7 @@ source /Users/williamduarte/Pesquisa_CMEX/cmex_poc/.env
 # Define valores padrão se não estiverem no .env
 REDIS_PORT=${REDIS_PORT:-6378}
 FASTAPI_PORT=${FASTAPI_PORT:-10000}
-NODE_PORT=${NODE_PORT:-3000}
+NODE_PORT=${NODE_PORT:-3001}
 FRONTEND_PORT=${FRONTEND_PORT:-5173}
 ADMIN_PANEL_PORT=${ADMIN_PANEL_PORT:-3003}
 
