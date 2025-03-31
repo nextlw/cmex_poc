@@ -8,29 +8,29 @@ Abaixo estão os arquivos dos projetos existentes que servirão como referência
 
 ### Tipos e Interfaces
 
-| Arquivo                            | Caminho Original                                  | Descrição                                          |
-| ---------------------------------- | ------------------------------------------------- | ---------------------------------------------------- |
-| Types para mensagens               | `fastapi/ferramentas/app/schema.py`             | Definições de tipos para mensagens e comunicação |
-| Types para ações                 | `node-DeepResearch-jina/src/types.ts`           | Sistema de tipagem baseado em ações                |
-| Interfaces de ferramenta           | `fastapi/ferramentas/app/tool/base.py`          | Interface base para ferramentas                      |
-| Interface de requisição/resposta | `buscador_inteligente/src/types/globalTypes.ts` | Interfaces para requisições e respostas da API     |
+| Arquivo                          | Caminho Original                                | Descrição                                        |
+| -------------------------------- | ----------------------------------------------- | ------------------------------------------------ |
+| Types para mensagens             | `fastapi/ferramentas/app/schema.py`             | Definições de tipos para mensagens e comunicação |
+| Types para ações                 | `node-DeepResearch-jina/src/types.ts`           | Sistema de tipagem baseado em ações              |
+| Interfaces de ferramenta         | `fastapi/ferramentas/app/tool/base.py`          | Interface base para ferramentas                  |
+| Interface de requisição/resposta | `buscador_inteligente/src/types/globalTypes.ts` | Interfaces para requisições e respostas da API   |
 
 ### Componentes e Serviços
 
-| Arquivo                | Caminho Original                                      | Descrição                                   |
-| ---------------------- | ----------------------------------------------------- | --------------------------------------------- |
-| Token Tracker          | `node-DeepResearch-jina/src/utils/token-tracker.ts` | Sistema de rastreamento de tokens             |
+| Arquivo                | Caminho Original                                    | Descrição                                   |
+| ---------------------- | --------------------------------------------------- | ------------------------------------------- |
+| Token Tracker          | `node-DeepResearch-jina/src/utils/token-tracker.ts` | Sistema de rastreamento de tokens           |
 | MCP Agent              | `fastapi/ferramentas/app/agent/mcp.py`              | Agente MCP para comunicação com ferramentas |
-| Ferramentas de browser | `fastapi/ferramentas/app/tool/browser_use_tool.py`  | Implementação de automação web            |
-| Sistema de avaliação | `node-DeepResearch-jina/src/tools/evaluator.ts`     | Avaliação de qualidade das respostas        |
+| Ferramentas de browser | `fastapi/ferramentas/app/tool/browser_use_tool.py`  | Implementação de automação web              |
+| Sistema de avaliação   | `node-DeepResearch-jina/src/tools/evaluator.ts`     | Avaliação de qualidade das respostas        |
 
 ### Configurações
 
-| Arquivo                  | Caminho Original                          | Descrição                                         |
-| ------------------------ | ----------------------------------------- | --------------------------------------------------- |
-| Configuração de modelo | `node-DeepResearch-jina/config.json`    | Configuração flexível de modelos e provedores    |
+| Arquivo                | Caminho Original                        | Descrição                                         |
+| ---------------------- | --------------------------------------- | ------------------------------------------------- |
+| Configuração de modelo | `node-DeepResearch-jina/config.json`    | Configuração flexível de modelos e provedores     |
 | Configuração MCP       | `fastapi/ferramentas/app/mcp/server.py` | Servidor MCP para disponibilização de ferramentas |
-| API endpoints            | `buscador_inteligente/src/server.ts`    | Definição de endpoints da API                     |
+| API endpoints          | `buscador_inteligente/src/server.ts`    | Definição de endpoints da API                     |
 
 ## Estrutura do Monorepo
 
@@ -330,11 +330,11 @@ graph TD
 | Componente        | Tecnologia Principal       | Justificativa                                                                                                 |
 | ----------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | Frontend + API    | Next.js (React/TypeScript) | Unifica frontend e API routes, oferece SSR/SSG, App Router e permite isolamento do backend para acesso Ubuntu |
-| Tool Bridge       | Python/FastAPI             | Ótimo para APIs de alto desempenho, integração fácil com o servidor MCP existente                         |
-| MCP Server        | Python                     | Reutilização do código existente do projeto ferramentas                                                    |
-| Tool Service      | Python                     | Melhor compatibilidade com o Ubuntu para automação do sistema e tarefas de baixo nível                     |
-| Shared Types      | TypeScript                 | Definições de tipo fortes e geração automatizada de esquemas JSON                                         |
-| Evaluator Service | Node.js/TypeScript         | Boa integração com modelos LLM e processamento de texto                                                     |
+| Tool Bridge       | Python/FastAPI             | Ótimo para APIs de alto desempenho, integração fácil com o servidor MCP existente                             |
+| MCP Server        | Python                     | Reutilização do código existente do projeto ferramentas                                                       |
+| Tool Service      | Python                     | Melhor compatibilidade com o Ubuntu para automação do sistema e tarefas de baixo nível                        |
+| Shared Types      | TypeScript                 | Definições de tipo fortes e geração automatizada de esquemas JSON                                             |
+| Evaluator Service | Node.js/TypeScript         | Boa integração com modelos LLM e processamento de texto                                                       |
 
 ## Implementação Next.js
 
@@ -449,11 +449,11 @@ services:
   next-app:
     build: ./packages/next-app
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       - TOOL_BRIDGE_URL=http://tool-bridge:8000
       - EVALUATOR_URL=http://evaluator-service:5000
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/api
     volumes:
       - ./shared:/app/shared
 
@@ -531,6 +531,7 @@ Para manipular o Ubuntu de forma segura e eficiente, utilizaremos:
 
    - Serviço Python dedicado que utilizará `subprocess`, `os` e `pathlib` para interagir com o sistema Ubuntu
    - Implementado como ferramenta no MCP Server
+
 2. **Ferramenta Ubuntu**:
 
    ```python
@@ -611,6 +612,7 @@ Para manipular o Ubuntu de forma segura e eficiente, utilizaremos:
 
            return ToolResult(error=f"Unsupported operation: {operation}")
    ```
+
 3. **Chamada da ferramenta via Next.js**:
 
    ```typescript
@@ -647,12 +649,12 @@ Adotaremos uma abordagem multi-camada para testes:
 
 ### Ferramentas de Teste
 
-| Tipo de Teste | Serviço             | Ferramentas                 |
+| Tipo de Teste | Serviço              | Ferramentas                 |
 | ------------- | -------------------- | --------------------------- |
-| Unitários    | Next.js App          | Jest, React Testing Library |
-| Unitários    | Tool Bridge          | Pytest, FastAPI TestClient  |
-| Unitários    | Tool Service         | Pytest, unittest.mock       |
-| Integração  | Multi-serviço       | Postman Collections, Newman |
+| Unitários     | Next.js App          | Jest, React Testing Library |
+| Unitários     | Tool Bridge          | Pytest, FastAPI TestClient  |
+| Unitários     | Tool Service         | Pytest, unittest.mock       |
+| Integração    | Multi-serviço        | Postman Collections, Newman |
 | Sistema       | End-to-end           | Playwright, Cypress         |
 | Desempenho    | Next.js, Tool Bridge | k6, Artillery               |
 
@@ -686,18 +688,22 @@ Implementaremos medidas robustas de fallback para garantir a resiliência do sis
 
    - Se o modelo principal falhar, tentar modelos alternativos automaticamente
    - Exemplo: de gemini-2.0-pro → gemini-2.0-flash → gpt-4o → gpt-3.5-turbo
+
 2. **Fallback de Ferramenta**:
 
    - Se uma ferramenta falhar, tentar alternativas
    - Exemplo: browser falha → usar search, search falha → usar leitura de cache
+
 3. **Fallback de Provedor de Busca**:
 
    - Suporte a múltiplos provedores de busca com failover automático
    - Jina → Brave → DuckDuckGo
+
 4. **Fallback de Timeout**:
 
    - Respostas parciais em caso de timeout de ferramentas
    - Retorno proativo de resultados parciais para manter responsividade
+
 5. **Circuit Breaker**:
 
    - Implementação de circuit breakers para evitar sobrecarga de serviços com falha

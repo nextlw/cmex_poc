@@ -18,7 +18,44 @@ const trackers = new Map<
 >();
 
 /**
- * Rota para iniciar uma pesquisa profunda
+ * @swagger
+ * /deep-research:
+ *   post:
+ *     tags:
+ *       - DeepResearch
+ *     summary: Inicia uma pesquisa profunda
+ *     description: Inicia um processo de pesquisa profunda com base em uma consulta
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - query
+ *             properties:
+ *               query:
+ *                 type: string
+ *                 description: Consulta a ser pesquisada
+ *                 example: "Como funciona a tributação de importação de smartphones?"
+ *     responses:
+ *       "200":
+ *         description: Pesquisa iniciada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 requestId:
+ *                   type: string
+ *                   description: ID da requisição para acompanhamento
+ *                 message:
+ *                   type: string
+ *                   description: Mensagem de sucesso
+ *       "400":
+ *         description: Parâmetros inválidos
+ *       "500":
+ *         description: Erro interno do servidor
  */
 router.post("/", ((req: Request, res: Response) => {
   try {
@@ -68,7 +105,39 @@ router.post("/", ((req: Request, res: Response) => {
 }) as RequestHandler);
 
 /**
- * Rota para obter o resultado de uma pesquisa profunda
+ * @swagger
+ * /deep-research/{requestId}:
+ *   get:
+ *     tags:
+ *       - DeepResearch
+ *     summary: Obtém o resultado de uma pesquisa profunda
+ *     description: Retorna o resultado de uma pesquisa profunda com base no ID da requisição
+ *     parameters:
+ *       - name: requestId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID da requisição de pesquisa profunda
+ *     responses:
+ *       "200":
+ *         description: Resultado obtido com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   enum: [pending, processing, completed, error]
+ *                   description: Status da pesquisa
+ *                 result:
+ *                   type: object
+ *                   description: Resultado da pesquisa (quando completada)
+ *       "404":
+ *         description: Pesquisa não encontrada
+ *       "500":
+ *         description: Erro interno do servidor
  */
 router.get("/:requestId", ((req: Request, res: Response) => {
   try {
@@ -102,7 +171,35 @@ router.get("/:requestId", ((req: Request, res: Response) => {
 }) as RequestHandler);
 
 /**
- * Rota para cancelar uma pesquisa profunda
+ * @swagger
+ * /deep-research/{requestId}:
+ *   delete:
+ *     tags:
+ *       - DeepResearch
+ *     summary: Cancela uma pesquisa profunda
+ *     description: Cancela uma pesquisa profunda em andamento
+ *     parameters:
+ *       - name: requestId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID da requisição de pesquisa profunda
+ *     responses:
+ *       "200":
+ *         description: Pesquisa cancelada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensagem de sucesso
+ *       "404":
+ *         description: Pesquisa não encontrada ou já concluída
+ *       "500":
+ *         description: Erro interno do servidor
  */
 router.delete("/:requestId", ((req: Request, res: Response) => {
   try {

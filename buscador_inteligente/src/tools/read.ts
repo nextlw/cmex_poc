@@ -1,7 +1,6 @@
-import https from "https";
-import { TokenTracker } from "../utils/token-tracker";
 import { ReadResponse } from "../types/globalTypes";
-import { JINA_API_KEY } from "../config";
+import { TokenTracker } from "../utils/token-tracker";
+import https from "https";
 import { URL } from "url";
 
 /**

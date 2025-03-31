@@ -196,7 +196,7 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 ENV NODE_ENV=production
-EXPOSE 3000
+EXPOSE 3001
 CMD ["node", "src/server.js"]
 ```
 
@@ -334,13 +334,13 @@ services:
     depends_on:
       - api-gateway
     environment:
-      - API_URL=http://api-gateway:3000
+      - API_URL=http://api-gateway:3001
 
   api-gateway:
     build:
       context: ./api-gateway
     ports:
-      - "3000:3000"
+      - "3001:3001"
     depends_on:
       - backend
     environment:

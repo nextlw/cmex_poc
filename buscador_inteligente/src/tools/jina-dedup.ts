@@ -1,16 +1,16 @@
-import axios, {AxiosError} from 'axios';
-import {TokenTracker} from "../utils/token-tracker";
-import {JINA_API_KEY} from "../config";
+import axios, { AxiosError } from "axios";
+import { TokenTracker } from "../utils/token-tracker";
+import { JINA_API_KEY } from "../config";
 
-const JINA_API_URL = 'https://api.jina.ai/v1/embeddings';
+const JINA_API_URL = "https://api.jina.ai/v1/embeddings";
 const SIMILARITY_THRESHOLD = 0.86; // Adjustable threshold for cosine similarity
 
 const JINA_API_CONFIG = {
-  MODEL: 'jina-embeddings-v3',
-  TASK: 'text-matching',
+  MODEL: "jina-embeddings-v3",
+  TASK: "text-matching",
   DIMENSIONS: 1024,
-  EMBEDDING_TYPE: 'float',
-  LATE_CHUNKING: false
+  EMBEDDING_TYPE: "float",
+  LATE_CHUNKING: false,
 } as const;
 
 // Types for Jina API
@@ -37,7 +37,6 @@ interface JinaEmbeddingResponse {
   }>;
 }
 
-
 // Compute cosine similarity between two vectors
 function cosineSimilarity(vecA: number[], vecB: number[]): number {
   const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
@@ -47,9 +46,11 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
 }
 
 // Get embeddings for all queries in one batch
-async function getEmbeddings(queries: string[]): Promise<{ embeddings: number[][], tokens: number }> {
+async function getEmbeddings(
+  queries: string[]
+): Promise<{ embeddings: number[][]; tokens: number }> {
   if (!JINA_API_KEY) {
-    throw new Error('JINA_API_KEY is not set');
+    throw new Error("JINA_API_KEY is not set");
   }
 
   const request: JinaEmbeddingRequest = {
@@ -58,7 +59,7 @@ async function getEmbeddings(queries: string[]): Promise<{ embeddings: number[][
     late_chunking: JINA_API_CONFIG.LATE_CHUNKING,
     dimensions: JINA_API_CONFIG.DIMENSIONS,
     embedding_type: JINA_API_CONFIG.EMBEDDING_TYPE,
-    input: queries
+    input: queries,
   };
 
   try {
@@ -67,36 +68,36 @@ async function getEmbeddings(queries: string[]): Promise<{ embeddings: number[][
       request,
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${JINA_API_KEY}`
-        }
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${JINA_API_KEY}`,
+        },
       }
     );
 
     // Validate response format
     if (!response.data.data || response.data.data.length !== queries.length) {
-      console.error('Invalid response from Jina API:', response.data);
+      console.error("Invalid response from Jina API:", response.data);
       return {
         embeddings: [],
-        tokens: 0
+        tokens: 0,
       };
     }
 
     // Sort embeddings by index to maintain original order
     const embeddings = response.data.data
       .sort((a, b) => a.index - b.index)
-      .map(item => item.embedding);
+      .map((item) => item.embedding);
 
     return {
       embeddings,
-      tokens: response.data.usage.total_tokens
+      tokens: response.data.usage.total_tokens,
     };
   } catch (error) {
-    console.error('Error getting embeddings from Jina:', error);
+    console.error("Error getting embeddings from Jina:", error);
     if (error instanceof AxiosError && error.response?.status === 402) {
       return {
         embeddings: [],
-        tokens: 0
+        tokens: 0,
       };
     }
     throw error;
@@ -118,7 +119,9 @@ export async function dedupQueries(
 
     // Get embeddings for all queries in one batch
     const allQueries = [...newQueries, ...existingQueries];
-    const {embeddings: allEmbeddings, tokens} = await getEmbeddings(allQueries);
+    const { embeddings: allEmbeddings, tokens } = await getEmbeddings(
+      allQueries
+    );
 
     // If embeddings is empty (due to 402 error), return all new queries
     if (!allEmbeddings.length) {
@@ -140,7 +143,10 @@ export async function dedupQueries(
 
       // Check against existing queries
       for (let j = 0; j < existingQueries.length; j++) {
-        const similarity = cosineSimilarity(newEmbeddings[i], existingEmbeddings[j]);
+        const similarity = cosineSimilarity(
+          newEmbeddings[i],
+          existingEmbeddings[j]
+        );
         if (similarity >= SIMILARITY_THRESHOLD) {
           isUnique = false;
           break;
@@ -150,7 +156,10 @@ export async function dedupQueries(
       // Check against already accepted queries
       if (isUnique) {
         for (const usedIndex of usedIndices) {
-          const similarity = cosineSimilarity(newEmbeddings[i], newEmbeddings[usedIndex]);
+          const similarity = cosineSimilarity(
+            newEmbeddings[i],
+            newEmbeddings[usedIndex]
+          );
           if (similarity >= SIMILARITY_THRESHOLD) {
             isUnique = false;
             break;
@@ -166,17 +175,13 @@ export async function dedupQueries(
     }
 
     // Track token usage from the API
-    (tracker || new TokenTracker()).trackUsage('dedup', {
-        promptTokens: 0,
-        completionTokens: tokens,
-        totalTokens: tokens
-    });
-    console.log('Dedup:', uniqueQueries);
+    (tracker || new TokenTracker()).trackUsage("dedup", tokens);
+    console.log("Dedup:", uniqueQueries);
     return {
       unique_queries: uniqueQueries,
     };
   } catch (error) {
-    console.error('Error in deduplication analysis:', error);
+    console.error("Error in deduplication analysis:", error);
 
     // return all new queries if there is an error
     return {

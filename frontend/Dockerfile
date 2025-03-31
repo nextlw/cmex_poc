@@ -11,6 +11,6 @@ RUN pnpm install
 COPY . .
 RUN pnpm run build
 
-EXPOSE 3000
+EXPOSE 3001
 # Usar o --host para expor a aplicação para fora do container
 CMD ["pnpm", "run", "dev", "--", "--host", "0.0.0.0"] 

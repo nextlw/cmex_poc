@@ -282,7 +282,7 @@ async def direct_queries(request: Request):
 async def validar_com_deepresearch(consulta: str, modelo: str, sugestao_ncm: list):
     try:
         # Endpoint da API Node.js para DeepResearch
-        url = "http://localhost:3000/api/v1/query"
+        url = "http://localhost:3001/api/v1/query"
 
         # Extrai as informações para validação
         ncm_sugerido = sugestao_ncm[0].get("ncm", "") if sugestao_ncm else ""
@@ -391,7 +391,7 @@ async def get_task_status(request_id: str, request: Request):
 
     try:
         # Endpoint da API Node.js para verificar o status da tarefa
-        task_url = f"http://localhost:3000/api/v1/task-status/{request_id}"
+        task_url = f"http://localhost:3001/api/v1/task-status/{request_id}"
 
         async with httpx.AsyncClient(timeout=10.0) as client:
             try:
@@ -500,7 +500,7 @@ async def cancel_process(request: Request):
             # Usa o httpx para fazer uma requisição ao serviço Node.js
             async with httpx.AsyncClient() as client:
                 node_response = await client.post(
-                    "http://localhost:3000/api/v1/cancel",
+                    "http://localhost:3001/api/v1/cancel",
                     json={"requestId": request_id},
                     timeout=3.0,  # Timeout curto, pois apenas precisa iniciar o processo de cancelamento
                 )
@@ -515,7 +515,7 @@ async def cancel_process(request: Request):
                     )
                     # Tenta a abordagem alternativa - trash-query
                     trash_response = await client.post(
-                        "http://localhost:3000/api/v1/trash-query",
+                        "http://localhost:3001/api/v1/trash-query",
                         json={"id": request_id},
                         timeout=3.0,
                     )

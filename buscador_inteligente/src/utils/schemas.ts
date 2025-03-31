@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { ObjectGeneratorSafe } from "./safe-generator";
-import { EvaluationType, PromptPair } from "../types";
+import { EvaluationType } from "../types";
+
+// Interface local para substituir a importação removida
+interface PromptPair {
+  system: string;
+  user: string;
+}
 
 export const MAX_URLS_PER_STEP = 20;
 export const MAX_QUERIES_PER_STEP = 5;
@@ -70,8 +76,7 @@ export class Schemas {
     const result = await generator.generateObject({
       model: "evaluator",
       schema: this.getLanguageSchema(),
-      system: prompt.system,
-      prompt: prompt.user,
+      prompt: prompt.system + "\n\n" + prompt.user,
     });
 
     this.languageCode = result.object.langCode;

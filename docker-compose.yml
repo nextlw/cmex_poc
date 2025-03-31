@@ -19,7 +19,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     ports:
-      - "3001:3000"
+      - "3001:3001"
     depends_on:
       - shared-types
       - redis
@@ -53,9 +53,9 @@ services:
     env_file: ./frontend/.env
     environment:
       - FASTAPI_URL=http://fastapi:8000
-      - BUSCADOR_URL=http://buscador:3000
+      - BUSCADOR_URL=http://buscador:3001
     ports:
-      - "3002:3000"
+      - "3002:3001"
     depends_on:
       - fastapi
       - buscador

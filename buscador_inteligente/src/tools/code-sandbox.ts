@@ -1,7 +1,17 @@
-import {ObjectGeneratorSafe} from "../utils/safe-generator";
-import {CodeGenResponse, PromptPair, TrackerContext} from "../types";
-import {Schemas} from "../utils/schemas";
+import { ObjectGeneratorSafe } from "../utils/safe-generator";
+import { TrackerContext } from "../types";
+import { Schemas } from "../utils/schemas";
 
+// Interfaces locais para substituir as importações removidas
+interface CodeGenResponse {
+  think: string;
+  code: string;
+}
+
+interface PromptPair {
+  system: string;
+  user: string;
+}
 
 interface SandboxResult {
   success: boolean;
@@ -9,19 +19,26 @@ interface SandboxResult {
   error?: string;
 }
 
-
 function getPrompt(
   problem: string,
   availableVars: string,
   previousAttempts: Array<{ code: string; error?: string }> = []
 ): PromptPair {
-  const previousAttemptsContext = previousAttempts.map((attempt, index) => `
+  const previousAttemptsContext = previousAttempts
+    .map(
+      (attempt, index) => `
 <bad-attempt-${index + 1}>
 ${attempt.code}
-${attempt.error ? `Error: ${attempt.error}
+${
+  attempt.error
+    ? `Error: ${attempt.error}
 </bad-attempt-${index + 1}>
-` : ''}
-`).join('\n');
+`
+    : ""
+}
+`
+    )
+    .join("\n");
 
   const prompt = `You are an expert JavaScript programmer. Your task is to generate JavaScript code to solve the given problem.
 
@@ -32,9 +49,13 @@ ${availableVars}
 3. You don't have access to any third party libraries that need to be installed, so you must write complete, self-contained code.
 </rules>
 
-${previousAttempts.length > 0 ? `Previous attempts and their errors:
+${
+  previousAttempts.length > 0
+    ? `Previous attempts and their errors:
 ${previousAttemptsContext}
-` : ''}
+`
+    : ""
+}
 
 <example>
 Available variables:
@@ -49,9 +70,9 @@ Response:
 }
 </example>`;
 
-  console.log('Coding prompt', prompt)
+  console.log("Coding prompt", prompt);
 
-  return {system: prompt, user: problem };
+  return { system: prompt, user: problem };
 }
 
 export class CodeSandbox {
@@ -65,7 +86,7 @@ export class CodeSandbox {
     context: any = {},
     trackers: TrackerContext,
     schemaGen: Schemas,
-    maxAttempts: number = 3,
+    maxAttempts: number = 3
   ) {
     this.trackers = trackers;
     this.generator = new ObjectGeneratorSafe(trackers?.tokenTracker);
@@ -78,13 +99,16 @@ export class CodeSandbox {
     problem: string,
     previousAttempts: Array<{ code: string; error?: string }> = []
   ): Promise<CodeGenResponse> {
-    const prompt = getPrompt(problem, analyzeStructure(this.context), previousAttempts);
+    const prompt = getPrompt(
+      problem,
+      analyzeStructure(this.context),
+      previousAttempts
+    );
 
     const result = await this.generator.generateObject({
-      model: 'coder',
+      model: "coder",
       schema: this.schemaGen.getCodeGeneratorSchema(),
-      system: prompt.system,
-      prompt: prompt.user
+      prompt: prompt.system + "\n\n" + prompt.user,
     });
 
     this.trackers?.actionTracker.trackThink(result.object.think);
@@ -95,13 +119,16 @@ export class CodeSandbox {
   private evaluateCode(code: string): SandboxResult {
     try {
       // Create a function that uses 'with' to evaluate in the context and return the result
-      const evalInContext = new Function('context', `
+      const evalInContext = new Function(
+        "context",
+        `
         with (context) {
           ${code}
         }
-      `);
+      `
+      );
 
-      console.log('Context:', this.context);
+      console.log("Context:", this.context);
 
       // Execute the code with the context and get the return value
       const output = evalInContext(this.context);
@@ -109,18 +136,20 @@ export class CodeSandbox {
       if (output === undefined) {
         return {
           success: false,
-          error: 'No value was returned, make sure to use "return" statement to return the result'
+          error:
+            'No value was returned, make sure to use "return" statement to return the result',
         };
       }
 
       return {
         success: true,
-        output
+        output,
       };
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred'
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -134,7 +163,7 @@ export class CodeSandbox {
     for (let i = 0; i < this.maxAttempts; i++) {
       // Generate code
       const generation = await this.generateCode(problem, attempts);
-      const {code} = generation;
+      const { code } = generation;
 
       console.log(`Coding attempt ${i + 1}:`, code);
       // Evaluate the code
@@ -145,46 +174,48 @@ export class CodeSandbox {
         return {
           solution: {
             code,
-            output: result.output
+            output: result.output,
           },
-          attempts
+          attempts,
         };
       }
 
-      console.error('Coding error:', result.error);
+      console.error("Coding error:", result.error);
 
       // Store the failed attempt
       attempts.push({
         code,
-        error: result.error
+        error: result.error,
       });
 
       // If we've reached max attempts, throw an error
       if (i === this.maxAttempts - 1) {
-        throw new Error(`Failed to generate working code after ${this.maxAttempts} attempts`);
+        throw new Error(
+          `Failed to generate working code after ${this.maxAttempts} attempts`
+        );
       }
     }
 
     // This should never be reached due to the throw above
-    throw new Error('Unexpected end of execution');
+    throw new Error("Unexpected end of execution");
   }
 }
 
 function formatValue(value: any): string {
-  if (value === null) return 'null';
-  if (value === undefined) return 'undefined';
+  if (value === null) return "null";
+  if (value === undefined) return "undefined";
 
   const type = typeof value;
 
-  if (type === 'string') {
+  if (type === "string") {
     // Clean and truncate string value
-    const cleaned = value.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-    return cleaned.length > 50 ?
-      `"${cleaned.slice(0, 47)}..."` :
-      `"${cleaned}"`;
+    const cleaned = value.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+    return cleaned.length > 50
+      ? `"${cleaned.slice(0, 47)}..."`
+      : `"${cleaned}"`;
   }
 
-  if (type === 'number' || type === 'boolean') {
+  if (type === "number" || type === "boolean") {
     return String(value);
   }
 
@@ -192,40 +223,40 @@ function formatValue(value: any): string {
     return `"${value.toISOString()}"`;
   }
 
-  return '';
+  return "";
 }
 
-export function analyzeStructure(value: any, indent = ''): string {
-  if (value === null) return 'null';
-  if (value === undefined) return 'undefined';
+export function analyzeStructure(value: any, indent = ""): string {
+  if (value === null) return "null";
+  if (value === undefined) return "undefined";
 
   const type = typeof value;
 
-  if (type === 'function') {
-    return 'Function';
+  if (type === "function") {
+    return "Function";
   }
 
   // Handle atomic types with example values
-  if (type !== 'object' || value instanceof Date) {
+  if (type !== "object" || value instanceof Date) {
     const formattedValue = formatValue(value);
-    return `${type}${formattedValue ? ` (example: ${formattedValue})` : ''}`;
+    return `${type}${formattedValue ? ` (example: ${formattedValue})` : ""}`;
   }
 
   if (Array.isArray(value)) {
-    if (value.length === 0) return 'Array<unknown>';
+    if (value.length === 0) return "Array<unknown>";
     const sampleItem = value[0];
-    return `Array<${analyzeStructure(sampleItem, indent + '  ')}>`;
+    return `Array<${analyzeStructure(sampleItem, indent + "  ")}>`;
   }
 
   const entries = Object.entries(value);
-  if (entries.length === 0) return '{}';
+  if (entries.length === 0) return "{}";
 
   const properties = entries
     .map(([key, val]) => {
-      const analyzed = analyzeStructure(val, indent + '  ');
+      const analyzed = analyzeStructure(val, indent + "  ");
       return `${indent}  "${key}": ${analyzed}`;
     })
-    .join(',\n');
+    .join(",\n");
 
   return `{\n${properties}\n${indent}}`;
 }

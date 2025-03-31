@@ -155,7 +155,7 @@ Para iniciar o servidor em modo de desenvolvimento com respostas mockadas, utili
 ./start-dev-server.sh
 ```
 
-Este script verifica automaticamente se a porta 3000 está em uso e, caso esteja, utiliza a porta 3000. Também define as variáveis de ambiente necessárias para o modo de desenvolvimento com respostas mockadas.
+Este script verifica automaticamente se a porta 3001 está em uso e, caso esteja, utiliza a porta 3001. Também define as variáveis de ambiente necessárias para o modo de desenvolvimento com respostas mockadas.
 
 ## Implementação Técnica
 

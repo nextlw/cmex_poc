@@ -16,7 +16,7 @@ Este documento apresenta o procedimento detalhado para realizar os testes manuai
 
 2. **Ativar Modo Debug**
 
-   - Abra o navegador e acesse `http://localhost:3000/chat`
+   - Abra o navegador e acesse `http://localhost:3001/chat`
    - Abra as ferramentas de desenvolvedor (F12 ou Cmd+Option+I)
    - Na aba Console, copie e cole o conteúdo do script `testes-manuais/ativar-debug.js`
    - Confirme a mensagem "Debug de testes ativado!"

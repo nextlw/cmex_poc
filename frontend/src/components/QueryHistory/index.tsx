@@ -58,7 +58,7 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({
       }
 
       const API_URL =
-        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3001";
       const response = await fetch(`${API_URL}/api/v1/queries`);
 
       if (!response.ok) {
@@ -261,7 +261,7 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({
 
     try {
       const API_URL =
-        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3001";
 
       // Aplicar a flag isDeleting para mostrar a animação
       setQueries((prev) =>
@@ -309,7 +309,7 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({
       setDeletingIds((prev) => [...prev, queryToDelete.id]);
       try {
         const API_URL =
-          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3001";
         const response = await fetch(`${API_URL}/api/v1/trash-query`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

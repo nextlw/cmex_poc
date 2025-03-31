@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:10000";
 const NODE_API_URL =
-  process.env.REACT_APP_NODE_API_URL || "http://localhost:3000";
+  process.env.REACT_APP_NODE_API_URL || "http://localhost:3001";
 
 // Função para enviar consulta
 export async function sendQuery(query: string, model: string) {

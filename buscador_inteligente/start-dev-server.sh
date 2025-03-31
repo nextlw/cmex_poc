@@ -6,7 +6,7 @@ export MOCK_RESPONSES=true
 
 # Verificar portas em uso
 echo "Verificando portas disponíveis..."
-PORTS=(3000 3001 3002 3003)
+PORTS=(3001)
 SELECTED_PORT=""
 
 for PORT in "${PORTS[@]}"; do

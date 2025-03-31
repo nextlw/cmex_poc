@@ -46020,7 +46020,7 @@
       "Ano_Ato_Ini": "2021"
     },
     {
-      "Codigo": "3000.20",
+      "Codigo": "3001.20",
       "Descricao": "- Extratos de glândulas ou de outros órgãos ou das suas secreções",
       "Data_Inicio": "01/04/2022",
       "Data_Fim": "31/12/9999",
@@ -46029,7 +46029,7 @@
       "Ano_Ato_Ini": "2021"
     },
     {
-      "Codigo": "3000.20.10",
+      "Codigo": "3001.20.10",
       "Descricao": "De fígado",
       "Data_Inicio": "01/04/2022",
       "Data_Fim": "31/12/9999",
@@ -46038,7 +46038,7 @@
       "Ano_Ato_Ini": "2021"
     },
     {
-      "Codigo": "3000.20.90",
+      "Codigo": "3001.20.90",
       "Descricao": "Outros",
       "Data_Inicio": "01/04/2022",
       "Data_Fim": "31/12/9999",
@@ -46047,7 +46047,7 @@
       "Ano_Ato_Ini": "2021"
     },
     {
-      "Codigo": "3000.90",
+      "Codigo": "3001.90",
       "Descricao": "- Outros",
       "Data_Inicio": "01/04/2022",
       "Data_Fim": "31/12/9999",
@@ -46056,7 +46056,7 @@
       "Ano_Ato_Ini": "2021"
     },
     {
-      "Codigo": "3000.90.10",
+      "Codigo": "3001.90.10",
       "Descricao": "Heparina e seus sais",
       "Data_Inicio": "01/04/2022",
       "Data_Fim": "31/12/9999",
@@ -46065,7 +46065,7 @@
       "Ano_Ato_Ini": "2021"
     },
     {
-      "Codigo": "3000.90.20",
+      "Codigo": "3001.90.20",
       "Descricao": "Pedaços de pericárdio de origem bovina ou suína",
       "Data_Inicio": "01/04/2022",
       "Data_Fim": "31/12/9999",
@@ -46074,7 +46074,7 @@
       "Ano_Ato_Ini": "2021"
     },
     {
-      "Codigo": "3000.90.3",
+      "Codigo": "3001.90.3",
       "Descricao": "Glândulas e outros órgãos, dessecados, mesmo em pó",
       "Data_Inicio": "01/04/2022",
       "Data_Fim": "31/12/9999",
@@ -46083,7 +46083,7 @@
       "Ano_Ato_Ini": "2021"
     },
     {
-      "Codigo": "3000.90.31",
+      "Codigo": "3001.90.31",
       "Descricao": "Fígados",
       "Data_Inicio": "01/04/2022",
       "Data_Fim": "31/12/9999",
@@ -46092,7 +46092,7 @@
       "Ano_Ato_Ini": "2021"
     },
     {
-      "Codigo": "3000.90.39",
+      "Codigo": "3001.90.39",
       "Descricao": "Outros",
       "Data_Inicio": "01/04/2022",
       "Data_Fim": "31/12/9999",
@@ -46101,7 +46101,7 @@
       "Ano_Ato_Ini": "2021"
     },
     {
-      "Codigo": "3000.90.90",
+      "Codigo": "3001.90.90",
       "Descricao": "Outros",
       "Data_Inicio": "01/04/2022",
       "Data_Fim": "31/12/9999",

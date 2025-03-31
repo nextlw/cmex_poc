@@ -1,8 +1,8 @@
-import axios from 'axios';
-import {TokenTracker} from "../utils/token-tracker";
-import {JINA_API_KEY} from "../config";
+import axios from "axios";
+import { TokenTracker } from "../utils/token-tracker";
+import { JINA_API_KEY } from "../config";
 
-const JINA_API_URL = 'https://api.jina.ai/v1/rerank';
+const JINA_API_URL = "https://api.jina.ai/v1/rerank";
 
 // Types for Jina Rerank API
 interface JinaRerankRequest {
@@ -38,17 +38,23 @@ export async function rerankDocuments(
   query: string,
   documents: string[],
   tracker?: TokenTracker
-): Promise<{ results: Array<{index: number, relevance_score: number, document: {text: string}}> }> {
+): Promise<{
+  results: Array<{
+    index: number;
+    relevance_score: number;
+    document: { text: string };
+  }>;
+}> {
   try {
     if (!JINA_API_KEY) {
-      throw new Error('JINA_API_KEY is not set');
+      throw new Error("JINA_API_KEY is not set");
     }
 
     const request: JinaRerankRequest = {
-      model: 'jina-reranker-v2-base-multilingual',
+      model: "jina-reranker-v2-base-multilingual",
       query,
       top_n: documents.length,
-      documents
+      documents,
     };
 
     const response = await axios.post<JinaRerankResponse>(
@@ -56,28 +62,27 @@ export async function rerankDocuments(
       request,
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${JINA_API_KEY}`
-        }
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${JINA_API_KEY}`,
+        },
       }
     );
 
     // Track token usage from the API
-    (tracker || new TokenTracker()).trackUsage('rerank', {
-      promptTokens: response.data.usage.total_tokens,
-      completionTokens: 0,
-      totalTokens: response.data.usage.total_tokens
-    });
+    (tracker || new TokenTracker()).trackUsage(
+      "rerank",
+      response.data.usage.total_tokens
+    );
 
     return {
-      results: response.data.results
+      results: response.data.results,
     };
   } catch (error) {
-    console.error('Error in reranking documents:', error);
+    console.error("Error in reranking documents:", error);
 
     // Return empty results if there is an error
     return {
-      results: []
+      results: [],
     };
   }
 }

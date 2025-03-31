@@ -574,7 +574,7 @@ const HomePage: React.FC = () => {
     if (deepResearchRequestId) {
       try {
         const API_URL =
-          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3001";
         const API_FASTAPI =
           import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
 

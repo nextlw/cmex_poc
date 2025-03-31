@@ -8,12 +8,12 @@ O CMEX Backend suporta diferentes modelos de IA para processamento de consultas.
 
 Atualmente, o sistema suporta os seguintes modelos:
 
-| Modelo | Tipo | Descrição | Token Máximo |
-|--------|------|-----------|--------------|
-| `qwen2.5-7b-instruct-1m` | Local | Modelo local padrão para processamento de consultas | Configurável |
-| `gemini-1.5-flash` | API | Modelo mais rápido da família Gemini | 1 milhão |
-| `gemini-1.5-pro` | API | Modelo mais avançado da família Gemini 1.5 | 1 milhão |
-| `gemini-2.0-flash` | API | Versão mais recente do Gemini, otimizada para velocidade | 1 milhão |
+| Modelo                   | Tipo  | Descrição                                                | Token Máximo |
+| ------------------------ | ----- | -------------------------------------------------------- | ------------ |
+| `qwen2.5-7b-instruct-1m` | Local | Modelo local padrão para processamento de consultas      | Configurável |
+| `gemini-1.5-flash`       | API   | Modelo mais rápido da família Gemini                     | 1 milhão     |
+| `gemini-1.5-pro`         | API   | Modelo mais avançado da família Gemini 1.5               | 1 milhão     |
+| `gemini-2.0-flash`       | API   | Versão mais recente do Gemini, otimizada para velocidade | 1 milhão     |
 
 ## Configuração
 
@@ -32,7 +32,7 @@ As configurações dos modelos estão definidas no arquivo `config.ts`. Exemplo:
 ```typescript style="background-color: #161921"
 export const modelConfigs = {
   agent: {
-    model: process.env.AGENT_MODEL || 'qwen2.5-7b-instruct-1m',
+    model: process.env.AGENT_MODEL || "qwen2.5-7b-instruct-1m",
     temperature: 0.1,
     maxTokens: 1024,
   },
@@ -51,7 +51,7 @@ Os usuários podem selecionar o modelo desejado na interface do CMEX Frontend po
 Para selecionar um modelo específico ao fazer uma consulta via API:
 
 ```bash style="background-color: #161921"
-curl -X POST "http://localhost:3000/api/v1/query" \
+curl -X POST "http://localhost:3001/api/v1/query" \
   -H "Content-Type: application/json" \
   -d '{
     "question": "O que é TypeScript?",
@@ -65,7 +65,8 @@ curl -X POST "http://localhost:3000/api/v1/query" \
 
 Os modelos locais e Gemini possuem algumas diferenças significativas no formato de resposta:
 
-1. **Formato JSON**: 
+1. **Formato JSON**:
+
    - Modelos locais: Aceitam `responseSchema` para definir o formato da resposta
    - Gemini: Necessita de instruções textuais para formatar a resposta como JSON
 
@@ -78,9 +79,7 @@ Os modelos locais e Gemini possuem algumas diferenças significativas no formato
 {
   "answer": "TypeScript é uma linguagem de programação de código aberto desenvolvida pela Microsoft. Ela é um superconjunto sintático de JavaScript que adiciona tipagem estática opcional à linguagem.",
   "thinking": "Vou pesquisar sobre o TypeScript para fornecer uma definição precisa.",
-  "references": [
-    "https://www.typescriptlang.org/docs/"
-  ]
+  "references": ["https://www.typescriptlang.org/docs/"]
 }
 ```
 
@@ -104,16 +103,16 @@ flowchart TD
         B2 --> C2{Tipo de Modelo?}
         C2 -->|Modelo Local| D2[Cliente Local]
         C2 -->|Gemini| E2[Cliente Gemini]
-        
+
         D2 --> F2[Processamento Padrão]
         F2 --> G2[Schema JSON Fixo]
-        
+
         E2 --> H2[Prompt com Instruções para JSON]
         H2 --> I2[Extração de JSON do Markdown]
-        
+
         G2 --> J2[Resposta Final]
         I2 --> J2
-        
+
         J2 --> K2[Envio ao Usuário]
     end
 ```
@@ -123,11 +122,13 @@ flowchart TD
 1. **Seleção de Modelo**: O sistema verifica o modelo solicitado e inicializa o cliente apropriado (local ou Gemini).
 
 2. **Para Modelos Locais**:
+
    - Utiliza o cliente local existente
    - Configura o modelo com o esquema de resposta definido (responseSchema)
    - Processa a resposta diretamente para o formato esperado
 
 3. **Para Modelos Gemini**:
+
    - Inicializa o cliente Gemini com a API key configurada
    - Adapta o prompt com instruções específicas para formatação JSON
    - Após receber a resposta, aplica um regex para extrair o JSON da resposta (que pode vir em formato markdown)
@@ -150,6 +151,7 @@ O sistema implementa tratamento de erros específico para chamadas à API Gemini
 ## Histórico de Alterações
 
 ### 25/02/2025
+
 - Adicionado suporte inicial para modelos Gemini do Google
 - Implementada lógica de extração de JSON de respostas em formato markdown
 - Melhorado o tratamento de erros para chamadas de API
@@ -164,4 +166,4 @@ O sistema implementa tratamento de erros específico para chamadas à API Gemini
 ## Referências
 
 - [Documentação oficial da API Gemini](https://ai.google.dev/docs)
-- [Documentação do Qwen](https://github.com/QwenLM/Qwen) 
+- [Documentação do Qwen](https://github.com/QwenLM/Qwen)

@@ -11,7 +11,7 @@
 2025-03-11T04:00:44.820Z - Nova query recebida via props: JSHandle@object
 2025-03-11T04:00:44.821Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
 2025-03-11T04:00:44.822Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
-2025-03-11T04:00:51.244Z - Enviando pergunta para: http://localhost:3000/api/v1/query
+2025-03-11T04:00:51.244Z - Enviando pergunta para: http://localhost:3001/api/v1/query
 2025-03-11T04:00:51.287Z - Failed to load resource: net::ERR_CONNECTION_REFUSED
 2025-03-11T04:00:51.288Z - Erro ao salvar sessão: JSHandle@error
 2025-03-11T04:00:51.292Z - Erro na conexão SSE: JSHandle@object

@@ -1,4 +1,8 @@
-[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                                                                                                                          [0m[27m[24m[J(base) williamduarte@18379-Resolvvi buscador_inteligente % [K[?2004hppnpm run dev[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                                                                                                                         
+ 
+
+[0m[27m[24m[J(ba3001williamduarte@18379-Resolvvi buscador_inteligente % [K[?2004hppnpm run dev[?2004l
+
 
 > agentic-search@1.0.0 dev /Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente
 > PORT=${NODE_PORT:-3000} nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts
@@ -104,7 +108,7 @@ Configuration Summary: {
   displayName: [32m'Gemini Pro'[39m,
   supportsStreaming: [33mtrue[39m,
   pid: [33m81548[39m,
-  env: [32m'development'[39m
+  env: [32m'development'3001
 }
 [2025-03-24T12:19:15.331Z] Modelos inicializados { count: [33m5[39m, pid: [33m81548[39m, env: [32m'development'[39m }
 Conectando ao Redis em localhost:6378
@@ -233,8 +237,12 @@ Error in attribution evaluation: TypeError: fetch failed
   [90m    at processTimers (node:internal/timers:549:7)[39m {
     code: [32m'UND_ERR_HEADERS_TIMEOUT'[39m
   }
-}
-^[[B^[[B^[[B^[[B^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                                                                                                                          [0m[27m[24m[J(base) williamduarte@18379-Resolvvi buscador_inteligente % [K[?2004hppnpm run dev[?2004l
+}3001
+^[[B^[[B^[[B^[[B^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                                                                                                                         
+ 
+
+[0m[27m[24m[J(base) williamduarte@18379-Resolvvi buscador_inteligente % [K[?2004hppnpm run dev[?2004l
+
 
 > agentic-search@1.0.0 dev /Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente
 > PORT=${NODE_PORT:-3000} nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts
@@ -336,7 +344,7 @@ Configuration Summary: {
   env: [32m'development'[39m
 }
 [2025-03-24T12:50:06.131Z] Modelo registrado: gemini-1.5-pro {
-  provider: [32m'google'[39m,
+  provider: [32m'google'3001,
   displayName: [32m'Gemini Pro'[39m,
   supportsStreaming: [33mtrue[39m,
   pid: [33m84991[39m,
@@ -724,7 +732,8 @@ c. **Análise Detalhada de Cada Possibilidade:**
 }
 ```
 
-Espero que isso ajude a resolver o problema. Se precisar de mais assistência, estou à disposição!
+Espero que isso ajude a resolver o problema. Se precisar de mais assistência, estou à disposição!
+
 [32mResposta encontrada! Verificando qualidade...[0m
 Error analysis: { is_valid: [33mtrue[39m, context: {} }
 Waiting 0s...
@@ -1050,7 +1059,7 @@ Configuration Summary: {
   pid: [33m88462[39m,
   env: [32m'development'[39m
 }
-[2025-03-24T13:01:49.694Z] Modelo registrado: gemini-1.5-pro {
+[2025-03-24T13:01:49.694Z] Modelo registrado: gemini3001-pro {
   provider: [32m'google'[39m,
   displayName: [32m'Gemini Pro'[39m,
   supportsStreaming: [33mtrue[39m,
@@ -1172,7 +1181,7 @@ Configuration Summary: {
   pid: [33m88682[39m,
   env: [32m'development'[39m
 }
-[2025-03-24T13:02:10.192Z] Modelo registrado: gemini-1.5-pro {
+[2025-03-24T13:02:10.192Z] Modelo registrado: gemini3001-pro {
   provider: [32m'google'[39m,
   displayName: [32m'Gemini Pro'[39m,
   supportsStreaming: [33mtrue[39m,
@@ -1193,13 +1202,17 @@ Error: listen EADDRINUSE: address already in use :::3000
 [90m    at Module.load (node:internal/modules/cjs/loader:1458:32)[39m
 [90m    at Function._load (node:internal/modules/cjs/loader:1275:12)[39m {
   code: [32m'EADDRINUSE'[39m,
-  errno: [33m-48[39m,
+  errno: [33m-48[33001
   syscall: [32m'listen'[39m,
   address: [32m'::'[39m,
   port: [33m3000[39m
 }
 [31m[nodemon] app crashed - waiting for file changes before starting...[39m
-^[[A^[[A^[[A^[[A^[[A[1m[7m%[27m[1m[0m                                                                                                                            [0m[27m[24m[J(base) williamduarte@18379-Resolvvi buscador_inteligente % [K[?2004hpnpm run dev[?2004l
+^[[A^[[A^[[A^[[A^[[A[1m[7m%[27m[1m[0m                                                                                                                           
+ 
+
+[0m[27m[24m[J(base) williamduarte@18379-Resolvvi buscador_inteligente % [K[?2004hpnpm run dev[?2004l
+
 
 > agentic-search@1.0.0 dev /Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente
 > PORT=${NODE_PORT:-3000} nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts
@@ -1222,7 +1235,7 @@ Endpoint local validado com sucesso
               /'__`\  \ \ \  __     \/\ \   /'__`\        |    |
              /\  __/   \ \ \L\ \ __  \ \ \ /\ \L\.\_     /|    |\
              \ \____\   \ \____//\_\  \ \_\\ \__/.\_\   / |    | \
-              \/____/    \/___/ \/_/   \/_/ \/__/\/_/  /__|____|__\
+              \/____/    \/___/ \/_/   \/_/ \/__/\/3001/__|____|__\
                                                           /    \
                                                          /      \
 
@@ -1886,7 +1899,8 @@ Erro na avaliação: Error: Erro na resposta do modelo: Trying to keep the first
     at async Object.generateContent [90m(/Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente/[39msrc/tools/local-model-client.ts:554:24[90m)[39m
     at async performEvaluation [90m(/Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente/[39msrc/tools/evaluator.ts:519:20[90m)[39m
     at async evaluateAnswer [90m(/Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente/[39msrc/tools/evaluator.ts:603:20[90m)[39m
-    at async getResponse [90m(/Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente/[39msrc/agent.ts:885:26[90m)[39m
+    at async getResponse [90m(/Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente/[39msrc/agent.ts:885:26[90m)[39m
+
     at async [90m/Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente/[39msrc/server.ts:741:26
 Error in attribution evaluation: Error: Erro na resposta do modelo: Trying to keep the first 107694 tokens when context the overflows. However, the model is loaded with context length of only 55729 tokens, which is not enough. Try to load the model with a larger context length, or provide a shorter input
     at LocalModelClient.generateContentMethod [90m(/Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente/[39msrc/tools/local-model-client.ts:468:15[90m)[39m

@@ -54,7 +54,7 @@ Substituímos o uso de `<style jsx>` por estilos inline com tipos explícitos:
 Após as correções, executamos os testes de API para verificar a funcionalidade:
 
 ```bash
-./test-ncm-api.sh 3000 true
+./test-ncm-api.sh 3001 true
 ```
 
 Todos os testes foram bem-sucedidos, demonstrando que:

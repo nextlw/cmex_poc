@@ -100,6 +100,7 @@ export interface AlertBlock extends ContentBlock {
 export interface Reference {
   exactQuote: string;
   url: string;
+  title?: string;
 }
 
 // Tipos de Ação
@@ -158,7 +159,9 @@ export type EvaluationType =
   | "definitive"
   | "freshness"
   | "plurality"
-  | "attribution";
+  | "attribution"
+  | "completeness"
+  | "strict";
 export type EvaluationCriteria = {
   types: EvaluationType[];
   languageStyle: string;
@@ -227,7 +230,13 @@ export type EvaluationResponse = {
   pass: boolean;
   think: string;
   tokens?: number;
-  type?: "definitive" | "freshness" | "plurality" | "attribution";
+  type?:
+    | "definitive"
+    | "freshness"
+    | "plurality"
+    | "attribution"
+    | "completeness"
+    | "strict";
   freshness_analysis?: {
     likely_outdated: boolean;
     dates_mentioned: string[];

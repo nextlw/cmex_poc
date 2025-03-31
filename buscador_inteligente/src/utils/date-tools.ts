@@ -1,49 +1,6 @@
-import { SERPQuery } from "../types";
-
-export function formatDateRange(query: SERPQuery) {
-  let searchDateTime;
-  const currentDate = new Date();
-  let format = "full"; // Default format
-
-  switch (query.tbs) {
-    case "qdr:h":
-      searchDateTime = new Date(Date.now() - 60 * 60 * 1000);
-      format = "hour";
-      break;
-    case "qdr:d":
-      searchDateTime = new Date(Date.now() - 24 * 60 * 60 * 1000);
-      format = "day";
-      break;
-    case "qdr:w":
-      searchDateTime = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      format = "day";
-      break;
-    case "qdr:m":
-      searchDateTime = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-      format = "day";
-      break;
-    case "qdr:y":
-      searchDateTime = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
-      format = "year";
-      break;
-    default:
-      searchDateTime = undefined;
-  }
-
-  if (searchDateTime !== undefined) {
-    const startDate = formatDateBasedOnType(
-      searchDateTime,
-      format as DateFormatType
-    );
-    const endDate = formatDateBasedOnType(
-      currentDate,
-      format as DateFormatType
-    );
-    return `Between ${startDate} and ${endDate}`;
-  }
-
-  return "";
-}
+/**
+ * Utilitários para formatação de datas
+ */
 
 /**
  * Tipos de formatação de data suportados

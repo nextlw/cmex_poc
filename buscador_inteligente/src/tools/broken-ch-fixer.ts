@@ -1,12 +1,15 @@
 import { generateText } from "ai";
 import { getModel } from "../config";
-import {TrackerContext} from "../types";
+import { TrackerContext } from "../types";
 
 /**
  * Repairs markdown content with � characters by using Gemini to guess the missing text
  */
-export async function repairUnknownChars(mdContent: string, trackers: TrackerContext): Promise<string> {
-  if (!mdContent.includes('�')) return mdContent;
+export async function repairUnknownChars(
+  mdContent: string,
+  trackers: TrackerContext
+): Promise<string> {
+  if (!mdContent.includes("�")) return mdContent;
 
   let repairedContent = mdContent;
   let remainingUnknowns = true;
@@ -18,7 +21,7 @@ export async function repairUnknownChars(mdContent: string, trackers: TrackerCon
     iterations++;
 
     // Find the position of the first � character
-    const position = repairedContent.indexOf('�');
+    const position = repairedContent.indexOf("�");
     if (position === -1) {
       remainingUnknowns = false;
       continue;
@@ -27,8 +30,9 @@ export async function repairUnknownChars(mdContent: string, trackers: TrackerCon
     // Check if we're stuck at the same position
     if (position === lastPosition) {
       // Move past this character by removing it
-      repairedContent = repairedContent.substring(0, position) +
-                         repairedContent.substring(position + 1);
+      repairedContent =
+        repairedContent.substring(0, position) +
+        repairedContent.substring(position + 1);
       continue;
     }
 
@@ -37,21 +41,31 @@ export async function repairUnknownChars(mdContent: string, trackers: TrackerCon
 
     // Count consecutive � characters
     let unknownCount = 0;
-    for (let i = position; i < repairedContent.length && repairedContent[i] === '�'; i++) {
+    for (
+      let i = position;
+      i < repairedContent.length && repairedContent[i] === "�";
+      i++
+    ) {
       unknownCount++;
     }
 
     // Extract context around the unknown characters
     const contextSize = 50;
     const start = Math.max(0, position - contextSize);
-    const end = Math.min(repairedContent.length, position + unknownCount + contextSize);
+    const end = Math.min(
+      repairedContent.length,
+      position + unknownCount + contextSize
+    );
     const leftContext = repairedContent.substring(start, position);
-    const rightContext = repairedContent.substring(position + unknownCount, end);
+    const rightContext = repairedContent.substring(
+      position + unknownCount,
+      end
+    );
 
     // Ask Gemini to guess the missing characters
     try {
       const result = await generateText({
-        model: getModel('fallback'),
+        model: getModel("fallback"),
         system: `You're helping fix a corrupted scanned markdown document that has stains (represented by �). 
 Looking at the surrounding context, determine the original text should be in place of the � symbols.
 
@@ -68,26 +82,30 @@ On the right of the stains: "${rightContext}"
 So what was the original text between these two contexts?`,
       });
 
-      trackers.tokenTracker.trackUsage('md-fixer', result.usage)
+      trackers.tokenTracker.trackUsage("md-fixer", result.usage.totalTokens);
       const replacement = result.text.trim();
 
       // Validate the replacement
       if (
         replacement === "UNKNOWN" ||
-        replacement.includes('�') ||
+        replacement.includes("�") ||
         replacement.length > unknownCount * 4
       ) {
-        console.log(`Skipping invalid replacement ${replacement} at position ${position}`);
+        console.log(
+          `Skipping invalid replacement ${replacement} at position ${position}`
+        );
         // Skip to the next � character without modifying content
       } else {
         // Replace the unknown sequence with the generated text
-        repairedContent = repairedContent.substring(0, position) +
-                         replacement +
-                         repairedContent.substring(position + unknownCount);
+        repairedContent =
+          repairedContent.substring(0, position) +
+          replacement +
+          repairedContent.substring(position + unknownCount);
       }
 
-      console.log(`Repair iteration ${iterations}: replaced ${unknownCount} � chars with "${replacement}"`);
-
+      console.log(
+        `Repair iteration ${iterations}: replaced ${unknownCount} � chars with "${replacement}"`
+      );
     } catch (error) {
       console.error("Error repairing unknown characters:", error);
       // Skip to the next � character without modifying this one

@@ -22,7 +22,7 @@ ENV BRAVE_API_KEY=${BRAVE_API_KEY}
 RUN npm run build || echo "Build completed with TypeScript warnings - continuing"
 
 # Expose the port the app runs on
-EXPOSE 3000
+EXPOSE 3001
 
 # Set the default command to run the application
 CMD ["npm", "run", "serve"]

@@ -12,7 +12,7 @@
 2025-03-11T04:09:21.951Z - Nova query recebida via props: JSHandle@object
 2025-03-11T04:09:21.952Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
 2025-03-11T04:09:21.953Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
-2025-03-11T04:09:28.392Z - Enviando pergunta para: http://localhost:3000/api/v1/query
+2025-03-11T04:09:28.392Z - Enviando pergunta para: http://localhost:3001/api/v1/query
 2025-03-11T04:09:28.456Z - DADOS ENVIADOS: {
   "q": "olá",
   "modelo": "qwen2.5-7b-instruct-1m"

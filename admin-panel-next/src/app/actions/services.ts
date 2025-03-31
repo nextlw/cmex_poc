@@ -45,7 +45,7 @@ const serviceConfig: Record<ServiceId, ServiceConfig> = {
   node: {
     command:
       "cd ../buscador_inteligente && nohup pnpm run dev > ./node.log 2>&1 &",
-    port: getEnvPort("NODE_PORT", 3000),
+    port: getEnvPort("NODE_PORT", 3001),
   },
   frontend: {
     command: "cd ../frontend && pnpm dev",
@@ -220,12 +220,12 @@ export async function startService(serviceId: ServiceId) {
       node: 6000,
       "node-jina": 5000,
       "ui-jina": 4000,
-      redis: 3000,
+      redis: 3001,
       frontend: 4000,
       fastapi: 5000,
     };
 
-    const waitTime = waitTimeMap[serviceId] || 3000;
+    const waitTime = waitTimeMap[serviceId] || 3001;
     console.log(
       `Aguardando ${
         waitTime / 1000

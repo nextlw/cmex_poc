@@ -148,6 +148,21 @@ async function processNcmRequest(requestId: string, query: string) {
 
 // Função para encerrar conexões Redis
 export function closeRedisConnections() {
-  publisher.quit();
-  subscriber.quit();
+  try {
+    if (publisher && publisher.status === "ready") {
+      publisher
+        .quit()
+        .catch((err) => console.error("Erro ao fechar publisher Redis:", err));
+    }
+
+    if (subscriber && subscriber.status === "ready") {
+      subscriber
+        .quit()
+        .catch((err) => console.error("Erro ao fechar subscriber Redis:", err));
+    }
+
+    console.log("Conexões Redis encerradas com sucesso");
+  } catch (error) {
+    console.error("Erro ao encerrar conexões Redis:", error);
+  }
 }

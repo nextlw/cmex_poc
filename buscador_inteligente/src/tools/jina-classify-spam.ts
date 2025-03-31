@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios from "axios";
 import { TokenTracker } from "../utils/token-tracker";
 import { JINA_API_KEY } from "../config";
 
-const JINA_API_URL = 'https://api.jina.ai/v1/classify';
+const JINA_API_URL = "https://api.jina.ai/v1/classify";
 
 // Types for Jina Classification API
 interface JinaClassifyRequest {
@@ -26,7 +26,6 @@ interface JinaClassifyResponse {
   }>;
 }
 
-
 export async function classifyText(
   text: string,
   classifierId: string = "4a27dea0-381e-407c-bc67-250de45763dd", // Default spam classifier ID
@@ -35,17 +34,23 @@ export async function classifyText(
 ): Promise<boolean> {
   try {
     if (!JINA_API_KEY) {
-      throw new Error('JINA_API_KEY is not set');
+      throw new Error("JINA_API_KEY is not set");
     }
 
     const request: JinaClassifyRequest = {
       classifier_id: classifierId,
-      input: [text]
+      input: [text],
     };
 
     // Create a timeout promise
     const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error(`Classification request timed out after ${timeoutMs}ms`)), timeoutMs);
+      setTimeout(
+        () =>
+          reject(
+            new Error(`Classification request timed out after ${timeoutMs}ms`)
+          ),
+        timeoutMs
+      );
     });
 
     // Make the API request with axios
@@ -54,22 +59,24 @@ export async function classifyText(
       request,
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${JINA_API_KEY}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${JINA_API_KEY}`,
         },
-        timeout: timeoutMs // Also set axios timeout
+        timeout: timeoutMs, // Also set axios timeout
       }
     );
 
     // Race the API request against the timeout
-    const response = await Promise.race([apiRequestPromise, timeoutPromise]) as any;
+    const response = (await Promise.race([
+      apiRequestPromise,
+      timeoutPromise,
+    ])) as any;
 
     // Track token usage from the API
-    (tracker || new TokenTracker()).trackUsage('classify', {
-      promptTokens: response.data.usage.total_tokens,
-      completionTokens: 0,
-      totalTokens: response.data.usage.total_tokens
-    });
+    (tracker || new TokenTracker()).trackUsage(
+      "classify",
+      response.data.usage.total_tokens
+    );
 
     // Extract the prediction field and convert to boolean
     if (response.data.data && response.data.data.length > 0) {
@@ -79,10 +86,10 @@ export async function classifyText(
 
     return false; // Default to false if no prediction is available
   } catch (error) {
-    if (error instanceof Error && error.message.includes('timed out')) {
-      console.error('Classification request timed out:', error.message);
+    if (error instanceof Error && error.message.includes("timed out")) {
+      console.error("Classification request timed out:", error.message);
     } else {
-      console.error('Error in classifying text:', error);
+      console.error("Error in classifying text:", error);
     }
     return false; // Default to false in case of error or timeout
   }

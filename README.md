@@ -13,7 +13,7 @@ CMEX é uma plataforma completa para consulta e classificação de NCM (Nomencla
 ### Documentação de API (Swagger)
 
 - [API FastAPI](http://localhost:10000/api/docs) - Documentação interativa da API principal
-- [API Buscador Inteligente](http://localhost:3000/api/docs) - Documentação interativa do motor de IA
+- [API Buscador Inteligente](http://localhost:3001/api/docs) - Documentação interativa do motor de IA
 
 ### Documentação por Componente
 
@@ -69,7 +69,7 @@ Para acessar a documentação interativa Swagger:
 
 3. Acesse as URLs:
    - FastAPI Swagger: http://localhost:10000/api/docs
-   - Buscador Inteligente Swagger: http://localhost:3000/api/docs
+   - Buscador Inteligente Swagger: http://localhost:3001/api/docs
 
 ## Contribuição
 
@@ -121,7 +121,7 @@ O sistema utiliza as seguintes portas por padrão:
 
 - **Redis**: 6378
 - **FastAPI**: 10000
-- **Buscador Inteligente**: 3000-3003
+- **Buscador Inteligente**: 3001-3003
 - **Node DeepResearch Jina**: 3100-3103
 - **DeepSearch UI Jina**: 3300-3303
 - **Admin Panel Next**: 3200

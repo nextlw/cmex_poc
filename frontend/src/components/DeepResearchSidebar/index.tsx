@@ -489,7 +489,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     // Chama o endpoint de cancelamento se tivermos um requestId
     if (requestId) {
       const API_URL =
-        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3001";
 
       fetch(`${API_URL}/api/v1/cancel`, {
         method: "POST",

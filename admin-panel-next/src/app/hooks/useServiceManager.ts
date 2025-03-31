@@ -56,7 +56,7 @@ const serviceConfig: Record<
     name: "Node.js Backend",
     description:
       "Servidor Node.js para buscador inteligente e integração com Jina",
-    port: getEnvPort("NODE_PORT", 3000),
+    port: getEnvPort("NODE_PORT", 3001),
     icon: "🟢",
   },
   frontend: {
