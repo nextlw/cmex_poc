@@ -101,6 +101,7 @@ export interface Reference {
   exactQuote: string;
   url: string;
   title?: string;
+  dateTime?: string;
 }
 
 // Tipos de Ação
@@ -171,7 +172,7 @@ export type EvaluationCriteria = {
   tokens?: number;
 };
 
-// Interface de Uso de Tokens
+// Interfaces de Uso de Tokens
 export interface TokenUsage {
   tool: string;
   tokens: number;
@@ -471,3 +472,145 @@ export interface ServerLog {
   message: string;
   level: "log" | "error" | "warn" | "info";
 }
+
+// --- NOVOS TIPOS ---
+
+// Tipo para partes de conteúdo em mensagens multimodais
+export type ContentPart =
+  | { type: "text"; text: string }
+  | {
+      type: "image_url";
+      image_url: { url: string; detail?: "low" | "high" | "auto" };
+    };
+
+// Tipo para mensagens no request (compatível com string ou array de ContentPart)
+export type ChatMessage = {
+  role: "system" | "user" | "assistant" | "tool";
+  content: string | ContentPart[];
+  name?: string;
+  tool_call_id?: string;
+  tool_calls?: any[]; // Adicione tipos mais específicos se necessário
+};
+
+// Tipo para o Request da API Chat Completions
+export interface ChatCompletionRequest {
+  messages: ChatMessage[];
+  model?: string;
+  stream?: boolean;
+  temperature?: number;
+  max_tokens?: number; // Renomeado de max_completion_tokens para padrão OpenAI
+  // Campos específicos mantidos/adaptados do original ou NexCode
+  reasoning_effort?: "low" | "medium" | "high";
+  budget_tokens?: number;
+  max_attempts?: number;
+  max_returned_urls?: number;
+  no_direct_answer?: boolean;
+  boost_hostnames?: string[];
+  bad_hostnames?: string[];
+  only_hostnames?: string[];
+  response_format?: { type?: "text" | "json_object"; json_schema?: any }; // Adaptado
+}
+
+// Tipo para Referência/Citação de URL na Annotation
+export interface URLCitation {
+  title: string;
+  exactQuote: string;
+  url: string;
+  dateTime?: string;
+}
+
+// Tipo para Annotation na resposta
+export interface URLAnnotation {
+  type: "url_citation";
+  url_citation: URLCitation;
+}
+
+// Tipo para a mensagem de resposta (completa)
+export interface ChatCompletionResponseMessage {
+  role: "assistant";
+  content: string | null; // Conteúdo pode ser nulo se houver tool_calls
+  tool_calls?: any[]; // Adicione tipos mais específicos se necessário
+  // Adicionando campos para compatibilidade com UI NexCode
+  type?: "text" | "json" | "error";
+  annotations?: URLAnnotation[];
+}
+
+// Tipo para a escolha na resposta completa
+export interface ChatCompletionResponseChoice {
+  index: number;
+  message: ChatCompletionResponseMessage;
+  finish_reason:
+    | "stop"
+    | "length"
+    | "tool_calls"
+    | "content_filter"
+    | "function_call"
+    | "error"; // Adicionado 'error'
+  logprobs?: any; // Ou tipo mais específico
+}
+
+// Tipo para a Resposta Completa da API
+export interface ChatCompletionResponse {
+  id: string;
+  object: "chat.completion";
+  created: number;
+  model: string;
+  choices: ChatCompletionResponseChoice[];
+  usage?: TokenUsageData;
+  system_fingerprint?: string;
+  // Campos específicos mantidos/adaptados do NexCode
+  visitedURLs?: string[];
+  readURLs?: string[];
+  numURLs?: number;
+}
+
+// Tipo para o Delta dentro do Chunk de streaming
+export interface ChatCompletionChunkDelta {
+  role?: "assistant";
+  content?: string | null;
+  tool_calls?: any[]; // Adicione tipos mais específicos se necessário
+  // Adicionando campos para compatibilidade com UI NexCode
+  type?: "text" | "think" | "json" | "error";
+  url?: string; // Para chunks de visita
+  annotations?: URLAnnotation[];
+}
+
+// Tipo para a escolha no Chunk de streaming
+export interface ChatCompletionChunkChoice {
+  index: number;
+  delta: ChatCompletionChunkDelta;
+  finish_reason?:
+    | "stop"
+    | "length"
+    | "tool_calls"
+    | "content_filter"
+    | "function_call"
+    | "error"
+    | "thinking_end"
+    | null; // Adicionado 'thinking_end' e 'error'
+  logprobs?: any; // Ou tipo mais específico
+}
+
+// Tipo para o Chunk de Streaming da API
+export interface ChatCompletionChunk {
+  id: string;
+  object: "chat.completion.chunk";
+  created: number;
+  model: string;
+  choices: ChatCompletionChunkChoice[];
+  usage?: TokenUsageData;
+  system_fingerprint?: string;
+  // Campos específicos mantidos/adaptados do NexCode (podem aparecer no último chunk)
+  visitedURLs?: string[];
+  readURLs?: string[];
+  numURLs?: number;
+}
+
+// Tipo para Uso de Tokens (se LanguageModelUsage da lib 'ai' falhar)
+export interface TokenUsageData {
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+}
+
+// --- FIM NOVOS TIPOS ---

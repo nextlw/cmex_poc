@@ -167,7 +167,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     setStatusBarText(
-      "Portas utilizadas: Redis (6378), FastAPI (10000), Node (3001), Frontend (5173), Node-Jina (3001), UI-Jina (8080)"
+      "Portas utilizadas: Redis (6378), FastAPI (10000), Node (3001), Frontend (5173), Node-nexcode (3002), UI-nexcode (8080)"
     );
     setLastChecked(new Date().toLocaleTimeString());
   }, []);

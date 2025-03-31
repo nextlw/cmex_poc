@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { ServiceId } from "../actions/services";
 
@@ -171,6 +171,12 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   const isRunning = status === "running";
   const isLoading = status === "loading";
 
+  const [isClientMounted, setIsClientMounted] = useState(false);
+
+  useEffect(() => {
+    setIsClientMounted(true);
+  }, []);
+
   return (
     <Card>
       <Header>
@@ -194,12 +200,12 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <Info>
         <InfoItem>
           <InfoLabel>Porta:</InfoLabel>
-          <InfoValue>{port || "N/A"}</InfoValue>
+          <InfoValue>{isClientMounted ? port || "N/A" : "..."}</InfoValue>
         </InfoItem>
         {pid && (
           <InfoItem>
             <InfoLabel>PID:</InfoLabel>
-            <InfoValue>{pid}</InfoValue>
+            <InfoValue>{isClientMounted ? pid : "..."}</InfoValue>
           </InfoItem>
         )}
       </Info>

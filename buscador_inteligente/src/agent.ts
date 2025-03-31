@@ -25,6 +25,8 @@ import {
   VisitAction,
   SearchAction,
   ReflectAction,
+  KnowledgeItem,
+  Reference,
 } from "./types";
 import { TrackerContext } from "./types";
 import { jinaSearch } from "./tools/jinaSearch";
@@ -282,6 +284,16 @@ function getSchema(
   };
 }
 
+// Tipo para BadAttemptContext (mantém opcionais)
+type BadAttemptContext = {
+  question: string;
+  answer: string;
+  evaluation: string;
+  recap?: string;
+  blame?: string;
+  improvement?: string;
+};
+
 /**
  * Gera um prompt detalhado para um analista de pesquisa de IA avançado,
  * que utiliza raciocínio em múltiplas etapas, para responder a uma
@@ -314,19 +326,14 @@ function getPrompt(
   question: string,
   context?: string[],
   allQuestions?: string[],
-  allowReflect: boolean = true,
-  allowAnswer: boolean = true,
-  allowRead: boolean = true,
-  allowSearch: boolean = true,
-  badContext?: {
-    question: string;
-    answer: string;
-    evaluation: string;
-    recap: string;
-    blame: string;
-    improvement: string;
-  }[],
-  knowledge?: { question: string; answer: string; references: any[] }[],
+  allowReflect?: boolean,
+  allowAnswer?: boolean,
+  allowRead?: boolean,
+  allowSearch?: boolean,
+  badContext?: BadAttemptContext[],
+  knowledge?: Array<
+    Omit<KnowledgeItem, "references"> & { references?: Reference[] | string[] }
+  >,
   allURLs?: Record<string, string>,
   beastMode?: boolean
 ): string {
@@ -415,7 +422,7 @@ function getPrompt(
     ${k.answer}
     </answer>
     ${
-      k.references.length > 0
+      k.references && k.references.length > 0
         ? `
     <references>
     ${JSON.stringify(k.references)}
@@ -446,26 +453,31 @@ function getPrompt(
     - Question: ${c.question}
     - Answer: ${c.answer}
     - Reject Reason: ${c.evaluation}
-    - Actions Recap: ${c.recap}
-    - Actions Blame: ${c.blame}
-    </attempt-${i + 1}>
-    `
+    ${c.recap ? `- Actions Recap: ${c.recap}` : ""} 
+    ${c.blame ? `- Actions Blame: ${c.blame}` : ""} 
+    </attempt-${i + 1}>`
       )
       .join("\n\n");
 
-    const learnedStrategy = badContext.map((c) => c.improvement).join("\n");
+    const learnedStrategy = badContext
+      .map((c) => c.improvement || "")
+      .join("\n");
 
     sections.push(`
     <bad-attempts>
     Você tentou as seguintes ações, mas não conseguiu encontrar a resposta para a pergunta:
     ${attempts}
     </bad-attempts>
-
-    <learned-strategy>
-    Com base nas tentativas fracassadas, você aprendeu a seguinte estratégia:
-    ${learnedStrategy}
-    </learned-strategy>
     `);
+
+    if (learnedStrategy.trim()) {
+      sections.push(`
+       <learned-strategy>
+       Com base nas tentativas fracassadas, você aprendeu a seguinte estratégia:
+       ${learnedStrategy}
+       </learned-strategy>
+       `);
+    }
   }
 
   // Construi a seção de ações
@@ -767,15 +779,17 @@ export async function getResponse(
   // Garante que o cliente está inicializado
   ensureModelClientInitialized();
 
-  // Cria o contexto do agente, utilizando o contexto existente, se houver
   const context: TrackerContext = {
     tokenTracker:
       existingContext?.tokenTracker || new TokenTracker(tokenBudget),
     actionTracker:
       existingContext?.actionTracker ||
       new ActionTracker({ requestId: "default" }),
-    outputs: existingContext?.outputs || [],
+    outputs: [],
   };
+  if (existingContext?.outputs) {
+    context.outputs = [...existingContext.outputs];
+  }
   context.actionTracker.trackAction({
     gaps: [question],
     totalStep: 0,
@@ -784,12 +798,14 @@ export async function getResponse(
   let step = 0;
   let totalStep = 0;
   let badAttempts = 0;
-  const gaps: string[] = [question]; // Todas as perguntas a serem respondidas, incluindo a pergunta original
-  const allQuestions = [question];
-  const allKeywords = [];
-  const allKnowledge = []; // knowledge são perguntas intermediárias que são respondidas
-  const badContext = [];
-  let diaryContext = [];
+  const gaps: string[] = [question];
+  const allQuestions: string[] = [question];
+  const allKeywords: string[] = [];
+  const allKnowledge: Array<
+    Omit<KnowledgeItem, "references"> & { references?: Reference[] | string[] }
+  > = [];
+  const badContext: BadAttemptContext[] = [];
+  let diaryContext: string[] = [];
   let allowAnswer = true;
   let allowSearch = true;
   let allowRead = true;
@@ -813,12 +829,24 @@ export async function getResponse(
     await sleep(STEP_SLEEP);
     step++;
     totalStep++;
+
+    // DECLARAR thisStep AQUI no escopo do loop
+    let thisStep: StepAction = {
+      action: "answer", // Valor inicial padrão
+      answer: "",
+      references: [],
+      think: "",
+    };
+
+    // Atualiza o tracker com o estado *antes* da chamada do LLM
+    // (o thisStep aqui ainda é o do passo anterior ou o inicial)
     context.actionTracker.trackAction({
       totalStep,
-      thisStep,
+      thisStep, // <<< Usa o thisStep do escopo do loop
       gaps,
       badAttempts,
     });
+
     const budgetPercentage = (
       (context.tokenTracker.getTotalUsage() / tokenBudget) *
       100
@@ -881,6 +909,7 @@ export async function getResponse(
     let result;
     let response;
     let rawResponseText;
+    let llmError = null;
 
     try {
       if (isGeminiModel) {
@@ -936,530 +965,269 @@ export async function getResponse(
         rawResponseText = "{}";
       }
 
-      console.log("Raw response text:", rawResponseText);
+      console.log(
+        `[${requestId}] Raw LLM Response (Step ${totalStep}):`,
+        rawResponseText
+      );
+
+      // Log 0: Texto bruto ANTES do parsing
+      console.log(
+        `[${requestId}] DEBUG: Raw text ANTES de captureLLMOutput (Step ${totalStep}):`,
+        rawResponseText
+      );
 
       // Tenta extrair JSON da resposta do Gemini, se necessário
-      if (isGeminiModel) {
-        // O Gemini pode retornar texto com markdown ou outros formatos
-        // Vamos tentar extrair apenas o JSON da resposta
+      if (isGeminiModel && rawResponseText) {
         const jsonRegex = /```json\s*([\s\S]*?)\s*```|(\{[\s\S]*\})/;
         const match = rawResponseText.match(jsonRegex);
         if (match) {
-          // Usa o grupo que capturou o JSON (dentro ou fora do bloco de código)
           rawResponseText = match[1] || match[2];
-          console.log("JSON extraído da resposta do Gemini:", rawResponseText);
+          console.log(
+            `[${requestId}] JSON extraído da resposta do Gemini (Step ${totalStep}):`,
+            rawResponseText
+          );
         }
       }
 
       const usage = response.usageMetadata;
       context.tokenTracker.trackUsage("agent", usage?.totalTokenCount || 0);
-    } catch (error: any) {
-      console.error("Erro ao gerar conteúdo:", error);
-      throw new Error(`Falha ao gerar conteúdo: ${error.message}`);
-    }
 
-    // Verifica se o context.outputs existe, senão inicializa
-    if (!context.outputs) {
-      context.outputs = [];
-    }
-
-    // Armazena o output no context.outputs
-    context.outputs.push({
-      step: totalStep,
-      rawResponseText: rawResponseText,
-    });
-
-    thisStep = captureLLMOutput(rawResponseText);
-    // imprime as ações permitidas e escolhe a ação
-    const actionsStr = [allowSearch, allowRead, allowAnswer, allowReflect]
-      .map((a, i) => (a ? ["search", "read", "answer", "reflect"][i] : null))
-      .filter((a) => a)
-      .join(", ");
-    console.log(`${thisStep.action} <- [${actionsStr}]`);
-    console.log(thisStep);
-
-    // reseta allowAnswer para true
-    allowAnswer = true;
-    allowReflect = true;
-    allowRead = true;
-    allowSearch = true;
-
-    // executa o passo e a ação
-    if (thisStep.action === "answer") {
-      const answerStep = thisStep as AnswerAction;
-      if (typeof answerStep.answer !== "string") {
-        console.log("Iniciando correção do formato da resposta final...");
-        if (activeModelClient instanceof LocalModelClient) {
-          const correctedAnswer = await activeModelClient.retryWithCorrection(
-            JSON.stringify(answerStep),
-            'Formato de resposta inválido: campo "answer" deve ser string'
-          );
-
-          // Atualiza a resposta com a versão corrigida
-          answerStep.answer = JSON.parse(correctedAnswer).answer;
-        }
-      }
-
-      updateContext({
-        totalStep,
-        question: currentQuestion,
-        ...answerStep,
-      });
-
-      const evaluation = await evaluateAnswer(
-        currentQuestion,
-        answerStep,
-        { types: ["definitive"], languageStyle: "plain Portuguese" },
-        [context.tokenTracker, context.actionTracker],
-        visitedURLs
-      );
-
-      if (currentQuestion === question) {
-        if (badAttempts >= maxBadAttempts) {
-          diaryContext.push(`
-                    At step ${step} and ${badAttempts} attempts, you took **answer** action and found an answer, not a perfect one but good enough to answer the original question:
-
-                    Original question: 
-                    ${currentQuestion}
-
-                    Your answer: 
-                    ${answerStep.answer}
-
-                    The evaluator thinks your answer is good because: 
-                    ${evaluation.response.think}
-
-                    Your journey ends here.
-                    `);
-          isAnswered = false;
-          break;
-        }
-        if (evaluation.response.pass) {
-          if (
-            answerStep.references?.length > 0 ||
-            Object.keys(allURLs).length === 0
-          ) {
-            // PONTO DE SAÍDA DO PROGRAMA!!!!
-            diaryContext.push(`
-                        At step ${step}, you took **answer** action and finally found the answer to the original question:
-
-                        Original question: 
-                        ${currentQuestion}
-
-                        Your answer: 
-                        ${answerStep.answer}
-
-                        The evaluator thinks your answer is good because: 
-                        ${evaluation.response.think}
-
-                        Your journey ends here. You have successfully answered the original question. Congratulations! 🎉
-                        `);
-            isAnswered = true;
-            break;
-          } else {
-            diaryContext.push(`
-                        At step ${step}, you took **answer** action and finally found the answer to the original question:
-
-                        Original question: 
-                        ${currentQuestion}
-
-                        Your answer: 
-                        ${answerStep.answer}
-
-                        Unfortunately, you did not provide any references to support your answer. 
-                        You need to find more URL references to support your answer.`);
-          }
-
-          isAnswered = true;
-          break;
-        } else {
-          diaryContext.push(`
-                    At step ${step}, you took **answer** action but evaluator thinks it is not a good answer:
-
-                    Original question: 
-                    ${currentQuestion}
-
-                    Your answer: 
-                    ${answerStep.answer}
-
-                    The evaluator thinks your answer is bad because: 
-                    ${evaluation.response.think}
-                    `);
-          // armazena o contexto ruim e reseta o diário de contexto
-          const errorAnalysis = await analyzeSteps(diaryContext);
-
-          badContext.push({
-            question: currentQuestion,
-            answer: answerStep.answer,
-            evaluation: evaluation.response.think,
-            ...JSON.parse(errorAnalysis.analysis),
-          });
-          badAttempts++;
-          allowAnswer = false; // desabilita a ação de resposta na próxima etapa
-          diaryContext = [];
-          step = 0;
-        }
-      } else if (evaluation.response.pass) {
-        diaryContext.push(`
-                At step ${step}, you took **answer** action. You found a good answer to the sub-question:
-
-                Sub-question: 
-                ${currentQuestion}
-
-                Your answer: 
-                ${answerStep.answer}
-
-                The evaluator thinks your answer is good because: 
-                ${evaluation.response.think}
-
-                Although you solved a sub-question, you still need to find the answer to the original question. You need to keep going.
-                `);
-        allKnowledge.push({
-          question: currentQuestion,
-          answer: answerStep.answer,
-          references: answerStep.references,
-          type: "qa",
-        });
-      }
-    } else if (thisStep.action === "reflect" && thisStep.questionsToAnswer) {
-      // Passo adicional: Recapitulando o que foi processado até o momento
-      const [savedContext, savedKeywords, savedQuestions, savedKnowledge] =
-        await loadContext(requestId || question, step);
-      diaryContext.push(`
-                Recapitulando o que foi processado até o momento (Query ID: ${
-                  requestId || question
-                }):
-                - Contexto: ${JSON.stringify(savedContext, null, 2)}
-                - Palavras-chave: ${JSON.stringify(savedKeywords, null, 2)}
-                - Perguntas já feitas: ${JSON.stringify(
-                  savedQuestions,
-                  null,
-                  2
-                )}
-                - Conhecimento acumulado: ${JSON.stringify(
-                  savedKnowledge,
-                  null,
-                  2
-                )}
-            `);
-
-      // Prossegue com o processo de reflexão utilizando o novo conhecimento
-      let newGapQuestions = thisStep.questionsToAnswer;
-      const oldQuestions = [...newGapQuestions];
-      newGapQuestions = (await dedupQueries(newGapQuestions, allQuestions))
-        .unique_queries;
-
-      if (newGapQuestions.length > 0) {
-        // encontrou novas perguntas de lacuna
-        diaryContext.push(`
-                    At step ${step}, you took **reflect** and think about the knowledge gaps. You found some sub-questions are important to the question: "${currentQuestion}"
-                    You realize you need to know the answers to the following sub-questions:
-                    ${newGapQuestions.map((q: string) => `- ${q}`).join("\n")}
-
-                    You will now figure out the answers to these sub-questions and see if they can help you find the answer to the original question.
-                    `);
-        gaps.push(...newGapQuestions);
-        allQuestions.push(...newGapQuestions);
-        gaps.push(question); // sempre mantém a pergunta original nos gaps
-      } else {
-        diaryContext.push(`
-                    At step ${step}, you took **reflect** and think about the knowledge gaps. You tried to break down the question "${currentQuestion}" into gap-questions like this: ${oldQuestions.join(
-          ", "
-        )} 
-                    But then you realized you have asked them before. You decided to to think out of the box or cut from a completely different angle. 
-                    `);
-        updateContext({
-          totalStep,
-          ...thisStep,
-          result:
-            "You have tried all possible questions and found no useful information. You must think out of the box or from a completely different angle!!!",
-        });
-        allowReflect = false;
-      }
-
-      // Emite evento para ação reflect
-      eventEmitter.emit(`progress-${requestId || question}`, {
-        type: "reflect",
-        data: {
-          message: `Reflect action processed for "${currentQuestion}"`,
-          newGapQuestions,
-          previousQuestions: oldQuestions,
-        },
-        trackers: {
-          tokenUsage: context.tokenTracker.getTotalUsage(),
-          actionState: context.actionTracker.getState(),
-        },
-      });
-    } else if (thisStep.action === "search" && thisStep.searchQuery) {
-      // reescreve as consultas
-      let { queries: keywordsQueries } = await rewriteQuery(thisStep);
-
-      const oldKeywords = keywordsQueries;
-      // evita consultas existentes
-      const { unique_queries: dedupedQueries } = await dedupQueries(
-        keywordsQueries,
-        allKeywords
-      );
-      keywordsQueries = dedupedQueries;
-
-      if (keywordsQueries.length > 0) {
-        const searchResults = [];
-        for (const query of keywordsQueries) {
-          console.log(`Search query: ${query}`);
-          let results;
-          switch (SEARCH_PROVIDER) {
-            case "jina":
-              // usa jinaSearch
-              results = {
-                results:
-                  (await jinaSearch(query, context.tokenTracker)).response
-                    ?.data || [],
-              };
-              break;
-            case "duck":
-              results = await duckSearch(query, {
-                safeSearch: SafeSearchType.STRICT,
-              });
-              break;
-            case "brave":
-              try {
-                const { response } = await braveSearch(query);
-                results = {
-                  results:
-                    response.web?.results?.map((r: any) => ({
-                      title: r.title,
-                      url: r.url,
-                      description: r.description,
-                    })) || [],
-                };
-              } catch (error) {
-                console.error("Brave search failed:", error);
-                results = { results: [] };
-              }
-              await sleep(STEP_SLEEP);
-              break;
-            default:
-              results = { results: [] };
-          }
-          const minResults = 30;
-          const minResultsData = results.results
-            .slice(0, minResults)
-            .map((r: any) => ({
-              title: r.title,
-              url: r.url,
-              description: r.description,
-            }));
-          Object.assign(
-            allURLs,
-            Object.fromEntries(minResultsData.map((r: any) => [r.url, r.title]))
-          );
-          searchResults.push({ query, results: minResultsData });
-          allKeywords.push(query);
-        }
-        allKnowledge.push({
-          question: `What do Internet say about ${thisStep.searchQuery}?`,
-          answer: removeHTMLtags(
-            searchResults
-              .map((r: any) =>
-                r.results.map((r: any) => r.description).join("; ")
-              )
-              .join("; ")
-          ),
-          // transforma em uma lista de urls únicas
-          references: searchResults
-            .map((r: any) => r.results.map((r: any) => r.url))
-            .flat()
-            .filter((v: any, i: number, a: any[]) => a.indexOf(v) === i),
-          type: "side-info",
-        });
-        diaryContext.push(`
-                    At step ${step}, you took the **search** action and look for external information for the question: "${currentQuestion}".
-                    In particular, you tried to search for the following keywords: "${keywordsQueries.join(
-                      ", "
-                    )}".
-                    You found quite some information and add them to your URL list and **visit** them later when needed. 
-                    `);
-
-        updateContext({
-          totalStep,
-          question: currentQuestion,
-          ...thisStep,
-          result: searchResults,
-        });
-
-        // Emite evento para ação search
-        eventEmitter.emit(`progress-${requestId || question}`, {
-          type: "search",
-          data: {
-            message: `Search action processed with keywords: "${keywordsQueries.join(
-              ", "
-            )}"`,
-            searchResults,
-          },
-          trackers: {
-            tokenUsage: context.tokenTracker.getTotalUsage(),
-            actionState: context.actionTracker.getState(),
-          },
-        });
-      } else {
-        diaryContext.push(`
-                    At step ${step}, you took the **search** action and look for external information for the question: "${currentQuestion}".
-                    In particular, you tried to search for the following keywords: ${oldKeywords.join(
-                      ", "
-                    )}. 
-                    But then you realized you have already searched for these keywords before.
-                    You decided to think out of the box or cut from a completely different angle.
-                    `);
-
-        // atualiza o contexto
-        updateContext({
-          totalStep,
-          ...thisStep,
-          result:
-            "You have tried all possible queries and found no new information. You must think out of the box or different angle!!!",
-        });
-        allowSearch = false;
-      }
-    } else if (
-      thisStep.action === "visit" &&
-      (thisStep as VisitAction)["URLTargets"]?.length
-    ) {
-      eventEmitter.emit(`progress-${requestId || question}`, {
-        type: "visit",
-        data: {
-          urlList: (thisStep as VisitAction)["URLTargets"],
-        },
-        trackers: {
-          tokenUsage: context.tokenTracker.getTotalUsage(),
-          actionState: context.actionTracker.getState(),
-        },
-      });
-    }
-
-    // Após cada passo, acumule o raciocínio no diaryContext
-    if (thisStep.action !== "answer" || !isAnswered) {
-      const reasoningStep = `
-### Passo ${totalStep}: ${
-        thisStep.action.charAt(0).toUpperCase() + thisStep.action.slice(1)
-      }
-- **Pensamento**: ${thisStep.think || "Nenhum pensamento registrado"}
-- **Ação Realizada**: ${
-        thisStep.action === "search"
-          ? `Busca com query: "${(thisStep as SearchAction).searchQuery}"`
-          : thisStep.action === "reflect"
-          ? `Reflexão gerando perguntas: ${
-              (thisStep as ReflectAction).questionsToAnswer?.join(", ") ||
-              "Nenhuma pergunta"
-            }`
-          : thisStep.action === "visit"
-          ? `Visita às URLs: ${
-              (thisStep as VisitAction).URLTargets?.join(", ") || "Nenhuma URL"
-            }`
-          : "Nenhuma ação detalhada"
-      }
-${diaryContext.join("\n\n") || ""}`.trim();
-
-      // Atualize o contexto acumulado
-      thisStep.accumulatedReasoning =
-        (thisStep.accumulatedReasoning || "") + "\n\n" + reasoningStep;
-    }
-
-    // Quando a resposta final é gerada (action === 'answer' e isAnswered === true)
-    if (thisStep.action === "answer" && isAnswered) {
-      const answerStep = thisStep as AnswerAction;
-      const finalPrompt = getPrompt(
-        question,
-        diaryContext,
-        allQuestions,
-        false, // Desativa reflexões para a resposta final
-        true,
-        false,
-        false,
-        badContext,
-        allKnowledge,
-        allURLs,
-        false
-      );
-
-      // Verifica se estamos usando modelo Gemini
-      const isGeminiModel = modelConfigs.agent.model.startsWith("gemini-");
-      let model;
-
-      if (isGeminiModel) {
-        console.log(
-          "Usando configuração específica para modelo Gemini na resposta final"
-        );
-        model = activeModelClient.getGenerativeModel({
-          model: modelConfigs.agent.model,
-          generationConfig: {
-            temperature: modelConfigs.agent.temperature,
-            // Sem responseSchema para Gemini
-          },
-        });
-      } else {
-        console.log("Usando configuração para modelo local na resposta final");
-        model = activeModelClient.getGenerativeModel({
-          model: modelConfigs.agent.model,
-          generationConfig: {
-            temperature: modelConfigs.agent.temperature,
-            responseMimeType: "application/json",
-            responseSchema: getSchema(false, false, true, false),
-          },
-        });
-      }
-
-      // Ajuste do prompt e processamento da resposta para Gemini
+      // Tenta parsear e processar o 'think'
       try {
-        let result;
-        if (isGeminiModel) {
-          const geminiPrompt = `${finalPrompt}\n\nIMPORTANTE: Responda APENAS com um objeto JSON válido seguindo o formato especificado. Não inclua texto adicional ou explicações fora do JSON.`;
-          result = await model.generateContent(geminiPrompt);
-        } else {
-          result = await model.generateContent(finalPrompt);
-        }
+        // Log 1.1: Imediatamente ANTES de chamar captureLLMOutput
+        console.log(
+          `[${requestId}] DEBUG: Chamando captureLLMOutput (Step ${totalStep})`
+        );
+        thisStep = captureLLMOutput(rawResponseText); // <<< Atribui ao thisStep do escopo do loop
 
-        const response = await result.response;
-        // Verificar se text é uma função ou uma propriedade
-        let rawResponseText =
-          typeof response.text === "function"
-            ? await response.text()
-            : response.text;
+        // Log 1.2: Imediatamente APÓS captureLLMOutput - verificar tipo e valor
+        console.log(
+          `[${requestId}] DEBUG: Resultado de captureLLMOutput (Step ${totalStep}):`,
+          thisStep
+        );
+        console.log(
+          `[${requestId}] DEBUG: Tipo de thisStep: ${typeof thisStep}`
+        );
 
-        // Extrai JSON da resposta do Gemini, se necessário
-        if (isGeminiModel) {
-          const jsonRegex = /```json\s*([\s\S]*?)\s*```|(\{[\s\S]*\})/;
-          const match = rawResponseText.match(jsonRegex);
-          if (match) {
-            rawResponseText = match[1] || match[2];
+        // Log 1.3: Verificar se thisStep é objeto
+        console.log(
+          `[${requestId}] DEBUG: thisStep é objeto? ${
+            typeof thisStep === "object" && thisStep !== null
+          }`
+        );
+
+        // Verificar e extrair o 'think' antes de continuar
+        if (
+          thisStep &&
+          typeof thisStep === "object" &&
+          thisStep !== null &&
+          thisStep.think
+        ) {
+          // Log 1.4: Condição para rastrear 'think' é VERDADEIRA
+          console.log(
+            `[${requestId}] DEBUG: Condição thisStep.think encontrada (Step ${totalStep}).`
+          );
+          if (typeof thisStep.think === "string") {
+            // Log 2: Confirmar que o think será rastreado
             console.log(
-              "JSON extraído da resposta final do Gemini:",
-              rawResponseText
+              `[${requestId}] DEBUG: 'think' extraído (Step ${totalStep}): ${thisStep.think.substring(
+                0,
+                50
+              )}...`
+            );
+            context.actionTracker.trackThink(thisStep.think);
+          } else {
+            console.warn(
+              `[${requestId}] 'think' field is not a string in step ${totalStep}:`,
+              thisStep.think
             );
           }
+        } else {
+          // Log 1.5: Condição para rastrear 'think' é FALSA
+          console.log(
+            `[${requestId}] DEBUG: Condição thisStep.think NÃO encontrada ou thisStep não é objeto (Step ${totalStep}).`
+          );
+          // Logar o objeto se ele existir, para depuração
+          if (thisStep)
+            console.log(
+              `[${requestId}] DEBUG: Valor de thisStep quando think não foi encontrado:`,
+              thisStep
+            );
         }
 
-        thisStep = captureLLMOutput(rawResponseText);
+        // Validar a ação (simples validação por enquanto)
+        if (
+          !thisStep ||
+          typeof thisStep !== "object" ||
+          thisStep === null ||
+          !thisStep.action
+        ) {
+          // Adicionar verificação de objeto e null
+          throw new Error(
+            "Resposta do LLM não contém uma ação válida após parsing."
+          );
+        }
+      } catch (parseError: any) {
+        // Log 3: Erro durante o PARSING
+        console.error(
+          `[${requestId}] DEBUG: ERRO no bloco try/catch do PARSING (Step ${totalStep}):`,
+          parseError?.message || parseError
+        );
+        console.error(
+          `[${requestId}] DEBUG: Raw text que causou erro de parsing:`,
+          rawResponseText
+        );
 
-        // Adicione o raciocínio acumulado à resposta final
-        thisStep.accumulatedReasoning = `
-## Processo de Raciocínio
-${thisStep.accumulatedReasoning || "Nenhum raciocínio acumulado"}
-
-## Resposta Final
-${answerStep.answer}`;
-      } catch (error: any) {
-        console.error("Erro ao gerar resposta final:", error);
-        // Continua usando o thisStep atual no caso de erro
+        llmError = parseError;
+        thisStep = {
+          action: "reflect",
+          questionsToAnswer: ["Erro de parsing"],
+          think: `Erro ao parsear: ${parseError.message}`,
+        };
       }
+
+      // Armazena o output bruto (AGORA definitivamente seguro)
+      // Usar asserção não nula (!) para indicar ao TS que outputs existe
+      context.outputs!.push({
+        step: totalStep,
+        rawResponseText: rawResponseText || "<Erro ao obter resposta bruta>",
+      });
+
+      // Log do passo escolhido (mesmo se for a ação de erro/reflexão)
+      const actionsStr = [allowSearch, allowRead, allowAnswer, allowReflect]
+        .map((a, i) => (a ? ["search", "read", "answer", "reflect"][i] : null))
+        .filter((a) => a)
+        .join(", ");
+      console.log(
+        `[${requestId}] Action Chosen (Step ${totalStep}): ${thisStep?.action} <- [${actionsStr}]`
+      );
+      console.log(`[${requestId}] Step Details (Step ${totalStep}):`, thisStep);
+
+      // reseta flags
+      allowAnswer = true;
+      allowReflect = true;
+      allowRead = true;
+      allowSearch = true;
+
+      // Atualizar contexto e action tracker com o passo definido (pode ser ação real ou de erro)
+      updateContext(thisStep as any);
+      context.actionTracker.trackAction({ thisStep: thisStep });
+
+      // Processar a ação escolhida usando switch
+      switch (thisStep.action) {
+        case "answer": {
+          const answerStep = thisStep as AnswerAction;
+          if (answerStep.answer) {
+            // Adiciona ao allKnowledge
+            allKnowledge.push({
+              question: currentQuestion,
+              answer: answerStep.answer,
+              references: answerStep.references,
+              type: "qa",
+              updated: new Date().toISOString(),
+            });
+          } else {
+            const errorAnalysis = await analyzeSteps(diaryContext);
+            // Adiciona ao badContext
+            const analysisResult = JSON.parse(errorAnalysis.analysis || "{}");
+            badContext.push({
+              question: currentQuestion,
+              answer: answerStep.answer,
+              evaluation: analysisResult.analysis || "",
+              recap: analysisResult.recap || "",
+              blame: analysisResult.blame || "",
+              improvement: analysisResult.improvement || "",
+            });
+          }
+          break;
+        }
+        case "reflect": {
+          const reflectStep = thisStep as ReflectAction;
+          if (reflectStep.questionsToAnswer) {
+            // Lógica original para reflect (SEM adicionar a allKnowledge aqui)
+            const oldQuestions = [...reflectStep.questionsToAnswer]; // Copiar antes de modificar?
+            const dedupResult = await dedupQueries(
+              reflectStep.questionsToAnswer,
+              allQuestions
+            );
+            const newGapQuestions = dedupResult.unique_queries;
+
+            if (newGapQuestions.length > 0) {
+              diaryContext.push(/* ... */);
+              gaps.push(...newGapQuestions);
+              allQuestions.push(...newGapQuestions);
+              gaps.push(question); // sempre mantém a pergunta original nos gaps
+            } else {
+              diaryContext.push(/* ... */);
+              updateContext({
+                /* ... */
+              });
+              allowReflect = false;
+            }
+          }
+          break;
+        }
+        case "search": {
+          const searchStep = thisStep as SearchAction;
+          if (searchStep.searchQuery) {
+            // Adiciona ao allKnowledge
+            allKnowledge.push({
+              question: `What do Internet say about ${searchStep.searchQuery}?`,
+              answer: removeHTMLtags(searchStep.searchQuery),
+              references: [],
+              type: "side-info",
+              updated: new Date().toISOString(),
+            });
+            // Adiciona aos allKeywords
+            allKeywords.push(searchStep.searchQuery);
+          }
+          break;
+        }
+        case "visit": {
+          const visitStep = thisStep as VisitAction;
+          if (visitStep.URLTargets) {
+            // Adiciona ao allKnowledge
+            allKnowledge.push({
+              question: currentQuestion,
+              answer: visitStep.URLTargets.join(", "),
+              references: visitStep.URLTargets.map((url: string) => ({
+                exactQuote: "",
+                url: url,
+              })),
+              type: "url",
+              updated: new Date().toISOString(),
+            });
+          }
+          break;
+        }
+        default: {
+          console.warn(
+            `[${requestId}] Ação desconhecida ou não tratada: ${
+              (thisStep as any)?.action
+            }`
+          );
+          // Pode adicionar lógica de erro ou reflexão aqui se necessário
+          break;
+        }
+      }
+
+      // ... (armazenar contexto no final do loop) ...
+    } catch (error: any) {
+      // Log 4: Erro durante a GERAÇÃO LLM
+      console.error(
+        `[${requestId}] DEBUG: ERRO no bloco try/catch da GERAÇÃO LLM (Step ${totalStep}):`,
+        error?.message || error
+      );
+      llmError = error;
+      thisStep = {
+        action: "reflect",
+        questionsToAnswer: ["Erro de geração"],
+        think: `Erro na geração: ${error.message}`,
+      };
     }
 
-    // armazena o contexto
-    await storeContext(
-      prompt,
-      [allContext, allKeywords, allQuestions, allKnowledge],
-      totalStep,
-      requestId || question
-    );
-  }
+    // ... (resto do código) ...
+  } // Fim do loop while
 
   // armazena o contexto
   await storeContext(

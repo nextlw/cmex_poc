@@ -44,8 +44,8 @@ const serviceConfig: Record<ServiceId, ServiceConfig> = {
   },
   node: {
     command:
-      "cd ../buscador_inteligente && nohup pnpm run dev > ./node.log 2>&1 &",
-    port: getEnvPort("NODE_PORT", 3001),
+      "cd /Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente && ./start-dev-server.sh > ./node.log 2>&1 &",
+    port: 3001,
   },
   frontend: {
     command: "cd ../frontend && pnpm dev",
@@ -53,73 +53,124 @@ const serviceConfig: Record<ServiceId, ServiceConfig> = {
   },
   "node-jina": {
     command:
-      "cd ../node-DeepResearch-jina && ./start-dev-server.sh > ./node-jina.log 2>&1 &",
-    port: getEnvPort("NODE_JINA_PORT", 3001),
+      "cd ../node-DeepResearch-nexcode && ./start-dev-server.sh > ./node-jina.log 2>&1 &",
+    port: 3002,
   },
   "ui-jina": {
     command:
-      "cd ../deepsearch-ui-jina && ./start-dev-server.sh > ./ui-jina.log 2>&1 &",
-    port: getEnvPort("UI_JINA_PORT", 8080),
+      "cd /Users/williamduarte/Pesquisa_CMEX/cmex_poc/deepsearch-ui-nexcode && ./start-dev-server.sh > ./ui-jina.log 2>&1 &",
+    port: 8080,
   },
 };
 
 // Função para verificar e encerrar processos em determinada porta
-async function killProcessOnPort(port: number): Promise<boolean> {
+async function killProcessOnPort(
+  port: number
+): Promise<{ success: boolean; message: string }> {
+  console.log(`Verificando porta ${port}...`);
+  let initialPids: string[] = [];
+
   try {
+    // Tenta encontrar processos na porta
     const { stdout } = await execAsync(`lsof -i :${port} -P -n -t`);
-    if (!stdout.trim()) {
-      return false;
+    initialPids = stdout
+      .trim()
+      .split("\n")
+      .filter((pid) => pid !== ""); // Filtra PIDs vazios
+
+    if (initialPids.length === 0) {
+      // Nenhum processo encontrado, a porta está livre!
+      const message = `Porta ${port} já está livre.`;
+      console.log(message);
+      return { success: true, message };
     }
 
-    const pids = stdout.trim().split("\n");
+    // Processos encontrados, continuar para tentar encerrá-los
     console.log(
-      `Encontrados ${pids.length} processos na porta ${port}: ${pids.join(
-        ", "
-      )}`
+      `Encontrados ${
+        initialPids.length
+      } processos na porta ${port}: ${initialPids.join(", ")}`
     );
+  } catch (error: any) {
+    // Se lsof falhar com código de erro (geralmente porque não encontrou processos), consideramos a porta livre
+    if (error.code && error.code !== 0) {
+      const message = `Porta ${port} já está livre (lsof falhou, presumindo ausência de processo).`;
+      console.log(message);
+      return { success: true, message };
+    } else {
+      // Outro erro inesperado ao verificar a porta
+      const message = `Erro inesperado ao verificar porta ${port}: ${
+        error.message || error
+      }`;
+      console.error(message);
+      return { success: false, message };
+    }
+  }
 
-    for (const pid of pids) {
+  // Se chegamos aqui, encontramos PIDs e precisamos tentar matá-los
+  let allKilled = true;
+  for (const pid of initialPids) {
+    try {
+      console.log(`Tentando encerrar processo ${pid} na porta ${port}`);
+      // Tenta SIGTERM
+      execSync(`kill ${pid}`);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Verifica se ainda existe
       try {
-        console.log(`Encerrando processo ${pid} na porta ${port}`);
-        // Primeiro tenta com SIGTERM para encerramento gracioso
-        execSync(`kill ${pid}`);
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        // Verifica se o processo ainda existe
+        execSync(`ps -p ${pid} > /dev/null`);
+        console.log(`Processo ${pid} resistente, usando SIGKILL`);
+        execSync(`kill -9 ${pid}`);
+        await new Promise((resolve) => setTimeout(resolve, 50)); // Pequeno delay após SIGKILL
+        // Re-verifica após SIGKILL
         try {
           execSync(`ps -p ${pid} > /dev/null`);
-          // Se chegou aqui, o processo ainda existe, tenta com SIGKILL
-          console.log(`Processo ${pid} resistente, usando SIGKILL`);
-          execSync(`kill -9 ${pid}`);
-        } catch (err) {
-          // Erro significa que o processo já não existe, o que é bom
-          console.log(`Processo ${pid} encerrado com sucesso via SIGTERM`);
+          console.error(
+            `ERRO: Falha ao encerrar processo ${pid} mesmo com SIGKILL.`
+          );
+          allKilled = false; // Marca como falha se ainda existir
+        } catch (e) {
+          console.log(`Processo ${pid} encerrado com sucesso via SIGKILL.`);
         }
       } catch (err) {
-        console.error(`Falha ao encerrar o processo ${pid}:`, err);
+        console.log(`Processo ${pid} encerrado com sucesso via SIGTERM.`);
       }
-    }
-
-    // Verifica novamente para ter certeza que todos os processos foram encerrados
-    try {
-      const { stdout: checkStdout } = await execAsync(
-        `lsof -i :${port} -P -n -t`
-      );
-      if (checkStdout.trim()) {
-        console.warn(
-          `Ainda existem processos na porta ${port} após tentativas de encerramento`
+    } catch (err: any) {
+      // Se kill falhar com 'no such process', está ok, já foi encerrado
+      if (err.message?.includes("No such process")) {
+        console.log(`Processo ${pid} já não existia.`);
+      } else {
+        console.error(
+          `Falha ao tentar encerrar o processo ${pid}:`,
+          err.message || err
         );
-        return false;
+        // Consideramos falha se o erro não for 'no such process'
+        allKilled = false;
       }
-    } catch (err) {
-      // Se der erro aqui, provavelmente é porque não há mais processos, o que é bom
     }
-
-    return true;
-  } catch (error) {
-    console.error(`Erro ao verificar/matar processos na porta ${port}:`, error);
-    return false;
   }
+
+  // Verificação final (opcional, mas boa prática)
+  try {
+    const { stdout: finalCheck } = await execAsync(`lsof -i :${port} -P -n -t`);
+    if (finalCheck.trim() !== "") {
+      const message = `AVISO: Processos ainda detectados na porta ${port} após tentativas de encerramento.`;
+      console.warn(message);
+      // Mesmo com aviso, pode ser considerado 'sucesso' na limpeza se allKilled não foi false
+      return {
+        success: allKilled,
+        message: allKilled
+          ? `Processos na porta ${port} encerrados (com possíveis resquícios).`
+          : message,
+      };
+    }
+  } catch (err) {
+    // Erro aqui significa que não há processos, o que é bom
+  }
+
+  const finalMessage = `Porta ${port} liberada com sucesso.`;
+  console.log(finalMessage);
+  return { success: true, message: finalMessage };
 }
 
 // Mapa para rastrear processos em execução
@@ -180,9 +231,21 @@ export async function startService(serviceId: ServiceId) {
     const { port } = serviceConfig[serviceId];
 
     // Verifica e encerra processos existentes na porta
-    await killProcessOnPort(port);
+    const killResult = await killProcessOnPort(port);
 
-    // Verifica se o serviço já está rodando após a tentativa de limpeza
+    // Logar a mensagem da limpeza, mas não tratar como erro fatal se success=true
+    console.log(`Resultado da limpeza da porta ${port}: ${killResult.message}`);
+
+    if (!killResult.success) {
+      // Só retorna erro se a limpeza REALMENTE falhou (não conseguiu matar um processo existente)
+      return {
+        success: false,
+        pid: null,
+        message: `Falha ao limpar a porta ${port} antes de iniciar: ${killResult.message}`,
+      };
+    }
+
+    // Verifica se o serviço já está rodando após a limpeza (pode ter iniciado rapidamente?)
     const status = await checkServiceStatus(serviceId);
 
     if (status.running) {
@@ -309,7 +372,7 @@ export async function stopService(serviceId: ServiceId, pid?: number | null) {
     if (serviceId === "ui-jina") {
       console.log("UI-Jina detectado, tentando parar processo na porta 8080");
       const killedByPort = await killProcessOnPort(8080);
-      if (killedByPort) {
+      if (killedByPort.success) {
         stopped = true;
         console.log("UI-Jina parado com sucesso via porta 8080");
       }
@@ -394,7 +457,7 @@ export async function stopService(serviceId: ServiceId, pid?: number | null) {
         console.log(`Tentando matar qualquer processo na porta ${portToUse}`);
         const killedByPort = await killProcessOnPort(portToUse);
 
-        if (killedByPort) {
+        if (killedByPort.success) {
           stopped = true;
           console.log(
             `Serviço ${serviceId} parou com sucesso matando processos na porta ${portToUse}`
@@ -456,10 +519,13 @@ export async function killAllServiceProcesses() {
     const portStatus = statusResults[serviceId];
     const portToUse = portStatus.actualPort || serviceConfig[serviceId].port;
 
-    console.log(`Limpando porta ${portToUse} para o serviço ${serviceId}...`);
-    results[serviceId] = await killProcessOnPort(portToUse);
+    if (portToUse) {
+      console.log(`Limpando porta ${portToUse} para o serviço ${serviceId}...`);
+      const killResult = await killProcessOnPort(portToUse);
+      results[serviceId] = killResult.success;
+    }
   }
 
-  console.log("Processo de limpeza concluído:", results);
+  console.log("Resultados da limpeza de portas:", results);
   return results;
 }

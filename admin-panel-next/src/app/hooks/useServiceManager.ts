@@ -24,13 +24,7 @@ export interface Service {
 
 type ServiceMap = Record<ServiceId, Service>;
 
-// Função auxiliar para obter porta do .env ou usar valor padrão
-function getEnvPort(envVar: string, defaultPort: number): number {
-  const portValue = process.env[envVar];
-  return portValue ? parseInt(portValue, 10) : defaultPort;
-}
-
-// Configuração inicial dos serviços com portas do .env
+// Configuração inicial dos serviços com portas FIXAS (padrão)
 const serviceConfig: Record<
   ServiceId,
   Omit<Service, "status" | "pid" | "logs">
@@ -40,7 +34,7 @@ const serviceConfig: Record<
     name: "Redis",
     description:
       "Banco de dados em memória usado para cache e armazenamento de dados",
-    port: getEnvPort("REDIS_PORT", 6378),
+    port: 6378, // Usar valor fixo
     icon: "🔄",
   },
   fastapi: {
@@ -48,7 +42,7 @@ const serviceConfig: Record<
     name: "FastAPI",
     description:
       "Backend Python com FastAPI para processamento de dados e integração com IA",
-    port: getEnvPort("FASTAPI_PORT", 10000),
+    port: 10000, // Usar valor fixo
     icon: "🐍",
   },
   node: {
@@ -56,28 +50,28 @@ const serviceConfig: Record<
     name: "Node.js Backend",
     description:
       "Servidor Node.js para buscador inteligente e integração com Jina",
-    port: getEnvPort("NODE_PORT", 3001),
+    port: 3001, // Usar valor fixo
     icon: "🟢",
   },
   frontend: {
     id: "frontend",
     name: "Frontend React",
     description: "Interface de usuário React com Vite",
-    port: getEnvPort("FRONTEND_PORT", 5173),
+    port: 5173, // Usar valor fixo
     icon: "⚛️",
   },
   "node-jina": {
     id: "node-jina",
     name: "DeepResearch Jina",
     description: "Servidor Node.js para DeepResearch com Jina AI",
-    port: getEnvPort("NODE_JINA_PORT", 3001),
+    port: 3002, // Atualizado para 3002
     icon: "🔍",
   },
   "ui-jina": {
     id: "ui-jina",
     name: "DeepSearch UI Jina",
     description: "Interface de usuário para DeepSearch com Jina AI",
-    port: getEnvPort("UI_JINA_PORT", 8080),
+    port: 8080, // Usar valor fixo
     icon: "🔎",
   },
 };

@@ -5,7 +5,7 @@
  * Todos os tipos foram consolidados no arquivo globalTypes.ts.
  */
 
-// Exporta todos os tipos do arquivo globalTypes
+// Exporta todos os tipos do arquivo globalTypes (agora atualizado)
 export * from "./globalTypes";
 
 // Cria um namespace SessionModule para manter compatibilidade com código existente
