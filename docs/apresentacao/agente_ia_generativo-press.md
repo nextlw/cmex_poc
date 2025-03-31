@@ -248,45 +248,45 @@ pie
 
 ### Custos Mensais Estimados (Para 5.000 usuários)
 
-| Item                   | Descrição                  | Custo Mensal (US$) | Custo Mensal (R$) |     |     |     |
-| ---------------------- | -------------------------- | ------------------ | ----------------- | --- | --- | --- |
-| Infraestrutura Cloud   | AWS/Azure (EC2, S3, etc.)  | $12.000,00         | R$ 68.880,00      |     |     |     |
-| Modelo de IA           | Treinamento e inferência   | $15.000,00         | R$ 86.100,00      |     |     |     |
-| Largura de Banda       | Transferência de dados     | $3.000,00          | R$ 17.220,00      |     |     |     |
-| Integração             | APIs de terceiros          | $2.000,00          | R$ 11.480,00      |     |     |     |
-| Equipe Desenvolvimento | _Detalhado abaixo_         | $10.453,00         | R$ 60.000,00      |     |     |     |
-| Equipe de IA           | Especialistas em ML/NLP    | $13.937,00         | R$ 80.000,00      |     |     |     |
-| Suporte Técnico        | Atendimento e treinamento  | $8.362,00          | R$ 48.000,00      |     |     |     |
-| Marketing              | Aquisição de clientes      | $10.000,00         | R$ 57.400,00      |     |     |     |
-| Tokens LLMs            | Inferência e processamento | $17.500,00         | R$ 100.450,00     |     |     |     |
-| **Total**              |                            | **$92.252,00**     | **R$ 529.530,00** |     |     |     |
+| Item                   | Descrição                  | Custo Mensal (US$) | Custo Mensal (R$) |     |     |     |     |
+| ---------------------- | -------------------------- | ------------------ | ----------------- | --- | --- | --- | --- |
+| Infraestrutura Cloud   | AWS/Azure (EC2, S3, etc.)  | $12.000,00         | R$ 68.880,00      |     |     |     |     |
+| Modelo de IA           | Treinamento e inferência   | $15.000,00         | R$ 86.100,00      |     |     |     |     |
+| Largura de Banda       | Transferência de dados     | $3.000,00          | R$ 17.220,00      |     |     |     |     |
+| Integração             | APIs de terceiros          | $2.000,00          | R$ 11.480,00      |     |     |     |     |
+| Equipe Desenvolvimento | _Detalhado abaixo_         | $10.453,00         | R$ 60.000,00      |     |     |     |     |
+| Equipe de IA           | Especialistas em ML/NLP    | $13.937,00         | R$ 80.000,00      |     |     |     |     |
+| Suporte Técnico        | Atendimento e treinamento  | $8.362,00          | R$ 48.000,00      |     |     |     |     |
+| Marketing              | Aquisição de clientes      | $10.000,00         | R$ 57.400,00      |     |     |     |     |
+| Tokens LLMs            | Inferência e processamento | $17.500,00         | R$ 100.450,00     |     |     |     |     |
+| **Total**              |                            | **$92.252,00**     | **R$ 529.530,00** |     |     |     |     |
 
 ### Detalhamento da Equipe de Desenvolvimento
 
-| Função                    | Regime         | Valor                 | Horas Mensais | Total Mensal     |     |     |     |     |     |     |
-| ------------------------- | -------------- | --------------------- | ------------- | ---------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CTO                       | Fixo           | R$ 15.000,00/mês      | -             | R$ 15.000,00     |     |     |     |     |     |     |     |     |
-| Frontend Sênior           | R$ 80,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 9.600,00      |     |     |     |     |     |     |     |     |     |
-| Backend Sênior            | R$ 100,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 12.000,00     |     |     |     |     |     |     |     |     |     |
-| DevOps                    | R$ 90,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 10.800,00     |     |     |     |     |     |     |     |     |     |
-| Fullstack Pleno           | R$ 70,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 8.400,00      |     |     |     |     |     |     |     |     |     |
-| QA Especializado          | R$ 35,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 4.200,00      |     |     |     |     |     |     |     |     |     |
-| **Total Desenvolvimento** |                |                       |               | **R$ 60.000,00** |     |     |     |     |     |     |
+| Função                    | Regime         | Valor                 | Horas Mensais | Total Mensal     |     |     |     |     |     |     |     |     |     |
+| ------------------------- | -------------- | --------------------- | ------------- | ---------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| CTO                       | Fixo           | R$ 15.000,00/mês      | -             | R$ 15.000,00     |     |     |     |     |     |     |     |     |     |     |     |
+| Frontend Sênior           | R$ 80,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 9.600,00      |     |     |     |     |     |     |     |     |     |     |     |     |
+| Backend Sênior            | R$ 100,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 12.000,00     |     |     |     |     |     |     |     |     |     |     |     |     |
+| DevOps                    | R$ 90,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 10.800,00     |     |     |     |     |     |     |     |     |     |     |     |     |
+| Fullstack Pleno           | R$ 70,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 8.400,00      |     |     |     |     |     |     |     |     |     |     |     |     |
+| QA Especializado          | R$ 35,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 4.200,00      |     |     |     |     |     |     |     |     |     |     |     |     |
+| **Total Desenvolvimento** |                |                       |               | **R$ 60.000,00** |     |     |     |     |     |     |     |     |     |
 
 ### Detalhamento das Equipes de Suporte
 
-| Função                    | Quantidade | Custo Mensal Individual | Total Mensal     |     |     |
-| ------------------------- | ---------- | ----------------------- | ---------------- | --- | --- | --- |
-| **Equipe de IA**          |            |                         |                  |     |     |
-| Cientista de Dados Sênior | 2          | R$ 20.000,00            | R$ 40.000,00     |     |     |     |
-| Engenheiro de ML          | 2          | R$ 15.000,00            | R$ 30.000,00     |     |     |     |
-| Especialista em NLP       | 1          | R$ 10.000,00            | R$ 10.000,00     |     |     |     |
-| **Total Equipe de IA**    |            |                         | **R$ 80.000,00** |     |     |
-| **Suporte Técnico**       |            |                         |                  |     |     |
-| Coordenador de Suporte    | 1          | R$ 12.000,00            | R$ 12.000,00     |     |     |     |
-| Especialista L2           | 2          | R$ 8.000,00             | R$ 16.000,00     |     |     |     |
-| Analista de Suporte L1    | 5          | R$ 4.000,00             | R$ 20.000,00     |     |     |     |
-| **Total Suporte Técnico** |            |                         | **R$ 48.000,00** |     |     |
+| Função                    | Quantidade | Custo Mensal Individual | Total Mensal     |     |     |     |
+| ------------------------- | ---------- | ----------------------- | ---------------- | --- | --- | --- | --- |
+| **Equipe de IA**          |            |                         |                  |     |     |     |
+| Cientista de Dados Sênior | 2          | R$ 20.000,00            | R$ 40.000,00     |     |     |     |     |
+| Engenheiro de ML          | 2          | R$ 15.000,00            | R$ 30.000,00     |     |     |     |     |
+| Especialista em NLP       | 1          | R$ 10.000,00            | R$ 10.000,00     |     |     |     |     |
+| **Total Equipe de IA**    |            |                         | **R$ 80.000,00** |     |     |     |
+| **Suporte Técnico**       |            |                         |                  |     |     |     |
+| Coordenador de Suporte    | 1          | R$ 12.000,00            | R$ 12.000,00     |     |     |     |     |
+| Especialista L2           | 2          | R$ 8.000,00             | R$ 16.000,00     |     |     |     |     |
+| Analista de Suporte L1    | 5          | R$ 4.000,00             | R$ 20.000,00     |     |     |     |     |
+| **Total Suporte Técnico** |            |                         | **R$ 48.000,00** |     |     |     |
 
 ### Detalhamento de Custos com LLMs
 
@@ -331,11 +331,11 @@ pie
 
 ### Comparativo de Cenários
 
-| Cenário     | Receita Mensal  | Custos Operacionais | Reinvestimento P&D | Margem Líquida | % Margem |     |     |     |     |
-| ----------- | --------------- | ------------------- | ------------------ | -------------- | -------- | --- | --- | --- | --- | --- | --- |
-| Otimista    | R$ 1.406.300,00 | R$ 413.280,00       | R$ 421.890,00      | R$ 571.130,00  | 40,6%    |     |     |     |     |     |     |
-| Realista    | R$ 1.406.300,00 | R$ 529.530,00       | R$ 421.890,00      | R$ 454.880,00  | 32,3%    |     |     |     |     |     |     |
-| Conservador | R$ 1.406.300,00 | R$ 529.530,00       | R$ 561.890,00      | R$ 314.880,00  | 22,4%    |     |     |     |     |     |     |
+| Cenário     | Receita Mensal  | Custos Operacionais | Reinvestimento P&D | Margem Líquida | % Margem |     |     |     |     |     |     |
+| ----------- | --------------- | ------------------- | ------------------ | -------------- | -------- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Otimista    | R$ 1.406.300,00 | R$ 413.280,00       | R$ 421.890,00      | R$ 571.130,00  | 40,6%    |     |     |     |     |     |     |     |     |
+| Realista    | R$ 1.406.300,00 | R$ 529.530,00       | R$ 421.890,00      | R$ 454.880,00  | 32,3%    |     |     |     |     |     |     |     |     |
+| Conservador | R$ 1.406.300,00 | R$ 529.530,00       | R$ 561.890,00      | R$ 314.880,00  | 22,4%    |     |     |     |     |     |     |     |     |
 
 > **Nota:** O cenário conservador considera um maior investimento em P&D para aprimorar os algoritmos de automação e expandir as capacidades do agente, essencial em um mercado altamente competitivo de IA.
 
