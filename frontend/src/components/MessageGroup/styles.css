@@ -1,0 +1,96 @@
+.message-group {
+    margin: 1rem 0;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-background-dark);
+    border: 1px solid var(--color-border);
+}
+
+.message-group-header {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-gray-900);
+    border-top-left-radius: var(--border-radius-sm);
+    border-top-right-radius: var(--border-radius-sm);
+}
+
+.message-group-title {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+.message-group-count {
+    margin: 0 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-gray-800-50);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.message-group-toggle {
+    color: var(--color-text-secondary);
+    transition: transform 0.2s ease;
+}
+
+.message-group-toggle.expanded {
+    transform: rotate(180deg);
+}
+
+.message-group-content {
+    display: none;
+    padding: 0.5rem;
+    transition: max-height 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.message-group-content.expanded {
+    display: block;
+    max-height: 1000px;
+    /* Ajuste conforme necessário */
+}
+
+/* Estilos específicos por tipo */
+.message-group.thinking {
+    border-color: var(--color-info);
+}
+
+.message-group.progress {
+    border-color: var(--color-primary);
+}
+
+.message-group.answer {
+    border-color: var(--color-success);
+}
+
+.message-group.error {
+    border-color: var(--color-error);
+}
+
+.message-group.system {
+    border-color: var(--color-secondary);
+}
+
+/* Novo estilo para mensagens do usuário */
+.message-group.user {
+    border-color: var(--color-accent);
+    background-color: var(--color-background-light);
+}
+
+.message-group.user .message-group-header {
+    background-color: var(--color-accent-50);
+}
+
+.message-group.user .message-group-title {
+    color: var(--color-text-dark);
+    font-weight: 600;
+}
+
+.message-group.user .message-content {
+    padding: 1rem;
+    color: var(--color-text-dark);
+}

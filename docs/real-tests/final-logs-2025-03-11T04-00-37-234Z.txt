@@ -1,0 +1,44 @@
+2025-03-11T04:00:38.632Z - [vite] connecting...
+2025-03-11T04:00:38.643Z - [vite] connected.
+2025-03-11T04:00:38.686Z - %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+2025-03-11T04:00:44.767Z - Link de chat encontrado no header: Chat
+2025-03-11T04:00:44.815Z - JSHandle@error
+2025-03-11T04:00:44.815Z - Failed to load resource: the server responded with a status of 404 (Not Found)
+2025-03-11T04:00:44.816Z - Evento de nova query recebido: JSHandle@object
+2025-03-11T04:00:44.817Z - JSHandle@error
+2025-03-11T04:00:44.818Z - Failed to load resource: the server responded with a status of 404 (Not Found)
+2025-03-11T04:00:44.819Z - Evento de nova query recebido: JSHandle@object
+2025-03-11T04:00:44.820Z - Nova query recebida via props: JSHandle@object
+2025-03-11T04:00:44.821Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:00:44.822Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:00:51.244Z - Enviando pergunta para: http://localhost:3001/api/v1/query
+2025-03-11T04:00:51.287Z - Failed to load resource: net::ERR_CONNECTION_REFUSED
+2025-03-11T04:00:51.288Z - Erro ao salvar sessão: JSHandle@error
+2025-03-11T04:00:51.292Z - Erro na conexão SSE: JSHandle@object
+2025-03-11T04:00:51.294Z - Tentando reconectar em 1 segundos (tentativa 1/5)...
+2025-03-11T04:00:51.295Z - Failed to load resource: net::ERR_CONNECTION_REFUSED
+2025-03-11T04:00:52.298Z - Erro na conexão SSE: JSHandle@object
+2025-03-11T04:00:52.299Z - Tentando reconectar em 2 segundos (tentativa 2/5)...
+2025-03-11T04:00:52.300Z - Failed to load resource: net::ERR_CONNECTION_REFUSED
+2025-03-11T04:00:54.303Z - Erro na conexão SSE: JSHandle@object
+2025-03-11T04:00:54.304Z - Tentando reconectar em 4 segundos (tentativa 3/5)...
+2025-03-11T04:00:54.305Z - Failed to load resource: net::ERR_CONNECTION_REFUSED
+2025-03-11T04:00:54.775Z - Failed to load resource: net::ERR_CONNECTION_REFUSED
+2025-03-11T04:00:54.776Z - Erro: JSHandle@error
+2025-03-11T04:00:58.306Z - Erro na conexão SSE: JSHandle@object
+2025-03-11T04:00:58.307Z - Tentando reconectar em 8 segundos (tentativa 4/5)...
+2025-03-11T04:00:58.308Z - Failed to load resource: net::ERR_CONNECTION_REFUSED
+2025-03-11T04:01:04.776Z - Failed to load resource: net::ERR_CONNECTION_REFUSED
+2025-03-11T04:01:04.776Z - Erro: JSHandle@error
+2025-03-11T04:01:06.310Z - Erro na conexão SSE: JSHandle@object
+2025-03-11T04:01:06.311Z - Tentando reconectar em 16 segundos (tentativa 5/5)...
+2025-03-11T04:01:06.312Z - Failed to load resource: net::ERR_CONNECTION_REFUSED
+2025-03-11T04:01:14.788Z - Failed to load resource: net::ERR_CONNECTION_REFUSED
+2025-03-11T04:01:14.797Z - Erro: JSHandle@error
+2025-03-11T04:01:22.318Z - Conexão SSE estabelecida
+2025-03-11T04:01:22.319Z - Mensagem SSE recebida: {"type":"connected","requestId":"1741665651245","trackers":null}
+2025-03-11T04:01:22.320Z - Evento recebido no cliente: JSHandle@object
+2025-03-11T04:01:24.782Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:01:34.791Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:01:44.782Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.
+2025-03-11T04:01:54.780Z - Status inválido recebido: cancelled. Usando 'in_progress' como fallback.

@@ -1,54 +1,97 @@
-import {z} from 'zod';
-import {TokenTracker} from "../utils/token-tracker";
-import {AnswerAction, EvaluationCriteria, EvaluationResponse, EvaluationType} from '../types';
-import {readUrl, removeAllLineBreaks} from "./read";
-import {LocalModelClient} from "./local-model-client";
-import {modelConfigs, LOCAL_MODEL_ENDPOINT} from "../config";
-import {ActionTracker} from "../utils/action-tracker";
+import { z } from "zod";
+import { TokenTracker } from "../utils/token-tracker";
+import {
+  AnswerAction,
+  EvaluationCriteria,
+  EvaluationResponse,
+  EvaluationType,
+} from "../types";
+import { readUrl, removeAllLineBreaks } from "./read";
+import { LocalModelClient } from "./local-model-client";
+import { modelConfigs, LOCAL_MODEL_ENDPOINT } from "../config";
+import { ActionTracker } from "../utils/action-tracker";
 
 const baseSchema = {
-  pass: z.boolean().describe('Whether the answer passes the evaluation criteria defined by the evaluator'),
-  think: z.string().describe('Explanation the thought process why the answer does not pass the evaluation criteria')
+  pass: z
+    .boolean()
+    .describe(
+      "Whether the answer passes the evaluation criteria defined by the evaluator"
+    ),
+  think: z
+    .string()
+    .describe(
+      "Explanation the thought process why the answer does not pass the evaluation criteria"
+    ),
 };
 
 const definitiveSchema = z.object({
   ...baseSchema,
-  type: z.literal('definitive')
+  type: z.literal("definitive"),
 });
 
 const freshnessSchema = z.object({
   ...baseSchema,
-  type: z.literal('freshness'),
+  type: z.literal("freshness"),
   freshness_analysis: z.object({
-    likely_outdated: z.boolean().describe('Whether the answer content is likely outdated based on dates and current time'),
-    dates_mentioned: z.array(z.string()).describe('All dates mentioned in the answer'),
-    current_time: z.string().describe('Current system time when evaluation was performed'),
-    max_age_days: z.number().optional().describe('Maximum allowed age in days before content is considered outdated')
-  })
+    likely_outdated: z
+      .boolean()
+      .describe(
+        "Whether the answer content is likely outdated based on dates and current time"
+      ),
+    dates_mentioned: z
+      .array(z.string())
+      .describe("All dates mentioned in the answer"),
+    current_time: z
+      .string()
+      .describe("Current system time when evaluation was performed"),
+    max_age_days: z
+      .number()
+      .optional()
+      .describe(
+        "Maximum allowed age in days before content is considered outdated"
+      ),
+  }),
 });
 
 const pluralitySchema = z.object({
   ...baseSchema,
-  type: z.literal('plurality'),
+  type: z.literal("plurality"),
   plurality_analysis: z.object({
-    expects_multiple: z.boolean().describe('Whether the question asks for multiple items'),
-    provides_multiple: z.boolean().describe('Whether the answer provides multiple items'),
-    count_expected: z.number().optional().describe('Number of items expected if specified in question'),
-    count_provided: z.number().describe('Number of items provided in answer')
-  })
+    expects_multiple: z
+      .boolean()
+      .describe("Whether the question asks for multiple items"),
+    provides_multiple: z
+      .boolean()
+      .describe("Whether the answer provides multiple items"),
+    count_expected: z
+      .number()
+      .optional()
+      .describe("Number of items expected if specified in question"),
+    count_provided: z.number().describe("Number of items provided in answer"),
+  }),
 });
 
 const attributionSchema = z.object({
   ...baseSchema,
-  type: z.literal('attribution'),
+  type: z.literal("attribution"),
   attribution_analysis: z.object({
-    sources_provided: z.boolean().describe('Whether the answer provides source references'),
-    sources_verified: z.boolean().describe('Whether the provided sources contain the claimed information'),
-    quotes_accurate: z.boolean().describe('Whether the quotes accurately represent the source content')
-  })
+    sources_provided: z
+      .boolean()
+      .describe("Whether the answer provides source references"),
+    sources_verified: z
+      .boolean()
+      .describe("Whether the provided sources contain the claimed information"),
+    quotes_accurate: z
+      .boolean()
+      .describe("Whether the quotes accurately represent the source content"),
+  }),
 });
 
-function getAttributionPrompt(question: string, answer: string, sourceContent: string): string {
+function getAttributionPrompt(
+  question: string,
+  answer: string,
+  sourceContent: string
+): string {
   return `You are an evaluator that verifies if answer content is properly attributed to and supported by the provided sources.
 
 <rules>
@@ -168,7 +211,11 @@ Return a JSON object strictly in the format:
 }`;
 }
 
-function getFreshnessPrompt(question: string, answer: string, currentTime: string): string {
+function getFreshnessPrompt(
+  question: string,
+  answer: string,
+  currentTime: string
+): string {
   return `You are an evaluator that analyzes if answer content is likely outdated based on mentioned dates and current time.
 
 <rules>
@@ -318,10 +365,20 @@ Answer: ${JSON.stringify(answer)}`;
 }
 
 const questionEvaluationSchema = z.object({
-  needsFreshness: z.boolean().describe('Whether the question requires freshness check'),
-  needsPlurality: z.boolean().describe('Whether the question requires plurality check'),
-  think: z.string().describe('Explanation of why these checks are needed or not needed'),
-  languageStyle: z.string().describe('The language being used and the overall vibe/mood of the question'),
+  needsFreshness: z
+    .boolean()
+    .describe("Whether the question requires freshness check"),
+  needsPlurality: z
+    .boolean()
+    .describe("Whether the question requires plurality check"),
+  think: z
+    .string()
+    .describe("Explanation of why these checks are needed or not needed"),
+  languageStyle: z
+    .string()
+    .describe(
+      "The language being used and the overall vibe/mood of the question"
+    ),
 });
 
 function getQuestionEvaluationPrompt(question: string): string {
@@ -402,7 +459,7 @@ Now evaluate this question:
 Question: ${JSON.stringify(question)}`;
 }
 
-const TOOL_NAME = 'evaluator';
+const TOOL_NAME = "evaluator";
 
 export async function evaluateQuestion(
   question: string,
@@ -411,26 +468,32 @@ export async function evaluateQuestion(
   try {
     const generator = new LocalModelClient(LOCAL_MODEL_ENDPOINT);
 
-    const result = await generator.generateContent(getQuestionEvaluationPrompt(question));
-    const rawResponse = result.response.text();
+    const result = await generator.generateContent(
+      getQuestionEvaluationPrompt(question)
+    );
+
+    // A resposta já é uma string JSON conforme implementação do LocalModelClient
+    const rawResponse = result.response.text;
     const parsedResponse = JSON.parse(rawResponse);
-    
+
     // Validar a resposta usando o schema
     const validated = questionEvaluationSchema.parse(parsedResponse);
 
     // Always include definitive in types
-    const types: EvaluationType[] = ['definitive'];
-    if (validated.needsFreshness) types.push('freshness');
-    if (validated.needsPlurality) types.push('plurality');
+    const types: EvaluationType[] = ["definitive"];
+    if (validated.needsFreshness) types.push("freshness");
+    if (validated.needsPlurality) types.push("plurality");
 
-    console.log('Question Metrics:', types);
+    console.log("Question Metrics:", types);
 
-    return {types, languageStyle: validated.languageStyle};
-
+    return { types, languageStyle: validated.languageStyle };
   } catch (error) {
-    console.error('Error in question evaluation:', error);
+    console.error("Error in question evaluation:", error);
     // Default to all evaluation types in case of error
-    return {types: ['definitive', 'freshness', 'plurality'], languageStyle: 'plain English'};
+    return {
+      types: ["definitive", "freshness", "plurality"],
+      languageStyle: "plain English",
+    };
   }
 }
 
@@ -449,26 +512,31 @@ async function performEvaluation(
       generationConfig: {
         temperature: modelConfigs.evaluator.temperature,
         responseMimeType: "application/json",
-        responseSchema: params.schema
-      }
+        responseSchema: params.schema,
+      },
     });
 
     const result = await model.generateContent(params.prompt);
     const response = result.response;
-    const content = JSON.parse(response.text());
-    
+
+    // A resposta já é uma string JSON conforme implementação do LocalModelClient
+    const rawText = response.text;
+    const content = JSON.parse(rawText);
+
     const resultadoValido = params.schema.safeParse(content);
     if (!resultadoValido.success) {
       // Aqui você pode coletar as mensagens de erro e trackear o "think" para o LLM corrigir o formato.
-      const mensagensErro = resultadoValido.error.issues.map(issue => issue.message).join(", ");
+      const mensagensErro = resultadoValido.error.issues
+        .map((issue) => issue.message)
+        .join(", ");
       trackers[1].trackThink(`Formato inválido: ${mensagensErro}`);
-      
+
       // Em vez de lançar uma exceção, retorne uma resposta que indique que o JSON está no formato incorreto
       // e que o LLM deve corrigir o output.
       return {
         pass: false,
         think: `O JSON retornado não está no formato esperado: ${mensagensErro}. Por favor, corrija o output e tente novamente.`,
-        tokens: response.usageMetadata?.totalTokenCount || 0
+        tokens: response.usageMetadata?.totalTokenCount || 0,
       };
     }
 
@@ -476,17 +544,16 @@ async function performEvaluation(
     const validatedData = resultadoValido.data;
     trackers[1].trackThink(validatedData.think);
     console.log(`${evaluationType} evaluation:`, validatedData);
-    
+
     return {
       ...validatedData,
-      tokens: response.usageMetadata?.totalTokenCount || 0
+      tokens: response.usageMetadata?.totalTokenCount || 0,
     };
   } catch (error) {
-    console.error('Erro na avaliação:', error);
+    console.error("Erro na avaliação:", error);
     throw error;
   }
 }
-
 
 // Main evaluation function
 export async function evaluateAnswer(
@@ -498,70 +565,85 @@ export async function evaluateAnswer(
 ): Promise<{ response: EvaluationResponse }> {
   let result: EvaluationResponse | undefined;
 
-  if (action.references?.length > 0 && action.references.some(ref => ref.url.startsWith('http'))) {
-    evaluationCri.types = ['attribution', ...evaluationCri.types];
+  if (
+    action.references?.length > 0 &&
+    action.references.some((ref) => ref.url.startsWith("http"))
+  ) {
+    evaluationCri.types = ["attribution", ...evaluationCri.types];
   }
 
   for (const evaluationType of evaluationCri.types) {
     try {
       switch (evaluationType) {
-        case 'attribution': {
-          const urls = action.references
-            ?.filter(ref => ref.url.startsWith('http') && !visitedURLs.includes(ref.url))
-            .map(ref => ref.url) || [];
+        case "attribution": {
+          const urls =
+            action.references
+              ?.filter(
+                (ref) =>
+                  ref.url.startsWith("http") && !visitedURLs.includes(ref.url)
+              )
+              .map((ref) => ref.url) || [];
           const uniqueURLs = [...new Set(urls)];
           const allKnowledge = await fetchSourceContent(uniqueURLs, trackers);
-          
+
           if (!allKnowledge.trim()) {
             result = {
               pass: false,
               think: "No valid attribution references found",
-              type: 'attribution',
+              type: "attribution",
               attribution_analysis: {
                 sources_provided: false,
                 sources_verified: false,
-                quotes_accurate: false
-              }
+                quotes_accurate: false,
+              },
             };
             break;
           }
 
           result = await performEvaluation(
-            'attribution',
+            "attribution",
             {
               schema: attributionSchema,
-              prompt: getAttributionPrompt(question, action.answer, allKnowledge)
+              prompt: getAttributionPrompt(
+                question,
+                action.answer,
+                allKnowledge
+              ),
             },
             trackers
           );
           break;
         }
-        case 'definitive':
+        case "definitive":
           result = await performEvaluation(
-            'definitive',
+            "definitive",
             {
               schema: definitiveSchema,
-              prompt: getDefinitivePrompt(question, action.answer)
+              prompt: getDefinitivePrompt(question, action.answer),
             },
             trackers
           );
           break;
-        case 'freshness':
+        case "freshness":
           result = await performEvaluation(
-            'freshness',
+            "freshness",
             {
               schema: freshnessSchema,
-              prompt: getFreshnessPrompt(question, action.answer, new Date().toISOString())
+              prompt: getFreshnessPrompt(
+                question,
+                action.answer,
+                new Date().toISOString()
+              ),
             },
             trackers
           );
           break;
-        case 'plurality':
+        case "plurality":
           result = await performEvaluation(
-            'plurality',
+            "plurality",
             {
               schema: pluralitySchema,
-              prompt: getPluralityPrompt(question, action.answer)
+              prompt: getPluralityPrompt(question, action.answer),
             },
             trackers
           );
@@ -569,7 +651,7 @@ export async function evaluateAnswer(
       }
 
       if (!result?.pass) {
-        return { response: result };
+        return { response: result as EvaluationResponse };
       }
     } catch (error) {
       console.error(`Error in ${evaluationType} evaluation:`, error);
@@ -577,33 +659,53 @@ export async function evaluateAnswer(
     }
   }
 
-  return { response: result! };
+  // Defina um valor padrão caso nenhuma avaliação seja realizada
+  if (!result) {
+    result = {
+      pass: true,
+      think: "A resposta passou em todas as avaliações solicitadas",
+      type: evaluationCri.types[0] as
+        | "definitive"
+        | "freshness"
+        | "plurality"
+        | "attribution"
+        | "completeness"
+        | "strict",
+    };
+  }
+
+  return { response: result };
 }
 
 // Helper function to fetch and combine source content
-async function fetchSourceContent(urls: string[], trackers: [TokenTracker, ActionTracker]): Promise<string> {
-  if (!urls.length) return '';
-  trackers[1].trackThink('Let me fetch the source content to verify the answer.');
+async function fetchSourceContent(
+  urls: string[],
+  trackers: [TokenTracker, ActionTracker]
+): Promise<string> {
+  if (!urls.length) return "";
+  trackers[1].trackThink(
+    "Deixe-me buscar o conteúdo da fonte para verificar a resposta."
+  );
   try {
     const results = await Promise.all(
       urls.map(async (url): Promise<string> => {
         try {
-          const {response} = await readUrl(url, trackers[0]);
-          const content = response?.data?.content || '';
+          // Tenta ler o URL
+          const { response } = await readUrl(url, false, trackers[0]);
+          // Conclui se for bem-sucedido
+          const content = response?.data?.content || "";
           return removeAllLineBreaks(content);
         } catch (error) {
-          console.error('Error reading URL:', error);
-          return '';
+          console.error("Error reading URL:", error);
+          return "";
         }
       })
     );
 
     // Filter out empty results and join with proper separation
-    return results
-      .filter((content: string) => content.trim())
-      .join('\n\n');
+    return results.filter((content: string) => content.trim()).join("\n\n");
   } catch (error) {
-    console.error('Error fetching source content:', error);
-    return '';
+    console.error("Error fetching source content:", error);
+    return "";
   }
 }

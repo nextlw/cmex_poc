@@ -1,5 +1,3 @@
-
-
 export interface ValoresImpostos {
   ipi: string;
   icms: {
@@ -23,12 +21,11 @@ export interface ClassificacaoTributaria {
 }
 
 export interface HistoricoItem {
-
   // Colunas da tabela
   id: string;
   modelo: string;
   criado_em: string;
-  
+
   // Coluna de resultados
   descricao: string;
   ncm: string;

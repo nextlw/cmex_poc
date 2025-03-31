@@ -1,0 +1,18 @@
+node:internal/modules/cjs/loader:1397
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente/seu-programa.js'
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1394:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1050:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1055:22)
+    at Function._load (node:internal/modules/cjs/loader:1204:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:234:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:151:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v23.7.0

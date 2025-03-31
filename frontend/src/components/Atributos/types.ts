@@ -1,5 +1,4 @@
 export interface AtributosProps {
-  atributos?: string[];
-  atributos_tipi?: string[];
+  atributos?: string[] | null;
   isLoading?: boolean;
 }

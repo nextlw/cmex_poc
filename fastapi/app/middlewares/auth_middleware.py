@@ -36,7 +36,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
 
         # Verifica se a rota é pública
-        if request.url.path in ["/", "/login", "/api/autocomplete"]:  # Lista de rotas públicas
+        if request.url.path in ["/", "/login", "/api/v1/autocomplete", "/api/v1/queries", "/api/queries", "/api/autocomplete"]:  # Lista de rotas públicas
             logger.info(f"Rota pública acessada: {request.url.path}")
             response = await call_next(request)
             return response

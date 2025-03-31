@@ -1,18 +1,19 @@
 /**
  * @cmex/shared-types
- * 
+ *
  * Pacote que fornece tipos compartilhados entre o frontend e o backend da CMEX,
  * incluindo schemas de validação (Zod) e funções de transformação.
  */
 
 // Exporta utilitários de tratamento de erro
-export * from './utils/errorHandling';
+export * from "./utils/errorHandling";
 
 // Exporta módulos de tipos específicos
-export * as Query from './query';
-export * as Stream from './stream';
-export * as Logs from './logs'; 
-export * as TokenTracker from './tokenTracker';
+export * as Query from "./query";
+export * as Stream from "./stream";
+export * as Logs from "./logs";
+export * as TokenTracker from "./tokenTracker";
+export * as Model from "./model";
 
 // Re-exporta tipos e transformadores comumente utilizados
 // para simplificar importações
@@ -25,16 +26,16 @@ export {
   BackendQueryStatus,
   FrontendQueryStatus,
   BackendQuery,
-  FrontendQuery
-} from './query';
+  FrontendQuery,
+} from "./query";
 
 // Re-exportações de Stream
 export {
   transformStreamMessage,
   transformStreamMessageType,
   BackendStreamMessageType,
-  FrontendStreamMessageType
-} from './stream';
+  FrontendStreamMessageType,
+} from "./stream";
 
 // Re-exportações de Logs
 export {
@@ -42,12 +43,24 @@ export {
   transformLogsResponse,
   ServerLog,
   FrontendLog,
-  LogsResponse
-} from './logs';
+  LogsResponse,
+} from "./logs";
 
 // Re-exportações de TokenTracker
 export {
   transformTokenTracker,
   TokenUsage,
-  FrontendTokenTracker
-} from './tokenTracker'; 
+  FrontendTokenTracker,
+} from "./tokenTracker";
+
+// Re-exportações de Model
+export {
+  transformModelConfig,
+  transformModelConfigList,
+  headerSelectToModelName,
+  modelNameToHeaderSelect,
+  ModelProvider,
+  ModelInfo,
+  ModelResponse,
+  ModelStreamingStatus,
+} from "./model";

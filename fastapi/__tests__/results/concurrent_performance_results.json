@@ -1,0 +1,143 @@
+{
+  "config": {
+    "num_requests_sequential": 100,
+    "num_requests_concurrent": 20,
+    "max_workers": 10,
+    "log_every_n": 10
+  },
+  "stats": {
+    "total_requests": 20,
+    "successful_requests": 20,
+    "failure_rate": 0.0,
+    "total_time_s": 0.022753238677978516,
+    "avg_time_ms": 9.413421154022217,
+    "median_time_ms": 8.679628372192383,
+    "p95_time_ms": 14.077901840209961,
+    "min_time_ms": 5.356788635253906,
+    "max_time_ms": 14.363288879394531,
+    "std_dev_ms": 2.757480660655826,
+    "requests_per_second": 878.9957457509902
+  },
+  "individual_results": [
+    {
+      "status_code": 200,
+      "elapsed_ms": 7.174968719482422,
+      "success": true,
+      "response_size": 453
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 6.516933441162109,
+      "success": true,
+      "response_size": 318
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 7.1239471435546875,
+      "success": true,
+      "response_size": 453
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 7.90095329284668,
+      "success": true,
+      "response_size": 453
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 8.089065551757812,
+      "success": true,
+      "response_size": 318
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 10.730981826782227,
+      "success": true,
+      "response_size": 318
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 14.363288879394531,
+      "success": true,
+      "response_size": 318
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 7.956981658935547,
+      "success": true,
+      "response_size": 318
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 10.07986068725586,
+      "success": true,
+      "response_size": 318
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 14.077901840209961,
+      "success": true,
+      "response_size": 453
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 12.241125106811523,
+      "success": true,
+      "response_size": 453
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 9.270191192626953,
+      "success": true,
+      "response_size": 453
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 12.306928634643555,
+      "success": true,
+      "response_size": 318
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 10.782003402709961,
+      "success": true,
+      "response_size": 318
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 13.37432861328125,
+      "success": true,
+      "response_size": 453
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 10.210037231445312,
+      "success": true,
+      "response_size": 453
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 6.0482025146484375,
+      "success": true,
+      "response_size": 318
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 7.644891738891602,
+      "success": true,
+      "response_size": 318
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 5.356788635253906,
+      "success": true,
+      "response_size": 453
+    },
+    {
+      "status_code": 200,
+      "elapsed_ms": 7.01904296875,
+      "success": true,
+      "response_size": 453
+    }
+  ]
+}

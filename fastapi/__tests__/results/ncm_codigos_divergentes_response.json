@@ -1,0 +1,1 @@
+{"validation":{"status":"conflicting_data","message":"Códigos NCM divergentes nos resultados","possible_codes":["6404.11.00","6402.19.00"],"insights":["Classificação varia de acordo com o material","Existem categorias específicas para esportes"]},"confidence":70.0,"metadata":{"validation_timestamp":"2025-03-10T13:56:40.671532","query_complexity":0.5,"data_sources":2}}

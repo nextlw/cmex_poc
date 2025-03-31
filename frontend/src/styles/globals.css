@@ -10,37 +10,22 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: transparent;
+  background-color: var(--scrollbar-track-color);
   margin: 8px 0;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(120, 120, 120, 0.3);
+  background-color: var(--scrollbar-thumb-color);
   border-radius: 10px;
   transition: background-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(120, 120, 120, 0.5);
+  background-color: var(--scrollbar-thumb-hover-color);
 }
 
-/* Variações de tema para scrollbar */
-html[data-theme="dark"] ::-webkit-scrollbar-thumb {
-  background-color: rgba(150, 150, 150, 0.3);
-}
-
-html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(150, 150, 150, 0.5);
-}
-
-html[data-theme="light"] ::-webkit-scrollbar-thumb {
-  background-color: rgba(100, 100, 100, 0.3);
-}
-
-html[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(100, 100, 100, 0.5);
-}
+/* Variações de tema para scrollbar já são controladas pelos tokens */
 
 /* Classe utilitária para elementos com scrollbar */
 .with-scrollbar {
@@ -48,12 +33,27 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
   padding-right: 8px !important;
 }
 
+/* Garantir que containers com conteúdo de tabelas e formulários não sejam cortados */
+div.ncm-consulta-form,
+div.resultado-container,
+div.feedback-form,
+div.impostos-table-container {
+  margin-bottom: 60px;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Permitir rolagem em tabelas que podem ser grandes */
+table.impostos-table {
+  min-width: fit-content;
+  overflow-x: auto;
+}
+
 /* Adicionar padding-top ao corpo para compensar o header fixo */
 
 .from-gray-900 {
   --tw-gradient-from: var(--color-gray-900) var(--tw-gradient-from-position);
-  --tw-gradient-to: var(--color-gray-900-transparent)
-    var(--tw-gradient-to-position);
+  --tw-gradient-to: var(--color-gray-900-transparent) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
@@ -66,11 +66,16 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
 }
 
 body {
-  padding-top: var(--pd-xlm); /* Ajuste conforme a altura real do header */
+  padding-top: var(--pd-xlm);
+  /* Ajuste conforme a altura real do header */
   font-family: var(--font-family-primary) !important;
-  width: fit-content;
-  background-color: var(--color-background);
-  color: var(--color-text-primary) !important;
+  width: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary) !important;
+  overflow-x: hidden;
+  /* Prevenir rolagem horizontal do body */
+  min-height: 100vh;
+  /* Garantir altura mínima */
 }
 
 /* Estilos para o visualizador de documentação Markdown */
@@ -298,4 +303,77 @@ body {
   border-radius: 0.25rem;
   margin: 1rem 0;
   background-color: rgba(220, 38, 38, 0.05);
+}
+
+:root {
+  /* Variáveis existentes... */
+
+  /* Cores para a sidebar de DeepResearch */
+  --color-sidebar-bg-rgb: 15, 23, 42;
+  --color-sidebar-border: rgba(30, 58, 138, 0.3);
+  --color-sidebar-border-rgb: 30, 58, 138;
+  --color-sidebar-text: rgba(255, 255, 255, 0.9);
+  --color-sidebar-text-secondary: rgba(203, 213, 225, 0.7);
+  --color-sidebar-heading: rgba(255, 255, 255, 1);
+
+  /* Cores para os steps da sidebar */
+  --color-step-line-rgb: 100, 116, 139;
+  --color-step-indicator-bg-rgb: 100, 116, 139;
+  --color-step-indicator-border-rgb: 100, 116, 139;
+  --color-step-indicator-text: rgba(255, 255, 255, 0.9);
+
+  --color-step-completed: #00a67c;
+  --color-step-completed-bg-rgb: 0, 166, 124;
+
+  --color-step-active: #3b82f6;
+  --color-step-active-rgb: 59, 130, 246;
+  --color-step-active-bg-rgb: 59, 130, 246;
+
+  --color-step-error: #ef4444;
+  --color-step-error-bg-rgb: 239, 68, 68;
+
+  /* Cores para os detalhes */
+  --color-detail-bg-rgb: 55, 65, 81;
+  --color-detail-icon: rgba(203, 213, 225, 0.9);
+
+  /* Cores para efeitos de foco e animações */
+  --color-focus-border-active: rgba(59, 130, 246, 0.7);
+  --color-focus-border-inactive: rgba(30, 58, 138, 0.3);
+
+  /* Cores para o InputAI e DeepResearch (sincronizadas) */
+  --color-input-ai-active: #3b82f6;
+  --color-input-ai-active-rgb: 59, 130, 246;
+
+  --color-input-ai-gradient-1: #3b82f6;
+  --color-input-ai-gradient-2: #8b5cf6;
+  --color-input-ai-gradient-3: #ec4899;
+  --color-input-ai-gradient-4: #3b82f6;
+
+  /* Cores para estados de validação */
+  --color-success: #10b981;
+  --color-success-rgb: 16, 185, 129;
+  --color-success-lighter: #34d399;
+
+  --color-error: #ef4444;
+  --color-error-rgb: 239, 68, 68;
+  --color-error-lighter: #f87171;
+}
+
+/* Ocultar a barra de "Análise em andamento" de qualquer maneira */
+p:not([data-preserve="true"]):has(text[content*="Análise"]),
+p:not([data-preserve="true"]):has(text[content*="análise"]),
+p.text-sm.font-normal,
+p:has(.break-words.whitespace-normal),
+[class*="deep-research-status"],
+.hide-analysis-status p,
+body p.text-sm.font-normal.break-words.whitespace-normal {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  max-height: 0 !important;
 }

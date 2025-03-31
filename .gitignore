@@ -32,8 +32,13 @@ buscador_inteligente/queries/
 buscador_inteligente/prompt/
 buscador_inteligente/tasks/
 buscador_inteligente/trash/
+node-DeepResearch-jina/
+deepsearch-ui-jina/
+
+
 
 fastapi/fastapi_env/
+fastapi/ferramentas/
 
 
 

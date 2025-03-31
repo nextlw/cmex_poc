@@ -1,81 +1,96 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { ChatMessageProps } from './types';
-import './styles.css';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
+import { ChatMessageProps } from "./types";
+import { ThinkingSection, ModelIndicator, ReferencesSection } from "..";
+import { Reference } from "../ReferencesSection/types";
+import "./styles.css";
+import {
+  FiSearch,
+  FiCpu,
+  FiAlertCircle,
+  FiCheckCircle,
+  FiClock,
+  FiActivity,
+} from "react-icons/fi";
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isTyping, data, step }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({
+  type,
+  content,
+  isTyping,
+  data,
+  step,
+  modelName,
+}) => {
   const [displayedContent, setDisplayedContent] = useState<React.ReactNode>("");
   const [showDebug, setShowDebug] = useState(false);
+  const [isThinkingExpanded, setIsThinkingExpanded] = useState(false);
+  const [isReferencesExpanded, setIsReferencesExpanded] = useState(false);
   const reasoningSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (reasoningSectionRef.current) {
-      reasoningSectionRef.current.scrollTop = reasoningSectionRef.current.scrollHeight;
+      reasoningSectionRef.current.scrollTop =
+        reasoningSectionRef.current.scrollHeight;
     }
   }, [displayedContent]);
+
+  // Converter referências para o formato esperado pelo componente ReferencesSection
+  const formatReferences = useCallback((): Reference[] => {
+    if (!data?.references || !Array.isArray(data.references)) return [];
+
+    return data.references.map((ref: any) => ({
+      url: ref.url || "",
+      title: ref.title || "",
+      exactQuote: ref.exactQuote || ref.quote || "",
+      content: ref.content || "",
+    }));
+  }, [data?.references]);
 
   useEffect(() => {
     if (!isTyping) {
       setDisplayedContent(
         type === "log" ? (
-          <pre>{content}</pre>
+          <pre className="log-content">{content}</pre>
         ) : type === "response" || type === "answer" ? (
-          <>
-            {data?.reasoning && (
-              <div className="reasoning-section" ref={reasoningSectionRef}>
-                <ReactMarkdown>{data.reasoning}</ReactMarkdown>
-                {data.urls && data.urls.length > 0 && (
-                  <div className="url-list">
-                    <h4>URLs sendo processadas:</h4>
-                    {data.urls.map((url: string, urlIndex: number) => (
-                      <div key={urlIndex} className="url-item">
-                        <div className="spinner" />
-                        <span>{url && url.startsWith('http') ? new URL(url).hostname : url}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                
-                {data.outputs && data.outputs.length > 0 && (
-                  <div className="outputs-section">
-                    <h4>Informações adicionais:</h4>
-                    {data.outputs.map((output: any, idx: number) => (
-                      <div key={idx} className="output-item">
-                        <pre>{JSON.stringify(output, null, 2)}</pre>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+          <div className="answer-container">
+            {data?.think && (
+              <ThinkingSection
+                content={data.think}
+                isExpanded={isThinkingExpanded}
+                onToggle={() => setIsThinkingExpanded(!isThinkingExpanded)}
+                modelName={modelName}
+              />
             )}
+
             <div className={type === "answer" ? "final-answer" : ""}>
-              <ReactMarkdown>{content}</ReactMarkdown>
-              
-              {data?.references && data.references.length > 0 && (
-                <div className="references-section">
-                  <h4>Referências:</h4>
-                  {data.references.map((ref: any, idx: number) => (
-                    <div key={idx} className="reference-item">
-                      <div className="quote">{ref.exactQuote}</div>
-                      <div className="source">
-                        <a href={ref.url} target="_blank" rel="noopener noreferrer">
-                          {ref.url && ref.url.startsWith('http') ? new URL(ref.url).hostname : ref.url}
-                        </a>
-                      </div>
-                    </div>
-                  ))}
+              {modelName && (
+                <div className="model-indicator-container">
+                  <ModelIndicator modelName={modelName} size="small" />
                 </div>
               )}
-              
-              {process.env.NODE_ENV === 'development' && data?.trackers && (
+
+              <ReactMarkdown>{content}</ReactMarkdown>
+
+              {data?.references && data.references.length > 0 && (
+                <ReferencesSection
+                  references={formatReferences()}
+                  isExpanded={isReferencesExpanded}
+                  onToggle={() =>
+                    setIsReferencesExpanded(!isReferencesExpanded)
+                  }
+                />
+              )}
+
+              {process.env.NODE_ENV === "development" && data?.trackers && (
                 <div className="debug-section">
-                  <button 
-                    className="toggle-debug-btn" 
+                  <button
+                    className="toggle-debug-btn"
                     onClick={() => setShowDebug(!showDebug)}
                   >
-                    {showDebug ? "Esconder" : "Mostrar"} informações de depuração
+                    {showDebug ? "Esconder" : "Mostrar"} informações de
+                    depuração
                   </button>
-                  
+
                   {showDebug && (
                     <pre className="debug-info">
                       {JSON.stringify(data.trackers, null, 2)}
@@ -84,184 +99,192 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ type, content, isTyping, data
                 </div>
               )}
             </div>
-          </>
+          </div>
         ) : type === "reflect" ? (
           <div className="reflect-content">
+            {data?.think && (
+              <div className="reflect-thinking">
+                <ThinkingSection
+                  content={data.think}
+                  isExpanded={isThinkingExpanded}
+                  onToggle={() => setIsThinkingExpanded(!isThinkingExpanded)}
+                  modelName={modelName}
+                  title="Mostrar reflexão"
+                />
+              </div>
+            )}
+
             <ReactMarkdown>{content}</ReactMarkdown>
-            
+
             {data?.questionsToAnswer && data.questionsToAnswer.length > 0 && (
               <div className="questions-section">
                 <h4>Questões para investigar:</h4>
                 <ul>
-                  {data.questionsToAnswer.map((question: string, idx: number) => (
-                    <li key={idx}>{question}</li>
-                  ))}
+                  {data.questionsToAnswer.map(
+                    (question: string, idx: number) => (
+                      <li key={idx}>{question}</li>
+                    )
+                  )}
                 </ul>
-              </div>
-            )}
-            
-            {process.env.NODE_ENV === 'development' && (
-              <div className="debug-section">
-                <button 
-                  className="toggle-debug-btn" 
-                  onClick={() => setShowDebug(!showDebug)}
-                >
-                  {showDebug ? "Esconder" : "Mostrar"} dados completos
-                </button>
-                
-                {showDebug && (
-                  <pre className="debug-info">
-                    {JSON.stringify(data, null, 2)}
-                  </pre>
-                )}
               </div>
             )}
           </div>
         ) : type === "search" ? (
           <div className="search-content">
-            <ReactMarkdown>{content}</ReactMarkdown>
-            
-            {process.env.NODE_ENV === 'development' && (
-              <div className="debug-section">
-                <button 
-                  className="toggle-debug-btn" 
-                  onClick={() => setShowDebug(!showDebug)}
-                >
-                  {showDebug ? "Esconder" : "Mostrar"} dados completos
-                </button>
-                
-                {showDebug && (
-                  <pre className="debug-info">
-                    {JSON.stringify(data, null, 2)}
-                  </pre>
-                )}
+            <div className="search-query">
+              <strong>Pesquisando:</strong>{" "}
+              {data?.searchQuery || data?.query || content}
+            </div>
+            {data?.urls && data.urls.length > 0 && (
+              <div className="url-list">
+                <h4>URLs encontradas:</h4>
+                {data.urls.map((url: string, urlIndex: number) => (
+                  <div key={urlIndex} className="url-item">
+                    <span>
+                      {url && url.startsWith("http")
+                        ? new URL(url).hostname
+                        : url}
+                    </span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
         ) : type === "visit" ? (
           <div className="visit-content">
-            <ReactMarkdown>{content}</ReactMarkdown>
-            
-            {data?.url && (
-              <div className="url-section">
-                <a href={data.url} target="_blank" rel="noopener noreferrer">
-                  {data.url}
-                </a>
+            <div className="visit-url">
+              <strong>Visitando:</strong> {data?.url || content}
+            </div>
+            {data?.content && (
+              <div className="visit-extract">
+                <h4>Conteúdo extraído:</h4>
+                <div className="content-preview">
+                  {data.content.substring(0, 200)}...
+                </div>
               </div>
             )}
-            
-            {process.env.NODE_ENV === 'development' && (
-              <div className="debug-section">
-                <button 
-                  className="toggle-debug-btn" 
-                  onClick={() => setShowDebug(!showDebug)}
-                >
-                  {showDebug ? "Esconder" : "Mostrar"} dados completos
-                </button>
-                
-                {showDebug && (
-                  <pre className="debug-info">
-                    {JSON.stringify(data, null, 2)}
-                  </pre>
-                )}
+          </div>
+        ) : type === "progress" ? (
+          <div className="progress-content">
+            <div className="progress-message">
+              <strong>Processando:</strong> {content}
+            </div>
+            {data?.think && (
+              <div className="progress-thinking">
+                <ThinkingSection
+                  content={data.think}
+                  isExpanded={isThinkingExpanded}
+                  onToggle={() => setIsThinkingExpanded(!isThinkingExpanded)}
+                  modelName={modelName}
+                  title="Mostrar pensamento"
+                />
               </div>
             )}
           </div>
         ) : (
-          <>
-            <ReactMarkdown>{content}</ReactMarkdown>
-            
-            {data?.outputs && data.outputs.length > 0 && (
-              <div className="outputs-section">
-                <h4>Informações adicionais:</h4>
-                {data.outputs.map((output: any, idx: number) => (
-                  <div key={idx} className="output-item">
-                    <pre>{JSON.stringify(output, null, 2)}</pre>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {process.env.NODE_ENV === 'development' && data?.trackers && (
-              <div className="debug-section">
-                <button 
-                  className="toggle-debug-btn" 
-                  onClick={() => setShowDebug(!showDebug)}
-                >
-                  {showDebug ? "Esconder" : "Mostrar"} informações de depuração
-                </button>
-                
-                {showDebug && (
-                  <pre className="debug-info">
-                    {JSON.stringify(data.trackers, null, 2)}
-                  </pre>
-                )}
-              </div>
-            )}
-          </>
+          <ReactMarkdown>{content}</ReactMarkdown>
         )
       );
-      return;
     }
+  }, [
+    isTyping,
+    content,
+    data,
+    type,
+    isThinkingExpanded,
+    isReferencesExpanded,
+    modelName,
+    formatReferences,
+    showDebug,
+  ]);
 
-    let index = 0;
-    const timer = setInterval(() => {
-      if (index <= content.length) {
-        setDisplayedContent(
-          type === "log" ? (
-            <pre>{content.slice(0, index)}</pre>
-          ) : type === "response" || type === "answer" ? (
-            <>
-              {data?.reasoning && (
-                <div className="reasoning-section" ref={reasoningSectionRef}>
-                  <ReactMarkdown>{data.reasoning.slice(0, index)}</ReactMarkdown>
-                  {data.urls && data.urls.length > 0 && (
-                    <div className="url-list">
-                      <h4>URLs sendo processadas:</h4>
-                      {data.urls.map((url: string, urlIndex: number) => (
-                        <div key={urlIndex} className="url-item">
-                          <div className="spinner" />
-                          <span>{url && url.startsWith('http') ? new URL(url).hostname : url}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className={type === "answer" ? "final-answer" : ""}>
-                <ReactMarkdown>{content.slice(0, index)}</ReactMarkdown>
-              </div>
-            </>
-          ) : (
-            <ReactMarkdown>{content.slice(0, index)}</ReactMarkdown>
-          )
-        );
-        index += 3;
-      } else {
-        clearInterval(timer);
+  const messageClasses = [
+    "chat-message",
+    type,
+    isTyping ? "typing" : "",
+    step !== undefined ? `step-${step}` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const getIcon = () => {
+    switch (type) {
+      case "search":
+        return <FiSearch />;
+      case "thinking":
+        return <FiCpu />;
+      case "error":
+        return <FiAlertCircle />;
+      case "answer":
+        return <FiCheckCircle />;
+      case "progress":
+        return <FiActivity />;
+      default:
+        return <FiClock />;
+    }
+  };
+
+  const formatContent = () => {
+    // Se for um objeto JSON, formata de maneira mais amigável
+    if (typeof content === "string" && content.startsWith("{")) {
+      try {
+        const jsonContent = JSON.parse(content);
+        return JSON.stringify(jsonContent, null, 2);
+      } catch {
+        return content;
       }
-    }, 10);
+    }
+    return content;
+  };
 
-    return () => clearInterval(timer);
-  }, [content, isTyping, type, data]);
+  const renderThinkingContent = () => {
+    if (!data?.think && !data?.reasoning) return null;
+    return (
+      <div className="thinking-content">
+        <ReactMarkdown>{data.think || data.reasoning || ""}</ReactMarkdown>
+      </div>
+    );
+  };
 
-  const messageClass = `chat-message ${type} ${isTyping ? "typing" : ""} ${type === "answer" ? "final-answer" : ""}`;
+  const renderReferences = () => {
+    if (!data?.references?.length) return null;
+    return (
+      <div className="references-list">
+        {data.references.map((ref, index) => (
+          <div key={index} className="reference-item">
+            <div className="reference-quote">{ref.exactQuote}</div>
+            <a
+              href={ref.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="reference-url"
+            >
+              {ref.url}
+            </a>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
-    <div className={messageClass} id={`step-${step}`} data-message-id={`message-${step}`} data-testid={`chat-message-${step}`}>
-      {type === "query" && <div className="query-label">Pergunta</div>}
-      {type === "step" && <div className="step-label">Pensando</div>}
-      {type === "response" && <div className="response-label">Resposta</div>}
-      {type === "answer" && <div className="response-label">Resposta Final</div>}
-      {type === "error" && <div className="error-label">Erro</div>}
-      {type === "reflect" && <div className="reflect-label">Reflexão</div>}
-      {type === "connected" && <div className="step-label">Conectado</div>}
-      {type === "log" && <div className="log-label">Log do Servidor</div>}
-      {type === "search" && <div className="search-label">Pesquisa</div>}
-      {type === "visit" && <div className="visit-label">Visitando URL</div>}
-      <div className="message-content" data-testid={`message-content-${type}`}>{displayedContent}</div>
+    <div className={messageClasses}>
+      <div className="message-icon">{getIcon()}</div>
+      <div className="message-content">
+        {isTyping ? (
+          <div className="typing-indicator">
+            <div className="typing-dot"></div>
+            <div className="typing-dot"></div>
+            <div className="typing-dot"></div>
+          </div>
+        ) : (
+          displayedContent
+        )}
+        {renderThinkingContent()}
+        {renderReferences()}
+      </div>
     </div>
   );
 };
 
-export default ChatMessage; 
+export default ChatMessage;

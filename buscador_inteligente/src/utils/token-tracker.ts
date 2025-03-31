@@ -1,93 +1,181 @@
-import { EventEmitter } from 'events';
-
-import { TokenUsage } from '../types';
+import { EventEmitter } from "events";
 
 /**
- * Rastreador de uso de tokens.
+ * Interface para armazenar informações de uso de tokens por modelo
+ */
+interface ModelTokenUsage {
+  [modelName: string]: number;
+}
+
+/**
+ * Interface para rastrear o uso de tokens por ferramenta
+ */
+interface ToolTokenUsage {
+  tool: string;
+  tokens: number;
+}
+
+/**
+ * Classe para rastrear o uso de tokens pelos modelos de IA
  */
 export class TokenTracker extends EventEmitter {
-  /**
-   * Uso de tokens.
-   */
-  private usages: TokenUsage[] = [];
-  private budget?: number;
+  private modelUsage: ModelTokenUsage = {};
+  private toolUsages: ToolTokenUsage[] = [];
+  private totalUsage = 0;
+  private budget: number;
 
   /**
-   * Construtor.
-   * @param budget Orçamento de tokens.
+   * Construtor da classe
+   * @param budget Orçamento opcional de tokens para este rastreador
    */
-  constructor(budget?: number) {
-    // Chama o construtor da classe pai
+  constructor(budget = 1_000_000) {
     super();
-    // Define o orçamento
     this.budget = budget;
   }
 
   /**
-   * Rastreia o uso de tokens.
-   * @param tool Ferramenta que consumiu os tokens.
-   * @param tokens Número de tokens consumidos.
+   * Adiciona tokens ao contador total (método simplificado)
+   * @param modelName Nome do modelo
+   * @param count Número de tokens a adicionar
    */
-  trackUsage(tool: string, tokens: number) {
-    // Obtém o total de tokens consumidos
-    const currentTotal = this.getTotalUsage();
-    // Se o orçamento for excedido, exibe um erro
-    if (this.budget && currentTotal + tokens > this.budget) {
-      // Exibe um erro
-      console.error(`Token budget exceeded: ${currentTotal + tokens} > ${this.budget}`);
-    }
-    // Só rastreia o uso se estiver dentro do orçamento
-    if (!this.budget || currentTotal + tokens <= this.budget) {
-      // Adiciona o uso de tokens
-      this.usages.push({ tool, tokens });
-      // Emite o evento de uso de tokens
-      this.emit('usage', { tool, tokens });
-    }
+  addTokens(modelName: string, count: number): void {
+    this.modelUsage[modelName] = (this.modelUsage[modelName] || 0) + count;
+    this.totalUsage += count;
+    this.emit("tokensAdded", { modelName, count });
   }
 
   /**
-   * Obtém o total de tokens consumidos.
-   * @returns Total de tokens consumidos.
+   * Método de compatibilidade com código existente
+   * @param model Nome do modelo
+   * @param promptTokens Número de tokens de prompt
+   * @param completionTokens Número de tokens de completamento
    */
-  getTotalUsage(): number {
-    // Retorna o total de tokens consumidos
-    return this.usages.reduce((sum, usage) => sum + usage.tokens, 0);
-  }
+  registerTokenUsage(
+    model: string,
+    promptTokens: number,
+    completionTokens: number
+  ): void {
+    const totalTokens = promptTokens + completionTokens;
+    this.addTokens(model, totalTokens);
 
-  /**
-   * Obtém o total de tokens consumidos.
-   * @returns Total de tokens consumidos.
-   */
-  getUsageBreakdown(): Record<string, number> {
-    // Retorna o total de tokens consumidos
-    return this.usages.reduce((acc, { tool, tokens }) => {
-      // Adiciona o uso de tokens
-      acc[tool] = (acc[tool] || 0) + tokens;
-      // Retorna o total de tokens consumidos
-      return acc;
-    }, {} as Record<string, number>);
-  }
-
-  /**
-   * Imprime um resumo do uso de tokens.
-   */
-  printSummary() {
-    // Obtém o total de tokens consumidos
-    const breakdown = this.getUsageBreakdown();
-    // Imprime o resumo
-    console.log('Token Usage Summary:', {
-      // Total de tokens consumidos
-      total: this.getTotalUsage(),
-      // Breakdown do uso de tokens
-      breakdown
+    // Emite evento de uso no formato antigo para compatibilidade
+    this.emit("usage", {
+      model,
+      promptTokens,
+      completionTokens,
+      totalTokens,
+      timestamp: new Date(),
     });
   }
 
   /**
-   * Reseta o rastreador de uso de tokens.
+   * Rastreia o uso de tokens para uma ferramenta ou modelo específico
+   * @param source Nome da fonte (agente, ferramenta ou modelo)
+   * @param tokens Número de tokens utilizados
    */
-  reset() {
-    // Reseta o uso de tokens
-    this.usages = [];
+  trackUsage(source: string, tokens: number): void {
+    this.toolUsages.push({ tool: source, tokens });
+    this.totalUsage += tokens;
+
+    // Verifica se o orçamento foi excedido
+    if (this.budget && this.getTotalUsage() > this.budget) {
+      this.emit("budgetExceeded", {
+        budget: this.budget,
+        current: this.getTotalUsage(),
+      });
+    }
+  }
+
+  /**
+   * Rastreia o uso de tokens (método alternativo)
+   * @param usage Dados de uso de tokens
+   */
+  trackTokens(usage: { tool: string; tokens: number }): void {
+    this.trackUsage(usage.tool, usage.tokens);
+  }
+
+  /**
+   * Imprime um resumo do uso de tokens no console
+   */
+  printSummary(): void {
+    console.log("=== Resumo de Uso de Tokens ===");
+
+    // Uso por modelo
+    const modelUsage = this.getUsageByModel();
+    Object.entries(modelUsage).forEach(([source, tokens]) => {
+      console.log(`Modelo ${source}: ${tokens} tokens`);
+    });
+
+    // Uso por ferramenta
+    this.toolUsages.forEach(({ tool, tokens }) => {
+      console.log(`Ferramenta ${tool}: ${tokens} tokens`);
+    });
+
+    console.log(`Total: ${this.getTotalUsage()} tokens`);
+
+    if (this.budget) {
+      const percentUsed = Math.round(
+        (this.getTotalUsage() / this.budget) * 100
+      );
+      console.log(
+        `Orçamento: ${this.getTotalUsage()}/${this.budget} (${percentUsed}%)`
+      );
+    }
+
+    console.log("===============================");
+  }
+
+  /**
+   * Obtém o total de tokens usados
+   * @returns Número total de tokens
+   */
+  getTotalUsage(): number {
+    return this.totalUsage;
+  }
+
+  /**
+   * Obtém o histórico de uso de tokens por modelo
+   * @param modelName Nome opcional do modelo para filtrar
+   * @returns Objeto com o histórico de uso
+   */
+  getUsageByModel(modelName?: string): ModelTokenUsage {
+    if (modelName) {
+      return { [modelName]: this.modelUsage[modelName] || 0 };
+    }
+    return { ...this.modelUsage };
+  }
+
+  /**
+   * Obtém o histórico de uso de tokens por ferramenta
+   * @returns Array com o histórico de uso por ferramenta
+   */
+  getUsageByTool(): ToolTokenUsage[] {
+    return [...this.toolUsages];
+  }
+
+  /**
+   * Limpa o histórico de uso
+   */
+  resetUsage(): void {
+    this.modelUsage = {};
+    this.toolUsages = [];
+    this.totalUsage = 0;
+    this.emit("usageReset");
+  }
+
+  /**
+   * Retorna o orçamento disponível de tokens
+   * @returns Orçamento disponível
+   */
+  getBudget(): number {
+    return this.budget;
+  }
+
+  /**
+   * Define um novo orçamento de tokens
+   * @param budget Novo orçamento
+   */
+  setBudget(budget: number): void {
+    this.budget = budget;
   }
 }

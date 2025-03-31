@@ -1,18 +1,15 @@
 import { modelConfigs, LOCAL_MODEL_ENDPOINT } from "../config";
 import { TokenTracker } from "../utils/token-tracker";
-import { SearchAction } from "../types";
-import { KeywordsResponse } from "../types";
+import { SearchAction } from "../types/globalTypes";
 import { LocalModelClient } from "./local-model-client";
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Esquema de resposta para a query rewriter.
  */
 const responseSchema = z.object({
   think: z.string(),
-  queries: z.array(z.string())
-    .min(1)
-    .max(3)
+  queries: z.array(z.string()).min(1).max(3),
 });
 
 /**
@@ -167,8 +164,8 @@ export async function rewriteQuery(
       generationConfig: {
         temperature: modelConfigs.queryRewriter.temperature,
         responseMimeType: "application/json",
-        responseSchema: responseSchema
-      }
+        responseSchema: responseSchema,
+      },
     });
 
     const prompt = getPrompt(action);
@@ -177,13 +174,13 @@ export async function rewriteQuery(
     const usage = response.usageMetadata;
 
     try {
-      const sanitizedText = sanitizeJSON(response.text());
+      const sanitizedText = sanitizeJSON(response.text);
       const parsed = JSON.parse(sanitizedText);
       const validated = responseSchema.parse(parsed);
 
-      return { 
-        queries: validated.queries, 
-        tokens: usage?.totalTokenCount || 0 
+      return {
+        queries: validated.queries,
+        tokens: usage?.totalTokenCount || 0,
       };
     } catch (parseError) {
       console.error("Erro ao processar JSON:", parseError);

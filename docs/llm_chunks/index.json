@@ -1,0 +1,72 @@
+{
+  "creation_date": "2025-03-22 12:45:39",
+  "source_file": "docs/llm_project_summary.md",
+  "chunk_files": [],
+  "documents": [
+    {
+      "id": "",
+      "filename": "ambiente.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "analise_comparativa.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "analise_comparativa_agents.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "comunicacao_microservicos.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "estructura_projeto_integracao.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "guia-usuario.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "implementacao_redis.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "IMPLEMENTATION_STEPS.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "IMPLEMENTATION_SUMMARY.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "plano_integracao_ferramentas.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "swagger.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "testes.md",
+      "chunks": 1
+    },
+    {
+      "id": "",
+      "filename": "README-extractor.md",
+      "chunks": 1
+    }
+  ]
+}

@@ -23,16 +23,19 @@ npm run build
 ## Docker
 
 ### Build Docker Image
+
 ```bash style="background-color: #161921"
 docker build -t cmex-backend:latest .
 ```
 
 ### Run Docker Container
+
 ```bash style="background-color: #161921"
-docker run -p 3000:3000 --env-file .env cmex-backend:latest
+docker run -p 3001:3001 --env-file .env cmex-backend:latest
 ```
 
 ### Docker Compose
+
 ```bash style="background-color: #161921"
 docker-compose up
 ```
@@ -42,6 +45,7 @@ docker-compose up
 ### API de Consultas
 
 #### Criação de consulta
+
 ```style="background-color: #161921"
 POST /api/v1/query
 {
@@ -51,6 +55,7 @@ POST /api/v1/query
 ```
 
 Resposta:
+
 ```json style="background-color: #161921"
 {
   "requestId": "1234567890"
@@ -58,11 +63,13 @@ Resposta:
 ```
 
 #### Obtenção de consultas
+
 ```style="background-color: #161921"
 GET /api/v1/queries
 ```
 
 Resposta:
+
 ```json style="background-color: #161921"
 [
   {
@@ -76,11 +83,13 @@ Resposta:
 ```
 
 #### Streaming de resultados
+
 ```style="background-color: #161921"
 GET /api/v1/stream/:requestId
 ```
 
 **Exemplo de resposta:**
+
 ```json style="background-color: #161921"
 {
   "logs": [
@@ -105,14 +114,17 @@ GET /api/v1/stream/:requestId
 ### API de Logs
 
 #### GET /api/v1/logs
+
 Retorna os logs do servidor com opções de filtragem.
 
 **Parâmetros de consulta:**
+
 - `level`: Filtrar por nível de log (opcional)
 - `since`: Filtrar logs a partir de uma data (opcional)
 - `limit`: Limitar número de logs retornados (padrão: 100)
 
 **Exemplo de resposta:**
+
 ```json style="background-color: #161921"
 {
   "logs": [
@@ -147,6 +159,7 @@ O projeto está em processo de migração para utilizar o pacote `@cmex/shared-t
 ### Histórico de Alterações
 
 **v1.0.1 (25/02/2025)**
+
 - Alteração na interface `LogsResponse`: o campo `logs` agora é obrigatório em vez de opcional
 - Modificada a função `transformLogsResponse` para garantir que o campo `logs` sempre seja definido
 - A API `/api/v1/logs` foi atualizada para retornar sempre os campos `logs` e `serverLogs`
@@ -154,6 +167,7 @@ O projeto está em processo de migração para utilizar o pacote `@cmex/shared-t
 ### Compatibilidade
 
 Estamos mantendo compatibilidade com implementações anteriores durante a transição:
+
 - O campo `logs` na resposta da API `/api/v1/logs` agora é obrigatório
 - O conteúdo dos campos `logs` e `serverLogs` é idêntico para garantir compatibilidade
 
@@ -188,6 +202,7 @@ O CMEX Backend suporta diferentes modelos de IA para processamento de consultas:
 ### Modelos Locais
 
 Por padrão, o sistema utiliza modelos locais (como o Qwen2.5) para processamento de consultas. Estes modelos são executados localmente e oferecem:
+
 - Menor latência para respostas
 - Controle total sobre o processamento
 - Independência de conexão externa
@@ -197,11 +212,13 @@ Por padrão, o sistema utiliza modelos locais (como o Qwen2.5) para processament
 A partir da versão 1.2.0, adicionamos suporte à API Gemini do Google, trazendo modelos mais avançados. Para utilizar:
 
 1. Configure as variáveis de ambiente:
+
 ```style="background-color: #161921"
 GEMINI_API_KEY=sua_chave_de_api
 ```
 
 2. Selecione o modelo Gemini na interface do usuário no frontend ou especifique o modelo ao fazer uma consulta via API:
+
 ```json style="background-color: #161921"
 {
   "question": "Sua pergunta aqui",
@@ -212,6 +229,7 @@ GEMINI_API_KEY=sua_chave_de_api
 ### Modelos Suportados
 
 O sistema atualmente suporta os seguintes modelos:
+
 - `qwen2.5-7b-instruct-1m` (padrão, local)
 - `gemini-1.5-flash` (API Google)
 - `gemini-1.5-pro` (API Google)
@@ -220,6 +238,7 @@ O sistema atualmente suporta os seguintes modelos:
 ### Processamento Adaptativo de Respostas
 
 O sistema detecta automaticamente o tipo de modelo sendo utilizado e adapta:
+
 - O formato de prompt enviado
 - O processamento de respostas (extração de JSON para Gemini)
 - Tratamento de erros específicos para cada tipo de modelo
@@ -227,6 +246,7 @@ O sistema detecta automaticamente o tipo de modelo sendo utilizado e adapta:
 ### Configuração Avançada
 
 As configurações dos modelos podem ser ajustadas no arquivo `config.ts`. Os principais parâmetros incluem:
+
 - Temperatura (0.0 a 1.0)
 - Quantidade máxima de tokens
 - Formato de resposta (JSON estruturado)
@@ -241,16 +261,16 @@ flowchart TD
         B2 --> C2{Tipo de Modelo?}
         C2 -->|Modelo Local| D2[Cliente Local]
         C2 -->|Gemini| E2[Cliente Gemini]
-        
+
         D2 --> F2[Processamento Padrão]
         F2 --> G2[Schema JSON Fixo]
-        
+
         E2 --> H2[Prompt com Instruções para JSON]
         H2 --> I2[Extração de JSON do Markdown]
-        
+
         G2 --> J2[Resposta Final]
         I2 --> J2
-        
+
         J2 --> K2[Envio ao Usuário]
     end
 ```
@@ -260,6 +280,7 @@ Um diagrama comparativo detalhado entre o fluxo de processamento anterior e o at
 ## Histórico de Alterações Recentes
 
 ### 25/02/2025
+
 - Adicionada documentação sobre a evolução do projeto desde sua concepção inicial
 - Adicionado suporte para modelos Gemini do Google (versões 1.5-flash, 1.5-pro e 2.0-flash)
 - Melhorias no processamento de respostas em JSON, com extração inteligente de JSON de respostas em markdown
@@ -294,22 +315,23 @@ flowchart LR
 
 Com o tempo, o sistema evoluiu de uma ferramenta simples para uma plataforma completa:
 
-| Característica | DeepResearch (Original) | CMEX Backend (Atual) |
-|---------|-------------------------|----------------------|
-| **Modelos** | Apenas Gemini | Múltiplos modelos (Local + Gemini) |
-| **Arquitetura** | Monolítica simples | Modular com separação de responsabilidades |
-| **API** | Endpoints básicos | API RESTful completa com documentação |
-| **Persistência** | Sem persistência | Armazenamento de consultas e histórico |
-| **Tratamento de Erros** | Básico | Sistema robusto com fallbacks |
+| Característica          | DeepResearch (Original) | CMEX Backend (Atual)                       |
+| ----------------------- | ----------------------- | ------------------------------------------ |
+| **Modelos**             | Apenas Gemini           | Múltiplos modelos (Local + Gemini)         |
+| **Arquitetura**         | Monolítica simples      | Modular com separação de responsabilidades |
+| **API**                 | Endpoints básicos       | API RESTful completa com documentação      |
+| **Persistência**        | Sem persistência        | Armazenamento de consultas e histórico     |
+| **Tratamento de Erros** | Básico                  | Sistema robusto com fallbacks              |
 
 Para uma visão completa da evolução do projeto, consulte a [documentação detalhada](./docs/EVOLUCAO_PROJETO.md).
 
 ## Histórico de Alterações Recentes
 
 ### 25/02/2025
+
 - Adicionada documentação sobre a evolução do projeto desde sua concepção inicial
 - Adicionado suporte para modelos Gemini do Google (versões 1.5-flash, 1.5-pro e 2.0-flash)
 - Melhorias no processamento de respostas em JSON, com extração inteligente de JSON de respostas em markdown
 - Tratamento de erros aprimorado para chamadas de API, incluindo fallbacks automáticos
 - Adicionada documentação com diagramas de fluxo comparativo entre implementações
-- Atualização da interface LogsResponse no pacote @cmex/shared-types (v1.0.1) 
+- Atualização da interface LogsResponse no pacote @cmex/shared-types (v1.0.1)

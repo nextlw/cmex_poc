@@ -1,0 +1,1309 @@
+.deep-research-sidebar {
+  width: 420px;
+  height: calc(100vh - 154px);
+  background-color: rgba(var(--color-sidebar-bg-rgb), 0.85);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--box-shadow-md);
+  z-index: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 16px;
+  margin-left: 16px;
+  padding-bottom: 56px;
+  margin-top: 16px;
+  opacity: 0;
+  transform: translateX(20px);
+  animation: slideIn 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  transition: all 0.3s ease;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Borda animada com máscara */
+.deep-research-sidebar::before,
+.deep-research-sidebar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+}
+
+.deep-research-sidebar::before {
+  padding: 2px;
+  background: linear-gradient(135deg,
+      var(--color-primary),
+      var(--color-info),
+      var(--color-primary-hover),
+      var(--color-info-light));
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: moveGradient 4s linear infinite;
+  opacity: 0.8;
+}
+
+.deep-research-sidebar::after {
+  border-radius: 16px;
+  background-color: var(--background-color-tertiary);
+  z-index: -1;
+}
+
+/* Estados do sidebar */
+.deep-research-sidebar.processing::before {
+  animation: moveGradient 4s linear infinite;
+}
+
+.deep-research-sidebar.completed::before {
+  animation: none;
+  background: linear-gradient(135deg,
+      var(--color-success),
+      var(--color-success-light));
+  opacity: 0.5;
+}
+
+.deep-research-sidebar.error::before {
+  animation: none;
+  background: linear-gradient(135deg,
+      var(--color-error),
+      var(--color-error-light));
+  opacity: 0.5;
+}
+
+@keyframes moveGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Cabeçalho */
+.deep-research-sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.deep-research-sidebar-title {
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.deep-research-sidebar-title-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-primary);
+}
+
+.deep-research-sidebar-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+/* Conteúdo principal */
+.deep-research-sidebar-content {
+  flex: 1;
+  position: relative;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Lista de passos */
+.deep-research-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+}
+
+.deep-research-step {
+  position: relative;
+  padding-bottom: 1rem;
+  transition: all 0.3s ease;
+  contain: layout;
+}
+
+.deep-research-step:last-child {
+  padding-bottom: 0;
+}
+
+/* Linhas verticais simplificadas para maior estabilidade */
+.deep-research-step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 1.25rem;
+  top: 3rem;
+  bottom: -0.5rem;
+  width: 2px;
+  background-color: var(--border-color);
+  z-index: 1;
+  transform: translateX(-50%);
+}
+
+/* Linha de background que cobre todo o espaço potencial */
+.deep-research-step::after {
+  content: "";
+  position: absolute;
+  left: 1.25rem;
+  top: -0.5rem;
+  bottom: 100%;
+  width: 6px;
+  background-color: var(--background-color-tertiary);
+  z-index: 0;
+  transform: translateX(-50%);
+}
+
+.deep-research-step.completed:not(:last-child)::before {
+  background-color: var(--color-success);
+}
+
+.deep-research-step.error:not(:last-child)::before {
+  background-color: var(--color-error);
+}
+
+/* Cabeçalho do passo */
+.deep-research-step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  padding: 6px 10px;
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.2s ease;
+  contain: layout;
+  will-change: transform;
+}
+
+.deep-research-step-header:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+}
+
+/* Indicador circular do passo */
+.deep-research-step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--background-color-secondary);
+  border: 2px solid var(--border-color);
+  font-weight: 600;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 4;
+  box-shadow: 0 0 0 5px var(--background-color-tertiary);
+  will-change: transform;
+}
+
+.deep-research-step.completed .deep-research-step-indicator {
+  background-color: rgba(var(--color-success-rgb), 0.1);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.deep-research-step.active .deep-research-step-indicator {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.deep-research-step.error .deep-research-step-indicator {
+  background-color: rgba(var(--color-error-rgb), 0.1);
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+/* Título do passo */
+.deep-research-step-title {
+  font-weight: 500;
+  color: var(--text-primary);
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.5rem;
+  will-change: transform;
+}
+
+/* Tratamento especial para o passo 2 que está quebrando */
+.deep-research-step:nth-child(2) {
+  contain: layout size;
+}
+
+.deep-research-step:nth-child(2) .deep-research-step-header {
+  contain: layout size;
+  transform: translateZ(0);
+}
+
+.deep-research-step:nth-child(2) .deep-research-step-indicator {
+  transform: translateZ(0);
+  position: relative;
+  z-index: 5;
+}
+
+.deep-research-step:nth-child(2) .deep-research-step-title {
+  transform: translateZ(0);
+}
+
+/* Conteúdo do passo com transições mais suaves */
+.deep-research-step-content {
+  padding-left: 3.25rem;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+  max-height: 1000px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.deep-research-step.minimized .deep-research-step-content {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Descrição do passo */
+.deep-research-step-description {
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+/* Barra de progresso */
+.deep-research-progress {
+  height: 6px;
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  border-radius: 3px;
+  margin: 10px 0 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.deep-research-progress-bar {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+  position: relative;
+}
+
+.deep-research-progress-text {
+  position: absolute;
+  top: -20px;
+  right: 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+/* Notificações de erro/sucesso */
+.deep-research-notification {
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin: 6px 0 12px;
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.deep-research-notification.error {
+  background-color: rgba(var(--color-error-rgb), 0.1);
+  color: var(--color-error);
+  border-left: 3px solid var(--color-error);
+}
+
+.deep-research-notification.success {
+  background-color: rgba(var(--color-success-rgb), 0.1);
+  color: var(--color-success);
+  border-left: 3px solid var(--color-success);
+}
+
+.deep-research-notification.warning {
+  background-color: rgba(var(--color-warning-rgb), 0.1);
+  color: var(--color-warning);
+  border-left: 3px solid var(--color-warning);
+}
+
+.deep-research-notification.info {
+  background-color: rgba(var(--color-info-rgb), 0.1);
+  color: var(--color-info);
+  border-left: 3px solid var(--color-info);
+}
+
+/* Detalhes dentro do passo */
+.deep-research-step-details {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.deep-research-detail {
+  background-color: var(--background-color-secondary);
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.deep-research-detail:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Cores diferentes por tipo de detalhe */
+.deep-research-detail.link {
+  border-left: 4px solid var(--color-info);
+}
+
+.deep-research-detail.text {
+  border-left: 4px solid var(--color-primary);
+}
+
+.deep-research-detail.law {
+  border-left: 4px solid var(--color-warning);
+}
+
+.deep-research-detail.question {
+  border-left: 4px solid var(--color-secondary);
+}
+
+.deep-research-detail-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.deep-research-detail-icon {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  flex-shrink: 0;
+  color: var(--color-primary);
+  margin-top: 2px;
+}
+
+.deep-research-detail.link .deep-research-detail-icon {
+  color: var(--color-info);
+}
+
+.deep-research-detail.text .deep-research-detail-icon {
+  color: var(--color-primary);
+}
+
+.deep-research-detail.law .deep-research-detail-icon {
+  color: var(--color-warning);
+}
+
+.deep-research-detail.question .deep-research-detail-icon {
+  color: var(--color-secondary);
+}
+
+.deep-research-detail-text {
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  color: var(--text-primary);
+  flex: 1;
+  word-break: break-word;
+}
+
+.deep-research-detail-source {
+  margin-top: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  padding-left: 30px;
+  font-style: italic;
+}
+
+/* Animação para expandir/colapsar */
+.deep-research-step-content {
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  max-height: 1000px;
+  opacity: 1;
+}
+
+.deep-research-step.minimized .deep-research-step-content {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Contador de iterações */
+.deep-research-iterations-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  border-radius: 9999px;
+  padding: 0.125rem 0.375rem;
+  margin-left: 0.5rem;
+  color: var(--color-primary);
+}
+
+/* Botão de alternar minimização */
+.deep-research-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.deep-research-toggle-btn:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  color: var(--color-primary);
+}
+
+.deep-research-toggle-btn:active {
+  transform: scale(0.9);
+}
+
+/* Estado vazio */
+.deep-research-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  height: 100%;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.deep-research-empty-state svg {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.7;
+  color: var(--text-secondary);
+}
+
+.deep-research-empty-state h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.deep-research-empty-state p {
+  font-size: var(--font-size-sm);
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+/* Botão de cancelamento */
+.deep-research-cancel-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(var(--color-danger-rgb), 0.1);
+  color: var(--color-danger);
+  border: 1px solid rgba(var(--color-danger-rgb), 0.3);
+  border-radius: var(--border-radius-sm);
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.deep-research-cancel-btn:hover {
+  background-color: rgba(var(--color-danger-rgb), 0.2);
+  color: var(--color-danger-hover);
+}
+
+.deep-research-cancel-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Estilos para o relatório final */
+.deep-research-final-report {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 0 0 24px 0;
+}
+
+.final-report-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.final-report-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+.final-report-title-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-success);
+}
+
+.final-report-content {
+  padding: 0 16px;
+}
+
+/* Classificação final */
+.final-classification {
+  background-color: var(--background-color-secondary);
+  border-radius: var(--border-radius-sm);
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+}
+
+.classification-header h3 {
+  font-size: 1.1rem;
+  margin: 0 0 16px 0;
+  color: var(--text-primary);
+}
+
+.classification-data {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.ncm-box,
+.description-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.value {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+  position: relative;
+}
+
+.ncm-box .value {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+/* Detalhes de tributação e atributos */
+.taxation-details,
+.product-attributes {
+  margin-top: 20px;
+}
+
+.taxation-details h4,
+.product-attributes h4 {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.taxation-grid,
+.attributes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.taxation-item,
+.attribute-item {
+  background-color: var(--background-color-secondary);
+  border-radius: var(--border-radius-sm);
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+}
+
+.tax-label,
+.attribute-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.tax-value,
+.attribute-value {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  position: relative;
+}
+
+/* Seções de conclusão e evidências */
+.conclusion-section,
+.evidences-section,
+.alternative-cases {
+  margin-bottom: 24px;
+}
+
+.conclusion-section h3,
+.evidences-section h3,
+.alternative-cases h3 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+  font-weight: 600;
+}
+
+.conclusion-section p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Lista de evidências */
+.evidence-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.evidence-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--border-radius-sm);
+  background-color: var(--background-color-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.evidence-item.law {
+  border-left: 3px solid var(--color-primary);
+}
+
+.evidence-item.jurisprudence {
+  border-left: 3px solid var(--color-success);
+}
+
+.evidence-item.technical {
+  border-left: 3px solid var(--color-info);
+}
+
+.evidence-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.evidence-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.evidence-text {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.evidence-source {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Cenários alternativos */
+.case-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.case-item {
+  padding: 12px;
+  border-radius: var(--border-radius-sm);
+  background-color: var(--background-color-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.case-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.case-header svg {
+  width: 18px;
+  height: 18px;
+  color: var(--color-warning);
+}
+
+.case-header h4 {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin: 0;
+  font-weight: 600;
+}
+
+.case-impact {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.case-ncm {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 8px;
+}
+
+/* Botões de navegação */
+.view-steps-button,
+.back-to-summary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.view-steps-button {
+  width: 100%;
+  background-color: var(--background-color-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.view-steps-button:hover {
+  background-color: var(--hover-color);
+}
+
+.back-to-summary-button {
+  background: none;
+  border: none;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  color: var(--color-primary);
+}
+
+.back-to-summary-button:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* Container de passos detalhados */
+.detailed-steps-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+}
+
+.detailed-steps-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  z-index: 10;
+}
+
+.detailed-steps-header h3 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .deep-research-sidebar {
+    position: relative;
+    width: calc(100% - 48px) !important;
+    max-height: 50vh;
+    top: 0;
+    margin: 0 24px 32px 24px;
+    animation: slideUp 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  }
+
+  @keyframes slideUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+
+  .taxation-grid,
+  .attributes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .evidence-item,
+  .case-item {
+    padding: 10px;
+  }
+
+  .final-report-content {
+    padding: 0 12px;
+  }
+}
+
+/* Estado de skeleton loading mais claro */
+.deep-research-sidebar.skeleton-loading .deep-research-step {
+  position: relative;
+  overflow: hidden;
+}
+
+.deep-research-sidebar.skeleton-loading .deep-research-step::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg,
+      rgba(var(--color-gray-900-rgb), 0.05) 0%,
+      rgba(var(--color-gray-900-rgb), 0.1) 40%,
+      rgba(var(--color-gray-900-rgb), 0.05) 100%);
+  animation: shimmer 1.5s infinite;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: var(--border-radius-md);
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Estado de carregamento inicial */
+.deep-research-sidebar.skeleton-loading .deep-research-step-indicator {
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+  border-color: rgba(var(--color-primary-rgb), 0.2);
+}
+
+.deep-research-sidebar.skeleton-loading .deep-research-step-content {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Estado de erro */
+.deep-research-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  color: var(--color-danger);
+}
+
+.deep-research-error-state svg {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 0.5rem;
+}
+
+.deep-research-error-state p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* Estado de loading */
+.deep-research-step.loading .step-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.deep-research-step.loading .deep-research-step-content {
+  min-height: 60px;
+}
+
+/* Ajustes visuais para estados */
+.deep-research-step.error {
+  border-color: var(--color-danger);
+}
+
+.deep-research-step.error .deep-research-step-header {
+  color: var(--color-danger);
+}
+
+.deep-research-step.loading .deep-research-step-header {
+  color: var(--color-primary);
+}
+
+/* Spinner e estilos de carregamento */
+.deep-research-step-loading {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid rgba(var(--color-primary-rgb), 0.3);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estilos do spinner */
+.step-spinner {
+  position: relative;
+  transform: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.step-spinner div {
+  width: 2px;
+  height: 6px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  opacity: 0.9;
+  transition: 1s ease-in-out;
+  animation: fade 0.5s linear infinite;
+}
+
+.step-spinner div:nth-child(1) {
+  transform: rotate(0deg) translateY(-6px);
+  animation-delay: 0s;
+}
+
+.step-spinner div:nth-child(2) {
+  transform: rotate(45deg) translateY(-6px);
+  animation-delay: 0.0625s;
+}
+
+.step-spinner div:nth-child(3) {
+  transform: rotate(90deg) translateY(-6px);
+  animation-delay: 0.125s;
+}
+
+.step-spinner div:nth-child(4) {
+  transform: rotate(135deg) translateY(-6px);
+  animation-delay: 0.1875s;
+}
+
+.step-spinner div:nth-child(5) {
+  transform: rotate(180deg) translateY(-6px);
+  animation-delay: 0.25s;
+}
+
+.step-spinner div:nth-child(6) {
+  transform: rotate(225deg) translateY(-6px);
+  animation-delay: 0.3125s;
+}
+
+.step-spinner div:nth-child(7) {
+  transform: rotate(270deg) translateY(-6px);
+  animation-delay: 0.375s;
+}
+
+.step-spinner div:nth-child(8) {
+  transform: rotate(315deg) translateY(-6px);
+  animation-delay: 0.4375s;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Estilos para passo ativo */
+.deep-research-step.active .deep-research-step-content {
+  color: var(--text-primary);
+}
+
+/* Melhorar espaçamento e animação dos detalhes */
+.deep-research-step-content {
+  padding-left: 36px;
+  position: relative;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  max-height: 2000px;
+  /* Valor alto para acomodar conteúdos grandes */
+  opacity: 1;
+}
+
+.deep-research-step.minimized .deep-research-step-content {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Animação de expandir/colapsar mais suave */
+.deep-research-step-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deep-research-step-header:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+}
+
+/* Indicador de passo com animação de loading */
+.deep-research-step.active .deep-research-step-indicator svg {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Transições suaves para os passos */
+.deep-research-step {
+  transition: all 0.3s ease;
+}
+
+.deep-research-step.completed .deep-research-step-indicator {
+  transition: all 0.3s ease-in-out;
+  animation: completedPulse 1s ease-in-out;
+}
+
+@keyframes completedPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--color-success-rgb), 0.7);
+  }
+
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(var(--color-success-rgb), 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--color-success-rgb), 0);
+  }
+}
+
+/* Melhorar a estilização do skeleton loading para cada parte do componente */
+.deep-research-sidebar.skeleton-loading .final-classification,
+.deep-research-sidebar.skeleton-loading .conclusion-section,
+.deep-research-sidebar.skeleton-loading .evidences-section,
+.deep-research-sidebar.skeleton-loading .alternative-cases {
+  position: relative;
+  overflow: hidden;
+}
+
+.deep-research-sidebar.skeleton-loading .final-classification::before,
+.deep-research-sidebar.skeleton-loading .conclusion-section::before,
+.deep-research-sidebar.skeleton-loading .evidences-section::before,
+.deep-research-sidebar.skeleton-loading .alternative-cases::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg,
+      rgba(var(--color-gray-900-rgb), 0.05) 0%,
+      rgba(var(--color-gray-900-rgb), 0.1) 40%,
+      rgba(var(--color-gray-900-rgb), 0.05) 100%);
+  animation: shimmer 1.5s infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Status atual da pesquisa */
+.deep-research-current-status {
+  margin-top: 10px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeIn 0.5s ease;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(var(--color-primary-rgb), 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0);
+  }
+}

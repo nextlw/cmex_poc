@@ -1,0 +1,6 @@
+[vite] connecting...
+%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[vite] connected.
+Enviando request inicial: JSHandle@object
+Token adicionado: eyJhbGciOi...
+Resposta inicial do backend: JSHandle@array

@@ -6,16 +6,37 @@ import InputField from "../InputField";
 import TiposTributarios from "../TiposTributarios";
 
 const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
+  // Se não houver classificação, mostra uma mensagem informativa
+  if (!classificacao) {
+    return (
+      <div className="class-tributaria-title">
+        <div className="col-span-12 w-full tablet-col-span-12 mobile-col-span-4 items-center">
+          <h3 className="text-xl font-semibold color-gray-100 gap-2 flex items-center style-root">
+            <PiSealPercentBold /> Classificação Tributária
+          </h3>
+        </div>
+        <hr className="border-gray-600 my-4" />
+        <div className="grid-container-inner">
+          <div className="box-tributaria col-span-12 tablet-col-span-12 mobile-col-span-4 p-4">
+            <p className="text-gray-300">
+              Informações tributárias não disponíveis
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Função para converter a string do tipo tributário em objeto
   const formatarTipoTributario = (tipoString?: string) => {
     if (!tipoString) return undefined;
-    
+
     const [codigo, ...descricao] = tipoString.split(" - ");
     return {
       operacao: descricao.join(" - "),
       codigo: codigo,
       texto_completo: tipoString,
-      justificativa: classificacao.tipo_classificacao_tributario?.justificativa
+      justificativa: classificacao.tipo_classificacao_tributario?.justificativa,
     };
   };
 
@@ -33,9 +54,11 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
       <hr className="border-gray-600 my-4" />
       <div className="grid-container-inner">
         <div className="box-tributaria col-span-12 tablet-col-span-12 mobile-col-span-4">
-          <TiposTributarios 
+          <TiposTributarios
             tipoAtivo={tipoTributarioFormatado}
-            justificativa={classificacao.tipo_classificacao_tributario?.justificativa}
+            justificativa={
+              classificacao.tipo_classificacao_tributario?.justificativa
+            }
           />
           <div className="box-tributaria-row flex flex-row gap-4 md:flex-row mobile:flex-col">
             <div className="box-tributaria-item flex flex-col w-1/2 mobile:w-full gap-4">
@@ -124,7 +147,7 @@ const BoxdeImpostos: React.FC<BoxdeImpostosProps> = ({ classificacao }) => {
                 </div>
               </div>
 
-              <div className="box-tributaria-item" >
+              <div className="box-tributaria-item">
                 <h4 className="text-sm mb-2">CST</h4>
                 <div className="flex w-full gap-3">
                   <span className="w-1/2 text-gray-300">

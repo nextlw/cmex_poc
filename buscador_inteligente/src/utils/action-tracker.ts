@@ -1,5 +1,5 @@
-import { EventEmitter } from 'events';
-import { StepAction } from '../types';
+import { EventEmitter } from "events";
+import { StepAction } from "../types/globalTypes";
 
 interface ActionState {
   thisStep: StepAction;
@@ -21,13 +21,13 @@ export class ActionTracker extends EventEmitter {
    */
   private state: ActionState = {
     // Passo atual.
-    thisStep: {action: 'answer', answer: '', references: [], think: ''},
+    thisStep: { action: "answer", answer: "", references: [], think: "" },
     // Gaps.
     gaps: [],
     // Tentativas erradas.
     badAttempts: 0,
     // Passo total.
-    totalStep: 0
+    totalStep: 0,
   };
 
   /**
@@ -38,24 +38,24 @@ export class ActionTracker extends EventEmitter {
     // Atualiza o estado.
     this.state = { ...this.state, ...newState };
     // Emite o evento de ação.
-    this.emit('action', this.state);
+    this.emit("action", this.state);
   }
 
   trackThink(think: string) {
     // only update the think field of the current state
     this.state = { ...this.state, thisStep: { ...this.state.thisStep, think } };
-    this.emit('action', this.state.thisStep);
+    this.emit("action", this.state.thisStep);
   }
 
-  trackBadAttempt(attempt: { 
-    step: StepAction; 
-    evaluation: string; 
-    recap: string; 
-    blame: string; 
-    improvement: string; 
+  trackBadAttempt(attempt: {
+    step: StepAction;
+    evaluation: string;
+    recap: string;
+    blame: string;
+    improvement: string;
   }) {
     this.state.badAttempts++;
-    this.emit('bad-attempt', attempt);
+    this.emit("bad-attempt", attempt);
   }
 
   /**
@@ -74,13 +74,13 @@ export class ActionTracker extends EventEmitter {
     // Reseta o estado.
     this.state = {
       // Passo atual.
-      thisStep: {action: 'answer', answer: '', references: [], think: ''},
+      thisStep: { action: "answer", answer: "", references: [], think: "" },
       // Gaps.
       gaps: [],
       // Tentativas erradas.
       badAttempts: 0,
       // Passo total.
-      totalStep: 0
+      totalStep: 0,
     };
   }
 }

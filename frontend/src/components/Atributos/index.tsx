@@ -1,31 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { AtributosProps } from './types';
-import './styles.css';
-import { BsBoxes } from 'react-icons/bs';
-import TagAtributo from '../TagAtributo';
+import React, { useState, useEffect } from "react";
+import { AtributosProps } from "./types";
+import "./styles.css";
+import { BsBoxes } from "react-icons/bs";
+import TagAtributo from "../TagAtributo";
 
 const Atributos: React.FC<AtributosProps> = ({
-  atributos = [],
-  atributos_tipi = [],
+  atributos = null,
   isLoading = false,
 }) => {
-  const [listaAtributos, setListaAtributos] = useState<string[]>(atributos);
-  const [listaAtributosTipi, setListaAtributosTipi] = useState<string[]>(atributos_tipi);
+  const [listaAtributos, setListaAtributos] = useState<string[]>(
+    atributos || []
+  );
 
   // Atualiza os estados quando as props mudarem
   useEffect(() => {
-    setListaAtributos(atributos);
-    setListaAtributosTipi(atributos_tipi);
-  }, [atributos, atributos_tipi]);
+    setListaAtributos(atributos || []);
+  }, [atributos]);
 
   const removerAtributo = (atributoRemovido: string) => {
     setListaAtributos((prevAtributos) =>
-      prevAtributos.filter((atributo) => atributo !== atributoRemovido)
-    );
-  };
-
-  const removerAtributoTipi = (atributoRemovido: string) => {
-    setListaAtributosTipi((prevAtributos) =>
       prevAtributos.filter((atributo) => atributo !== atributoRemovido)
     );
   };
@@ -44,15 +37,13 @@ const Atributos: React.FC<AtributosProps> = ({
             Carregando atributos...
           </span>
         </div>
-
       </div>
     );
   }
 
   const temAtributos = listaAtributos.length > 0;
-  const temAtributosTipi = listaAtributosTipi.length > 0;
 
-  if (!temAtributos && !temAtributosTipi) {
+  if (!temAtributos) {
     return (
       <div className="box-atributos-container h-full w-full">
         <div className="flex items-center w-full">
@@ -66,7 +57,6 @@ const Atributos: React.FC<AtributosProps> = ({
             Sem atributos disponíveis
           </span>
         </div>
-
       </div>
     );
   }
@@ -85,21 +75,6 @@ const Atributos: React.FC<AtributosProps> = ({
                 key={`attr-${index}`}
                 atributo={atributo}
                 onRemove={removerAtributo}
-              />
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {temAtributosTipi && (
-        <div>
-          <h3 className="text-[var(--color-atributos-text)] text-sm pb-2">Atributos TIPI</h3>
-          <ul className="atributos-item space-y-1 w-full flex flex-wrap gap-2 text-sm items-baseline justify-start">
-            {listaAtributosTipi.map((atributo, index) => (
-              <TagAtributo
-                key={`tipi-${index}`}
-                atributo={atributo}
-                onRemove={removerAtributoTipi}
               />
             ))}
           </ul>

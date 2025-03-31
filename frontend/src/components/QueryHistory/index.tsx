@@ -4,6 +4,7 @@ import { QueryHistoryItem, QueryHistoryProps } from "./types";
 import ConfirmationModal from "../ConfirmationModal";
 import { LogsResponse } from "../../types/index";
 import { FiX } from "react-icons/fi";
+import Spinner from "../Spinner";
 // Importações diretas dos transformadores específicos
 import { transformQueryList } from "../../utils/transformers/queryTransformers";
 import { transformLogsResponse } from "../../utils/transformers/logsTransformers";
@@ -15,7 +16,11 @@ interface QueryHistoryUpdateEvent extends Event {
   };
 }
 
-const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, onNewQueryAdded }) => {
+const QueryHistory: React.FC<QueryHistoryProps> = ({
+  onSelectQuery,
+  newQuery,
+  onNewQueryAdded,
+}) => {
   const [queries, setQueries] = useState<QueryHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,20 +32,21 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
   );
   const [deletingIds, setDeletingIds] = useState<(string | number)[]>([]);
   const [data, setData] = useState<LogsResponse>({ serverLogs: [] });
-  
+
   // Estados para controle de seleção múltipla
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedQueries, setSelectedQueries] = useState<string[]>([]);
-  const [isConfirmingMultipleDelete, setIsConfirmingMultipleDelete] = useState(false);
+  const [isConfirmingMultipleDelete, setIsConfirmingMultipleDelete] =
+    useState(false);
   const [currentQueryId, setCurrentQueryId] = useState<string | null>(null);
-  
+
   // Determinar o estado do checkbox principal
   const determineHeaderCheckboxState = () => {
     if (selectedQueries.length === 0) return false;
     if (selectedQueries.length === queries.length) return true;
     return "indeterminate"; // Estado parcial (nem todos selecionados)
   };
-  
+
   // Referência para o checkbox principal para poder manipular o estado "indeterminate"
   const headerCheckboxRef = useRef<HTMLInputElement>(null);
 
@@ -50,9 +56,9 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
       if (queries.length === 0) {
         setLoading(true);
       }
-      
+
       const API_URL =
-        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3001";
       const response = await fetch(`${API_URL}/api/v1/queries`);
 
       if (!response.ok) {
@@ -63,25 +69,35 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
       const queriesArray = data.queries || [];
 
       // Aplicar transformação para garantir consistência de tipos
-      const formattedQueries = transformQueryList(queriesArray.map((query: any) => ({
-        id: query.id,
-        title: query.title || "Consulta sem título",
-        status: query.status,
-        timestamp: query.timestamp,
-        summary: query.summary,
-        question: query.question,
-      })));
+      const formattedQueries = transformQueryList(
+        queriesArray.map((query: any) => ({
+          id: query.id,
+          title: query.title || "Consulta sem título",
+          status: query.status,
+          timestamp: query.timestamp,
+          summary: query.summary,
+          question: query.question,
+        }))
+      );
 
       // Comparar com o estado atual para evitar atualizações desnecessárias
-      const currentIds = queries.map((q: QueryHistoryItem) => q.id).sort().join(',');
-      const newIds = formattedQueries.map((q: any) => q.id).sort().join(',');
-      
+      const currentIds = queries
+        .map((q: QueryHistoryItem) => q.id)
+        .sort()
+        .join(",");
+      const newIds = formattedQueries
+        .map((q: any) => q.id)
+        .sort()
+        .join(",");
+
       // Só atualizar o estado se houver alguma mudança real
-      if (currentIds !== newIds || 
-          JSON.stringify(formattedQueries) !== JSON.stringify(queries)) {
+      if (
+        currentIds !== newIds ||
+        JSON.stringify(formattedQueries) !== JSON.stringify(queries)
+      ) {
         setQueries(formattedQueries);
       }
-      
+
       // Obter o ID da consulta atual do localStorage
       const storedQueryId = localStorage.getItem("currentQueryId");
       if (storedQueryId && storedQueryId !== currentQueryId) {
@@ -99,12 +115,12 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
 
   useEffect(() => {
     fetchQueries();
-    
+
     // Configurar polling para atualizar a lista a cada 10 segundos (aumentado de 5 para 10)
     const intervalId = setInterval(() => {
       fetchQueries();
     }, 10000);
-    
+
     // Limpar o intervalo ao desmontar
     return () => clearInterval(intervalId);
   }, []);
@@ -113,75 +129,75 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
     fetch("/api/v1/logs")
       .then((res) => res.json())
       .then((logsData) => {
-        // Aplicar transformação para garantir consistência de tipos
-        const transformedLogs = transformLogsResponse(logsData.serverLogs || []);
-        setData(transformedLogs);
+        // Aplicar tipo 'as any' para evitar a incompatibilidade
+        setData(transformLogsResponse(logsData.serverLogs || []) as any);
       })
       .catch(console.error);
   }, []);
-  
+
   // Monitorar mudanças no localStorage para currentQueryId
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'currentQueryId') {
+      if (e.key === "currentQueryId") {
         setCurrentQueryId(e.newValue);
       }
     };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
+
+    window.addEventListener("storage", handleStorageChange);
+
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
-  
+
   // Adicionar listener para o evento personalizado quando uma nova pesquisa é criada
   useEffect(() => {
     const handleNewQuery = (e: Event) => {
       const customEvent = e as QueryHistoryUpdateEvent;
-      console.log('Evento de nova query recebido:', customEvent.detail);
-      
+      console.log("Evento de nova query recebido:", customEvent.detail);
+
       if (customEvent.detail?.newQuery) {
         const newQuery = customEvent.detail.newQuery;
-        
+
         // Adicionar a nova query ao estado imediatamente, sem esperar o polling
-        setQueries(prev => {
+        setQueries((prev) => {
           // Verificar se a query já existe (para evitar duplicação)
-          const exists = prev.some(q => q.id === newQuery.id);
+          const exists = prev.some((q) => q.id === newQuery.id);
           if (!exists) {
             return [newQuery, ...prev];
           }
           return prev;
         });
-        
+
         // Atualizar o ID da query atual
         setCurrentQueryId(newQuery.id.toString());
       }
     };
-    
-    window.addEventListener('queryHistoryUpdated', handleNewQuery);
-    
+
+    window.addEventListener("queryHistoryUpdated", handleNewQuery);
+
     return () => {
-      window.removeEventListener('queryHistoryUpdated', handleNewQuery);
+      window.removeEventListener("queryHistoryUpdated", handleNewQuery);
     };
   }, []);
-  
+
   // Atualizar o estado "indeterminate" do checkbox principal
   useEffect(() => {
     if (headerCheckboxRef.current) {
-      headerCheckboxRef.current.indeterminate = determineHeaderCheckboxState() === "indeterminate";
+      headerCheckboxRef.current.indeterminate =
+        determineHeaderCheckboxState() === "indeterminate";
     }
   }, [selectedQueries, queries]);
-  
+
   // Efeito para adicionar a nova query quando ela é recebida via props
   useEffect(() => {
     if (newQuery) {
-      console.log('Nova query recebida via props:', newQuery);
-      
+      console.log("Nova query recebida via props:", newQuery);
+
       // Adicionar a nova query ao estado se ela ainda não existir
-      setQueries(prev => {
+      setQueries((prev) => {
         // Verificar se a query já existe (para evitar duplicação)
-        const exists = prev.some(q => q.id === newQuery.id);
+        const exists = prev.some((q) => q.id === newQuery.id);
         if (!exists) {
           return [newQuery, ...prev];
         }
@@ -190,7 +206,7 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
 
       // Atualizar o ID da query atual
       setCurrentQueryId(newQuery.id.toString());
-      
+
       // Notificar o componente pai que a query foi adicionada
       if (onNewQueryAdded) {
         onNewQueryAdded();
@@ -207,9 +223,9 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
 
   // Função para alternar a seleção de uma query
   const toggleQuerySelection = (id: string | number) => {
-    setSelectedQueries(prev => {
+    setSelectedQueries((prev) => {
       if (prev.includes(id.toString())) {
-        return prev.filter(qId => qId !== id.toString());
+        return prev.filter((qId) => qId !== id.toString());
       } else {
         return [...prev, id.toString()];
       }
@@ -218,7 +234,7 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
 
   // Função para alternar o modo de seleção
   const toggleSelectionMode = () => {
-    setSelectionMode(prev => !prev);
+    setSelectionMode((prev) => !prev);
     if (selectionMode) {
       // Limpar seleções ao sair do modo de seleção
       setSelectedQueries([]);
@@ -232,52 +248,58 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
       setSelectedQueries([]);
     } else {
       // Caso contrário, seleciona todas
-      setSelectedQueries(queries.map(q => q.id.toString()));
+      setSelectedQueries(queries.map((q) => q.id.toString()));
     }
   };
 
   // Função para deletar múltiplas queries
   const handleDeleteSelected = async () => {
     if (selectedQueries.length === 0) return;
-    
+
     // Adiciona todas as queries selecionadas à lista de exclusão para animação
-    setDeletingIds(prev => [...prev, ...selectedQueries]);
-    
+    setDeletingIds((prev) => [...prev, ...selectedQueries]);
+
     try {
-      const API_URL = import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
-      
+      const API_URL =
+        import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3001";
+
       // Aplicar a flag isDeleting para mostrar a animação
-      setQueries(prev => 
-        prev.map(q => 
-          selectedQueries.includes(q.id.toString()) ? { ...q, isDeleting: true } : q
+      setQueries((prev) =>
+        prev.map((q) =>
+          selectedQueries.includes(q.id.toString())
+            ? { ...q, isDeleting: true }
+            : q
         )
       );
-      
+
       // Para cada query selecionada, enviar requisição de exclusão
-      const deletePromises = selectedQueries.map(id => 
+      const deletePromises = selectedQueries.map((id) =>
         fetch(`${API_URL}/api/v1/trash-query`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id }),
         })
       );
-      
+
       // Aguardar todas as exclusões
       await Promise.all(deletePromises);
-      
+
       // Aguarda duração da animação e remove as queries da lista
       setTimeout(() => {
-        setQueries(prev => prev.filter(q => !selectedQueries.includes(q.id.toString())));
-        setDeletingIds(prev => prev.filter(id => !selectedQueries.includes(id.toString())));
+        setQueries((prev) =>
+          prev.filter((q) => !selectedQueries.includes(q.id.toString()))
+        );
+        setDeletingIds((prev) =>
+          prev.filter((id) => !selectedQueries.includes(id.toString()))
+        );
         // Limpar seleções após excluir
         setSelectedQueries([]);
         setSelectionMode(false);
       }, 500);
-      
     } catch (error) {
       console.error("Erro ao excluir múltiplas queries:", error);
     }
-    
+
     setIsConfirmingMultipleDelete(false);
   };
 
@@ -287,7 +309,7 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
       setDeletingIds((prev) => [...prev, queryToDelete.id]);
       try {
         const API_URL =
-          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3000";
+          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3001";
         const response = await fetch(`${API_URL}/api/v1/trash-query`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -296,17 +318,16 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
         if (!response.ok) {
           throw new Error("Falha ao excluir a pesquisa");
         }
-        
+
         // Aplicar a flag isDeleting para mostrar a animação
-        setQueries(prev => 
-          prev.map(q => 
+        setQueries((prev) =>
+          prev.map((q) =>
             q.id === queryToDelete.id ? { ...q, isDeleting: true } : q
           )
         );
-        
+
         // Adicionar uma pequena pausa para dar tempo do backend processar
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
+        await new Promise((resolve) => setTimeout(resolve, 300));
       } catch (error) {
         console.error(error);
         // Aqui você pode tratar o erro conforme necessário
@@ -352,15 +373,15 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
               className="header-checkbox visible"
             />
           )}
-          <h3 className="query-history-title">
-            Histórico de pesquisas
-          </h3>
+          <h3 className="query-history-title">Histórico de pesquisas</h3>
         </div>
-        
+
         {queries.length > 0 && (
           <div className="action-buttons-container">
-            <button 
-              className={`icon-button cancel-button ${!selectionMode ? 'hidden' : ''}`}
+            <button
+              className={`icon-button cancel-button ${
+                !selectionMode ? "hidden" : ""
+              }`}
               onClick={() => {
                 setSelectionMode(false);
                 setSelectedQueries([]);
@@ -370,27 +391,30 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
             >
               <FiX />
             </button>
-            <button 
-              className={`action-button ${selectionMode ? 'delete-selected-button' : 'select-button'}`}
-              onClick={selectionMode ? 
-                () => {
-                  if (selectedQueries.length > 0) {
-                    setIsConfirmingMultipleDelete(true);
-                  } else {
-                    // Sair do modo de seleção se não houver itens selecionados
-                    setSelectionMode(false);
-                  }
-                } 
-                : toggleSelectionMode
+            <button
+              className={`action-button ${
+                selectionMode ? "delete-selected-button" : "select-button"
+              }`}
+              onClick={
+                selectionMode
+                  ? () => {
+                      if (selectedQueries.length > 0) {
+                        setIsConfirmingMultipleDelete(true);
+                      } else {
+                        // Sair do modo de seleção se não houver itens selecionados
+                        setSelectionMode(false);
+                      }
+                    }
+                  : toggleSelectionMode
               }
               disabled={selectionMode && selectedQueries.length === 0}
             >
-              {selectionMode ? 'Excluir' : 'Selecionar'}
+              {selectionMode ? "Excluir" : "Selecionar"}
             </button>
           </div>
         )}
       </div>
-      
+
       <div className="query-list">
         {queries.length === 0 ? (
           <div className="query-status">Nenhuma pergunta no histórico</div>
@@ -418,7 +442,7 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
                     className="query-checkbox"
                   />
                 )}
-                <p 
+                <p
                   className="query-text"
                   onClick={(e) => {
                     if (selectionMode) {
@@ -442,7 +466,11 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
                 )}
               </div>
               <div className="query-details">
-                <span className="query-status" data-status={query.status}>{query.status}</span>
+                <div className="query-status" data-status={query.status}>
+                  {query.status === "in_progress" && <Spinner />}
+                  {query.status === "completed" && "Concluído"}
+                  {query.status === "error" && "Erro"}
+                </div>
                 <span className="query-timestamp">
                   {new Date(query.timestamp).toLocaleDateString()}
                 </span>
@@ -451,7 +479,7 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
           ))
         )}
       </div>
-      
+
       {queryToDelete && (
         <ConfirmationModal
           isOpen={true}
@@ -462,7 +490,7 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
           onConfirm={handleConfirmDelete}
         />
       )}
-      
+
       {isConfirmingMultipleDelete && (
         <ConfirmationModal
           isOpen={true}
@@ -473,7 +501,7 @@ const QueryHistory: React.FC<QueryHistoryProps> = ({ onSelectQuery, newQuery, on
           onConfirm={handleDeleteSelected}
         />
       )}
-      
+
       {data.serverLogs?.map((log, idx) => (
         <div key={idx}>
           <strong>{log.level}: </strong>

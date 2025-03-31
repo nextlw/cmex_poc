@@ -11,7 +11,7 @@ if (rootElement) {
   root.render(
     <React.StrictMode>
       <SessionProvider>
-        <div className="min-h-screen">
+        <div className="min-h-screen w-full overflow-auto">
           <div className="w-full mx-auto">
             <App />
           </div>

@@ -1,7 +1,7 @@
-import * as z from 'zod';
-import { zodToJsonSchema } from 'zod-to-json-schema';
+import * as z from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
 import { TokenTracker } from "./token-tracker";
-import { getModel, ToolName} from "../config";
+import { getModel, ToolName } from "../config";
 
 interface ModelInstance {
   generateContent: (prompt: string) => Promise<{
@@ -31,7 +31,9 @@ export class ObjectGeneratorSafe {
     this.tokenTracker = tokenTracker || new TokenTracker();
   }
 
-  async generateObject<T>(options: GenerateOptions<T>): Promise<GenerateObjectResult<T>> {
+  async generateObject<T>(
+    options: GenerateOptions<T>
+  ): Promise<GenerateObjectResult<T>> {
     const { model, schema, prompt } = options;
     const modelInstance = getModel(model) as ModelInstance;
     let attempts = 0;
@@ -39,15 +41,18 @@ export class ObjectGeneratorSafe {
     while (attempts < this.maxRetries) {
       try {
         const response = await modelInstance.generateContent(prompt);
-        const rawText = response.response.text();
-        
+        const rawText =
+          typeof response.response.text === "function"
+            ? response.response.text()
+            : response.response.text;
+
         try {
           const parsed = JSON.parse(rawText);
           const validatedObject = schema.parse(parsed);
-          
+
           return {
             object: validatedObject,
-            usage: response.response.usageMetadata?.totalTokenCount || 0
+            usage: response.response.usageMetadata?.totalTokenCount || 0,
           };
         } catch (parseError) {
           // Se falhar no parse JSON ou validação, tenta extrair JSON válido do texto
@@ -56,10 +61,10 @@ export class ObjectGeneratorSafe {
             const validatedObject = schema.parse(extractedJson);
             return {
               object: validatedObject,
-              usage: response.response.usageMetadata?.totalTokenCount || 0
+              usage: response.response.usageMetadata?.totalTokenCount || 0,
             };
           }
-          
+
           // Se ainda falhar, tenta novamente com prompt modificado
           attempts++;
           if (attempts < this.maxRetries) {
@@ -76,7 +81,7 @@ export class ObjectGeneratorSafe {
       }
     }
 
-    throw new Error('Failed to generate valid object after maximum retries');
+    throw new Error("Failed to generate valid object after maximum retries");
   }
 
   private extractJsonFromText(text: string): any | null {
@@ -92,8 +97,11 @@ export class ObjectGeneratorSafe {
     return null;
   }
 
-
-  private getRepairPrompt(originalPrompt: string, failedResponse: string, schema: z.ZodType<any>): string {
+  private getRepairPrompt(
+    originalPrompt: string,
+    failedResponse: string,
+    schema: z.ZodType<any>
+  ): string {
     const jsonSchema = zodToJsonSchema(schema as any);
     return `${originalPrompt}
 
@@ -104,5 +112,21 @@ Failed response was:
 ${failedResponse}
 
 Please fix the format and try again.`;
+  }
+
+  private async processResponse<T>(response: any): Promise<T> {
+    try {
+      // Verificar se text é uma função ou uma propriedade
+      const rawText =
+        typeof response.response.text === "function"
+          ? response.response.text()
+          : response.response.text;
+
+      // Analisar o texto para obter o JSON
+      const parsed = JSON.parse(rawText);
+      return parsed as T;
+    } catch (error) {
+      throw error;
+    }
   }
 }
