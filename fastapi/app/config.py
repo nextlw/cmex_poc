@@ -51,11 +51,17 @@ class Settings(BaseSettings):
     # Independentemente do valor de ENV, sempre permita localhost:5173
     BACKEND_CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
+        "http://localhost:6378",
         "http://localhost:10000",
+        "http://localhost:3000",
+        "http://localhost:3002",
         "http://localhost:3001",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:10000",
         "http://127.0.0.1:3001",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3002",
+        "http://127.0.0.1:6378",
     ]
 
     CORS_ALLOW_CREDENTIALS: bool = True
