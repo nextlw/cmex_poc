@@ -120,8 +120,7 @@ def format_prompt(consulta_produto):
             {{
                 "ncm": "XX.XX.XX.XX",
                 "descricao": "Uma breve descrição do produto com base nas características da ncm encontrada",
-                "atributos": ["...cada atributo deve ter como foco o produto que será cadastrado na duimp no novo sistema do governo CISCOMEX"],
-                "atributos_tipi": ["...cada atributo deve der retirado do que tem daquela ncm na tabela tipi 2024"],
+                "atributos": ["...cada atributo deve ter como foco o produto que será cadastrado na duimp no novo sistema do governo CISCOMEX, eles podem ser encontrados na api https://api-docs.portalunico.siscomex.gov.br/swagger/cadatributos.html#/Relação%20de%20Atributos/consultarCodigo"],
                 "valores_de_impostos": {{
                     "ipi": "valor real do IPI",
                     "icms": {{"estado": "valor real do ICMS"}},
