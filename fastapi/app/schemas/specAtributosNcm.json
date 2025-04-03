@@ -1,0 +1,1407 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "\u003Ch3\u003ECADA - Cadastro de Atributos\u003C/h3\u003E\u003Ch4\u003EIntrodu&ccedil;&atilde;o\u003C/h4\u003E \n\u003Cstyle\u003E \nul.elementos { \nlist-style-type: square; \n}\t\n\u003C/style\u003E \n\u003Cp\u003EBem-vindo &#xE0; API do sistema Cadastro de Atributos.\u003C/p\u003E \n\u003Cp\u003EO \u003Cstrong\u003ECadastro de Atributos\u003C/strong\u003E define a estrutura dos atributos configurados pelos &#xF3;rg&#xE3;os anuentes para \ncompor as declara&#xE7;&#xF5;es de com&#xE9;rcio exterior. Dependendo do seu objetivo, um atributo pode ser \nvinculado a um dos seguintes elementos: \u003C/p\u003E \n\u003Cul class=\"elementos\"\u003E \n\u003Cli\u003E \n\u003Cstrong\u003EC&#xF3;digo NCM (Nomenclatura Comum do Mercosul):\u003C/strong\u003E S&#xE3;o vinculados atributos com objetivo &#x201C;Produto&#x201D;, &#x201C;Tratamento Administrativo&#x201D; ou &#x201C;DUIMP&#x201D;. \n\u003C/li\u003E \n\u003Cli\u003E \n\u003Cstrong\u003EFundamento Legal:\u003C/strong\u003E S&#xE3;o vinculados atributos com objetivo &#x201C;Fundamento Legal da DUIMP&#x201D;. \n\u003C/li\u003E \n\u003Cli\u003E \n\u003Cstrong\u003EModelo de LPCO:\u003C/strong\u003E S&#xE3;o vinculados atributos com objetivo &#x201C;LPCO&#x201D;. \n\u003C/li\u003E \n\u003C/ul\u003E \n\u003Ch4\u003EURLs de Acesso\u003C/h4\u003E \n\u003Cp\u003EA descri&#xE7;&#xE3;o dos servi&#xE7;os faz refer&#xEA;ncia &#xE0; vari&#xE1;vel URL_BASE, que &#xE9; definida de acordo com o ambiente destino da integra&#xE7;&#xE3;o:\u003C/p\u003E \n\u003Cstyle type=\"text/css\"\u003E \n.tg {border-collapse:collapse;border-color:#bbb;border-spacing:0;width: 604px;} \n.tg td{background-color:#E0FFEB;border-color:#bbb;border-style:solid;border-width:1px;color:#594F4F;  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;} \n.tg th{background-color:#9DE0AD;border-color:#bbb;border-style:solid;border-width:1px;color:#493F3F;  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;} \n.tg \n.tg-cabecalho{text-align:left;vertical-align:top}.tg \n.tg-corpo{border-color:inherit;text-align:left;vertical-align:top} \n\u003C/style\u003E \n\u003Ctable class=\"tg\" style=\"width: 604px;\"\u003E \n\u003Cthead\u003E  \n\u003Ctr\u003E \n\u003Cth class=\"tg-cabecalho\"\u003E\u003Cspan style=\"font-weight:bold\"\u003ENome do Ambiente\u003C/span\u003E\u003C/th\u003E \n\u003Cth class=\"tg-cabecalho\"\u003E\u003Cspan style=\"font-weight:bold\"\u003EURL de acesso\u003C/span\u003E\u003C/th\u003E \n\u003C/tr\u003E \n\u003C/thead\u003E \n\u003Ctbody\u003E \n\u003Ctr\u003E \n\u003Ctd class=\"tg-corpo\"\u003EAmbiente de Valida&#231;&#227;o das Empresas\u003C/td\u003E \n\u003Ctd class=\"tg-corpo\"\u003Ehttps://val.portalunico.siscomex.gov.br/cadatributos/api\u003C/td\u003E \n\u003C/tr\u003E \n\u003Ctr\u003E \n\u003Ctd class=\"tg-corpo\"\u003EAmbiente de Produ&#231;&#227;o\u003C/td\u003E \n\u003Ctd class=\"tg-corpo\"\u003Ehttps://portalunico.siscomex.gov.br/cadatributos/api\u003C/td\u003E \n\u003C/tr\u003E \n\u003C/tbody\u003E \n\u003C/table\u003E \n\u003Cp\u003E&nbsp;\u003C/p\u003E \n\u003Ch4\u003EServi&#xE7;os de Download das Rela&#xE7;&#xF5;es\u003C/h4\u003E \n\u003Cp\u003EA seguir s&#xE3;o especificados os servi&#xE7;os para download da rela&#xE7;&#xE3;o completa de atributos, independente dos \nv&#xED;nculos, e das rela&#xE7;&#xF5;es de atributos por c&#xF3;digo NCM e de atributos por Fundamento Legal. Essas rela&#xE7;&#xF5;es \ns&#xE3;o atualizadas diariamente, &#xE0; meia-noite, e o download pode ser realizado para qualquer data de \nrefer&#xEA;ncia, seja passada, atual ou futura. \u003C/p\u003E \n\u003Cp\u003EOs arquivos s&#xE3;o gerados na sintaxe XML ou JSON, conforme solicitado, e s&#xE3;o retornados compactados, no \nformato ZIP. A vers&#xE3;o do arquivo &#xE9; indicada no campo &#x2018;versao&#x2019; e o hist&#xF3;rico das mudan&#xE7;as pode ser \nconsultado em formato HTML, nas URLs a seguir: \u003C/p\u003E \n\u003Cul class=\"elementos\"\u003E \n\u003Cli\u003E \n\u003Cstrong\u003EVers&#xF5;es da rela&#xE7;&#xE3;o de atributos:\u003C/strong\u003E URL_BASE/atributo/historico-versoes.html \n\u003C/li\u003E \n\u003Cli\u003E \n\u003Cstrong\u003EVers&#xF5;es da rela&#xE7;&#xE3;o de atributos por NCM:\u003C/strong\u003E URL_BASE/atributo-ncm/historico-versoes.html \n\u003C/li\u003E \n\u003Cli\u003E \n\u003Cstrong\u003EVers&#xF5;es da rela&#xE7;&#xE3;o de atributos por Fundamento Legal:\u003C/strong\u003E URL_BASE/atributo-fundamento-legal/historico-versoes.html \n\u003C/li\u003E \n\u003C/ul\u003E \n\u003Cp\u003EPara consultar os v&#xED;nculos de atributos com modelos de LPCO, deve-se utilizar a API do Tratamento Administrativo e LPCO.\u003C/p\u003E \n\u003Ch4\u003EServi&#xE7;os de Consulta\u003C/h4\u003E  \n\u003Cp\u003EAl&#xE9;m dos servi&#xE7;os para download, a API oferece consultas mais espec&#xED;ficas,  \nque retornam sempre uma estrutura em formato JSON: \u003C/p\u003E \n\u003Cul class=\"elementos\"\u003E \n\u003Cli\u003E \nConsulta de dados de atributos pelo c&#xF3;digo ou pelo nome, permitindo consultar at&#xE9; 100 atributos por chamada; \n\u003C/li\u003E \n\u003Cli\u003E \nConsulta da rela&#xE7;&#xE3;o de atributos vinculados a um c&#xF3;digo NCM; \n\u003C/li\u003E \n\u003Cli\u003E \nConsulta da rela&#xE7;&#xE3;o de atributos vinculados a um Fundamento Legal. \n\u003C/li\u003E \n\u003C/ul\u003E \n",
+    "version": "1.0.0",
+    "title": "Cadastro de Atributos"
+  },
+  "basePath": "/cadatributos/api",
+  "paths": {
+    "/ext/atributo-fundamento-legal/download/{tipo}": {
+      "get": {
+        "tags": ["Relação de Atributos por Fundamento Legal"],
+        "summary": "Download do arquivo com a relação de atributos por Fundamento Legal",
+        "description": "",
+        "operationId": "download",
+        "consumes": ["application/json"],
+        "produces": ["application/zip", "application/json"],
+        "parameters": [
+          {
+            "name": "tipo",
+            "in": "path",
+            "description": "Tipo do arquivo a ser gerado.\u003Cbr\u003Exml\u003Cbr\u003Ejson",
+            "required": true,
+            "type": "string",
+            "default": "json",
+            "x-example": "xml",
+            "enum": ["xml", "json"]
+          },
+          {
+            "name": "data",
+            "in": "query",
+            "description": "Data de referência do arquivo, no formato ISO, com precisão de dias.\u003Cbr\u003EFormato: yyyy-MM-dd",
+            "required": false,
+            "type": "string",
+            "x-example": "2019-09-02"
+          },
+          {
+            "name": "orgaosDemandantes",
+            "in": "query",
+            "description": "Orgãos demandantes",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-example": "ANVISA"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JSON Web Token (JWT) contendo as informações do usuário. Este token é recuperado no parâmetro Set-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "description": "Token de prevenção contra ataques CSRF. Este token é recuperado no parâmetro X-CSRF-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso"
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "422": {
+            "description": "Erro(s) de validação da camada de negócio"
+          },
+          "401": {
+            "description": "Usuário não autenticado ou autenticação inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          },
+          "403": {
+            "description": "Usuário não tem permissão de acesso ao recurso"
+          },
+          "404": {
+            "description": "Recurso não encontrado"
+          }
+        }
+      }
+    },
+    "/ext/atributo-fundamento-legal/{codigo-fundamento-legal}": {
+      "get": {
+        "tags": ["Relação de Atributos por Fundamento Legal"],
+        "summary": "Consulta da relação de atributos por Fundamento Legal",
+        "description": "",
+        "operationId": "consultar",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "codigo-fundamento-legal",
+            "in": "path",
+            "description": "Código do Fundamento Legal",
+            "required": true,
+            "type": "string",
+            "x-example": "1001"
+          },
+          {
+            "name": "data",
+            "in": "query",
+            "description": "Data de referência, no formato ISO, com precisão de dias.\u003Cbr\u003EFormato: yyyy-MM-dd",
+            "required": false,
+            "type": "string",
+            "x-example": "2019-09-02"
+          },
+          {
+            "name": "orgaosDemandantes",
+            "in": "query",
+            "description": "Orgãos demandantes",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-example": "ANVISA"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JSON Web Token (JWT) contendo as informações do usuário. Este token é recuperado no parâmetro Set-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "description": "Token de prevenção contra ataques CSRF. Este token é recuperado no parâmetro X-CSRF-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso"
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "422": {
+            "description": "Erro(s) de validação da camada de negócio"
+          },
+          "401": {
+            "description": "Usuário não autenticado ou autenticação inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          },
+          "403": {
+            "description": "Usuário não tem permissão de acesso ao recurso"
+          },
+          "404": {
+            "description": "Recurso não encontrado"
+          }
+        }
+      }
+    },
+    "/ext/atributo-ncm/download/{tipo}": {
+      "get": {
+        "tags": ["Relação de Atributos por NCM"],
+        "summary": "Download do arquivo com a relação de atributos por NCM",
+        "description": "",
+        "operationId": "download",
+        "consumes": ["application/json"],
+        "produces": ["application/zip", "application/json"],
+        "parameters": [
+          {
+            "name": "tipo",
+            "in": "path",
+            "description": "Tipo do arquivo a ser gerado.\u003Cbr\u003Exml\u003Cbr\u003Ejson",
+            "required": true,
+            "type": "string",
+            "default": "json",
+            "x-example": "xml",
+            "enum": ["xml", "json"]
+          },
+          {
+            "name": "data",
+            "in": "query",
+            "description": "Data de referência do arquivo, no formato ISO, com precisão de dias.\u003Cbr\u003EFormato: yyyy-MM-dd",
+            "required": false,
+            "type": "string",
+            "x-example": "2019-09-02"
+          },
+          {
+            "name": "modalidade",
+            "in": "query",
+            "description": "Modalidade de operação",
+            "required": false,
+            "type": "string",
+            "x-example": "IMPORTACAO",
+            "enum": ["IMPORTACAO", "EXPORTACAO"]
+          },
+          {
+            "name": "objetivos",
+            "in": "query",
+            "description": "Objetivos: Produto, Tratamento Administrativo, Duimp",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["TRATAMENTO_ADMINISTRATIVO", "PRODUTO", "DUIMP"]
+            },
+            "collectionFormat": "multi",
+            "x-example": "PRODUTO"
+          },
+          {
+            "name": "orgaosDemandantes",
+            "in": "query",
+            "description": "Orgãos demandantes",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-example": "ANVISA"
+          },
+          {
+            "name": "codigosNCM",
+            "in": "query",
+            "description": "Códigos NCM",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-example": "02011000"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JSON Web Token (JWT) contendo as informações do usuário. Este token é recuperado no parâmetro Set-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "description": "Token de prevenção contra ataques CSRF. Este token é recuperado no parâmetro X-CSRF-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso"
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "422": {
+            "description": "Erro(s) de validação da camada de negócio"
+          },
+          "401": {
+            "description": "Usuário não autenticado ou autenticação inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          },
+          "403": {
+            "description": "Usuário não tem permissão de acesso ao recurso"
+          },
+          "404": {
+            "description": "Recurso não encontrado"
+          }
+        }
+      }
+    },
+    "/ext/atributo-ncm/historico-versoes": {
+      "get": {
+        "tags": ["Relação de Atributos por NCM"],
+        "summary": "Consulta histórico de versões",
+        "description": "",
+        "operationId": "obterHistoricoVersoesArquivoDiario",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "versao",
+            "in": "query",
+            "description": "Lista de números de versões a ser recuperado",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-example": "1"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JSON Web Token (JWT) contendo as informações do usuário. Este token é recuperado no parâmetro Set-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "description": "Token de prevenção contra ataques CSRF. Este token é recuperado no parâmetro X-CSRF-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ChangeLogArquivoDiarioAtributoNcmDTO"
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "422": {
+            "description": "Erro(s) de validação da camada de negócio"
+          },
+          "401": {
+            "description": "Usuário não autenticado ou autenticação inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          },
+          "204": {
+            "description": "Operação realizada com sucesso"
+          },
+          "403": {
+            "description": "Usuário não tem permissão de acesso ao recurso"
+          },
+          "404": {
+            "description": "Recurso não encontrado"
+          }
+        }
+      }
+    },
+    "/ext/atributo-ncm/{codigo-ncm}": {
+      "get": {
+        "tags": ["Relação de Atributos por NCM"],
+        "summary": "Consulta da relação de atributos de um código NCM",
+        "description": "",
+        "operationId": "consultar",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "codigo-ncm",
+            "in": "path",
+            "description": "Código do NCM",
+            "required": true,
+            "type": "string",
+            "x-example": "02011000"
+          },
+          {
+            "name": "data",
+            "in": "query",
+            "description": "Data de referência, no formato ISO, com precisão de dias.\u003Cbr\u003EFormato: yyyy-MM-dd",
+            "required": false,
+            "type": "string",
+            "x-example": "2019-09-02"
+          },
+          {
+            "name": "modalidade",
+            "in": "query",
+            "description": "Modalidade de operação",
+            "required": false,
+            "type": "string",
+            "x-example": "IMPORTACAO",
+            "enum": ["IMPORTACAO", "EXPORTACAO"]
+          },
+          {
+            "name": "objetivos",
+            "in": "query",
+            "description": "Objetivos: Produto, Tratamento Administrativo, Duimp",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["TRATAMENTO_ADMINISTRATIVO", "PRODUTO", "DUIMP"]
+            },
+            "collectionFormat": "multi",
+            "x-example": "PRODUTO"
+          },
+          {
+            "name": "orgaosDemandantes",
+            "in": "query",
+            "description": "Orgãos demandantes",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-example": "ANVISA"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JSON Web Token (JWT) contendo as informações do usuário. Este token é recuperado no parâmetro Set-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "description": "Token de prevenção contra ataques CSRF. Este token é recuperado no parâmetro X-CSRF-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso"
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "422": {
+            "description": "Erro(s) de validação da camada de negócio"
+          },
+          "401": {
+            "description": "Usuário não autenticado ou autenticação inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          },
+          "403": {
+            "description": "Usuário não tem permissão de acesso ao recurso"
+          },
+          "404": {
+            "description": "Recurso não encontrado"
+          }
+        }
+      }
+    },
+    "/ext/atributo/consulta-codigo": {
+      "post": {
+        "tags": ["Relação de Atributos"],
+        "summary": "Consulta de dados de atributos pelo código",
+        "description": "",
+        "operationId": "consultarCodigo",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Filtro da Consulta",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AtributoConsultaFiltroCodigoDTO"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JSON Web Token (JWT) contendo as informações do usuário. Este token é recuperado no parâmetro Set-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "description": "Token de prevenção contra ataques CSRF. Este token é recuperado no parâmetro X-CSRF-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/ArquivoDiarioAtributoDTO"
+            }
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "422": {
+            "description": "Erro(s) de validação da camada de negócio"
+          },
+          "401": {
+            "description": "Usuário não autenticado ou autenticação inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          },
+          "204": {
+            "description": "Operação realizada com sucesso"
+          },
+          "403": {
+            "description": "Usuário não tem permissão de acesso ao recurso"
+          },
+          "404": {
+            "description": "Recurso não encontrado"
+          }
+        }
+      }
+    },
+    "/ext/atributo/consulta-nome": {
+      "post": {
+        "tags": ["Relação de Atributos"],
+        "summary": "Consulta de dados de atributos pelo nome",
+        "description": "",
+        "operationId": "consultarNome",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Filtro da Consulta",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AtributoConsultaFiltroNomeDTO"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JSON Web Token (JWT) contendo as informações do usuário. Este token é recuperado no parâmetro Set-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "description": "Token de prevenção contra ataques CSRF. Este token é recuperado no parâmetro X-CSRF-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/ArquivoDiarioAtributoDTO"
+            }
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "422": {
+            "description": "Erro(s) de validação da camada de negócio"
+          },
+          "401": {
+            "description": "Usuário não autenticado ou autenticação inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          },
+          "204": {
+            "description": "Operação realizada com sucesso"
+          },
+          "403": {
+            "description": "Usuário não tem permissão de acesso ao recurso"
+          },
+          "404": {
+            "description": "Recurso não encontrado"
+          }
+        }
+      }
+    },
+    "/ext/atributo/download/{tipo}": {
+      "get": {
+        "tags": ["Relação de Atributos"],
+        "summary": "Download do arquivo com a relação de atributos, independente dos vínculos",
+        "description": "",
+        "operationId": "download",
+        "consumes": ["application/json"],
+        "produces": ["application/zip", "application/json"],
+        "parameters": [
+          {
+            "name": "tipo",
+            "in": "path",
+            "description": "Tipo do arquivo a ser gerado.\u003Cbr\u003Exml\u003Cbr\u003Ejson",
+            "required": true,
+            "type": "string",
+            "default": "json",
+            "x-example": "xml",
+            "enum": ["xml", "json"]
+          },
+          {
+            "name": "data",
+            "in": "query",
+            "description": "Data de referência do arquivo, no formato ISO, com precisão de dias.\u003Cbr\u003EFormato: yyyy-MM-dd",
+            "required": false,
+            "type": "string",
+            "x-example": "2019-09-02"
+          },
+          {
+            "name": "objetivos",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "TRATAMENTO_ADMINISTRATIVO",
+                "CADASTRO_INTERVENIENTES",
+                "DUIMP",
+                "LPCO",
+                "PRODUTO",
+                "TRATAMENTO_TRIBUTARIO",
+                "FUNDAMENTO_LEGAL_DUIMP"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "orgaosDemandantes",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JSON Web Token (JWT) contendo as informações do usuário. Este token é recuperado no parâmetro Set-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "description": "Token de prevenção contra ataques CSRF. Este token é recuperado no parâmetro X-CSRF-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso"
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "422": {
+            "description": "Erro(s) de validação da camada de negócio"
+          },
+          "401": {
+            "description": "Usuário não autenticado ou autenticação inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          },
+          "403": {
+            "description": "Usuário não tem permissão de acesso ao recurso"
+          },
+          "404": {
+            "description": "Recurso não encontrado"
+          }
+        }
+      }
+    },
+    "/ext/atributo/historico-versoes": {
+      "get": {
+        "tags": ["Relação de Atributos"],
+        "summary": "Consulta histórico de versões",
+        "description": "",
+        "operationId": "obterHistoricoVersoesArquivoDiario",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "versao",
+            "in": "query",
+            "description": "Lista de números de versões a ser recuperado",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-example": "1"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JSON Web Token (JWT) contendo as informações do usuário. Este token é recuperado no parâmetro Set-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "description": "Token de prevenção contra ataques CSRF. Este token é recuperado no parâmetro X-CSRF-Token no response da autenticação",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ChangeLogArquivoDiarioAtributoDTO"
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "422": {
+            "description": "Erro(s) de validação da camada de negócio"
+          },
+          "401": {
+            "description": "Usuário não autenticado ou autenticação inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          },
+          "204": {
+            "description": "Operação realizada com sucesso"
+          },
+          "403": {
+            "description": "Usuário não tem permissão de acesso ao recurso"
+          },
+          "404": {
+            "description": "Recurso não encontrado"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ItemAtributoListaConsultaDTO": {
+      "type": "object",
+      "properties": {
+        "codigo": {
+          "type": "string"
+        },
+        "descricao": {
+          "type": "string"
+        },
+        "filtro": {
+          "type": "string"
+        }
+      }
+    },
+    "ObjetivoAtributoConsultaDTO": {
+      "type": "object",
+      "properties": {
+        "codigo": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "descricao": {
+          "type": "string"
+        }
+      }
+    },
+    "ChangeLogArquivoDiarioAtributoDTO": {
+      "type": "object",
+      "properties": {
+        "numero": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dataVersao": {
+          "type": "string"
+        },
+        "alteracoes": {
+          "$ref": "#/definitions/VersaoArquivoDiarioAtributoDTO"
+        }
+      }
+    },
+    "DiffArquivoDiarioNcmDTO": {
+      "type": "object",
+      "properties": {
+        "codigoNcm": {
+          "type": "string",
+          "description": "Código NCM"
+        },
+        "atributos": {
+          "description": "Atributos",
+          "$ref": "#/definitions/VersaoArquivoDiarioAtributoDTO"
+        }
+      }
+    },
+    "AtributoConsultaFiltroCodigoDTO": {
+      "type": "object",
+      "required": ["codigos", "data"],
+      "properties": {
+        "codigos": {
+          "type": "array",
+          "description": "Lista de códigos de Atributos (Máximo 100 códigos.)\u003Cbr\u003ETamanho mínimo: 1\u003Cbr\u003ETamanho máximo: 25",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-11-28",
+          "description": "Data de referência"
+        }
+      }
+    },
+    "VersaoArquivoDiarioAtributoDTO": {
+      "type": "object",
+      "properties": {
+        "versao": {
+          "type": "string",
+          "description": "Versão do arquivo"
+        },
+        "resumo": {
+          "type": "string",
+          "description": "Resumo das alterações"
+        },
+        "adicionado": {
+          "type": "array",
+          "description": "Lista de Atributos adicionados",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluido": {
+          "type": "array",
+          "description": "Lista de Atributos excluídos",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "alterado": {
+          "type": "array",
+          "description": "Lista de Atributos alterados",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/DiffArquivoDiarioAtributoDTO"
+          }
+        }
+      },
+      "description": "Informações sobre alterações no arquivo de atributos"
+    },
+    "DiffArquivoDiarioDominioDTO": {
+      "type": "object",
+      "properties": {
+        "adicionado": {
+          "type": "array",
+          "description": "Lista de Valores do Domínio adicionados",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluido": {
+          "type": "array",
+          "description": "Lista de Valores do Domínio excluídos",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "alterado": {
+          "type": "array",
+          "description": "Lista de Valores do Domínio alterados",
+          "items": {
+            "$ref": "#/definitions/DiffValorDTO"
+          }
+        }
+      }
+    },
+    "AtributoConsultaFiltroNomeDTO": {
+      "type": "object",
+      "required": ["data", "nomes"],
+      "properties": {
+        "nomes": {
+          "type": "array",
+          "description": "Lista de nomes de Atributos (Máximo 100 nomes.)\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 200",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-11-28",
+          "description": "Data de referência"
+        }
+      }
+    },
+    "DiffArquivoDiarioAtributoDTO": {
+      "type": "object",
+      "properties": {
+        "codigo": {
+          "type": "string",
+          "description": "Código do atributo"
+        },
+        "nome": {
+          "description": "Nome do atributo",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "definicao": {
+          "description": "Definição",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "nomeApresentacao": {
+          "description": "Nome de apresentação",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "tipoAtributo": {
+          "description": "Tipo de atributo",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "brid": {
+          "description": "BR ID",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "wcoid": {
+          "description": "Código WCO ID",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "orientacaoPreenchimento": {
+          "description": "Orientação de preenchimento",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "formaPreenchimento": {
+          "description": "Forma de preenchimento",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "tamanhoMaximo": {
+          "description": "Tamanho máximo",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "mascara": {
+          "description": "Máscara",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "casasDecimais": {
+          "description": "Casas Decimais",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "modalidade": {
+          "description": "Modalidade de operação",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "obrigatorio": {
+          "description": "Preenchimento obrigatório",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "dataInicioVigencia": {
+          "description": "Data de início de vigência",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "dataFimVigencia": {
+          "description": "Data de fim de vigência",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "informacaoAdicional": {
+          "description": "Informação adicional de preenchimento para o vínculo",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "dominio": {
+          "description": "Lista de Valores do Domínio",
+          "$ref": "#/definitions/DiffArquivoDiarioDominioDTO"
+        },
+        "objetivos": {
+          "description": "Objetivo",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "orgaos": {
+          "description": "Órgão demandante",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "atributoCondicionante": {
+          "description": "Atributo condicionante",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "condicionados": {
+          "description": "Lista de atributos condicionados",
+          "$ref": "#/definitions/DiffArquivoDiarioCondicionadoDTO"
+        },
+        "listaSubatributos": {
+          "description": "Lista de subatributos",
+          "$ref": "#/definitions/DiffArquivoDiarioSubatributoDTO"
+        },
+        "multivalorado": {
+          "description": "Campo multivalorado",
+          "$ref": "#/definitions/DiffValorDTO"
+        }
+      }
+    },
+    "DiffArquivoDiarioSubatributoDTO": {
+      "type": "object",
+      "properties": {
+        "adicionado": {
+          "type": "array",
+          "description": "Lista de subatributos adicionados",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluido": {
+          "type": "array",
+          "description": "Lista de subatributos excluídos",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "alterado": {
+          "type": "array",
+          "description": "Lista de subatributos alterados",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/DiffArquivoDiarioAtributoDTO"
+          }
+        }
+      }
+    },
+    "DiffValorDTO": {
+      "type": "object",
+      "properties": {
+        "valorAnterior": {
+          "type": "string",
+          "description": "Valor da propriedade na versão anterior"
+        },
+        "valorAtual": {
+          "type": "string",
+          "description": "Valor da propriedade na versão atual"
+        }
+      }
+    },
+    "DiffCondicionadoDTO": {
+      "type": "object",
+      "required": ["atributo"],
+      "properties": {
+        "atributo": {
+          "description": "Atributo condicionado",
+          "$ref": "#/definitions/DiffArquivoDiarioAtributoDTO"
+        },
+        "obrigatorio": {
+          "description": "Preenchimento obrigatório",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "multivalorado": {
+          "description": "Preenchimento multivalorado",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "dataInicioVigencia": {
+          "description": "Data de início de vigência",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "dataFimVigencia": {
+          "description": "Data de fim de vigência",
+          "$ref": "#/definitions/DiffValorDTO"
+        },
+        "condicao": {
+          "description": "Descrição da condição",
+          "$ref": "#/definitions/DiffValorDTO"
+        }
+      }
+    },
+    "ExpressaoCondicionanteConsultaDTO": {
+      "type": "object",
+      "properties": {
+        "operador": {
+          "type": "string"
+        },
+        "valor": {
+          "type": "string"
+        },
+        "composicao": {
+          "type": "string"
+        },
+        "condicao": {
+          "$ref": "#/definitions/ExpressaoCondicionanteConsultaDTO"
+        }
+      }
+    },
+    "DiffArquivoDiarioCondicionadoDTO": {
+      "type": "object",
+      "properties": {
+        "adicionado": {
+          "type": "array",
+          "description": "Lista de Atributos Condicionados adicionados",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluido": {
+          "type": "array",
+          "description": "Lista de Atributos Condicionados excluídos",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "alterado": {
+          "type": "array",
+          "description": "Lista de Atributos Condicionados alterados",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/DiffCondicionadoDTO"
+          }
+        }
+      }
+    },
+    "VersaoArquivoDiarioAtributoNcmDTO": {
+      "type": "object",
+      "properties": {
+        "versao": {
+          "type": "string",
+          "description": "Versão do arquivo"
+        },
+        "resumo": {
+          "type": "string",
+          "description": "Resumo das alterações"
+        },
+        "adicionado": {
+          "type": "array",
+          "description": "Lista de NCM adicionadas",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluido": {
+          "type": "array",
+          "description": "Lista de NCM excluídas",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "alterado": {
+          "type": "array",
+          "description": "Lista de NCM alteradas",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/DiffArquivoDiarioNcmDTO"
+          }
+        }
+      },
+      "description": "Informações sobre alterações no arquivo de atributos e NCM"
+    },
+    "ArquivoDiarioCondicionadoDTO": {
+      "type": "object",
+      "required": [
+        "atributo",
+        "condicao",
+        "dataInicioVigencia",
+        "multivalorado",
+        "obrigatorio"
+      ],
+      "properties": {
+        "obrigatorio": {
+          "type": "boolean",
+          "example": true,
+          "description": "Preenchimento obrigatório.\u003Cbr\u003EDomínio:\u003Cbr\u003Etrue\u003Cbr\u003Efalse",
+          "default": false
+        },
+        "multivalorado": {
+          "type": "boolean",
+          "example": true,
+          "description": "Preenchimento multivalorado.\u003Cbr\u003EDomínio:\u003Cbr\u003Etrue\u003Cbr\u003Efalse",
+          "default": false
+        },
+        "dataInicioVigencia": {
+          "type": "string",
+          "example": "2019-01-01",
+          "description": "Data de início de vigência\u003Cbr\u003EFormato: yyyy-MM-dd"
+        },
+        "dataFimVigencia": {
+          "type": "string",
+          "example": "2019-12-31",
+          "description": "Data de fim de vigência\u003Cbr\u003EFormato: yyyy-MM-dd"
+        },
+        "descricaoCondicao": {
+          "type": "string",
+          "example": "'ATT_4747' Igual '02' OU 'ATT_4747' Igual '07' OU 'ATT_4747' Igual '09'",
+          "description": "Descrição da condição do atributo\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 1000"
+        },
+        "condicao": {
+          "description": "Condição do atributo",
+          "$ref": "#/definitions/ExpressaoCondicionanteConsultaDTO"
+        },
+        "atributo": {
+          "description": "Atributo condicionado",
+          "$ref": "#/definitions/ArquivoDiarioAtributoDTO"
+        }
+      }
+    },
+    "ChangeLogArquivoDiarioAtributoNcmDTO": {
+      "type": "object",
+      "properties": {
+        "numero": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dataVersao": {
+          "type": "string"
+        },
+        "alteracoes": {
+          "$ref": "#/definitions/VersaoArquivoDiarioAtributoNcmDTO"
+        }
+      }
+    },
+    "ArquivoDiarioAtributoDTO": {
+      "type": "object",
+      "required": [
+        "atributoCondicionante",
+        "codigo",
+        "dataInicioVigencia",
+        "formaPreenchimento",
+        "modalidade",
+        "multivalorado",
+        "nomeApresentacao",
+        "obrigatorio"
+      ],
+      "properties": {
+        "codigo": {
+          "type": "string",
+          "example": "ATT_1",
+          "description": "Código do atributo\u003Cbr\u003ETamanho mínimo: 1\u003Cbr\u003ETamanho máximo: 25"
+        },
+        "nome": {
+          "type": "string",
+          "example": "Peso é ...",
+          "description": "Nome do atributo\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 200"
+        },
+        "definicao": {
+          "type": "string",
+          "example": "Peso é definido...",
+          "description": "Definição\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 200"
+        },
+        "nomeApresentacao": {
+          "type": "string",
+          "example": "Peso",
+          "description": "Nome de apresentação\u003Cbr\u003ETamanho mínimo: 1\u003Cbr\u003ETamanho máximo: 40"
+        },
+        "tipoAtributo": {
+          "type": "string",
+          "example": "Simples",
+          "description": "Tipo de atributoSimples\u003Cbr\u003E"
+        },
+        "brid": {
+          "type": "string",
+          "example": "123",
+          "description": "BR ID\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 10"
+        },
+        "wcoid": {
+          "type": "string",
+          "example": "123",
+          "description": "Código WCO ID\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 10"
+        },
+        "orientacaoPreenchimento": {
+          "type": "string",
+          "example": "Orientação de preenchimento",
+          "description": "Orientação de preenchimento\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 200"
+        },
+        "formaPreenchimento": {
+          "type": "string",
+          "example": "BOOLEANO",
+          "description": "Forma de preenchimento.\u003Cbr\u003ETamanho máximo: 20\u003Cbr\u003EDomínio:\u003Cbr\u003ELISTA_ESTATICA\u003Cbr\u003EBOOLEANO\u003Cbr\u003EDATA\u003Cbr\u003EDATA_HORA\u003Cbr\u003ENUMERO_INTEIRO\u003Cbr\u003ENUMERO_REAL\u003Cbr\u003ETEXTO\u003Cbr\u003EDOMINIO_DINAMICO\u003Cbr\u003ECOMPOSTO",
+          "enum": [
+            "LISTA_ESTATICA",
+            "BOOLEANO",
+            "DATA",
+            "DATA_HORA",
+            "NUMERO_INTEIRO",
+            "NUMERO_REAL",
+            "TEXTO",
+            "DOMINIO_DINAMICO",
+            "COMPOSTO",
+            "LISTA_TABX_FILTRO"
+          ]
+        },
+        "tamanhoMaximo": {
+          "type": "integer",
+          "format": "int32",
+          "example": 100,
+          "description": "Tamanho máximo\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 10"
+        },
+        "mascara": {
+          "type": "string",
+          "example": "99999",
+          "description": "Máscara\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 50"
+        },
+        "casasDecimais": {
+          "type": "integer",
+          "format": "int32",
+          "example": 5,
+          "description": "Casas Decimais\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 10"
+        },
+        "modalidade": {
+          "type": "string",
+          "example": "Exportação",
+          "description": "Modalidade de operação.\u003Cbr\u003ETamanho máximo: 20\u003Cbr\u003EDomínio:\u003Cbr\u003EExportação\u003Cbr\u003EImportação"
+        },
+        "obrigatorio": {
+          "type": "boolean",
+          "example": true,
+          "description": "Preenchimento obrigatório.\u003Cbr\u003EDomínio:\u003Cbr\u003Etrue\u003Cbr\u003Efalse",
+          "default": false
+        },
+        "dataInicioVigencia": {
+          "type": "string",
+          "example": "2019-01-01",
+          "description": "Data de início de vigência\u003Cbr\u003EFormato: yyyy-MM-dd"
+        },
+        "dataFimVigencia": {
+          "type": "string",
+          "example": "2019-08-29",
+          "description": "Data de fim de vigência\u003Cbr\u003EFormato: yyyy-MM-dd"
+        },
+        "informacaoAdicional": {
+          "type": "string",
+          "example": "Texto livre",
+          "description": "Informação adicional de preenchimento para o vínculo\u003Cbr\u003ETamanho mínimo: 0\u003Cbr\u003ETamanho máximo: 1000"
+        },
+        "dominio": {
+          "type": "array",
+          "xml": {
+            "name": "itemDominio",
+            "wrapped": true
+          },
+          "description": "Lista de domínio do atributo",
+          "items": {
+            "$ref": "#/definitions/ItemAtributoListaConsultaDTO"
+          }
+        },
+        "atributoFiltro": {
+          "description": "Atributo utilizado como filtro",
+          "$ref": "#/definitions/ArquivoDiarioAtributoDTO"
+        },
+        "objetivos": {
+          "type": "array",
+          "xml": {
+            "name": "objetivo",
+            "wrapped": true
+          },
+          "description": "Lista de objetivos do atributo",
+          "items": {
+            "$ref": "#/definitions/ObjetivoAtributoConsultaDTO"
+          }
+        },
+        "orgaos": {
+          "type": "array",
+          "xml": {
+            "name": "orgao",
+            "wrapped": true
+          },
+          "description": "Lista de códigos dos órgãos vinculados ao Atributo e NCM\u003Cbr\u003ETamanho mínimo: 1\u003Cbr\u003ETamanho máximo: 10",
+          "items": {
+            "type": "string"
+          }
+        },
+        "atributoCondicionante": {
+          "type": "boolean",
+          "example": false,
+          "description": "Atributos possui atributos condicionados.\u003Cbr\u003EDomínio:\u003Cbr\u003Etrue\u003Cbr\u003Efalse",
+          "default": false
+        },
+        "condicionados": {
+          "type": "array",
+          "description": "Lista de atributos condicionados",
+          "items": {
+            "$ref": "#/definitions/ArquivoDiarioCondicionadoDTO"
+          }
+        },
+        "listaSubatributos": {
+          "type": "array",
+          "xml": {
+            "name": "subatributo",
+            "wrapped": true
+          },
+          "description": "Lista de subatributos",
+          "items": {
+            "$ref": "#/definitions/ArquivoDiarioAtributoDTO"
+          }
+        },
+        "multivalorado": {
+          "type": "boolean",
+          "example": true,
+          "description": "Campo multivalorado.\u003Cbr\u003EDomínio:\u003Cbr\u003Etrue\u003Cbr\u003Efalse",
+          "default": false
+        }
+      },
+      "description": "Informações do arquivo diário com a lista de Atributos e NCM"
+    }
+  }
+}

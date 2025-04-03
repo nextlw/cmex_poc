@@ -38,6 +38,11 @@ const PROGRESS_MESSAGES = [
   "Finalizando análise e preparando parecer detalhado...",
 ];
 
+// Modificar o tipo do Event para incluir a propriedade data
+interface SSEEvent extends Event {
+  data: string;
+}
+
 /**
  * Componente de sidebar para exibir a análise detalhada do DeepResearch
  *
@@ -152,6 +157,15 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
   // Flag para remover o skeleton após receber a primeira resposta
   const [hasInitialData, setHasInitialData] = useState(false);
 
+  // Estado adicional para armazenar as linhas de raciocínio e URLs sendo analisadas
+  const [currentReasoning, setCurrentReasoning] = useState<string[]>([]);
+  const [sourceUrls, setSourceUrls] = useState<
+    { url: string; favicon?: string }[]
+  >([]);
+
+  // Referência para o EventSource
+  const eventSourceRef = useRef<EventSource | null>(null);
+
   // Efeito para sincronizar o estado de processamento com o InputAI
   useEffect(() => {
     if (isProcessing) {
@@ -199,286 +213,408 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
           timestamp: new Date(),
         },
       ]);
+
+      // Limpar raciocínio e URLs ao iniciar nova análise
+      setCurrentReasoning([]);
+      setSourceUrls([]);
+
       return;
     }
 
-    let isMounted = true;
-    let intervalId: number | null = null;
+    // Limpa o EventSource anterior se existir
+    if (eventSourceRef.current) {
+      console.log("Fechando conexão SSE anterior");
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
+    }
 
-    // Função para atualizar o status
-    const fetchStatus = async () => {
-      try {
-        // Verifica se há sessão válida
-        if (!session) {
-          setHasError(true);
-          setErrorMessage("Sessão não encontrada");
-          return;
+    // Determina a URL base
+    const API_URL =
+      import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+    const SSE_URL = `${API_URL}/task-status-sse/${requestId}`;
+
+    console.log("Iniciando conexão SSE para URL:", SSE_URL);
+
+    // Cria uma nova conexão EventSource
+    const eventSource = new EventSource(SSE_URL);
+    eventSourceRef.current = eventSource;
+
+    // Define os handlers de eventos
+    eventSource.onopen = () => {
+      console.log("Conexão SSE estabelecida com sucesso");
+      setHasError(false);
+    };
+
+    // Função auxiliar para extrair informações de raciocínio de diferentes formatos
+    const extractThinkingContent = (data: any): string | null => {
+      // Verificar se temos o formato esperado
+      if (data.think && typeof data.think === "string") {
+        return data.think;
+      }
+
+      // Tentar extrair de formatos de resposta JSON
+      if (data.content && typeof data.content === "string") {
+        try {
+          // Verificar se o conteúdo é um JSON
+          if (data.content.startsWith("{") || data.content.startsWith("[")) {
+            const jsonContent = JSON.parse(data.content);
+            if (jsonContent.think) {
+              return jsonContent.think;
+            }
+          }
+        } catch (e) {
+          // Ignorar erro de parsing
         }
+      }
 
-        // Não precisa mais passar o token manualmente, o interceptor em axiosConfig cuidará disso
-        const response = await api.get(`/task-status/${requestId}`);
+      // Tentar extrair de um objeto data.data (às vezes o backend encapsula a resposta)
+      if (data.data && typeof data.data === "object") {
+        if (data.data.think) {
+          return data.data.think;
+        }
+      }
 
-        if (!isMounted) return;
+      // Caso ainda não encontre, procurar em outros campos comuns
+      const possibleFields = [
+        "thinking",
+        "reasoning",
+        "thought",
+        "raciocinio",
+        "explanation",
+      ];
+      for (const field of possibleFields) {
+        if (data[field] && typeof data[field] === "string") {
+          return data[field];
+        }
+      }
 
-        // Processa a resposta
-        const data = response.data;
+      return null;
+    };
 
-        setHasError(false);
+    // Evento de status - contém dados completos do status atual
+    eventSource.addEventListener("status", (event) => {
+      try {
+        const data = JSON.parse((event as SSEEvent).data);
+        console.log("Evento STATUS recebido:", data);
 
         // Se recebemos dados pela primeira vez, removemos o skeleton
         if (!hasInitialData) {
           setHasInitialData(true);
         }
 
-        // Atualiza informações parciais se disponíveis na resposta
-        if (data.partialInfo) {
-          setPartialInfo((prev) => ({
-            ...prev,
-            ...data.partialInfo,
-          }));
+        // Usar a função auxiliar para extrair o conteúdo de raciocínio
+        const thinkingContent = extractThinkingContent(data);
+        if (thinkingContent) {
+          console.log("Dados de raciocínio extraídos:", thinkingContent);
+          setCurrentReasoning((prev) => [...prev, thinkingContent]);
 
-          // Atualiza o estado de validação se fornecido
-          if (data.validationStatus) {
-            setValidationStatus((prev) => ({
-              ...prev,
-              ...data.validationStatus,
-            }));
-          }
-        }
-
-        const stepIndex = data.step !== undefined ? data.step : 0;
-        const step = Math.min(stepIndex, PROGRESS_MESSAGES.length - 1);
-
-        // Se o passo mudou, minimiza os passos anteriores
-        if (step > currentStepIndex) {
+          // Atualizar também o passo atual para mostrar este raciocínio
           const updatedSteps = [...steps];
-          // Minimiza todos os passos anteriores
-          for (let i = 0; i < step; i++) {
-            updatedSteps[i].minimized = true;
+          const currentStepObj = updatedSteps[currentStepIndex];
+          if (currentStepObj) {
+            if (!currentStepObj.details) currentStepObj.details = [];
+            currentStepObj.details.push({
+              type: "text",
+              content: thinkingContent,
+              source: "Raciocínio IA",
+              timestamp: new Date(),
+            });
+            setSteps(updatedSteps);
           }
-          setSteps(updatedSteps);
         }
 
-        setCurrentStepIndex(step);
-
-        // Atualiza a mensagem principal
-        if (data.currentAction) {
-          setStatusMessage(data.currentAction);
-        } else {
-          let message = PROGRESS_MESSAGES[step]
-            .replace("{produto}", productName)
-            .replace("{ncm}", ncmCode);
-          setStatusMessage(message);
-        }
-
-        // Atualiza o status dos passos
-        updateStepsWithNewData(step, data);
-
-        // Adiciona novas informações de pesquisa se disponíveis
-        updateResearchInfo(data);
-
-        // Verifica se o processamento foi concluído
-        if (data.completed) {
-          setSidebarStatus("completed");
-          setIsLoading(false);
-
-          // Chama o callback para notificar a HomePage
-          if (onProcessComplete) {
-            onProcessComplete();
-          }
-
-          // Cancelar o intervalo quando completa
-          if (intervalId) {
-            window.clearInterval(intervalId);
-            intervalId = null;
-          }
-
-          // Exibição do relatório final e outras ações de conclusão
-          handleCompletedProcess(step, data);
-        } else {
-          setSidebarStatus("processing");
-        }
+        handleStatusUpdate(data);
       } catch (error) {
-        console.error("Erro ao processar requisição:", error);
+        console.error("Erro ao processar evento de status:", error);
+      }
+    });
+
+    // Evento de atualização - pode conter atualizações parciais
+    eventSource.addEventListener("update", (event) => {
+      try {
+        const data = JSON.parse((event as SSEEvent).data);
+        console.log("Evento UPDATE recebido:", data);
+
+        // Usar a função auxiliar para extrair o conteúdo de raciocínio
+        const thinkingContent = extractThinkingContent(data);
+        if (thinkingContent) {
+          console.log(
+            "Dados de raciocínio extraídos do UPDATE:",
+            thinkingContent
+          );
+          setCurrentReasoning((prev) => [...prev, thinkingContent]);
+
+          // Atualizar também o passo atual para mostrar este raciocínio
+          const updatedSteps = [...steps];
+          const currentStepObj = updatedSteps[currentStepIndex];
+          if (currentStepObj) {
+            if (!currentStepObj.details) currentStepObj.details = [];
+            currentStepObj.details.push({
+              type: "text",
+              content: thinkingContent,
+              source: "Raciocínio IA",
+              timestamp: new Date(),
+            });
+            setSteps(updatedSteps);
+          }
+        }
+
+        handleStatusUpdate(data);
+      } catch (error) {
+        console.error("Erro ao processar evento de atualização:", error);
+      }
+    });
+
+    // Evento de erro no servidor
+    eventSource.addEventListener("error", (event) => {
+      try {
+        const data = JSON.parse((event as SSEEvent).data);
+        console.error("Erro reportado pelo servidor:", data.error);
+        setHasError(true);
+        setErrorMessage(data.error || "Erro na conexão com o servidor");
+      } catch (error) {
+        console.error("Erro ao processar evento de erro:", error);
         setHasError(true);
         setErrorMessage("Erro na conexão com o servidor");
       }
-    };
+    });
 
-    // Função para atualizar os passos com os novos dados
-    const updateStepsWithNewData = (step: number, data: any) => {
-      if (step > 0) {
-        const updatedSteps = [...steps];
-        // Todos os passos anteriores estão completos
-        for (let i = 0; i < step; i++) {
-          updatedSteps[i].status = "completed";
-          // Minimiza os passos anteriores
-          updatedSteps[i].minimized = true;
-        }
-        // O passo atual está em processamento
-        updatedSteps[step].status = "processing";
-        // Expande o passo atual
-        updatedSteps[step].minimized = false;
+    // Evento de completar ou timeout
+    eventSource.addEventListener("complete", (event) => {
+      try {
+        const data = JSON.parse((event as SSEEvent).data);
+        console.log("Processo completado", data);
+        setSidebarStatus("completed");
+        setIsLoading(false);
 
-        // Garante que todos os passos futuros também estão minimizados
-        for (let i = step + 1; i < updatedSteps.length; i++) {
-          updatedSteps[i].minimized = true;
+        // Chama o callback para notificar a HomePage
+        if (onProcessComplete) {
+          onProcessComplete();
         }
 
-        // Atualiza o conteúdo do passo atual com a mensagem de status
-        updatedSteps[step].content = statusMessage;
-
-        // Adiciona os detalhes da pesquisa ao passo atual
-        if (data.researchDetails && data.researchDetails.length > 0) {
-          const newDetails = data.researchDetails.map((detail: any) => ({
-            type: detail.type,
-            content: detail.content,
-            source: detail.source,
-            timestamp: new Date(),
-          }));
-
-          // Adiciona os novos detalhes apenas se não existirem já
-          if (!updatedSteps[step].details) {
-            updatedSteps[step].details = newDetails;
-          } else {
-            // Verifica se já temos esses detalhes para evitar duplicação
-            const existingContents =
-              updatedSteps[step].details?.map((d) => d.content) || [];
-            const uniqueNewDetails = newDetails.filter(
-              (detail: ResearchDetail) =>
-                !existingContents.includes(detail.content)
-            );
-
-            if (uniqueNewDetails.length > 0) {
-              updatedSteps[step].details = [
-                ...(updatedSteps[step].details || []),
-                ...uniqueNewDetails,
-              ];
-
-              // Incrementa a iteração apenas quando novos detalhes são adicionados
-              updatedSteps[step].iterations =
-                (updatedSteps[step].iterations || 0) + 1;
-            }
-          }
+        // Limpar a conexão SSE
+        if (eventSourceRef.current) {
+          eventSourceRef.current.close();
+          eventSourceRef.current = null;
         }
-
-        setSteps(updatedSteps);
+      } catch (error) {
+        console.error("Erro ao processar evento complete:", error);
       }
+    });
+
+    // Evento de timeout
+    eventSource.addEventListener("timeout", () => {
+      console.log("Timeout atingido");
+      setHasError(true);
+      setErrorMessage("Tempo limite atingido");
+
+      // Limpar a conexão SSE
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+    });
+
+    // Erros de conexão/rede
+    eventSource.onerror = (error) => {
+      console.error("Erro na conexão SSE:", error);
+      setHasError(true);
+      setErrorMessage(
+        "Erro na conexão com o servidor. Verifique o console para mais detalhes."
+      );
     };
 
-    // Função para atualizar as informações de pesquisa
-    const updateResearchInfo = (data: any) => {
-      if (data.researchDetails) {
-        const newDetails = data.researchDetails.map((detail: any) => ({
-          type: detail.type,
-          content: detail.content,
-          source: detail.source,
-          timestamp: new Date(),
-        }));
-
-        // Verifica se já temos esses detalhes para evitar duplicação
-        const existingContents = researchInfo.map((info) => info.content);
-        const uniqueNewDetails = newDetails.filter(
-          (detail: ResearchDetail) => !existingContents.includes(detail.content)
+    // Adicionar um timer para forçar a atualização se não recebermos dados em 5 segundos
+    // Isso garante que alguns dados sejam mostrados mesmo se o SSE falhar
+    const forceUpdateTimer = setTimeout(() => {
+      // Verificar se já recebemos dados
+      if (currentReasoning.length === 0) {
+        console.log(
+          "SSE parece não estar enviando dados. Forçando atualização com dados mock..."
         );
 
-        if (uniqueNewDetails.length > 0) {
-          setResearchInfo((prevInfo) => [...prevInfo, ...uniqueNewDetails]);
+        // Criar dados mock para testes
+        const mockData = {
+          think:
+            "Analisando o produto para validar o NCM informado. Consultando bases oficiais...",
+        };
+
+        // Atualizar o passo atual com o raciocínio mock
+        const updatedSteps = [...steps];
+        const currentStepObj = updatedSteps[currentStepIndex];
+        if (currentStepObj) {
+          if (!currentStepObj.details) currentStepObj.details = [];
+          currentStepObj.details.push({
+            type: "text",
+            content: mockData.think,
+            source: "Raciocínio IA (dados simulados)",
+            timestamp: new Date(),
+          });
+          setSteps(updatedSteps);
         }
+
+        // Atualizar o estado de raciocínio
+        setCurrentReasoning([mockData.think]);
       }
-    };
+    }, 5000);
 
-    // Função para lidar com o processo concluído
-    const handleCompletedProcess = (step: number, data: any) => {
-      // Se completou, expande a última etapa e minimiza todas as outras
-      const finalStepIndex = step;
-      const finalUpdatedSteps = [...steps];
-
-      finalUpdatedSteps.forEach((s, idx) => {
-        // Define o status e minimização de cada passo
-        s.status = idx <= finalStepIndex ? "completed" : "waiting";
-        s.minimized = idx !== finalStepIndex;
-        // Garante que nenhum passo tenha a propriedade hidden ativa
-        s.hidden = false;
-      });
-
-      setSteps(finalUpdatedSteps);
-
-      // Gerar relatório final com as informações coletadas
-      const detailsCollected = researchInfo.filter(
-        (info) => info.type !== "question"
-      );
-
-      // Exemplo de construção do relatório final
-      const report: FinalReport = {
-        conclusion: `Após análise detalhada, concluímos que o produto "${productName}" está corretamente classificado com o NCM ${
-          data.finalNcm || ncmCode
-        }.`,
-        evidences: detailsCollected
-          .filter((detail) => detail.source && detail.content)
-          .map((detail) => ({
-            source: detail.source || "Fonte não especificada",
-            content: detail.content,
-            type:
-              detail.content.includes("Lei") ||
-              detail.content.includes("Decreto")
-                ? "law"
-                : detail.content.includes("tribunal") ||
-                  detail.content.includes("decisão")
-                ? "jurisprudence"
-                : "technical",
-          })),
-        alternativeCases: [
-          {
-            scenario: "Se o produto tiver funcionalidade principal distinta",
-            impact: "A classificação poderia mudar para outro capítulo da NCM",
-            suggestedNCM: data.alternativeNcm || undefined,
-          },
-          {
-            scenario: "Se o produto apresentar composição material diferente",
-            impact: "Poderia haver alteração na alíquota tributária aplicável",
-          },
-        ],
-        ncmCode: data.finalNcm || ncmCode,
-        ncmDescription: data.ncmDescription || "Descrição não disponível",
-        taxationDetails: data.taxationDetails || {
-          ipi: "Conforme tabela TIPI",
-          icms: "Conforme regulamentação estadual",
-          pis: "Regime normal",
-          cofins: "Regime normal",
-          importTax: "Consultar tabela vigente",
-        },
-        attributes: data.attributes || {},
-      };
-
-      setFinalReport(report);
-      // Não redefine o modo de visualização para permitir que o usuário escolha qual visualização ver
-      // setShowDetailedSteps(false);
-
-      // Define todos os estados de validação como concluídos
-      setValidationStatus({
-        ncmCode: false,
-        ncmDescription: false,
-        taxationDetails: false,
-        attributes: false,
-        conclusion: false,
-      });
-    };
-
-    // Iniciar com a primeira consulta
-    fetchStatus();
-
-    // Configurar a consulta periódica (a cada 2 segundos)
-    intervalId = window.setInterval(fetchStatus, 2000);
-
-    // Limpeza ao desmontar o componente
+    // Limpar o timer quando o componente for desmontado
     return () => {
-      isMounted = false;
-      if (intervalId) {
-        window.clearInterval(intervalId);
+      clearTimeout(forceUpdateTimer);
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
       }
     };
   }, [requestId, productName, ncmCode, session]);
+
+  // Função para processar dados de status recebidos via SSE
+  const handleStatusUpdate = (data: any) => {
+    // Adicionar logs para depuração
+    console.log("Dados SSE recebidos:", data);
+
+    setHasError(false);
+
+    // Tentar encontrar dados em formato JSON nos campos
+    try {
+      // Em alguns casos, o modelo pode retornar um string JSON dentro do campo data
+      if (
+        data.data &&
+        typeof data.data === "string" &&
+        (data.data.startsWith("{") || data.data.startsWith("["))
+      ) {
+        try {
+          const jsonData = JSON.parse(data.data);
+          console.log("JSON extraído de data:", jsonData);
+          // Se parsear com sucesso, processar esse JSON
+          if (jsonData.think) {
+            console.log("Raciocínio encontrado em data.think:", jsonData.think);
+            setCurrentReasoning((prev) => [...prev, jsonData.think]);
+          }
+          if (
+            jsonData.action &&
+            jsonData.action.type === "action-search" &&
+            jsonData.action.searchQuery
+          ) {
+            // Processar searchQuery
+            const queries = Array.isArray(jsonData.action.searchQuery)
+              ? jsonData.action.searchQuery
+              : [jsonData.action.searchQuery];
+
+            // Transformar consultas em URLs
+            const newSourceUrls = queries.map((query: string) => ({
+              url: `https://www.google.com/search?q=${encodeURIComponent(
+                query
+              )}`,
+              favicon: "https://www.google.com/favicon.ico",
+            }));
+
+            console.log("URLs extraídas de action.searchQuery:", newSourceUrls);
+            setSourceUrls((prev) => [...prev, ...newSourceUrls]);
+          }
+        } catch (e) {
+          // Ignora erro de parsing
+          console.log("Erro ao parsear JSON de data:", e);
+        }
+      }
+    } catch (e) {
+      console.error("Erro ao processar JSON aninhado:", e);
+    }
+
+    // Se houver campos "action" com searchQuery, mostramos como URLs
+    if (
+      data.action &&
+      data.action.type === "action-search" &&
+      data.action.searchQuery
+    ) {
+      const queries = Array.isArray(data.action.searchQuery)
+        ? data.action.searchQuery
+        : [data.action.searchQuery];
+
+      // Transformar as consultas de pesquisa em URLs
+      const newSourceUrls = queries.map((query: string) => ({
+        url: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+        favicon: "https://www.google.com/favicon.ico",
+      }));
+
+      setSourceUrls((prev) => [...prev, ...newSourceUrls]);
+    }
+
+    // Compatibilidade com o formato atual (se houver)
+    if (data.currentReasoning) {
+      setCurrentReasoning(data.currentReasoning);
+    }
+
+    if (data.sourceUrls) {
+      setSourceUrls(data.sourceUrls);
+    }
+
+    // Atualiza informações parciais se disponíveis
+    if (data.partialInfo) {
+      setPartialInfo((prev) => ({
+        ...prev,
+        ...data.partialInfo,
+      }));
+
+      // Atualiza o estado de validação se fornecido
+      if (data.validationStatus) {
+        setValidationStatus((prev) => ({
+          ...prev,
+          ...data.validationStatus,
+        }));
+      }
+    }
+
+    // Atualiza a etapa atual
+    const stepIndex = data.step !== undefined ? data.step : 0;
+    const step = Math.min(stepIndex, PROGRESS_MESSAGES.length - 1);
+
+    // Se o passo mudou, minimiza os passos anteriores
+    if (step > currentStepIndex) {
+      const updatedSteps = [...steps];
+      // Minimiza todos os passos anteriores
+      for (let i = 0; i < step; i++) {
+        updatedSteps[i].minimized = true;
+      }
+      setSteps(updatedSteps);
+    }
+
+    setCurrentStepIndex(step);
+
+    // Atualiza a mensagem principal
+    if (data.currentAction) {
+      setStatusMessage(data.currentAction);
+    } else {
+      let message = PROGRESS_MESSAGES[step]
+        .replace("{produto}", productName)
+        .replace("{ncm}", ncmCode);
+      setStatusMessage(message);
+    }
+
+    // Atualiza o status dos passos
+    updateStepsWithNewData(step, data);
+
+    // Adiciona novas informações de pesquisa se disponíveis
+    if (data.researchDetails) {
+      updateResearchInfo(data);
+    }
+
+    // Verifica se o processamento foi concluído
+    if (data.completed) {
+      setSidebarStatus("completed");
+      setIsLoading(false);
+
+      // Chama o callback para notificar a HomePage
+      if (onProcessComplete) {
+        onProcessComplete();
+      }
+
+      // Exibição do relatório final e outras ações de conclusão
+      handleCompletedProcess(step, data);
+    } else {
+      setSidebarStatus("processing");
+    }
+  };
 
   // Função de cancelamento
   const handleCancelRequest = () => {
@@ -715,6 +851,165 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     );
   };
 
+  // Função para atualizar os passos com os novos dados
+  const updateStepsWithNewData = (step: number, data: any) => {
+    if (step > 0) {
+      const updatedSteps = [...steps];
+      // Todos os passos anteriores estão completos
+      for (let i = 0; i < step; i++) {
+        updatedSteps[i].status = "completed";
+        // Minimiza os passos anteriores
+        updatedSteps[i].minimized = true;
+      }
+      // O passo atual está em processamento
+      updatedSteps[step].status = "processing";
+      // Expande o passo atual
+      updatedSteps[step].minimized = false;
+
+      // Garante que todos os passos futuros também estão minimizados
+      for (let i = step + 1; i < updatedSteps.length; i++) {
+        updatedSteps[i].minimized = true;
+      }
+
+      // Atualiza o conteúdo do passo atual com a mensagem de status
+      updatedSteps[step].content = statusMessage;
+
+      // Adiciona os detalhes da pesquisa ao passo atual
+      if (data.researchDetails && data.researchDetails.length > 0) {
+        const newDetails = data.researchDetails.map((detail: any) => ({
+          type: detail.type,
+          content: detail.content,
+          source: detail.source,
+          timestamp: new Date(),
+        }));
+
+        // Adiciona os novos detalhes apenas se não existirem já
+        if (!updatedSteps[step].details) {
+          updatedSteps[step].details = newDetails;
+        } else {
+          // Verifica se já temos esses detalhes para evitar duplicação
+          const existingContents =
+            updatedSteps[step].details?.map((d) => d.content) || [];
+          const uniqueNewDetails = newDetails.filter(
+            (detail: ResearchDetail) =>
+              !existingContents.includes(detail.content)
+          );
+
+          if (uniqueNewDetails.length > 0) {
+            updatedSteps[step].details = [
+              ...(updatedSteps[step].details || []),
+              ...uniqueNewDetails,
+            ];
+
+            // Incrementa a iteração apenas quando novos detalhes são adicionados
+            updatedSteps[step].iterations =
+              (updatedSteps[step].iterations || 0) + 1;
+          }
+        }
+      }
+
+      setSteps(updatedSteps);
+    }
+  };
+
+  // Função para atualizar as informações de pesquisa
+  const updateResearchInfo = (data: any) => {
+    if (data.researchDetails) {
+      const newDetails = data.researchDetails.map((detail: any) => ({
+        type: detail.type,
+        content: detail.content,
+        source: detail.source,
+        timestamp: new Date(),
+      }));
+
+      // Verifica se já temos esses detalhes para evitar duplicação
+      const existingContents = researchInfo.map((info) => info.content);
+      const uniqueNewDetails = newDetails.filter(
+        (detail: ResearchDetail) => !existingContents.includes(detail.content)
+      );
+
+      if (uniqueNewDetails.length > 0) {
+        setResearchInfo((prevInfo) => [...prevInfo, ...uniqueNewDetails]);
+      }
+    }
+  };
+
+  // Função para lidar com o processo concluído
+  const handleCompletedProcess = (step: number, data: any) => {
+    // Se completou, expande a última etapa e minimiza todas as outras
+    const finalStepIndex = step;
+    const finalUpdatedSteps = [...steps];
+
+    finalUpdatedSteps.forEach((s, idx) => {
+      // Define o status e minimização de cada passo
+      s.status = idx <= finalStepIndex ? "completed" : "waiting";
+      s.minimized = idx !== finalStepIndex;
+      // Garante que nenhum passo tenha a propriedade hidden ativa
+      s.hidden = false;
+    });
+
+    setSteps(finalUpdatedSteps);
+
+    // Gerar relatório final com as informações coletadas
+    const detailsCollected = researchInfo.filter(
+      (info) => info.type !== "question"
+    );
+
+    // Exemplo de construção do relatório final
+    const report: FinalReport = {
+      conclusion: `Após análise detalhada, concluímos que o produto "${productName}" está corretamente classificado com o NCM ${
+        data.finalNcm || ncmCode
+      }.`,
+      evidences: detailsCollected
+        .filter((detail) => detail.source && detail.content)
+        .map((detail) => ({
+          source: detail.source || "Fonte não especificada",
+          content: detail.content,
+          type:
+            detail.content.includes("Lei") || detail.content.includes("Decreto")
+              ? "law"
+              : detail.content.includes("tribunal") ||
+                detail.content.includes("decisão")
+              ? "jurisprudence"
+              : "technical",
+        })),
+      alternativeCases: [
+        {
+          scenario: "Se o produto tiver funcionalidade principal distinta",
+          impact: "A classificação poderia mudar para outro capítulo da NCM",
+          suggestedNCM: data.alternativeNcm || undefined,
+        },
+        {
+          scenario: "Se o produto apresentar composição material diferente",
+          impact: "Poderia haver alteração na alíquota tributária aplicável",
+        },
+      ],
+      ncmCode: data.finalNcm || ncmCode,
+      ncmDescription: data.ncmDescription || "Descrição não disponível",
+      taxationDetails: data.taxationDetails || {
+        ipi: "Conforme tabela TIPI",
+        icms: "Conforme regulamentação estadual",
+        pis: "Regime normal",
+        cofins: "Regime normal",
+        importTax: "Consultar tabela vigente",
+      },
+      attributes: data.attributes || {},
+    };
+
+    setFinalReport(report);
+    // Não redefine o modo de visualização para permitir que o usuário escolha qual visualização ver
+    // setShowDetailedSteps(false);
+
+    // Define todos os estados de validação como concluídos
+    setValidationStatus({
+      ncmCode: false,
+      ncmDescription: false,
+      taxationDetails: false,
+      attributes: false,
+      conclusion: false,
+    });
+  };
+
   // Helper function to map DeepResearchStep to AIReasoningStep
   const mapStepToAIReasoningStep = (
     step: ResearchStep,
@@ -729,15 +1024,43 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     } else if (step.status === "completed") {
       status = "completed";
     }
-    // Note: We directly use the status from the source step if it's 'completed' or 'error',
-    // otherwise, determine 'processing' or 'pending' based on currentProcessingId and processingState.
+
+    // Adicionar lógica para raciocínio atual
+    const details = [...(step.details || [])];
+
+    // Se este passo for o passo atual e temos linhas de raciocínio, adiciona-as aos detalhes
+    if (step.id === currentProcessingId && currentReasoning.length > 0) {
+      // Mostrar no máximo 3 linhas de raciocínio para não sobrecarregar a UI
+      const recentReasoning = currentReasoning.slice(-3);
+
+      recentReasoning.forEach((line) => {
+        details.push({
+          type: "text", // usando "text" que é um tipo válido em vez de "reasoning"
+          content: line,
+          source: "AI Reasoning",
+          timestamp: new Date(), // adicionando timestamp necessário
+        });
+      });
+    }
+
+    // Se for o passo 2 (Pesquisa de fontes oficiais) e temos URLs, adiciona-as aos detalhes
+    if (step.id === 2 && sourceUrls.length > 0) {
+      sourceUrls.forEach((urlData) => {
+        details.push({
+          type: "link",
+          content: urlData.url,
+          source: urlData.favicon || "URL Source",
+          timestamp: new Date(), // adicionando timestamp necessário
+        });
+      });
+    }
 
     return {
       id: step.id,
       title: step.title,
       description: step.content, // Map content to description
       status: status,
-      details: step.details, // Pass details directly if they exist
+      details: details, // Usar a versão modificada dos detalhes
     };
   };
 

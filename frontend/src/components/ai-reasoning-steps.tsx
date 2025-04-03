@@ -12,6 +12,10 @@ import {
   CircleAlert,
   Lightbulb,
   Loader2,
+  Link,
+  Globe,
+  Search,
+  MessageSquareText,
 } from "lucide-react";
 
 // Export the interface
@@ -25,6 +29,7 @@ export interface ReasoningStep {
     type: string;
     content: string;
     source?: string;
+    timestamp?: Date;
   }[];
 }
 
@@ -78,6 +83,57 @@ export default function AIReasoningSteps({
     }
   };
 
+  // Nova função para renderizar diferentes tipos de detalhes
+  const renderDetailItem = (
+    detail: {
+      type: string;
+      content: string;
+      source?: string;
+      timestamp?: Date;
+    },
+    index: number
+  ) => {
+    // Determinar ícone com base no tipo
+    let icon = <MessageSquareText className="h-4 w-4 text-blue-500 mt-0.5" />;
+
+    if (detail.type === "link") {
+      icon = <Globe className="h-4 w-4 text-blue-500 mt-0.5" />;
+    } else if (detail.type === "text") {
+      icon = <MessageSquareText className="h-4 w-4 text-blue-500 mt-0.5" />;
+    } else if (detail.type === "law") {
+      icon = <Search className="h-4 w-4 text-amber-500 mt-0.5" />;
+    }
+
+    // Renderizar item com base no tipo
+    return (
+      <div key={index} className="flex items-start gap-2 mt-2 text-sm">
+        {icon}
+        <div className="flex-1">
+          <span className="text-foreground">{detail.content}</span>
+          {detail.source && (
+            <div className="text-xs text-muted-foreground mt-0.5 flex items-center">
+              {detail.type === "link" ? (
+                <>
+                  <Link className="h-3 w-3 mr-1" />
+                  <a
+                    href={detail.content}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:underline text-blue-500 dark:text-blue-400"
+                  >
+                    {detail.source}
+                  </a>
+                </>
+              ) : (
+                <span>{detail.source}</span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
@@ -122,6 +178,19 @@ export default function AIReasoningSteps({
                           <p className="text-sm text-muted-foreground">
                             {step.description}
                           </p>
+
+                          {/* Mostrar as primeiras linhas de raciocínio ou URLs se este for o passo atual */}
+                          {step.details &&
+                            step.details.length > 0 &&
+                            status === "processing" && (
+                              <div className="mt-2 space-y-1 border-l-2 border-blue-400 dark:border-blue-600 pl-3">
+                                {step.details
+                                  .slice(-2)
+                                  .map((detail, idx) =>
+                                    renderDetailItem(detail, idx)
+                                  )}
+                              </div>
+                            )}
                         </div>
                       </div>
                     );
@@ -196,16 +265,78 @@ export default function AIReasoningSteps({
                           {status === "error" && "Error"}
                         </div>
                       </div>
-                      {status === "completed" && aiInsight && (
+
+                      {/* Mostrar detalhes do passo */}
+                      {step.details && step.details.length > 0 && (
                         <div className="mt-3 pt-3 border-t border-border">
-                          <div className="flex items-start gap-2">
-                            <Lightbulb className="h-4 w-4 text-amber-500 mt-0.5" />
-                            <div className="text-sm text-foreground">
-                              <strong>AI Insight:</strong> {aiInsight}
-                            </div>
+                          <div className="space-y-2">
+                            {/* Links (URLs) - mostrar no topo para ficarem em destaque */}
+                            {step.details.filter((d) => d.type === "link")
+                              .length > 0 && (
+                              <div className="rounded-md bg-blue-50 dark:bg-blue-950/20 p-2">
+                                <div className="text-sm font-medium mb-1 text-blue-600 dark:text-blue-400 flex items-center">
+                                  <Globe className="h-4 w-4 mr-1" />
+                                  Fontes pesquisadas:
+                                </div>
+                                <div className="space-y-1">
+                                  {step.details
+                                    .filter((d) => d.type === "link")
+                                    .map((detail, idx) =>
+                                      renderDetailItem(detail, idx)
+                                    )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Linhas de raciocínio */}
+                            {step.details.filter((d) => d.type === "text")
+                              .length > 0 && (
+                              <div>
+                                <div className="text-sm font-medium mb-1 text-foreground flex items-center">
+                                  <MessageSquareText className="h-4 w-4 mr-1" />
+                                  Raciocínio:
+                                </div>
+                                <div className="space-y-1">
+                                  {step.details
+                                    .filter((d) => d.type === "text")
+                                    .map((detail, idx) =>
+                                      renderDetailItem(detail, idx)
+                                    )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Outros tipos de detalhes */}
+                            {step.details.filter(
+                              (d) => !["text", "link"].includes(d.type)
+                            ).length > 0 && (
+                              <div>
+                                {step.details
+                                  .filter(
+                                    (d) => !["text", "link"].includes(d.type)
+                                  )
+                                  .map((detail, idx) =>
+                                    renderDetailItem(detail, idx)
+                                  )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       )}
+
+                      {/* Mostrar AI Insight se não tivermos detalhes mas tivermos um aiInsight (para compatibilidade) */}
+                      {status === "completed" &&
+                        aiInsight &&
+                        step.details?.length === 0 && (
+                          <div className="mt-3 pt-3 border-t border-border">
+                            <div className="flex items-start gap-2">
+                              <Lightbulb className="h-4 w-4 text-amber-500 mt-0.5" />
+                              <div className="text-sm text-foreground">
+                                <strong>AI Insight:</strong> {aiInsight}
+                              </div>
+                            </div>
+                          </div>
+                        )}
                     </CardContent>
                   </Card>
                 );
