@@ -8,6 +8,7 @@
 		"figlet": "^1.8.0",
 		"react-icons": "^5.5.0",
 		"react-tippy": "^1.4.0",
-		"tippy.js": "^6.3.7"
+		"tippy.js": "^6.3.7",
+		"update": "^0.7.4"
 	}
 }

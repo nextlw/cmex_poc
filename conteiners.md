@@ -358,7 +358,7 @@ services:
       - postgres
     environment:
       - MODEL_URL=http://model:5000
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://redis:6378
       - DATABASE_URL=postgres://user:password@postgres:5432/chatdb
       - NODE_ENV=development
 
@@ -376,7 +376,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "6378:6378"
     volumes:
       - redis-data:/data
 
