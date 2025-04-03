@@ -53,7 +53,8 @@ table.impostos-table {
 
 .from-gray-900 {
   --tw-gradient-from: var(--color-gray-900) var(--tw-gradient-from-position);
-  --tw-gradient-to: var(--color-gray-900-transparent) var(--tw-gradient-to-position);
+  --tw-gradient-to: var(--color-gray-900-transparent)
+    var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
@@ -357,23 +358,4 @@ body {
   --color-error: #ef4444;
   --color-error-rgb: 239, 68, 68;
   --color-error-lighter: #f87171;
-}
-
-/* Ocultar a barra de "Análise em andamento" de qualquer maneira */
-p:not([data-preserve="true"]):has(text[content*="Análise"]),
-p:not([data-preserve="true"]):has(text[content*="análise"]),
-p.text-sm.font-normal,
-p:has(.break-words.whitespace-normal),
-[class*="deep-research-status"],
-.hide-analysis-status p,
-body p.text-sm.font-normal.break-words.whitespace-normal {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  max-height: 0 !important;
 }

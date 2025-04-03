@@ -1,4 +1,6 @@
+import { AtributoNCM } from "../../types/atributos";
+
 export interface AtributosProps {
-  atributos?: string[] | null;
+  atributos?: string[] | AtributoNCM[] | null;
   isLoading?: boolean;
 }

@@ -24,8 +24,11 @@ const InfoBasicasSkeleton: React.FC = () => {
         <div className="flex-grow min-h-0">
           <div className="input-field">
             <label className="text-gray-300">Descrição:</label>
-            <div className="skeleton-input" style={{ height: '76px' }}>
-              <Skeleton height="58px" />
+            <div
+              className="skeleton-input flex-grow"
+              style={{ height: "76px" }}
+            >
+              <Skeleton height="100%" />
             </div>
           </div>
         </div>
@@ -34,4 +37,4 @@ const InfoBasicasSkeleton: React.FC = () => {
   );
 };
 
-export default InfoBasicasSkeleton; 
+export default InfoBasicasSkeleton;

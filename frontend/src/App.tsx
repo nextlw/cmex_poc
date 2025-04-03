@@ -15,7 +15,6 @@ import { AuthProvider } from "./auth/AuthContext";
 import BuscaPage from "./pages/BuscaPage";
 import ChatPage from "./pages/ChatPage";
 import ConfigPage from "./pages/ConfigPage";
-import { Header } from "./components";
 
 function App() {
   return (

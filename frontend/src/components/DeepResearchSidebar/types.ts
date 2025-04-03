@@ -1,3 +1,5 @@
+import { AtributoNCM } from "../../types/atributos";
+
 /**
  * Interface para as propriedades do componente DeepResearchSidebar
  */
@@ -112,13 +114,13 @@ export interface ResearchStep {
 }
 
 /**
- * Representa um detalhe/evidência encontrada durante a pesquisa
+ * Detalhes de uma pesquisa
  */
 export interface ResearchDetail {
   /**
-   * Tipo do detalhe (link, texto, lei, pergunta)
+   * Tipo de detalhe
    */
-  type: "link" | "text" | "law" | "question";
+  type: "link" | "text" | "law" | "question" | "custom";
 
   /**
    * Conteúdo do detalhe
@@ -126,14 +128,19 @@ export interface ResearchDetail {
   content: string;
 
   /**
-   * Fonte do detalhe (opcional)
+   * Fonte do detalhe
    */
   source?: string;
 
   /**
-   * Momento em que o detalhe foi registrado
+   * Timestamp do detalhe
    */
   timestamp: Date;
+
+  /**
+   * Função para renderização customizada (usado apenas para type="custom")
+   */
+  customRender?: () => React.ReactNode;
 }
 
 /**
@@ -219,6 +226,7 @@ export interface FinalReport {
     importTax?: string;
   };
   attributes?: Record<string, string>;
+  detailed_attributes?: AtributoNCM[];
 }
 
 // Interface para controlar quais campos estão em validação

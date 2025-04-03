@@ -17,6 +17,7 @@ from app.exceptions import *
 from .routes.queries import queries_router
 from .routes.autocomplete import autocomplete_router
 from .routes.queries.sse_stream import sse_router
+from .routes import ncm_attributes
 
 # Serviço Redis
 from app.services.redis_service import (
@@ -26,6 +27,9 @@ from app.services.redis_service import (
     get_query_results,
     publish_ncm_request,
 )
+
+# Serviço de Atributos NCM
+from app.services.ncm_attributes_service import load_attributes_on_startup
 
 # Inicializa uma instância do FastAPI.
 # Todas as rotas com prefixo /api
@@ -55,6 +59,10 @@ app.add_middleware(
 async def startup_event():
     start_redis_listener()
     print("Serviço Redis inicializado com sucesso")
+
+    # Carregar dados de atributos NCM
+    await load_attributes_on_startup()
+    print("Dados de atributos NCM carregados com sucesso")
 
 
 # Middleware para aumentar o timeout das respostas
@@ -174,6 +182,7 @@ async def test_redis_integration(query: str = "Teste de integração"):
 app.include_router(queries_router, prefix=SETTINGS.API_V1_STR)
 app.include_router(autocomplete_router, prefix=SETTINGS.API_V1_STR)
 app.include_router(sse_router, prefix=SETTINGS.API_V1_STR)
+app.include_router(ncm_attributes.router)
 
 # Roda o servidor
 if __name__ == "__main__":

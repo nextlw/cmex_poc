@@ -14,6 +14,7 @@ from .gpt import obter_sugestoes_gpt4
 from .deepseek import obter_sugestoes_deepseek
 from .qwen import obter_sugestoes_qwen
 from ...config import supabase, SETTINGS
+from ...utils.parsers import filtrar_atributos_relevantes_com_llm
 
 # Schemas
 from ...models.error import Erro, ErrorDetail
@@ -126,6 +127,7 @@ async def direct_queries(request: Request):
                                     "cst_entrada": "0",
                                     "cst_saida": "0",
                                 },
+                                "atributos_detalhados": [],
                             }
                         ],
                     )
@@ -133,6 +135,92 @@ async def direct_queries(request: Request):
             # Executa a função de IA
             try:
                 sugestao_ncm = await funcao_escolhida(consulta_produto)
+
+                # Buscar atributos para a NCM sugerida
+                if sugestao_ncm and len(sugestao_ncm) > 0:
+                    for item in sugestao_ncm:
+                        # Pega a descrição da sugestão para usar na filtragem LLM
+                        descricao_sugerida = item.get("descricao", "")
+                        ncm_code = item.get("ncm", "").replace(".", "")
+
+                        atributos_detalhados_completos = []
+
+                        if ncm_code and len(ncm_code) == 8:
+                            try:
+                                # Fazer requisição para o endpoint de atributos
+                                async with httpx.AsyncClient() as client:
+                                    # Corrigir a construção da URL usando a base da requisição
+                                    base_url = str(request.base_url).rstrip("/")
+                                    attributes_url = (
+                                        f"{base_url}/api/v1/ncm/{ncm_code}/attributes"
+                                    )
+                                    print(
+                                        f"[DEBUG] Chamando URL de atributos: {attributes_url}"
+                                    )  # Log para debug
+
+                                    # Obter header de autorização da requisição original
+                                    auth_header = request.headers.get("Authorization")
+                                    headers = (
+                                        {"Authorization": auth_header}
+                                        if auth_header
+                                        else {}
+                                    )
+
+                                    attributes_response = await client.get(
+                                        attributes_url, headers=headers
+                                    )
+
+                                    if attributes_response.status_code == 200:
+                                        # Guarda os atributos detalhados completos
+                                        atributos_detalhados_completos = (
+                                            attributes_response.json()
+                                        )
+                                        print(
+                                            f"[INFO] Atributos completos obtidos para NCM {ncm_code}: {len(atributos_detalhados_completos)} atributos"
+                                        )
+                                    else:
+                                        print(
+                                            f"[WARNING] Falha ao obter atributos para NCM {ncm_code}: {attributes_response.status_code}"
+                                        )
+                                        # Mantém a lista vazia
+                            except Exception as e:
+                                print(
+                                    f"[ERROR] Erro ao buscar atributos para NCM {ncm_code}: {str(e)}"
+                                )
+                                # Adiciona log do stack trace para depuração
+                                import traceback
+
+                                traceback.print_exc()
+                                # Mantém a lista vazia
+
+                        # <-- INÍCIO DA MODIFICAÇÃO: Filtragem com LLM -->
+                        if atributos_detalhados_completos:
+                            print(
+                                f"[INFO] Iniciando filtragem LLM para '{consulta}' com {len(atributos_detalhados_completos)} atributos."
+                            )
+                            # Chama a função para filtrar os atributos usando a descrição da CONSULTA original
+                            atributos_filtrados = (
+                                await filtrar_atributos_relevantes_com_llm(
+                                    consulta,  # Usa a consulta original do usuário
+                                    atributos_detalhados_completos,
+                                )
+                            )
+                            item["atributos_detalhados"] = atributos_filtrados
+                            print(
+                                f"[INFO] Filtragem LLM concluída. {len(atributos_filtrados)} atributos relevantes encontrados."
+                            )
+                        else:
+                            # Se não conseguiu obter atributos, define a chave como lista vazia
+                            item["atributos_detalhados"] = []
+                        # <-- FIM DA MODIFICAÇÃO -->
+
+                else:  # Se sugestao_ncm for vazia ou None
+                    print(
+                        "[WARNING] Nenhuma sugestão de NCM retornada pela função de IA."
+                    )
+                    # Garante que sugestao_ncm seja uma lista vazia para evitar erros posteriores
+                    sugestao_ncm = []
+
             except Exception as e:
                 print(
                     f"[ERROR] Erro ao obter sugestões do modelo {consulta_produto.modelo}: {str(e)}"
@@ -162,6 +250,7 @@ async def direct_queries(request: Request):
                                 "cst_entrada": "0",
                                 "cst_saida": "0",
                             },
+                            "atributos_detalhados": [],
                         }
                     ],
                 )
@@ -243,6 +332,7 @@ async def direct_queries(request: Request):
                             "cst_entrada": "0",
                             "cst_saida": "0",
                         },
+                        "atributos_detalhados": [],
                     }
                 ],
             )
@@ -275,6 +365,7 @@ async def direct_queries(request: Request):
                         "cst_entrada": "0",
                         "cst_saida": "0",
                     },
+                    "atributos_detalhados": [],
                 }
             ],
         )
@@ -329,14 +420,19 @@ async def validar_com_deepresearch(consulta: str, modelo: str, sugestao_ncm: lis
 
             if not request_id:
                 print("[DeepResearch] Falha ao obter requestId")
-                return {
-                    "status": "erro",
-                    "mensagem": "Falha ao iniciar validação DeepResearch",
-                    "sugestao_original": sugestao_ncm,
-                }
+                # Atualiza o status de validação na sugestão original
+                for item in sugestao_ncm:
+                    item["validacao_deepresearch"] = {
+                        "status": "erro",
+                        "mensagem": "Falha ao iniciar validação DeepResearch",
+                        "cor": "cinza",
+                    }
+                return sugestao_ncm  # Retorna a sugestão com o erro de validação
 
             # Adiciona o requestId e status inicial à sugestão
             for item in sugestao_ncm:
+                # Se um NCM alternativo for sugerido pelo DeepResearch posteriormente,
+                # buscaremos os atributos NCM para esse código alternativo
                 item["validacao_deepresearch"] = {
                     "status": "pendente",
                     "mensagem": "Análise em andamento...",
@@ -344,10 +440,16 @@ async def validar_com_deepresearch(consulta: str, modelo: str, sugestao_ncm: lis
                     "cor": "azul",
                 }
 
+                # <-- NÃO busca mais atributos alternativos aqui, pois o SSE vai lidar com isso -->
+
             return sugestao_ncm
 
     except Exception as e:
         print(f"Erro no DeepResearch: {str(e)}")
+        # Adiciona log do stack trace para depuração
+        import traceback
+
+        traceback.print_exc()
         # Em caso de erro, retorna a sugestão original com indicação de erro
         for item in sugestao_ncm:
             item["validacao_deepresearch"] = {
@@ -429,6 +531,80 @@ async def get_task_status(request_id: str, request: Request):
                         response_data["validationStatus"] = task_data[
                             "validationStatus"
                         ]
+
+                    # <-- INÍCIO DA MODIFICAÇÃO: Busca de atributos para NCM alternativo -->
+                    # Se a validação foi concluída e sugeriu um NCM alternativo, busca os atributos
+                    if (
+                        response_data.get("completed")
+                        and response_data.get("validationStatus", {}).get("status")
+                        == "sugestão"
+                        and response_data.get("validationStatus", {}).get(
+                            "ncm_alternativo"
+                        )
+                    ):
+                        ncm_alternativo_code = response_data["validationStatus"][
+                            "ncm_alternativo"
+                        ].replace(".", "")
+                        if len(ncm_alternativo_code) == 8:
+                            try:
+                                # Fazer requisição para o endpoint de atributos para o NCM alternativo
+                                async with httpx.AsyncClient() as attributes_client:
+                                    base_url = str(request.base_url).rstrip("/")
+                                    attributes_url = f"{base_url}/api/v1/ncm/{ncm_alternativo_code}/attributes"
+                                    print(
+                                        f"[DEBUG] Chamando URL de atributos (alternativo via status): {attributes_url}"
+                                    )
+
+                                    # Obter header de autorização da requisição original
+                                    auth_header = request.headers.get("Authorization")
+                                    headers_attr = (
+                                        {"Authorization": auth_header}
+                                        if auth_header
+                                        else {}
+                                    )
+
+                                    attributes_response = await attributes_client.get(
+                                        attributes_url, headers=headers_attr
+                                    )
+
+                                    if attributes_response.status_code == 200:
+                                        # Filtra os atributos alternativos com a LLM usando a descrição original
+                                        atributos_completos_alt = (
+                                            attributes_response.json()
+                                        )
+                                        atributos_filtrados_alt = (
+                                            await filtrar_atributos_relevantes_com_llm(
+                                                task_data.get(
+                                                    "productName", ""
+                                                ),  # Usa productName da task
+                                                atributos_completos_alt,
+                                            )
+                                        )
+                                        response_data["validationStatus"][
+                                            "atributos_detalhados_alternativo"
+                                        ] = atributos_filtrados_alt
+                                        print(
+                                            f"[INFO] Atributos filtrados obtidos para NCM alternativo {ncm_alternativo_code}"
+                                        )
+                                    else:
+                                        print(
+                                            f"[WARNING] Falha ao obter atributos para NCM alternativo {ncm_alternativo_code}: {attributes_response.status_code}"
+                                        )
+                                        response_data["validationStatus"][
+                                            "atributos_detalhados_alternativo"
+                                        ] = []
+                            except Exception as e:
+                                print(
+                                    f"[ERROR] Erro ao buscar/filtrar atributos para NCM alternativo {ncm_alternativo_code}: {str(e)}"
+                                )
+                                response_data["validationStatus"][
+                                    "atributos_detalhados_alternativo"
+                                ] = []
+                        else:
+                            response_data["validationStatus"][
+                                "atributos_detalhados_alternativo"
+                            ] = []
+                    # <-- FIM DA MODIFICAÇÃO -->
 
                     # Retorna a resposta com cabeçalhos CORS
                     return JSONResponse(content=response_data, headers=headers)

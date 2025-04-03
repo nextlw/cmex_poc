@@ -21,11 +21,15 @@ import {
   FaFile,
   FaLightbulb,
   FaExclamationTriangle,
+  FaClipboardCheck,
 } from "react-icons/fa";
 // import clsx from "clsx";
 import { useSession } from "../../auth/SessionContext";
 import AIReasoningSteps from "../ai-reasoning-steps";
 import type { ReasoningStep } from "../ai-reasoning-steps";
+import TagAtributo from "../TagAtributo";
+import { AtributoNCM } from "../../types/atributos";
+import TabelaAtributosNCM from "../TabelaAtributosNCM";
 
 // Mensagens pré-definidas para cada etapa do processo
 const PROGRESS_MESSAGES = [
@@ -165,6 +169,66 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
 
   // Referência para o EventSource
   const eventSourceRef = useRef<EventSource | null>(null);
+
+  // Nova fila para gerenciar a exibição do raciocínio com efeito de escrita
+  const [reasoningQueue, setReasoningQueue] = useState<string[]>([]);
+  const [displayedReasoning, setDisplayedReasoning] = useState<string>("");
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const reasoningContainerRef = useRef<HTMLDivElement>(null);
+
+  // Efeito para processar a fila de raciocínio e criar o efeito de "digitação"
+  useEffect(() => {
+    // Se não temos itens na fila ou já estamos digitando, não fazer nada
+    if (reasoningQueue.length === 0 || isTyping) return;
+
+    // Pegar o próximo item da fila
+    const nextReasoning = reasoningQueue[0];
+    const newQueue = reasoningQueue.slice(1);
+    setReasoningQueue(newQueue);
+
+    // Iniciar o efeito de digitação
+    setIsTyping(true);
+    let index = 0;
+    const text = nextReasoning;
+    let currentText = "";
+
+    const typingInterval = setInterval(() => {
+      if (index < text.length) {
+        currentText += text[index];
+        setDisplayedReasoning(currentText);
+        index++;
+
+        // Rolagem automática para acompanhar o texto sendo digitado
+        if (reasoningContainerRef.current) {
+          reasoningContainerRef.current.scrollTop =
+            reasoningContainerRef.current.scrollHeight;
+        }
+      } else {
+        clearInterval(typingInterval);
+        setIsTyping(false);
+
+        // Adicionar o texto completo ao estado de raciocínio atual
+        setCurrentReasoning((prev) => [...prev, text]);
+
+        // Atualizar também o passo atual para mostrar este raciocínio
+        const updatedSteps = [...steps];
+        const currentStepObj = updatedSteps[currentStepIndex];
+        if (currentStepObj) {
+          if (!currentStepObj.details) currentStepObj.details = [];
+          currentStepObj.details.push({
+            type: "text",
+            content: text,
+            source: "Raciocínio IA",
+            timestamp: new Date(),
+          });
+          setSteps(updatedSteps);
+        }
+      }
+    }, 15); // Velocidade da digitação - ajuste conforme necessário
+
+    // Limpar o intervalo quando o componente for desmontado
+    return () => clearInterval(typingInterval);
+  }, [reasoningQueue, isTyping, steps, currentStepIndex]);
 
   // Efeito para sincronizar o estado de processamento com o InputAI
   useEffect(() => {
@@ -306,21 +370,8 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         const thinkingContent = extractThinkingContent(data);
         if (thinkingContent) {
           console.log("Dados de raciocínio extraídos:", thinkingContent);
-          setCurrentReasoning((prev) => [...prev, thinkingContent]);
-
-          // Atualizar também o passo atual para mostrar este raciocínio
-          const updatedSteps = [...steps];
-          const currentStepObj = updatedSteps[currentStepIndex];
-          if (currentStepObj) {
-            if (!currentStepObj.details) currentStepObj.details = [];
-            currentStepObj.details.push({
-              type: "text",
-              content: thinkingContent,
-              source: "Raciocínio IA",
-              timestamp: new Date(),
-            });
-            setSteps(updatedSteps);
-          }
+          // Em vez de atualizar diretamente o estado, adicionamos à fila
+          setReasoningQueue((prev) => [...prev, thinkingContent]);
         }
 
         handleStatusUpdate(data);
@@ -342,21 +393,8 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
             "Dados de raciocínio extraídos do UPDATE:",
             thinkingContent
           );
-          setCurrentReasoning((prev) => [...prev, thinkingContent]);
-
-          // Atualizar também o passo atual para mostrar este raciocínio
-          const updatedSteps = [...steps];
-          const currentStepObj = updatedSteps[currentStepIndex];
-          if (currentStepObj) {
-            if (!currentStepObj.details) currentStepObj.details = [];
-            currentStepObj.details.push({
-              type: "text",
-              content: thinkingContent,
-              source: "Raciocínio IA",
-              timestamp: new Date(),
-            });
-            setSteps(updatedSteps);
-          }
+          // Em vez de atualizar diretamente o estado, adicionamos à fila
+          setReasoningQueue((prev) => [...prev, thinkingContent]);
         }
 
         handleStatusUpdate(data);
@@ -387,16 +425,16 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         setSidebarStatus("completed");
         setIsLoading(false);
 
-        // Chama o callback para notificar a HomePage
-        if (onProcessComplete) {
-          onProcessComplete();
-        }
-
-        // Limpar a conexão SSE
+        // Apenas fechamos a conexão SSE - não chamamos onProcessComplete aqui
+        // O onProcessComplete será chamado após handleCompletedProcess verificar os dados
         if (eventSourceRef.current) {
           eventSourceRef.current.close();
           eventSourceRef.current = null;
         }
+
+        // Chamar handleCompletedProcess com os dados recebidos
+        // Este método vai checar os dados antes de chamar onProcessComplete
+        handleCompletedProcess(currentStepIndex, data);
       } catch (error) {
         console.error("Erro ao processar evento complete:", error);
       }
@@ -439,22 +477,8 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
             "Analisando o produto para validar o NCM informado. Consultando bases oficiais...",
         };
 
-        // Atualizar o passo atual com o raciocínio mock
-        const updatedSteps = [...steps];
-        const currentStepObj = updatedSteps[currentStepIndex];
-        if (currentStepObj) {
-          if (!currentStepObj.details) currentStepObj.details = [];
-          currentStepObj.details.push({
-            type: "text",
-            content: mockData.think,
-            source: "Raciocínio IA (dados simulados)",
-            timestamp: new Date(),
-          });
-          setSteps(updatedSteps);
-        }
-
-        // Atualizar o estado de raciocínio
-        setCurrentReasoning([mockData.think]);
+        // Adicionar à fila de raciocínio para criar efeito de escrita
+        setReasoningQueue((prev) => [...prev, mockData.think]);
       }
     }, 5000);
 
@@ -604,10 +628,8 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
       setSidebarStatus("completed");
       setIsLoading(false);
 
-      // Chama o callback para notificar a HomePage
-      if (onProcessComplete) {
-        onProcessComplete();
-      }
+      // Não chamamos onProcessComplete diretamente aqui
+      // Em vez disso, deixamos isso para handleCompletedProcess
 
       // Exibição do relatório final e outras ações de conclusão
       handleCompletedProcess(step, data);
@@ -788,14 +810,17 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
           </div>
 
           <div className="conclusion-section">
-            <h3>
-              Conclusão da Análise
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <FaClipboardCheck /> Conclusão da Análise
               {validationStatus.conclusion && (
-                <span className="validation-spinner"></span>
+                <span className="bg-green-100 text-green-800 text-xs px-1.5 py-0.5 rounded-full">
+                  Validado
+                </span>
               )}
-            </h3>
+            </h2>
             <p>{finalReport.conclusion}</p>
           </div>
+          {renderAttributeTags()}
 
           <div className="evidences-section">
             <h3>Evidências Principais</h3>
@@ -955,6 +980,110 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
       (info) => info.type !== "question"
     );
 
+    // Processar os atributos detalhados, se disponíveis
+    const detailedAttributes =
+      data.detailed_attributes || data.atributos_detalhados || [];
+
+    // Mapear os atributos para o formato esperado pelo componente TabelaAtributosNCM
+    const formattedAttributes = Array.isArray(detailedAttributes)
+      ? detailedAttributes.map((attr) => {
+          // Verificar se o atributo já está no formato esperado
+          if (attr.codigo && attr.nome && attr.modalidade) {
+            return {
+              ...attr,
+              // Garantir que modalidade esteja em maiúsculas e seja um valor válido
+              modalidade:
+                attr.modalidade?.toUpperCase() === "IMPORTACAO"
+                  ? "IMPORTACAO"
+                  : attr.modalidade?.toUpperCase() === "EXPORTACAO"
+                  ? "EXPORTACAO"
+                  : "AMBOS",
+              // Garantir que formaPreenchimento esteja em maiúsculas e seja um valor válido
+              formaPreenchimento: [
+                "LISTA_ESTATICA",
+                "LISTA_DINAMICA",
+                "LISTA_TABX_FILTRO",
+                "BOOLEANO",
+                "TEXTO",
+                "NUMERO_INTEIRO",
+                "NUMERO_REAL",
+                "DATA",
+                "DATA_HORA",
+                "DOMINIO_DINAMICO",
+                "COMPOSTO",
+              ].includes(attr.formaPreenchimento?.toUpperCase())
+                ? attr.formaPreenchimento?.toUpperCase()
+                : "TEXTO",
+              // Garantir que obrigatorio seja um booleano
+              obrigatorio: !!attr.obrigatorio,
+              // Garantir que todos os campos opcionais estejam presentes
+              orientacaoPreenchimento: attr.orientacaoPreenchimento || "",
+              tamanhoMaximo: attr.tamanhoMaximo || null,
+              mascara: attr.mascara || null,
+              casasDecimais: attr.casasDecimais || null,
+              informacaoAdicional: attr.informacaoAdicional || "",
+              dataInicioVigencia: attr.dataInicioVigencia || null,
+              dataFimVigencia: attr.dataFimVigencia || null,
+              // Garantir que campos de arrays estejam presentes
+              dominio: Array.isArray(attr.dominio) ? attr.dominio : [],
+              objetivos: Array.isArray(attr.objetivos) ? attr.objetivos : [],
+              orgaos: Array.isArray(attr.orgaos) ? attr.orgaos : [],
+              // Garantir que campos booleanos estejam presentes
+              atributoCondicionante: !!attr.atributoCondicionante,
+              multivalorado: !!attr.multivalorado,
+              // Se nomeApresentacao não estiver presente, usar o nome
+              nomeApresentacao: attr.nomeApresentacao || attr.nome || "",
+            };
+          }
+
+          // Se não estiver no formato esperado, tentar converter
+          return {
+            codigo: attr.codigo || attr.code || "",
+            nome: attr.nome || attr.name || "",
+            nomeApresentacao:
+              attr.nomeApresentacao || attr.presentationName || attr.nome || "",
+            modalidade:
+              attr.modalidade === "IMPORTACAO" ||
+              attr.modalidade === "EXPORTACAO"
+                ? attr.modalidade
+                : "AMBOS",
+            formaPreenchimento: [
+              "LISTA_ESTATICA",
+              "LISTA_DINAMICA",
+              "LISTA_TABX_FILTRO",
+              "BOOLEANO",
+              "TEXTO",
+              "NUMERO_INTEIRO",
+              "NUMERO_REAL",
+              "DATA",
+              "DATA_HORA",
+              "DOMINIO_DINAMICO",
+              "COMPOSTO",
+            ].includes(attr.formaPreenchimento?.toUpperCase())
+              ? attr.formaPreenchimento?.toUpperCase()
+              : "TEXTO",
+            obrigatorio: !!attr.obrigatorio,
+            orientacaoPreenchimento: attr.orientacaoPreenchimento || "",
+            tamanhoMaximo: attr.tamanhoMaximo || null,
+            mascara: attr.mascara || null,
+            casasDecimais: attr.casasDecimais || null,
+            informacaoAdicional: attr.informacaoAdicional || "",
+            dataInicioVigencia: attr.dataInicioVigencia || null,
+            dataFimVigencia: attr.dataFimVigencia || null,
+            dominio: Array.isArray(attr.dominio) ? attr.dominio : [],
+            objetivos: Array.isArray(attr.objetivos) ? attr.objetivos : [],
+            orgaos: Array.isArray(attr.orgaos) ? attr.orgaos : [],
+            atributoCondicionante: !!attr.atributoCondicionante,
+            multivalorado: !!attr.multivalorado,
+          };
+        })
+      : [];
+
+    console.log(
+      "Atributos formatados para o relatório final:",
+      formattedAttributes
+    );
+
     // Exemplo de construção do relatório final
     const report: FinalReport = {
       conclusion: `Após análise detalhada, concluímos que o produto "${productName}" está corretamente classificado com o NCM ${
@@ -991,23 +1120,32 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         icms: "Conforme regulamentação estadual",
         pis: "Regime normal",
         cofins: "Regime normal",
-        importTax: "Consultar tabela vigente",
       },
       attributes: data.attributes || {},
+      detailed_attributes: formattedAttributes,
     };
 
     setFinalReport(report);
-    // Não redefine o modo de visualização para permitir que o usuário escolha qual visualização ver
-    // setShowDetailedSteps(false);
 
-    // Define todos os estados de validação como concluídos
-    setValidationStatus({
-      ncmCode: false,
-      ncmDescription: false,
-      taxationDetails: false,
-      attributes: false,
-      conclusion: false,
-    });
+    // Verificar se todos os dados necessários foram carregados
+    if (
+      report &&
+      report.ncmCode &&
+      report.ncmDescription &&
+      Object.keys(report.taxationDetails || {}).length > 0
+    ) {
+      console.log(
+        "Todos os dados necessários foram carregados, finalizando loading..."
+      );
+      // Só chamar onProcessComplete quando todos os dados estiverem prontos
+      if (onProcessComplete) {
+        onProcessComplete();
+      }
+    } else {
+      console.log(
+        "Dados incompletos, aguardando mais dados antes de finalizar loading..."
+      );
+    }
   };
 
   // Helper function to map DeepResearchStep to AIReasoningStep
@@ -1040,6 +1178,24 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
           source: "AI Reasoning",
           timestamp: new Date(), // adicionando timestamp necessário
         });
+      });
+    }
+
+    // Adicionar o componente de raciocínio em tempo real se for o passo atual
+    if (step.id === currentProcessingId && processingState) {
+      details.push({
+        type: "custom",
+        content: `<LiveReasoningComponent>`,
+        source: "Raciocínio em tempo real",
+        timestamp: new Date(),
+        customRender: () => (
+          <div className="live-reasoning-container">
+            <div ref={reasoningContainerRef} className="live-reasoning-content">
+              {displayedReasoning}
+              <span className="typing-cursor"></span>
+            </div>
+          </div>
+        ),
       });
     }
 
@@ -1207,11 +1363,15 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
                     </svg>
                   )}
 
-                  <span className="deep-research-detail-text">
-                    {detail.content}
-                  </span>
+                  {detail.type === "custom" && detail.customRender ? (
+                    detail.customRender()
+                  ) : (
+                    <span className="deep-research-detail-text">
+                      {detail.content}
+                    </span>
+                  )}
                 </div>
-                {detail.source && (
+                {detail.source && detail.type !== "custom" && (
                   <div className="deep-research-detail-source">
                     {detail.source}
                   </div>
@@ -1226,6 +1386,24 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
 
   // Determine the overall processing state *once*
   const isCurrentlyProcessing = isLoading || sidebarStatus === "processing";
+
+  // Adicione esta função dentro do componente DeepResearchSidebar, antes do return
+  const renderAttributeTags = () => {
+    if (!finalReport?.detailed_attributes?.length) {
+      return null;
+    }
+
+    return (
+      <div className="attributes-container my-4">
+        <h3 className="text-xl font-semibold mb-2">Atributos NCM</h3>
+        <TabelaAtributosNCM
+          atributos={finalReport.detailed_attributes}
+          isLoading={false}
+          error={null}
+        />
+      </div>
+    );
+  };
 
   // Retorna a estrutura visual do componente
   return (

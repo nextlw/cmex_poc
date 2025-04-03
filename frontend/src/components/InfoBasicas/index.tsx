@@ -11,13 +11,13 @@ const InfoBasicas: React.FC<InfoBasicasProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="info-bas">
+      <div className="info-bas h-full">
         <div className="flex items-center gap-2 mb-4">
           <BsInfoCircle />
           <h3 className="text-xl font-semibold">Informações Básicas</h3>
         </div>
         <hr className="border-[var(--color-border-hr)] my-4" />
-        <div className="space-y-4">
+        <div className="space-y-4 flex-grow">
           <div>
             <div className="text-gray-300 font-medium mb-2">NCM</div>
             <Skeleton height="24px" />
@@ -32,18 +32,18 @@ const InfoBasicas: React.FC<InfoBasicasProps> = ({
   }
 
   return (
-    <div className="info-bas">
+    <div className="info-bas h-full flex flex-col">
       <div className="flex items-center gap-2 mb-4">
         <BsInfoCircle />
         <h3 className="text-xl font-semibold">Informações Básicas</h3>
       </div>
       <hr className="border-[var(--color-border-hr)] my-4" />
-      <div className="space-y-4">
+      <div className="space-y-4 flex-grow">
         <div>
           <div className="text-gray-300 font-medium mb-2">NCM</div>
           <div>{ncm || "—"}</div>
         </div>
-        <div>
+        <div className="flex-grow">
           <div className="text-gray-300 font-medium mb-2">Descrição</div>
           <div>{descricao || "—"}</div>
         </div>

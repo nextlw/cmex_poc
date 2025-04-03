@@ -1,0 +1,309 @@
+.tabela-atributos-container {
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--background-color-secondary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--pd-sm);
+  color: var(--text-color-primary);
+  border: 1px solid var(--border-color-primary);
+  height: auto;
+  min-height: auto;
+}
+
+.tabela-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Habilita scroll horizontal */
+  border-radius: var(--border-radius-md);
+  height: auto !important;
+  max-height: fit-content;
+}
+
+/* Estilização do scrollbar para o wrapper */
+.tabela-wrapper::-webkit-scrollbar {
+  height: auto;
+}
+
+.tabela-wrapper::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color);
+  border-radius: var(--border-radius-sm);
+}
+
+.tabela-wrapper::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color);
+  border-radius: var(--border-radius-sm);
+}
+
+.tabela-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover-color);
+}
+
+/* Estilos específicos para a tabela e seus elementos internos */
+.tabela-atributos {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  color: var(--text-color-primary);
+  background-color: transparent; /* Tabela em si transparente, container tem a cor */
+  table-layout: auto; /* Alterado de fixed para auto para melhor distribuição */
+}
+
+/* Cabeçalho da tabela */
+.tabela-atributos thead {
+  width: 100%;
+  height: 48px;
+}
+
+.tabela-atributos thead tr {
+  background-color: var(--background-color-tertiary);
+  width: 100%;
+  min-width: var(--sp-md);
+  height: 48px;
+}
+
+.tabela-atributos th {
+  background-color: var(--background-color-secondary);
+  font-weight: 600;
+  color: var(--text-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  white-space: nowrap; /* Garante que o texto nunca quebre */
+  padding: var(--pd-sm); /* Adicionado padding para evitar sobreposição */
+  text-align: left; /* Alinhamento à esquerda para consistência */
+  vertical-align: middle; /* Centralização vertical */
+  height: 48px; /* Altura explícita igual às outras células */
+}
+
+/* Adicionar estilos específicos para cada coluna th */
+.tabela-atributos th.col-codigo,
+.tabela-atributos th.col-apresentacao,
+.tabela-atributos th.col-orientacao,
+.tabela-atributos th.col-preenchimento,
+.tabela-atributos th.col-obrigatorio {
+  width: auto;
+  text-align: left;
+  padding: var(--pd-sm);
+  white-space: nowrap;
+}
+
+/* Larguras mínimas específicas para cada coluna de cabeçalho */
+.tabela-atributos th.col-codigo {
+  min-width: 80px;
+}
+
+.tabela-atributos th.col-apresentacao {
+  min-width: 120px;
+}
+
+.tabela-atributos th.col-orientacao {
+  min-width: 100px;
+}
+
+.tabela-atributos th.col-preenchimento {
+  min-width: 130px;
+}
+
+.tabela-atributos th.col-obrigatorio {
+  min-width: 90px;
+}
+
+/* Células da tabela */
+.tabela-atributos td {
+  padding: var(--pd-sm); /* Garantindo o padding */
+  border-bottom: 1px solid var(--border-color-secondary);
+  font-size: var(--font-size-sm);
+  height: 48px; /* Altura fixa para todas as células (igual ao cabeçalho) */
+}
+
+/* Remove a borda inferior da última linha */
+.tabela-atributos tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Hover na linha */
+.tabela-atributos tbody tr:hover {
+  background-color: var(--background-color-hover);
+  transition: background-color 0.2s ease;
+}
+
+/* Largura e alinhamento das colunas - aplicável a th e td */
+.col-codigo {
+  width: auto;
+  min-width: 80px; /* Mínimo para evitar compressão */
+}
+
+.col-apresentacao {
+  width: auto;
+  min-width: 120px; /* Largura mínima para "Apresentação" + padding */
+}
+
+.col-orientacao {
+  width: auto;
+  min-width: 100px; /* Largura mínima para "Orientação" + padding */
+}
+
+.col-preenchimento {
+  width: auto;
+  min-width: 130px; /* Largura mínima para "Preenchimento" + padding */
+}
+
+.col-obrigatorio {
+  width: auto;
+  min-width: 90px; /* Reduzida de 100px para 90px para "Obr" + padding */
+}
+
+/* Estilos específicos para células de dados */
+.tabela-atributos td.col-codigo {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+}
+
+.tabela-atributos td.col-preenchimento,
+.tabela-atributos td.col-obrigatorio {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+}
+
+/* Truncate para textos longos na coluna de orientação */
+.tabela-atributos .col-orientacao .orientacao-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Não quebra a linha */
+  max-height: var(--sp-md); /* Ajuste aproximado para 2 linhas */
+  line-height: var(--sp-sm);
+  cursor: help; /* Indica que há mais texto */
+}
+
+/* Ícones dentro da tabela */
+.tabela-atributos .icon-container {
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  flex-shrink: 0; /* Evita que ícones encolham */
+}
+
+.tabela-atributos .importacao {
+  color: var(--color-primary);
+}
+.tabela-atributos .exportacao {
+  color: var(--color-success);
+}
+.tabela-atributos .ambos {
+  color: var(--color-primary);
+}
+.tabela-atributos .lista {
+  color: var(--color-success);
+}
+.tabela-atributos .booleano {
+  color: var(--color-primary);
+}
+.tabela-atributos .texto {
+  color: var(--color-text-gray-400);
+}
+.tabela-atributos .numero {
+  color: var(--color-primary);
+}
+.tabela-atributos .data {
+  color: var(--color-primary);
+}
+.tabela-atributos .obrigatorio {
+  color: var(--color-error);
+}
+.tabela-atributos .opcional {
+  color: var(--color-success);
+}
+
+/* Estados de Loading, Erro e Vazio (dentro do container) */
+.tabela-atributos-container .loading,
+.tabela-atributos-container .error,
+.tabela-atributos-container .empty {
+  padding: var(--pd-md);
+  text-align: center;
+  font-style: italic;
+}
+
+.tabela-atributos-container .loading {
+  color: var(--text-color-muted);
+}
+.tabela-atributos-container .error {
+  color: var(--color-error);
+}
+.tabela-atributos-container .empty {
+  color: var(--text-color-muted);
+}
+
+/* Estilo para a tabela vazia */
+.tabela-vazia {
+  width: 100%;
+  table-layout: auto;
+}
+
+.tabela-vazia tbody tr:first-child td {
+  text-align: center;
+  padding: var(--pd-sm);
+  background-color: var(--background-color-tertiary);
+  border: none;
+}
+
+.tabela-vazia thead {
+  /* Mantém o cabeçalho visível mas sem interatividade */
+  opacity: 0.8;
+}
+
+/* Garante que os cabeçalhos da tabela vazia usem os mesmos estilos */
+.tabela-vazia th {
+  padding: var(--pd-sm);
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: middle;
+  height: 48px;
+}
+
+.empty-table-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  color: var(--color-text-gray-400);
+  padding: var(--pd-sm) 0;
+}
+
+.empty-table-state svg {
+  opacity: 0.5;
+  width: auto;
+  height: 60px;
+}
+
+.empty-table-state p {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Estilo específico para a célula contendo EmptyTableState para reduzir sua altura */
+.tabela-vazia tbody tr td {
+  height: auto !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+/* Definir altura máxima para o container quando vazio */
+.tabela-atributos-container:has(.tabela-vazia) {
+  max-height: fit-content;
+}
+
+/* Alternativa para navegadores sem suporte para :has() */
+.tabela-vazia-container {
+  max-height: fit-content !important;
+}
+
+/* Remover classes que podem estar forçando altura */
+.tabela-atributos-container.h-full {
+  height: auto !important;
+  min-height: auto !important;
+}

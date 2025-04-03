@@ -13,6 +13,7 @@
   background-color: var(--color-info-basicas-background);
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
   width: 100%;
+  height: 100%; /* Garantir que ocupe 100% da altura do contêiner pai */
 }
 
 .info-basicas-row {
@@ -36,7 +37,6 @@
     min-width: 100%;
   }
 }
-
 
 .text-xl {
   font-size: 1.25rem;

@@ -1,4 +1,6 @@
+import { AtributoNCM } from "../../types/atributos";
+
 export interface TagAtributoProps {
-  atributo: string;
-  onRemove: (atributo: string) => void;
+  attribute: AtributoNCM;
+  onRemove?: (codigo: string) => void;
 }

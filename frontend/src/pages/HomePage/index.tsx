@@ -40,81 +40,53 @@ import {
 // Define o componente HomePage como um componente funcional React
 const HomePage: React.FC = () => {
   // Recupera o estado inicial do localStorage ou usa o valor padrão
-  const [pesquisa, setPesquisa] = useState(() => {
-    const saved = localStorage.getItem("lastSearch");
-    return saved ? JSON.parse(saved) : "";
-  });
+  const [pesquisa, setPesquisa] = useState("");
 
-  const [selectedModel, setSelectedModel] = useState<string | null>(() => {
-    const saved = localStorage.getItem("selectedModel");
-    return saved ? JSON.parse(saved) : "Nex-0.5-Preview-2025";
-  });
+  const [selectedModel, setSelectedModel] = useState<string | null>(
+    "Nex-0.5-Preview-2025"
+  );
 
   const [dropdownSelection, setDropdownSelection] =
-    useState<SelectionData | null>(() => {
-      const saved = localStorage.getItem("dropdownSelection");
-      return saved ? JSON.parse(saved) : null;
-    });
+    useState<SelectionData | null>(null);
 
-  const [sugerirNCM, setSugerirNCM] = useState<SugerirNCM[]>(() => {
-    const saved = localStorage.getItem("sugerirNCM");
-    return saved
-      ? JSON.parse(saved)
-      : [
-          {
-            ncm: "",
-            descricao: "",
-            atributos: [],
-            classificacao_tributaria: {
-              ipi_entrada: "",
-              ipi_saida: "",
-              pis_entrada: "",
-              pis_saida: "",
-              cofins_entrada: "",
-              cofins_saida: "",
-              cst_entrada: "",
-              cst_saida: "",
-            },
-            valores_de_impostos: {
-              ipi: "",
-              icms: {},
-              pis: "",
-              cofins: "",
-            },
-            requestId: undefined,
-          },
-        ];
-  });
+  const [sugerirNCM, setSugerirNCM] = useState<SugerirNCM[]>([
+    {
+      ncm: "",
+      descricao: "",
+      atributos: [],
+      classificacao_tributaria: {
+        ipi_entrada: "",
+        ipi_saida: "",
+        pis_entrada: "",
+        pis_saida: "",
+        cofins_entrada: "",
+        cofins_saida: "",
+        cst_entrada: "",
+        cst_saida: "",
+      },
+      valores_de_impostos: {
+        ipi: "",
+        icms: {},
+        pis: "",
+        cofins: "",
+      },
+      requestId: undefined,
+    },
+  ]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [buscarValor, setBuscarValor] = useState("");
   const [isTabelaICMSOpen, setIsTabelaICMSOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const [useDeepResearch, setUseDeepResearch] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem("useDeepResearch");
-      // Se não existir valor no localStorage ou se o valor for null/undefined, retorna false
-      return saved ? JSON.parse(saved) : false;
-    } catch {
-      // Se houver qualquer erro ao ler do localStorage, retorna false
-      return false;
-    }
-  });
+  const [useDeepResearch, setUseDeepResearch] = useState<boolean>(false);
 
   const [deepResearchRequestId, setDeepResearchRequestId] = useState<
     string | null
-  >(() => {
-    const saved = localStorage.getItem("deepResearchRequestId");
-    return saved ? JSON.parse(saved) : null;
-  });
+  >(null);
 
-  const [isDeepResearchProcessing, setIsDeepResearchProcessing] = useState(
-    () => {
-      const saved = localStorage.getItem("isDeepResearchProcessing");
-      return saved ? JSON.parse(saved) : false;
-    }
-  );
+  const [isDeepResearchProcessing, setIsDeepResearchProcessing] =
+    useState(false);
 
   const [showDeepResearchSidebar, setShowDeepResearchSidebar] = useState(false);
 
@@ -124,44 +96,6 @@ const HomePage: React.FC = () => {
   const [infoBasicasLoading, setInfoBasicasLoading] = useState(false);
   const [atributosLoading, setAtributosLoading] = useState(false);
   const [tributacaoLoading, setTributacaoLoading] = useState(false);
-
-  // Salva os estados no localStorage quando mudam
-  useEffect(() => {
-    localStorage.setItem("lastSearch", JSON.stringify(pesquisa));
-  }, [pesquisa]);
-
-  useEffect(() => {
-    localStorage.setItem("selectedModel", JSON.stringify(selectedModel));
-  }, [selectedModel]);
-
-  useEffect(() => {
-    localStorage.setItem(
-      "dropdownSelection",
-      JSON.stringify(dropdownSelection)
-    );
-  }, [dropdownSelection]);
-
-  useEffect(() => {
-    localStorage.setItem("sugerirNCM", JSON.stringify(sugerirNCM));
-  }, [sugerirNCM]);
-
-  useEffect(() => {
-    localStorage.setItem("useDeepResearch", JSON.stringify(useDeepResearch));
-  }, [useDeepResearch]);
-
-  useEffect(() => {
-    localStorage.setItem(
-      "deepResearchRequestId",
-      JSON.stringify(deepResearchRequestId)
-    );
-  }, [deepResearchRequestId]);
-
-  useEffect(() => {
-    localStorage.setItem(
-      "isDeepResearchProcessing",
-      JSON.stringify(isDeepResearchProcessing)
-    );
-  }, [isDeepResearchProcessing]);
 
   // Efeito para verificar o status do DeepResearch quando o requestId muda
   useEffect(() => {
@@ -369,8 +303,6 @@ const HomePage: React.FC = () => {
         );
         setSugerirNCM(normalizedData.result);
 
-        const initialValidationStatus = normalizedData.validationStatus;
-
         if (useDeepResearch) {
           // MODO DEEP RESEARCH ATIVO:
           // Manter TODOS os loadings ativos, eles serão desativados pelo onProcessComplete
@@ -390,11 +322,11 @@ const HomePage: React.FC = () => {
           // MODO DEEP RESEARCH INATIVO:
           // Desativar loadings com base na resposta inicial (que é a final neste caso)
           setInputAiLoading(false);
-          setInfoBasicasLoading(
-            !initialValidationStatus?.infoBasicas?.validated
-          );
-          setAtributosLoading(!initialValidationStatus?.atributos?.validated);
-          setTributacaoLoading(!initialValidationStatus?.tributacao?.validated);
+
+          // CORREÇÃO: Desativar loadings incondicionalmente pois a resposta é final
+          setInfoBasicasLoading(false);
+          setAtributosLoading(false);
+          setTributacaoLoading(false);
 
           // Garantir que a sidebar e o estado de processamento estejam desativados
           setIsDeepResearchProcessing(false);
@@ -599,12 +531,42 @@ const HomePage: React.FC = () => {
           isProcessing={isDeepResearchProcessing}
           onCancelRequest={handleCancelDeepResearch}
           onProcessComplete={() => {
-            console.log("DeepResearch concluído - Desativando loadings.");
-            setInputAiLoading(false);
-            setInfoBasicasLoading(false);
-            setAtributosLoading(false);
-            setTributacaoLoading(false);
-            setIsDeepResearchProcessing(false); // Também desativa o estado de processamento
+            console.log(
+              "DeepResearch concluído - Verificando dados antes de desativar loadings."
+            );
+
+            // Verificar se temos dados completos antes de desativar o loading
+            if (
+              sugerirNCM.length > 0 &&
+              sugerirNCM[0].ncm &&
+              sugerirNCM[0].descricao &&
+              ((sugerirNCM[0].atributos &&
+                sugerirNCM[0].atributos.length > 0) ||
+                ((sugerirNCM[0] as any).atributos_detalhados &&
+                  (sugerirNCM[0] as any).atributos_detalhados.length > 0)) &&
+              sugerirNCM[0].classificacao_tributaria
+            ) {
+              console.log("Dados completos encontrados, desativando loadings");
+              // Dados completos, podemos desativar o loading
+              setInputAiLoading(false);
+              setInfoBasicasLoading(false);
+              setAtributosLoading(false);
+              setTributacaoLoading(false);
+            } else {
+              console.log(
+                "Dados incompletos, aguardando 1.5 segundos antes de desativar loadings"
+              );
+              // Dados incompletos, aguardar um pouco mais
+              setTimeout(() => {
+                console.log("Tempo de espera concluído, desativando loadings");
+                setInputAiLoading(false);
+                setInfoBasicasLoading(false);
+                setAtributosLoading(false);
+                setTributacaoLoading(false);
+              }, 1500); // Aguardar 1.5 segundos
+            }
+
+            setIsDeepResearchProcessing(false); // Desativar o estado de processamento
           }}
         />
       )}
@@ -708,7 +670,7 @@ const HomePage: React.FC = () => {
                           {/* ... código comentado ... */}
 
                           {/* Componente de Informações Básicas */}
-                          <div className="col-span-12 md:col-span-6 page-item">
+                          <div className="col-span-12 md:col-span-6 page-item h-full">
                             {infoBasicasLoading ? (
                               <InfoBasicasSkeleton />
                             ) : (
@@ -720,7 +682,7 @@ const HomePage: React.FC = () => {
                           </div>
 
                           {/* Componente de Atributos */}
-                          <div className="col-span-12 md:col-span-6 page-item">
+                          <div className="col-span-12 md:col-span-6 page-item h-full">
                             {atributosLoading ? (
                               <AtributosSkeleton />
                             ) : (
