@@ -11,6 +11,7 @@ import { TokenTracker } from "../utils/token-tracker";
 import { StepResult, ResearchContext } from "../modules/deepResearch";
 import { DeepResearch } from "../modules/deepResearch";
 import { SchemaType } from "@google/generative-ai";
+import fs from "fs/promises";
 
 // Interface personalizada para estender o Request do Express
 interface CustomRequest extends Request {
@@ -78,37 +79,95 @@ abstract class BaseDeepResearch extends DeepResearch {
   /**
    * Valida e processa a resposta do modelo
    */
-  protected processModelResponse(rawContent: string): StepResult {
+  protected async processModelResponse(
+    rawContent: string
+  ): Promise<StepResult> {
+    // Log detalhado da resposta bruta antes do processamento
+    try {
+      const logMessage = `[${new Date().toISOString()}] processModelResponse received rawContent:
+${rawContent}
+---
+`;
+      await fs.appendFile("deep_research_debug.log", logMessage);
+    } catch (logError) {
+      console.error("Erro ao escrever no log de depuração:", logError);
+      // Não interrompe o fluxo principal se o log falhar
+    }
+
     try {
       const jsonContent = this.extractLastJSON(rawContent);
       let content = JSON.parse(jsonContent);
 
       // Normaliza a ação se necessário
       if (content.action) {
-        const normalizedAction = this.normalizeAction(content.action);
-        if (normalizedAction !== content.action) {
-          console.log(
-            `Normalizando ação de "${content.action}" para "${normalizedAction}"`
+        // Verificar se action é uma string antes de chamar toLowerCase
+        if (typeof content.action !== "string") {
+          console.warn(
+            `[${new Date().toISOString()}] Ação recebida não é uma string: ${JSON.stringify(
+              content.action
+            )}`
           );
-          content.action = normalizedAction;
+          // Lógica de fallback segura - poderia ser ajustada se necessário
+          // Tentativa de normalizar mesmo assim, ou definir um padrão
+          try {
+            const normalizedAction = this.normalizeAction(
+              String(content.action)
+            ); // Tenta converter para string
+            if (normalizedAction !== String(content.action)) {
+              console.log(
+                `Normalizando ação (convertida) de "${String(
+                  content.action
+                )}" para "${normalizedAction}"`
+              );
+              content.action = normalizedAction;
+            }
+          } catch (normalizationError) {
+            console.error(
+              "Erro ao tentar normalizar ação não-string:",
+              normalizationError
+            );
+            content.action = "search"; // Define um padrão seguro em caso de falha total
+          }
+        } else {
+          // Processamento normal para string
+          const normalizedAction = this.normalizeAction(content.action);
+          if (normalizedAction !== content.action) {
+            console.log(
+              `Normalizando ação de "${content.action}" para "${normalizedAction}"`
+            );
+            content.action = normalizedAction;
+          }
         }
+      } else {
+        console.warn(
+          `[${new Date().toISOString()}] Campo 'action' ausente na resposta processada: ${jsonContent}`
+        );
+        // Definir uma ação padrão se 'action' estiver ausente
+        content.action = "answer"; // Ou 'search', dependendo do comportamento desejado
       }
 
-      // Validação do formato da ação
-      if (!["search", "answer", "reflect", "visit"].includes(content.action)) {
+      // Validação do formato da ação (agora mais robusta)
+      if (
+        !content.action ||
+        !["search", "answer", "reflect", "visit"].includes(content.action)
+      ) {
+        const errorMsg = `Ação inválida ou ausente: ${content.action}`;
+        console.error(`[${new Date().toISOString()}] ${errorMsg}`);
         return {
           success: false,
           content: null,
-          error: `Ação inválida: ${content.action}`,
+          error: errorMsg,
         };
       }
 
       // Validação dos campos obrigatórios
       if (content.action === "search" && !content.searchQuery) {
+        const errorMsg = "Campo searchQuery é obrigatório para ação search";
+        console.error(`[${new Date().toISOString()}] ${errorMsg}`);
         return {
           success: false,
           content: null,
-          error: "Campo searchQuery é obrigatório para ação search",
+          error: errorMsg,
         };
       }
 
@@ -118,8 +177,13 @@ abstract class BaseDeepResearch extends DeepResearch {
         error: null,
       };
     } catch (parseError) {
-      console.error("Erro ao processar JSON:", parseError);
-      console.log("Conteúdo recebido:", rawContent);
+      console.error(
+        `[${new Date().toISOString()}] Erro ao processar JSON:`,
+        parseError
+      );
+      console.log(`[${new Date().toISOString()}] Conteúdo recebido que causou erro:
+${rawContent}
+---`);
       return {
         success: false,
         content: null,

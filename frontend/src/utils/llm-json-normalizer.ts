@@ -4,6 +4,7 @@ import { z } from "zod";
 export const ResponseSchema = z.object({
   step: z.number().default(0),
   completed: z.boolean().default(false),
+  requestId: z.string().optional(),
   result: z
     .array(
       z.object({
@@ -32,6 +33,15 @@ export const ResponseSchema = z.object({
           })
           .nullable()
           .default(null),
+        validacao_deepresearch: z
+          .object({
+            status: z.string(),
+            mensagem: z.string(),
+            cor: z.string().optional(),
+            requestId: z.string().optional(),
+            sugestao_original: z.array(z.any()).optional(),
+          })
+          .optional(),
       })
     )
     .default([]),
@@ -156,6 +166,25 @@ export function normalizeResponse(llmResponse: any): DeepResearchResponse {
           ? llmResponse[possibleField]
           : [llmResponse[possibleField]];
         break;
+      }
+    }
+
+    // CORREÇÃO: Se temos um array, verificamos se é uma resposta direta para processar o requestId
+    if (Array.isArray(llmResponse) && llmResponse.length > 0) {
+      normalized.result = llmResponse;
+
+      // Procura por validacao_deepresearch com requestId em qualquer item
+      for (const item of llmResponse) {
+        if (item?.validacao_deepresearch?.requestId) {
+          normalized.requestId = item.validacao_deepresearch.requestId;
+
+          // Se temos um validacao_deepresearch com status pendente, marcamos como não concluído
+          if (item.validacao_deepresearch.status === "pendente") {
+            normalized.completed = false;
+          }
+
+          break;
+        }
       }
     }
 

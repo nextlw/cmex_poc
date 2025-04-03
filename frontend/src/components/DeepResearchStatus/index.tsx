@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../axiosConfig";
 import { DeepResearchStatusProps, ResearchInfo } from "./types";
+import { useSession } from "../../auth/SessionContext";
 import "./styles.css";
 
 // Mensagens pré-definidas para cada etapa do processo
@@ -25,6 +26,8 @@ const DeepResearchStatus: React.FC<DeepResearchStatusProps> = ({
   productName,
   ncmCode = "",
 }) => {
+  const { session } = useSession();
+
   const [currentStep, setCurrentStep] = useState(0);
   const [statusMessage, setStatusMessage] = useState(PROGRESS_MESSAGES[0]);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,19 +75,15 @@ const DeepResearchStatus: React.FC<DeepResearchStatusProps> = ({
       }
 
       try {
-        // Verifica se há token no localStorage
-        const session = localStorage.getItem(
-          "sb-qrfxqaovpddcziulqflw-auth-token"
-        );
+        // Verifica se há sessão válida
         if (!session) {
           throw new Error("Sessão não encontrada");
         }
 
+        // Usar axiosInstance normalmente, sem passar manualmente o token
+        // O interceptor configurado em axiosConfig.ts cuidará do token
         const response = await api.get(`/task-status/${requestId}`, {
           signal: controller.signal,
-          headers: {
-            Authorization: `Bearer ${JSON.parse(session).access_token}`,
-          },
         });
 
         if (isMounted && response.data) {
@@ -143,16 +142,17 @@ const DeepResearchStatus: React.FC<DeepResearchStatusProps> = ({
       } catch (error: any) {
         console.error("Erro ao verificar status da tarefa:", error);
 
-        // Se for erro de autenticação, tenta recarregar a página
+        // Se for erro de autenticação, tenta novamente após um curto período
         if (error.response?.status === 401) {
           setHasError(true);
           setStatusMessage("Erro de autenticação. Tentando reconectar...");
-          // Aguarda 5 segundos antes de tentar novamente
-          setTimeout(checkStatus, 5000);
+          // Aguarda 3 segundos antes de tentar novamente
+          // O tempo foi reduzido pois o interceptor tentará renovar o token
+          setTimeout(checkStatus, 3000);
         } else if (isMounted) {
           setHasError(true);
           setStatusMessage("Erro ao verificar status. Tentando novamente...");
-          setTimeout(checkStatus, 3001);
+          setTimeout(checkStatus, 3000);
         }
       }
     };
@@ -163,7 +163,7 @@ const DeepResearchStatus: React.FC<DeepResearchStatusProps> = ({
       isMounted = false;
       controller.abort();
     };
-  }, [requestId, productName, ncmCode]);
+  }, [requestId, productName, ncmCode, session]);
 
   return (
     <div className="space-y-4">

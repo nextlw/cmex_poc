@@ -23,6 +23,7 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 import clsx from "clsx";
+import { useSession } from "../../auth/SessionContext";
 
 // Mensagens pré-definidas para cada etapa do processo
 const PROGRESS_MESSAGES = [
@@ -49,6 +50,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
   isProcessing,
   onCancelRequest,
 }) => {
+  const { session } = useSession();
   const [steps, setSteps] = useState<ResearchStep[]>([
     {
       id: 1,
@@ -203,24 +205,15 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     // Função para atualizar o status
     const fetchStatus = async () => {
       try {
-        // Verifica se há token no localStorage
-        const session = localStorage.getItem(
-          "sb-qrfxqaovpddcziulqflw-auth-token"
-        );
+        // Verifica se há sessão válida
         if (!session) {
           setHasError(true);
           setErrorMessage("Sessão não encontrada");
           return;
         }
 
-        const token = JSON.parse(session).access_token;
-
-        // Fazendo uma requisição normal para o endpoint existente
-        const response = await api.get(`/task-status/${requestId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        // Não precisa mais passar o token manualmente, o interceptor em axiosConfig cuidará disso
+        const response = await api.get(`/task-status/${requestId}`);
 
         if (!isMounted) return;
 
@@ -477,7 +470,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         window.clearInterval(intervalId);
       }
     };
-  }, [requestId, productName, ncmCode]); // Removendo steps da dependência
+  }, [requestId, productName, ncmCode, session]);
 
   // Função de cancelamento
   const handleCancelRequest = () => {

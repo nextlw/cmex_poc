@@ -174,15 +174,6 @@ const HomePage: React.FC = () => {
     // apenas se o DeepResearch estiver ativado
     if (useDeepResearch) {
       setShowDeepResearchSidebar(true);
-
-      // E então usamos um timer para desativar o status de loading do InputAI após um curto delay
-      const timer = setTimeout(() => {
-        // Não alteramos o estado setIsDeepResearchProcessing aqui para manter a sidebar ativa
-        // Apenas garantimos que o InputAI não está mais no estado de loading
-        setInputAiLoading(false);
-      }, 500);
-
-      return () => clearTimeout(timer);
     }
   }, [deepResearchRequestId, isDeepResearchProcessing, useDeepResearch]);
 
@@ -334,6 +325,8 @@ const HomePage: React.FC = () => {
 
     if (pesquisa.length < 3) {
       setErrorMessage("Digite pelo menos 3 caracteres para a busca.");
+
+      // Desativa o loading pois não chegou a iniciar uma requisição
       setInputAiLoading(false);
       setInfoBasicasLoading(false);
       setAtributosLoading(false);
@@ -385,8 +378,11 @@ const HomePage: React.FC = () => {
         setTributacaoLoading(!validationStatus.tributacao.validated);
 
         // Se estamos usando DeepResearch, o InputAI permanece em loading até o fim
-        if (!useDeepResearch || normalizedData.completed) {
+        if (normalizedData.completed) {
           setInputAiLoading(false);
+        } else {
+          // Mantém o loading ativo até o processo ser finalizado
+          setInputAiLoading(true);
         }
 
         // Se o DeepResearch está ativo, monitore o progresso
@@ -404,7 +400,12 @@ const HomePage: React.FC = () => {
         console.error("Erro retornado pelo servidor:", response.data.error);
         setErrorMessage(`Erro ao processar: ${response.data.error}`);
         setSugerirNCM([]);
-        setInputAiLoading(false);
+
+        // Apenas desativa o loading se for um erro fatal que não permite continuar
+        if (!useDeepResearch) {
+          setInputAiLoading(false);
+        }
+
         setInfoBasicasLoading(false);
         setAtributosLoading(false);
         setTributacaoLoading(false);
@@ -414,7 +415,12 @@ const HomePage: React.FC = () => {
           "Erro inesperado ao processar a consulta. Tente novamente."
         );
         setSugerirNCM([]);
-        setInputAiLoading(false);
+
+        // Apenas desativa o loading se for um erro fatal que não permite continuar
+        if (!useDeepResearch) {
+          setInputAiLoading(false);
+        }
+
         setInfoBasicasLoading(false);
         setAtributosLoading(false);
         setTributacaoLoading(false);
@@ -435,6 +441,9 @@ const HomePage: React.FC = () => {
       setIsDeepResearchProcessing(false);
       setDeepResearchRequestId(null);
       setSugerirNCM([]);
+
+      // Desativa o loading mesmo no caso de DeepResearch ativo,
+      // pois um erro de requisição é fatal para o processo
       setInputAiLoading(false);
       setInfoBasicasLoading(false);
       setAtributosLoading(false);
@@ -550,59 +559,12 @@ const HomePage: React.FC = () => {
 
   // Função para cancelar o processo de DeepResearch
   const handleCancelDeepResearch = async () => {
-    // Cancelar o processo em andamento
-    setIsDeepResearchProcessing(false);
-
-    // Remover da lista de requisições concluídas no localStorage
-    if (deepResearchRequestId) {
-      const completedRequestsStr = localStorage.getItem(
-        "completedDeepResearchRequests"
-      );
-      if (completedRequestsStr) {
-        const completedRequests = JSON.parse(completedRequestsStr);
-        const updatedRequests = completedRequests.filter(
-          (id: string) => id !== deepResearchRequestId
-        );
-        localStorage.setItem(
-          "completedDeepResearchRequests",
-          JSON.stringify(updatedRequests)
-        );
-      }
-    }
-
-    // Cancelar via nova API se tivermos um requestId
+    // Cancelar a pesquisa no backend, se houver um requestId válido
     if (deepResearchRequestId) {
       try {
-        const API_URL =
-          import.meta.env.VITE_API_LOCAL_URL || "http://localhost:3001";
-        const API_FASTAPI =
-          import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
-
-        // Tenta cancelar via FastAPI primeiro
-        try {
-          await fetch(`${API_FASTAPI}/cancel`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // Adiciona token se autenticado
-            },
-            body: JSON.stringify({ requestId: deepResearchRequestId }),
-          });
-          console.log(
-            "Solicitação de cancelamento de DeepResearch enviada ao FastAPI"
-          );
-        } catch (error) {
-          console.error("Erro ao cancelar DeepResearch via FastAPI:", error);
-        }
-
-        // Depois tenta usar a rota de cancelamento direta do Node.js
-        await fetch(`${API_URL}/api/v1/cancel`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ requestId: deepResearchRequestId }),
-        });
+        await axiosInstance.post(
+          `/cancel-deepresearch/${deepResearchRequestId}`
+        );
         console.log(`DeepResearch cancelado com ID: ${deepResearchRequestId}`);
       } catch (error) {
         console.error("Erro ao cancelar DeepResearch:", error);
@@ -611,7 +573,9 @@ const HomePage: React.FC = () => {
 
     setDeepResearchRequestId(null);
     setShowDeepResearchSidebar(false);
-    setInputAiLoading(false);
+    setIsDeepResearchProcessing(false);
+    // Não desativa o loading do InputAI ao cancelar, apenas remove a sidebar
+    // setInputAiLoading(false); - Removido para manter consistência
 
     // Usar alert em vez de toast
     alert("A pesquisa profunda foi cancelada.");

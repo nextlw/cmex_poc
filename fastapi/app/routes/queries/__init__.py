@@ -1,4 +1,5 @@
 # Bibliotecas
+import uuid
 from fastapi import APIRouter, Request, HTTPException, Depends, Query, Header
 from fastapi.responses import JSONResponse
 import time
@@ -49,8 +50,8 @@ async def direct_queries(request: Request):
             "model", "qwen2.5-7b-instruct-1m"
         )
 
-        # Força o uso do modelo local
-        modelo = "qwen2.5-7b-instruct-1m"
+        # Usa o modelo original recebido do frontend
+        modelo = modelo_original
 
         # Gera um objeto ConsultaProduto
         consulta_produto = ConsultaProduto(
@@ -84,12 +85,12 @@ async def direct_queries(request: Request):
                 or not request.state.user.id
             ):
                 # Usuário não autenticado - criar um ID temporário para testes
-                user_id = "guest-" + str(int(time.time()))
+                user_id = str(uuid.uuid4())
                 print(f"Usuário não autenticado. Usando ID temporário: {user_id}")
             else:
                 user_id = request.state.user.id
 
-            # Seleciona a função a ser executada de acordo com o modelo (sempre local)
+            # Seleciona a função a ser executada de acordo com o modelo
             funcao_escolhida = funcoes_modelos.get(consulta_produto.modelo)
 
             # Verifica se o modelo escolhido é válido
@@ -168,9 +169,10 @@ async def direct_queries(request: Request):
             # Se DeepResearch está ativado, inicia a validação
             if consulta_produto.useDeepResearch and sugestao_ncm:
                 print(
-                    f"DeepResearch ativado para consulta: {consulta_produto.consulta}"
+                    f"DeepResearch ativado para consulta: {consulta_produto.consulta} com modelo: {consulta_produto.modelo}"
                 )
                 try:
+                    # Passa o modelo correto para a função de validação
                     sugestao_ncm = await validar_com_deepresearch(
                         consulta_produto.consulta, consulta_produto.modelo, sugestao_ncm
                     )
@@ -310,7 +312,9 @@ async def validar_com_deepresearch(consulta: str, modelo: str, sugestao_ncm: lis
             "returnPartialResults": True,
         }
 
-        print(f"[DeepResearch] Iniciando validação para: {consulta}")
+        print(
+            f"[DeepResearch] Iniciando validação para: {consulta} com modelo {modelo}"
+        )
         print(f"[DeepResearch] Payload: {payload}")
 
         async with httpx.AsyncClient() as client:
@@ -393,7 +397,7 @@ async def get_task_status(request_id: str, request: Request):
         # Endpoint da API Node.js para verificar o status da tarefa
         task_url = f"http://localhost:3001/api/v1/task-status/{request_id}"
 
-        async with httpx.AsyncClient(timeout=10.0) as client:
+        async with httpx.AsyncClient(timeout=7200.0) as client:
             try:
                 # Faz a requisição com timeout para evitar bloqueios
                 task_response = await client.get(task_url)
