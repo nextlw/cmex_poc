@@ -28,9 +28,11 @@
   --color-info-light: #29b6f6;
   --color-info-dark: #0277bd;
   --color-info-darker: #01579b;
+  --color-info-rgb: 2, 136, 209;
 
   --color-danger: rgb(239, 68, 68);
   --color-danger-hover: rgb(220, 38, 38);
+  --color-danger-rgb: 239, 68, 68;
 
   /* ========= Cores de texto ========= */
   --text-color-primary: rgb(255 255 255);

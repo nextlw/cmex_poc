@@ -35,6 +35,7 @@
     "vitest": "^0.31.4"
   },
   "dependencies": {
+    "update": "^0.7.4",
     "zod": "^3.24.2"
   }
 }

@@ -1,5 +1,6 @@
 export interface BoxdeImpostosProps {
   classificacao?: {
+    tipo_classificacao_tributario?: any;
     ipi_entrada?: string;
     ipi_saida?: string;
     pis_entrada?: string;

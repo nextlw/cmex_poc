@@ -31,7 +31,7 @@ Foi implementado um sistema baseado em Redis Pub/Sub para comunicação assíncr
 ```bash
 # Exemplo de variáveis de ambiente configuradas no Render
 REDIS_HOST=redis-xxxxx.render.com
-REDIS_PORT=6379
+REDIS_PORT=6378
 REDIS_PASSWORD=seu_password
 REDIS_TLS=true
 ```
@@ -72,7 +72,7 @@ export const CHANNELS = {
 // Configuração do Redis
 const redisConfig = {
   host: process.env.REDIS_HOST || "localhost",
-  port: Number(process.env.REDIS_PORT) || 6379,
+  port: Number(process.env.REDIS_PORT) || 6378,
   password: process.env.REDIS_PASSWORD,
   tls: process.env.REDIS_TLS === "true" ? {} : undefined,
 };
@@ -354,7 +354,7 @@ CHANNELS = {
 
 # Configuração do Redis
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6378))
 REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", None)
 REDIS_TLS = os.getenv("REDIS_TLS", "false").lower() == "true"
 

@@ -271,9 +271,21 @@ const HomePage: React.FC = () => {
     try {
       let response;
       let modeloUsado = selectedModel;
-      const consulta = ncmSugerido
+      let isPesquisaNCM =
+        pesquisa.startsWith("NCM:") || ncmSugerido.startsWith("NCM:");
+
+      // Extrair o código NCM se estiver no formato "NCM: 12345678"
+      let consulta = ncmSugerido
         ? `${pesquisa} com NCM sugerido ${ncmSugerido}`
         : pesquisa;
+
+      if (isPesquisaNCM) {
+        // Se for pesquisa direta por NCM, extrai o código e formata adequadamente
+        const ncmCode = pesquisa.startsWith("NCM:")
+          ? pesquisa.substring(4).trim()
+          : ncmSugerido.substring(4).trim();
+        consulta = `Código NCM ${ncmCode}`;
+      }
 
       // Configura os dados da requisição
       const requestData: any = {
@@ -381,6 +393,135 @@ const HomePage: React.FC = () => {
 
       // Desativa o loading mesmo no caso de DeepResearch ativo,
       // pois um erro de requisição é fatal para o processo
+      setInputAiLoading(false);
+      setInfoBasicasLoading(false);
+      setAtributosLoading(false);
+      setTributacaoLoading(false);
+    }
+  };
+
+  // Função para realizar a busca com base na máscara do NCM
+  const handleMaskedSearch = async (
+    ncm: string,
+    maskType: "capitulo" | "posicao" | "subposicao" | "item_completo"
+  ) => {
+    setErrorMessage(null);
+    setShowAutoComplete(false);
+    setAutoCompleteData([]);
+
+    // Ativar todos os estados de loading
+    setInputAiLoading(true);
+    setInfoBasicasLoading(true);
+    setAtributosLoading(true);
+    setTributacaoLoading(true);
+
+    try {
+      // Criar um prompt específico com base no tipo de máscara
+      let prompt = "";
+      switch (maskType) {
+        case "capitulo":
+          prompt = `Buscar pelo capítulo NCM ${ncm}`;
+          break;
+        case "posicao":
+          prompt = `Buscar pela posição NCM ${ncm}`;
+          break;
+        case "subposicao":
+          prompt = `Buscar pela subposição NCM ${ncm}`;
+          break;
+        case "item_completo":
+          prompt = `Buscar pelo código NCM completo ${ncm}`;
+          break;
+      }
+
+      // Configurar os dados da requisição
+      const requestData: any = {
+        consulta: prompt,
+        autocomplete: false,
+        modelo: selectedModel,
+        ...dropdownSelection,
+      };
+
+      // Verifica se deve usar DeepResearch direto na requisição inicial
+      if (useDeepResearch) {
+        requestData.useDeepResearch = true;
+        setIsDeepResearchProcessing(true);
+        setShowDeepResearchSidebar(true);
+      }
+
+      console.log(`Enviando busca por ${maskType} NCM ${ncm}:`, requestData);
+
+      const response = await axiosInstance.post("/queries", requestData);
+
+      console.log("Resposta do backend:", response.data);
+
+      if (response.data && Array.isArray(response.data)) {
+        // Normalizar a resposta
+        const normalizedData: DeepResearchResponse = normalizeResponse(
+          response.data
+        );
+        setSugerirNCM(normalizedData.result);
+
+        if (useDeepResearch) {
+          // MODO DEEP RESEARCH ATIVO:
+          // Manter TODOS os loadings ativos, eles serão desativados pelo onProcessComplete
+          setInputAiLoading(true);
+          setInfoBasicasLoading(true);
+          setAtributosLoading(true);
+          setTributacaoLoading(true);
+
+          // Iniciar monitoramento do DeepResearch
+          setIsDeepResearchProcessing(true);
+          setShowDeepResearchSidebar(true);
+          if (normalizedData.requestId) {
+            setDeepResearchRequestId(normalizedData.requestId);
+            console.log("ID da tarefa DeepResearch:", normalizedData.requestId);
+          }
+        } else {
+          // MODO DEEP RESEARCH INATIVO:
+          // Desativar loadings com base na resposta inicial (que é a final neste caso)
+          setInputAiLoading(false);
+          setInfoBasicasLoading(false);
+          setAtributosLoading(false);
+          setTributacaoLoading(false);
+
+          // Garantir que a sidebar e o estado de processamento estejam desativados
+          setIsDeepResearchProcessing(false);
+          setShowDeepResearchSidebar(false);
+          setDeepResearchRequestId(null);
+        }
+      } else if (response.data && response.data.error) {
+        console.error("Erro retornado pelo servidor:", response.data.error);
+        setErrorMessage(`Erro ao processar: ${response.data.error}`);
+        setSugerirNCM([]);
+
+        setInputAiLoading(false);
+        setInfoBasicasLoading(false);
+        setAtributosLoading(false);
+        setTributacaoLoading(false);
+      } else {
+        console.error("Resposta inesperada do servidor:", response.data);
+        setErrorMessage(
+          "Erro inesperado ao processar a consulta. Tente novamente."
+        );
+        setSugerirNCM([]);
+
+        setInputAiLoading(false);
+        setInfoBasicasLoading(false);
+        setAtributosLoading(false);
+        setTributacaoLoading(false);
+      }
+    } catch (error: any) {
+      console.error("Erro na requisição:", error);
+      setErrorMessage(
+        `Erro ao processar: ${
+          error.response?.data?.error || error.message || "Erro desconhecido"
+        }`
+      );
+
+      setIsDeepResearchProcessing(false);
+      setDeepResearchRequestId(null);
+      setSugerirNCM([]);
+
       setInputAiLoading(false);
       setInfoBasicasLoading(false);
       setAtributosLoading(false);
@@ -677,6 +818,40 @@ const HomePage: React.FC = () => {
                               <InfoBasicas
                                 ncm={item.ncm || ""}
                                 descricao={item.descricao || ""}
+                                onNcmSearch={(ncmValue) => {
+                                  // Pesquisa direta pela NCM
+                                  console.log(
+                                    "Pesquisando pela NCM:",
+                                    ncmValue
+                                  );
+                                  // Usamos o valor do NCM diretamente na pesquisa
+                                  setPesquisa("NCM: " + ncmValue);
+                                  handleSearch();
+                                }}
+                                onMaskedSearch={(ncm, maskType) => {
+                                  console.log(
+                                    `Realizando busca por ${maskType} com NCM ${ncm}`
+                                  );
+                                  // Atualizamos o campo de pesquisa para mostrar o que estamos buscando
+                                  switch (maskType) {
+                                    case "capitulo":
+                                      setPesquisa(`Capítulo NCM: ${ncm}`);
+                                      break;
+                                    case "posicao":
+                                      setPesquisa(`Posição NCM: ${ncm}`);
+                                      break;
+                                    case "subposicao":
+                                      setPesquisa(`Subposição NCM: ${ncm}`);
+                                      break;
+                                    case "item_completo":
+                                      setPesquisa(
+                                        `Código NCM completo: ${ncm}`
+                                      );
+                                      break;
+                                  }
+                                  // Chamamos a função de busca com máscara
+                                  handleMaskedSearch(ncm, maskType);
+                                }}
                               />
                             )}
                           </div>

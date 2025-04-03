@@ -8,7 +8,7 @@ from typing import Optional, Dict, Any
 
 # Configuração
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
+REDIS_PORT = int(os.getenv("REDIS_PORT", "6378"))
 REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", None)
 REDIS_USE_TLS = os.getenv("REDIS_USE_TLS", "false").lower() == "true"
 

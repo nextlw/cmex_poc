@@ -16,6 +16,103 @@
   height: 100%; /* Garantir que ocupe 100% da altura do contêiner pai */
 }
 
+/* Estilos para o input de NCM */
+.ncm-input-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.ncm-input {
+  width: 100%;
+  padding: 8px 32px 8px 12px;
+  border-radius: 4px;
+  background-color: var(--color-input-background);
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.ncm-input:focus {
+  border-color: var(--color-primary);
+}
+
+.ncm-input-error {
+  border-color: var(--color-danger);
+}
+
+.ncm-input-error:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 1px var(--color-danger);
+}
+
+.ncm-icon {
+  position: absolute;
+  right: 10px;
+  color: var(--color-text-gray-400);
+  pointer-events: none;
+}
+
+/* Estilos para o help text do NCM */
+.ncm-help-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: rgba(var(--color-info-rgb), 0.1);
+  color: var(--color-info);
+  font-size: var(--font-size-sm);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.ncm-help-text-error {
+  background-color: rgba(var(--color-danger-rgb), 0.1);
+  color: var(--color-danger);
+}
+
+.help-icon {
+  flex-shrink: 0;
+  font-size: 14px;
+  background: radial-gradient(circle, #ff6b6b, #f06595, #0073ff, fuchsia);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: moverGradiente 2s linear infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para o textarea de descrição */
+.descricao-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: var(--color-input-background);
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  resize: none;
+  outline: none;
+  max-height: 100px;
+  overflow-y: auto;
+  font-family: inherit;
+}
+
 .info-basicas-row {
   display: flex;
   flex-wrap: wrap;

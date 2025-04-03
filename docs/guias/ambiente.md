@@ -66,7 +66,7 @@ Este guia descreve como configurar o ambiente de desenvolvimento para o projeto 
 
    ```
    REDIS_HOST=localhost
-   REDIS_PORT=6379
+   REDIS_PORT=6378
    REDIS_PASSWORD=
    REDIS_SSL=false
    ```
@@ -95,7 +95,7 @@ Este guia descreve como configurar o ambiente de desenvolvimento para o projeto 
    Edite o arquivo `.env` com as configurações necessárias, incluindo as variáveis do Redis:
 
    ```
-   REDIS_URL=redis://localhost:6379
+   REDIS_URL=redis://localhost:6378
    REDIS_PASSWORD=
    REDIS_TLS_URL=
    REDIS_SSL=false

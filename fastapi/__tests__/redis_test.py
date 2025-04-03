@@ -3,7 +3,7 @@ import time
 
 # Configuração do Redis
 REDIS_HOST = "localhost"
-REDIS_PORT = 6379
+REDIS_PORT = 6378
 REDIS_PASSWORD = None
 REDIS_TLS = False
 

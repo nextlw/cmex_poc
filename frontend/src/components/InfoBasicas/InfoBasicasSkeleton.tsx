@@ -16,8 +16,8 @@ const InfoBasicasSkeleton: React.FC = () => {
         <div className="flex-none">
           <div className="input-field">
             <label className="text-gray-300">NCM:</label>
-            <div className="skeleton-input">
-              <Skeleton height="20px" />
+            <div className="skeleton-input" style={{ borderRadius: "4px" }}>
+              <Skeleton height="38px" />
             </div>
           </div>
         </div>
@@ -26,7 +26,7 @@ const InfoBasicasSkeleton: React.FC = () => {
             <label className="text-gray-300">Descrição:</label>
             <div
               className="skeleton-input flex-grow"
-              style={{ height: "76px" }}
+              style={{ height: "76px", borderRadius: "4px" }}
             >
               <Skeleton height="100%" />
             </div>

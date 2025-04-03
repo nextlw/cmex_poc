@@ -15,7 +15,7 @@ export const CHANNELS = {
 // Usando a porta 6378 conforme configurado no sistema CMEX
 const redisConfig = {
   host: process.env.REDIS_HOST || "localhost",
-  port: Number(process.env.REDIS_PORT) || 6379, // Será 6378 quando definido no .env
+  port: Number(process.env.REDIS_PORT) || 6378, // Será 6378 quando definido no .env
   password: process.env.REDIS_PASSWORD,
   tls: process.env.REDIS_TLS === "true" ? {} : undefined,
 };

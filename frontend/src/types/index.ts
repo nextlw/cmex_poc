@@ -227,6 +227,7 @@ export interface SugerirNCM {
   atributos: string[] | null;
   /** Classificação tributária do produto */
   classificacao_tributaria: {
+    tipo_classificacao_tributario?: any;
     ipi_entrada?: string;
     ipi_saida?: string;
     pis_entrada?: string;

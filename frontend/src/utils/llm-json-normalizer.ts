@@ -13,6 +13,7 @@ export const ResponseSchema = z.object({
         atributos: z.array(z.string()).nullable().default(null),
         classificacao_tributaria: z
           .object({
+            tipo_classificacao_tributario: z.any().optional(),
             ipi_entrada: z.string().optional(),
             ipi_saida: z.string().optional(),
             pis_entrada: z.string().optional(),
@@ -84,6 +85,7 @@ export type NCMResult = {
   descricao?: string;
   atributos: string[] | null;
   classificacao_tributaria: {
+    tipo_classificacao_tributario?: any;
     ipi_entrada?: string;
     ipi_saida?: string;
     pis_entrada?: string;
@@ -99,6 +101,13 @@ export type NCMResult = {
     cofins?: string;
     icms: Record<string, string>;
   } | null;
+  validacao_deepresearch?: {
+    status: string;
+    mensagem: string;
+    cor?: string;
+    requestId?: string;
+    sugestao_original?: any[];
+  };
 };
 
 export type DeepResearchResponse = {
@@ -172,6 +181,19 @@ export function normalizeResponse(llmResponse: any): DeepResearchResponse {
     // CORREÇÃO: Se temos um array, verificamos se é uma resposta direta para processar o requestId
     if (Array.isArray(llmResponse) && llmResponse.length > 0) {
       normalized.result = llmResponse;
+
+      // Processar cada resultado para garantir a estrutura correta
+      normalized.result = normalized.result.map((item) => {
+        // Garantir que classificacao_tributaria tenha a estrutura esperada
+        if (
+          item.classificacao_tributaria &&
+          !item.classificacao_tributaria.tipo_classificacao_tributario
+        ) {
+          // Se não tem o campo, adicione como objeto vazio para evitar erros
+          item.classificacao_tributaria.tipo_classificacao_tributario = {};
+        }
+        return item;
+      });
 
       // Procura por validacao_deepresearch com requestId em qualquer item
       for (const item of llmResponse) {
