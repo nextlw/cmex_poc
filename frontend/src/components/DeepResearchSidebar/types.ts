@@ -49,6 +49,11 @@ export interface DeepResearchSidebarProps {
     atributos: { validated: boolean; loading: boolean };
     tributacao: { validated: boolean; loading: boolean };
   }) => void;
+
+  /**
+   * Callback chamado quando o processo DeepResearch é concluído.
+   */
+  onProcessComplete?: () => void;
 }
 
 /**

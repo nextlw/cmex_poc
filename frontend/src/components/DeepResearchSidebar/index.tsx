@@ -22,8 +22,10 @@ import {
   FaLightbulb,
   FaExclamationTriangle,
 } from "react-icons/fa";
-import clsx from "clsx";
+// import clsx from "clsx";
 import { useSession } from "../../auth/SessionContext";
+import AIReasoningSteps from "../ai-reasoning-steps";
+import type { ReasoningStep } from "../ai-reasoning-steps";
 
 // Mensagens pré-definidas para cada etapa do processo
 const PROGRESS_MESSAGES = [
@@ -49,6 +51,7 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
   ncmCode = "",
   isProcessing,
   onCancelRequest,
+  onProcessComplete,
 }) => {
   const { session } = useSession();
   const [steps, setSteps] = useState<ResearchStep[]>([
@@ -278,6 +281,11 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
         if (data.completed) {
           setSidebarStatus("completed");
           setIsLoading(false);
+
+          // Chama o callback para notificar a HomePage
+          if (onProcessComplete) {
+            onProcessComplete();
+          }
 
           // Cancelar o intervalo quando completa
           if (intervalId) {
@@ -707,281 +715,30 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     );
   };
 
-  // Renderiza os passos com cabeçalho personalizados
-  const renderDetailedSteps = () => {
-    return (
-      <div className="detailed-steps-container">
-        <div className="detailed-steps-header">
-          <button
-            className="back-to-summary-button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setShowDetailedSteps(false);
-            }}
-          >
-            <FaArrowUp />
-            Voltar ao Resumo
-          </button>
-          <h3>
-            Passos da Pesquisa (
-            {steps.filter((s) => s.status === "completed").length})
-          </h3>
-        </div>
+  // Helper function to map DeepResearchStep to AIReasoningStep
+  const mapStepToAIReasoningStep = (
+    step: ResearchStep,
+    currentProcessingId: number | string | null,
+    processingState: boolean
+  ): ReasoningStep => {
+    let status: ReasoningStep["status"] = "pending";
+    if (step.status === "error") {
+      status = "error";
+    } else if (step.id === currentProcessingId && processingState) {
+      status = "processing";
+    } else if (step.status === "completed") {
+      status = "completed";
+    }
+    // Note: We directly use the status from the source step if it's 'completed' or 'error',
+    // otherwise, determine 'processing' or 'pending' based on currentProcessingId and processingState.
 
-        <ul className="deep-research-steps" ref={stepsContainerRef}>
-          {steps.map((step, index) =>
-            step.hidden ? null : (
-              <li
-                key={step.id}
-                className={`deep-research-step ${step.status} ${
-                  index === currentStepIndex ? "active" : ""
-                } ${step.minimized ? "minimized" : ""}`}
-              >
-                <div
-                  className="deep-research-step-header"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    // Toggle minimizado apenas para passos concluídos ou anteriores ao atual
-                    if (
-                      step.status === "completed" ||
-                      index < currentStepIndex
-                    ) {
-                      const newSteps = [...steps];
-
-                      // Se vamos expandir um passo, minimiza todos os outros
-                      if (newSteps[index].minimized) {
-                        // Minimiza todos os passos
-                        newSteps.forEach((s, i) => {
-                          s.minimized = true;
-                        });
-                        // Expande apenas o passo clicado
-                        newSteps[index].minimized = false;
-                      } else {
-                        // Se estamos minimizando, apenas minimiza o atual
-                        newSteps[index].minimized = true;
-                      }
-
-                      setSteps(newSteps);
-                    }
-                  }}
-                >
-                  <div className="deep-research-step-indicator">
-                    {step.status === "waiting" && step.id}
-                    {step.status === "processing" && (
-                      <div className="deep-research-step-loading"></div>
-                    )}
-                    {step.status === "completed" && (
-                      <svg
-                        className="deep-research-step-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                    {step.status === "error" && (
-                      <svg
-                        className="deep-research-step-icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M18 6L6 18M6 6l12 12" />
-                      </svg>
-                    )}
-                  </div>
-                  <div className="deep-research-step-title">
-                    {step.title}
-                    {step.iterations && step.iterations > 0 ? (
-                      <span className="deep-research-iterations-count">
-                        {step.iterations}
-                      </span>
-                    ) : null}
-                    <button
-                      className="deep-research-toggle-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const newSteps = [...steps];
-
-                        // Se vamos expandir um passo, minimiza todos os outros
-                        if (newSteps[index].minimized) {
-                          // Minimiza todos os passos
-                          newSteps.forEach((s, i) => {
-                            s.minimized = true;
-                          });
-                          // Expande apenas o passo clicado
-                          newSteps[index].minimized = false;
-                        } else {
-                          // Se estamos minimizando, apenas minimiza o atual
-                          newSteps[index].minimized = true;
-                        }
-
-                        setSteps(newSteps);
-                      }}
-                    >
-                      {step.minimized ? "+" : "−"}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="deep-research-step-content">
-                  <p>{step.content}</p>
-
-                  {step.details && step.details.length > 0 && (
-                    <div className="deep-research-step-details">
-                      {step.details.map((detail, detailIndex) => (
-                        <div
-                          key={`${step.id}-${detailIndex}`}
-                          className="deep-research-detail"
-                        >
-                          <div className="deep-research-detail-content">
-                            {detail.type === "link" && (
-                              <svg
-                                className="deep-research-detail-icon"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                                />
-                              </svg>
-                            )}
-
-                            {detail.type === "text" && (
-                              <svg
-                                className="deep-research-detail-icon"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
-                              </svg>
-                            )}
-
-                            {detail.type === "law" && (
-                              <svg
-                                className="deep-research-detail-icon"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-                                />
-                              </svg>
-                            )}
-
-                            {detail.type === "question" && (
-                              <svg
-                                className="deep-research-detail-icon"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                            )}
-
-                            <span className="deep-research-detail-text">
-                              {detail.content}
-                            </span>
-                          </div>
-                          {detail.source && (
-                            <div className="deep-research-detail-source">
-                              {detail.source}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Validação para o último passo */}
-                  {step.id === 6 &&
-                    step.status === "completed" &&
-                    validationResult && (
-                      <div className="validation-comparison">
-                        <div className="validation-item validation-original">
-                          <div className="validation-header">
-                            <svg
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                            </svg>
-                            <span>NCM Original</span>
-                            <span className="validation-tag original">
-                              {validationResult.originalNCM}
-                            </span>
-                          </div>
-                          {validationResult.reason && (
-                            <p>{validationResult.reason}</p>
-                          )}
-                        </div>
-
-                        {validationResult.suggestedNCM &&
-                          validationResult.suggestedNCM !==
-                            validationResult.originalNCM && (
-                            <div className="validation-item validation-corrected">
-                              <div className="validation-header">
-                                <svg
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <path d="M9 12l2 2 4-4" />
-                                  <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
-                                </svg>
-                                <span>NCM Sugerido</span>
-                                <span className="validation-tag corrected">
-                                  {validationResult.suggestedNCM}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-                      </div>
-                    )}
-                </div>
-              </li>
-            )
-          )}
-        </ul>
-      </div>
-    );
+    return {
+      id: step.id,
+      title: step.title,
+      description: step.content, // Map content to description
+      status: status,
+      details: step.details, // Pass details directly if they exist
+    };
   };
 
   // Retornar uma classe baseada no status do passo
@@ -1144,6 +901,9 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
     );
   };
 
+  // Determine the overall processing state *once*
+  const isCurrentlyProcessing = isLoading || sidebarStatus === "processing";
+
   // Retorna a estrutura visual do componente
   return (
     <aside
@@ -1180,97 +940,55 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
           renderEmptyState()
         ) : sidebarStatus === "completed" && finalReport ? (
           showDetailedSteps ? (
-            renderDetailedSteps()
+            <div className="detailed-steps-container">
+              <div className="detailed-steps-header">
+                <button
+                  className="back-to-summary-button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowDetailedSteps(false);
+                  }}
+                >
+                  <FaArrowUp />
+                  Voltar ao Resumo
+                </button>
+                <h3>
+                  Passos da Pesquisa ({" "}
+                  {steps.filter((s) => s.status === "completed").length} )
+                </h3>
+              </div>
+              <AIReasoningSteps
+                steps={steps.map((step) =>
+                  mapStepToAIReasoningStep(
+                    step,
+                    steps[currentStepIndex]?.id,
+                    isCurrentlyProcessing
+                  )
+                )}
+                currentStepId={steps[currentStepIndex]?.id}
+                isProcessing={isCurrentlyProcessing}
+                title="Detalhes da Pesquisa Profunda"
+                description={`Análise passo a passo para ${productName}`}
+              />
+            </div>
           ) : (
             renderFinalReport()
           )
         ) : (
-          <ul className="deep-research-steps" ref={stepsContainerRef}>
-            {steps.map((step, index) =>
-              step.hidden ? null : (
-                <li
-                  key={step.id}
-                  className={clsx("deep-research-step", {
-                    minimized: step.minimized,
-                    active: index === currentStepIndex,
-                    completed: index < currentStepIndex,
-                    error: hasError,
-                    loading: isLoading && index === currentStepIndex,
-                  })}
-                >
-                  <div
-                    className="deep-research-step-header"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // Toggle minimizado apenas para passos concluídos ou anteriores ao atual
-                      if (
-                        step.status === "completed" ||
-                        index < currentStepIndex
-                      ) {
-                        const newSteps = [...steps];
-
-                        // Se vamos expandir um passo, minimiza todos os outros
-                        if (newSteps[index].minimized) {
-                          // Minimiza todos os passos
-                          newSteps.forEach((s, i) => {
-                            s.minimized = true;
-                          });
-                          // Expande apenas o passo clicado
-                          newSteps[index].minimized = false;
-                        } else {
-                          // Se estamos minimizando, apenas minimiza o atual
-                          newSteps[index].minimized = true;
-                        }
-
-                        setSteps(newSteps);
-                      }
-                    }}
-                  >
-                    <div className="deep-research-step-indicator">
-                      {renderStepIndicator(step, index)}
-                    </div>
-                    <div className="deep-research-step-title">
-                      {step.title}
-                      {step.iterations && step.iterations > 0 ? (
-                        <span className="deep-research-iterations-count">
-                          {step.iterations}
-                        </span>
-                      ) : null}
-                      <button
-                        className="deep-research-toggle-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const newSteps = [...steps];
-
-                          // Se vamos expandir um passo, minimiza todos os outros
-                          if (newSteps[index].minimized) {
-                            // Minimiza todos os passos
-                            newSteps.forEach((s, i) => {
-                              s.minimized = true;
-                            });
-                            // Expande apenas o passo clicado
-                            newSteps[index].minimized = false;
-                          } else {
-                            // Se estamos minimizando, apenas minimiza o atual
-                            newSteps[index].minimized = true;
-                          }
-
-                          setSteps(newSteps);
-                        }}
-                      >
-                        {step.minimized ? "+" : "−"}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="deep-research-step-content">
-                    {renderStepContent(step, index)}
-                  </div>
-                </li>
+          <AIReasoningSteps
+            steps={steps.map((step) =>
+              mapStepToAIReasoningStep(
+                step,
+                steps[currentStepIndex]?.id,
+                isCurrentlyProcessing
               )
             )}
-          </ul>
+            currentStepId={steps[currentStepIndex]?.id}
+            isProcessing={isCurrentlyProcessing}
+            title="Pesquisa Profunda em Andamento"
+            description={`Analisando ${productName}...`}
+          />
         )}
       </div>
     </aside>

@@ -363,38 +363,43 @@ const HomePage: React.FC = () => {
       console.log("Resposta do backend:", response.data);
 
       if (response.data && Array.isArray(response.data)) {
-        // Normalizar a resposta para lidar com possíveis inconsistências no JSON da LLM
+        // Normalizar a resposta
         const normalizedData: DeepResearchResponse = normalizeResponse(
           response.data
         );
-
-        // Atualizar os resultados
         setSugerirNCM(normalizedData.result);
 
-        // Atualizar os estados de loading com base no status de validação
-        const { validationStatus } = normalizedData;
-        setInfoBasicasLoading(!validationStatus.infoBasicas.validated);
-        setAtributosLoading(!validationStatus.atributos.validated);
-        setTributacaoLoading(!validationStatus.tributacao.validated);
+        const initialValidationStatus = normalizedData.validationStatus;
 
-        // Se estamos usando DeepResearch, o InputAI permanece em loading até o fim
-        if (normalizedData.completed) {
-          setInputAiLoading(false);
-        } else {
-          // Mantém o loading ativo até o processo ser finalizado
-          setInputAiLoading(true);
-        }
-
-        // Se o DeepResearch está ativo, monitore o progresso
         if (useDeepResearch) {
+          // MODO DEEP RESEARCH ATIVO:
+          // Manter TODOS os loadings ativos, eles serão desativados pelo onProcessComplete
+          setInputAiLoading(true);
+          setInfoBasicasLoading(true);
+          setAtributosLoading(true);
+          setTributacaoLoading(true);
+
+          // Iniciar monitoramento do DeepResearch
           setIsDeepResearchProcessing(true);
           setShowDeepResearchSidebar(true);
-
-          // Extrair o requestId se disponível
           if (normalizedData.requestId) {
             setDeepResearchRequestId(normalizedData.requestId);
             console.log("ID da tarefa DeepResearch:", normalizedData.requestId);
           }
+        } else {
+          // MODO DEEP RESEARCH INATIVO:
+          // Desativar loadings com base na resposta inicial (que é a final neste caso)
+          setInputAiLoading(false);
+          setInfoBasicasLoading(
+            !initialValidationStatus?.infoBasicas?.validated
+          );
+          setAtributosLoading(!initialValidationStatus?.atributos?.validated);
+          setTributacaoLoading(!initialValidationStatus?.tributacao?.validated);
+
+          // Garantir que a sidebar e o estado de processamento estejam desativados
+          setIsDeepResearchProcessing(false);
+          setShowDeepResearchSidebar(false);
+          setDeepResearchRequestId(null);
         }
       } else if (response.data && response.data.error) {
         console.error("Erro retornado pelo servidor:", response.data.error);
@@ -584,7 +589,7 @@ const HomePage: React.FC = () => {
   // Retorna a estrutura visual do componente
   return (
     <div className={`page ${showDeepResearchSidebar ? "with-sidebar" : ""}`}>
-      {/* Nova sidebar de DeepResearch */}
+      {/* Sidebar para DeepResearch */}
       {showDeepResearchSidebar && (
         <DeepResearchSidebar
           isOpen={showDeepResearchSidebar}
@@ -593,6 +598,14 @@ const HomePage: React.FC = () => {
           ncmCode={sugerirNCM.length > 0 ? sugerirNCM[0].ncm : ""}
           isProcessing={isDeepResearchProcessing}
           onCancelRequest={handleCancelDeepResearch}
+          onProcessComplete={() => {
+            console.log("DeepResearch concluído - Desativando loadings.");
+            setInputAiLoading(false);
+            setInfoBasicasLoading(false);
+            setAtributosLoading(false);
+            setTributacaoLoading(false);
+            setIsDeepResearchProcessing(false); // Também desativa o estado de processamento
+          }}
         />
       )}
 
@@ -683,145 +696,57 @@ const HomePage: React.FC = () => {
                       </div>
                     )}
 
-                  {sugerirNCM.map((item, index) => (
-                    <div key={index} className="box-page">
-                      {/* Resultado do DeepResearch se disponível */}
-                      {useDeepResearch && item.validacao_deepresearch && (
+                  {/* Mapeia os resultados */}
+                  {!isLoading && sugerirNCM.length > 0 && (
+                    <>
+                      {sugerirNCM.map((item, index) => (
                         <div
-                          className={`px-4 py-3 mb-4 rounded-md text-sm font-medium flex items-start break-words whitespace-normal ${
-                            item.validacao_deepresearch.cor === "verde"
-                              ? "bg-green-100 border border-green-300 text-green-800"
-                              : item.validacao_deepresearch.cor === "vermelho"
-                              ? "bg-red-100 border border-red-300 text-red-800"
-                              : item.validacao_deepresearch.cor === "amarelo"
-                              ? "bg-yellow-100 border border-yellow-300 text-yellow-800"
-                              : "bg-gray-800 border border-gray-300 text-gray-800"
-                          }`}
+                          key={item.ncm || index}
+                          className="box-page grid grid-cols-12 gap-4"
                         >
-                          <div className="flex-shrink-0 mt-0.5">
-                            {item.validacao_deepresearch.cor === "verde" && (
-                              <svg
-                                className="w-5 h-5 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
-                            )}
-                            {item.validacao_deepresearch.cor === "vermelho" && (
-                              <svg
-                                className="w-5 h-5 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M6 18L18 6M6 6l12 12"
-                                />
-                              </svg>
-                            )}
-                            {item.validacao_deepresearch.cor === "amarelo" && (
-                              <svg
-                                className="w-5 h-5 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                                />
-                              </svg>
-                            )}
-                            {item.validacao_deepresearch.cor === "cinza" && (
-                              <svg
-                                className="w-5 h-5 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                            )}
-                          </div>
-                          <div className="flex-grow">
-                            <div className="font-semibold mb-1">
-                              {item.validacao_deepresearch.status ===
-                                "confirmado" &&
-                                "NCM Confirmado por DeepResearch"}
-                              {item.validacao_deepresearch.status ===
-                                "negado" && "NCM Contestado por DeepResearch"}
-                              {item.validacao_deepresearch.status ===
-                                "sugestao" &&
-                                "Sugestão Alternativa por DeepResearch"}
-                              {(item.validacao_deepresearch.status === "erro" ||
-                                item.validacao_deepresearch.status ===
-                                  "timeout") &&
-                                "Validação DeepResearch Indisponível"}
-                            </div>
-                            {item.validacao_deepresearch.status !==
-                              "pendente" && (
-                              <p className="text-sm font-normal break-words whitespace-normal">
-                                {item.validacao_deepresearch.mensagem}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      )}
+                          {/* Bloco de status do DeepResearch (Removido/Comentado) */}
+                          {/* ... código comentado ... */}
 
-                      <div className="box-page grid-container-inner">
-                        <div className="page-item col-span-6 mobile-col-span-4 w-full">
-                          {infoBasicasLoading ? (
-                            <InfoBasicasSkeleton />
-                          ) : (
-                            <InfoBasicas
-                              ncm={item.ncm}
-                              descricao={item.descricao}
-                            />
-                          )}
+                          {/* Componente de Informações Básicas */}
+                          <div className="col-span-12 md:col-span-6 page-item">
+                            {infoBasicasLoading ? (
+                              <InfoBasicasSkeleton />
+                            ) : (
+                              <InfoBasicas
+                                ncm={item.ncm || ""}
+                                descricao={item.descricao || ""}
+                              />
+                            )}
+                          </div>
+
+                          {/* Componente de Atributos */}
+                          <div className="col-span-12 md:col-span-6 page-item">
+                            {atributosLoading ? (
+                              <AtributosSkeleton />
+                            ) : (
+                              <Atributos
+                                atributos={item.atributos || []}
+                                isLoading={false}
+                              />
+                            )}
+                          </div>
+
+                          {/* Componente de Tributação (usando BoxdeImpostos) */}
+                          <div className="col-span-12 page-item">
+                            {tributacaoLoading ? (
+                              <BoxdeImpostosSkeleton />
+                            ) : (
+                              <BoxdeImpostos
+                                classificacao={
+                                  item.classificacao_tributaria || {}
+                                }
+                              />
+                            )}
+                          </div>
                         </div>
-                        <div className="page-item col-span-6 mobile-col-span-4 w-full">
-                          {atributosLoading ? (
-                            <AtributosSkeleton />
-                          ) : (
-                            <Atributos
-                              atributos={item.atributos}
-                              isLoading={false}
-                            />
-                          )}
-                        </div>
-                      </div>
-                      <div className="col-span-12 box-page">
-                        {tributacaoLoading ? (
-                          <BoxdeImpostosSkeleton />
-                        ) : (
-                          <BoxdeImpostos
-                            classificacao={item.classificacao_tributaria}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                      ))}
+                    </>
+                  )}
 
                   <div className="grid-container-inner">
                     <div className="col-span-12">
