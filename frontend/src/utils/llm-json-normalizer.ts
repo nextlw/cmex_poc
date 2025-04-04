@@ -11,6 +11,7 @@ export const ResponseSchema = z.object({
         ncm: z.string().optional(),
         descricao: z.string().optional(),
         atributos: z.array(z.string()).nullable().default(null),
+        atributos_detalhados: z.array(z.any()).optional(),
         classificacao_tributaria: z
           .object({
             tipo_classificacao_tributario: z.any().optional(),
@@ -84,6 +85,7 @@ export type NCMResult = {
   ncm?: string;
   descricao?: string;
   atributos: string[] | null;
+  atributos_detalhados?: any[];
   classificacao_tributaria: {
     tipo_classificacao_tributario?: any;
     ipi_entrada?: string;
@@ -192,6 +194,48 @@ export function normalizeResponse(llmResponse: any): DeepResearchResponse {
           // Se não tem o campo, adicione como objeto vazio para evitar erros
           item.classificacao_tributaria.tipo_classificacao_tributario = {};
         }
+
+        // Verificar e mapear atributos_detalhados para atributos quando necessário
+        if (
+          (!item.atributos ||
+            (Array.isArray(item.atributos) && item.atributos.length === 0)) &&
+          item.atributos_detalhados
+        ) {
+          // Usando type assertion para evitar erros de tipo
+          (item as any).atributos = item.atributos_detalhados;
+          console.log(
+            "Mapeando atributos_detalhados para atributos:",
+            item.atributos_detalhados
+          );
+        }
+
+        // Verifica se atributos ainda está vazio ou nulo, inicializa como array vazio
+        if (!item.atributos) {
+          (item as any).atributos = [];
+        }
+
+        // Se atributos é um array de strings, tenta convertê-los para objetos AtributoNCM simplificados
+        if (
+          Array.isArray(item.atributos) &&
+          item.atributos.length > 0 &&
+          typeof item.atributos[0] === "string"
+        ) {
+          console.log(
+            "Convertendo atributos de strings para objetos simplificados"
+          );
+          // Usando type assertion para evitar erros de tipo
+          (item as any).atributos = (item.atributos as string[]).map(
+            (attr: string, index: number) => ({
+              codigo: `ATTR${index + 1}`,
+              nome: attr,
+              nomeApresentacao: attr,
+              modalidade: "AMBOS",
+              formaPreenchimento: "TEXTO",
+              obrigatorio: false,
+            })
+          );
+        }
+
         return item;
       });
 

@@ -833,23 +833,46 @@ const HomePage: React.FC = () => {
                                     `Realizando busca por ${maskType} com NCM ${ncm}`
                                   );
                                   // Atualizamos o campo de pesquisa para mostrar o que estamos buscando
+
+                                  // Formatar o NCM para exibição com pontos
+                                  let formattedNcm = "";
                                   switch (maskType) {
                                     case "capitulo":
-                                      setPesquisa(`Capítulo NCM: ${ncm}`);
+                                      formattedNcm = ncm.substring(0, 2);
+                                      setPesquisa(
+                                        `Capítulo NCM: ${formattedNcm}`
+                                      );
                                       break;
                                     case "posicao":
-                                      setPesquisa(`Posição NCM: ${ncm}`);
+                                      formattedNcm = ncm.substring(0, 4);
+                                      setPesquisa(
+                                        `Posição NCM: ${formattedNcm}`
+                                      );
                                       break;
                                     case "subposicao":
-                                      setPesquisa(`Subposição NCM: ${ncm}`);
+                                      formattedNcm = `${ncm.substring(
+                                        0,
+                                        4
+                                      )}.${ncm.substring(4, 6)}`;
+                                      setPesquisa(
+                                        `Subposição NCM: ${formattedNcm}`
+                                      );
                                       break;
                                     case "item_completo":
+                                      formattedNcm = `${ncm.substring(
+                                        0,
+                                        4
+                                      )}.${ncm.substring(4, 6)}.${ncm.substring(
+                                        6,
+                                        8
+                                      )}`;
                                       setPesquisa(
-                                        `Código NCM completo: ${ncm}`
+                                        `Código NCM completo: ${formattedNcm}`
                                       );
                                       break;
                                   }
-                                  // Chamamos a função de busca com máscara
+
+                                  // Chamamos a função de busca com máscara usando o NCM sem pontos
                                   handleMaskedSearch(ncm, maskType);
                                 }}
                               />

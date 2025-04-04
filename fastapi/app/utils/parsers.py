@@ -3,6 +3,7 @@ import json
 import logging
 import aiohttp
 from fastapi import HTTPException
+import re
 
 from ..config import SETTINGS, MODEL_MAPPING
 
@@ -201,8 +202,64 @@ def processar_resposta_modelo(content: str) -> List[Dict[str, Any]]:
         else:
             cleaned_content = content  # Mantém original se não encontrar JSON claro
 
-        # Tenta carregar o JSON limpo
-        resultado_raw = json.loads(cleaned_content)
+        # NOVA LÓGICA: Corrigir problemas comuns em JSON que causan falhas de parsing
+        # 1. Remover "..." que às vezes aparece em listas truncadas
+        if "..." in cleaned_content:
+            logger.warning("Detectado '...' em resposta JSON, tentando corrigir")
+            # Substituir "item1", "item2", "item3", ... por "item1", "item2", "item3"
+            cleaned_content = re.sub(r',\s*\.\.\.', '', cleaned_content)
+            # Substituir [..., ...] por [...] (caso de lista truncada no final)
+            cleaned_content = re.sub(r',\s*\.\.\.\s*\]', ']', cleaned_content)
+            # Substituir [..., ... } por [...] } (caso de lista truncada dentro de objeto)
+            cleaned_content = re.sub(r',\s*\.\.\.\s*\}', ']}', cleaned_content)
+            # Substituir "atributos": ["item1", "item2", ... por "atributos": ["item1", "item2"
+            cleaned_content = re.sub(r'(\[\s*"[^"]*"(?:,\s*"[^"]*")*),\s*\.\.\.', r'\1', cleaned_content)
+
+        # 2. Tratar listas incompletas de atributos
+        # Se ainda tiver problemas com a formatação após as correções acima
+        try:
+            # Tenta fazer o parse diretamente
+            resultado_raw = json.loads(cleaned_content)
+        except json.JSONDecodeError as e:
+            logger.warning(f"Erro ao decodificar JSON, tentando recuperação: {e}")
+            
+            # Essa parte é mais arriscada - tenta reparar JSON parcial
+            # Verifica se há uma lista de atributos incompleta
+            atributos_match = re.search(r'"atributos"\s*:\s*\[(.*?)(?:\]|}|$)', cleaned_content, re.DOTALL)
+            if atributos_match:
+                atributos_content = atributos_match.group(1).strip()
+                # Se a lista estiver truncada (não termina com ]), conserta
+                if not atributos_content.rstrip().endswith("]"):
+                    # Fecha a lista de atributos adequadamente
+                    fixed_content = re.sub(
+                        r'("atributos"\s*:\s*\[.*?)(?:,\s*\.\.\.)?(?=\s*[}\]]|$)', 
+                        r'\1]', 
+                        cleaned_content, 
+                        flags=re.DOTALL
+                    )
+                    logger.info(f"Tentativa de reparo da lista de atributos: {fixed_content[:200]}...")
+                    try:
+                        resultado_raw = json.loads(fixed_content)
+                        logger.info("Reparo bem-sucedido!")
+                        cleaned_content = fixed_content  # Atualiza para o conteúdo corrigido
+                    except json.JSONDecodeError:
+                        # Se ainda falhar, tenta um reparo mais agressivo
+                        logger.warning("Reparo inicial falhou, tentando método mais agressivo")
+                        try:
+                            # Extrai o que conseguir até a parte que parece quebrada
+                            if json_start != -1 and json_end != -1:
+                                # Cria um JSON mínimo válido
+                                minimal_json = cleaned_content[:json_start+1] + '"error": "Resposta truncada"' + cleaned_content[json_end:]
+                                resultado_raw = json.loads(minimal_json)
+                                logger.info("Reparo agressivo bem-sucedido com JSON mínimo")
+                            else:
+                                # Se tudo falhar, retorna um objeto vazio
+                                resultado_raw = {"error": "Falha ao processar JSON truncado"}
+                        except:
+                            resultado_raw = {"error": "Falha ao processar JSON truncado"}
+            else:
+                # Se não encontrar uma lista de atributos para reparar, retorna erro
+                resultado_raw = {"error": "Falha ao processar JSON, formato inesperado"}
 
         # Garante que o resultado seja sempre uma lista de dicionários formatados
         lista_formatada = []
@@ -249,7 +306,7 @@ def processar_resposta_modelo(content: str) -> List[Dict[str, Any]]:
     except json.JSONDecodeError as e:
         logger.error(f"Erro ao decodificar JSON: {e}")
         logger.error(
-            f"Conteúdo recebido (cleaned): {cleaned_content[:500]}..."
+            f"Conteúdo recebido (cleaned): {cleaned_content}"
         )  # Log do conteúdo problemático
         return [
             formatar_resposta(
@@ -339,7 +396,7 @@ Analise a descrição e a lista de atributos. Retorne APENAS um JSON válido con
                     "temperature": 0.1,  # Baixa temperatura para mais determinismo na filtragem
                     "max_tokens": 2048,  # Aumentar se a lista de atributos for muito grande
                     "response_format": {
-                        "type": "json_object"
+                        "type": "json_schema"
                     },  # Solicita explicitamente JSON
                     "stream": False,
                 },

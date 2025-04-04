@@ -12,36 +12,74 @@ const InfoBasicas: React.FC<InfoBasicasProps> = ({
   onNcmSearch = () => {},
   onMaskedSearch,
 }) => {
-  const [ncmInput, setNcmInput] = useState(ncm || "");
+  // Estado para armazenar o valor formatado exibido no input
+  const [displayValue, setDisplayValue] = useState<string>("");
+  // Estado para armazenar o valor numérico sem pontos (para busca)
+  const [ncmInput, setNcmInput] = useState<string>("");
   const [helpText, setHelpText] = useState<string>("");
   const [isValidNcm, setIsValidNcm] = useState<boolean>(true);
   const [maskType, setMaskType] = useState<
     "capitulo" | "posicao" | "subposicao" | "item_completo" | null
   >(null);
 
-  // Função para aplicar a máscara ao NCM
-  const applyNcmMask = (value: string) => {
-    // Remove caracteres não numéricos
-    const numericValue = value.replace(/\D/g, "");
-    // Limita a 8 dígitos
-    return numericValue.slice(0, 8);
+  // Função para remover pontos e caracteres não numéricos
+  const stripNonNumeric = (value: string): string => {
+    return value.replace(/\D/g, "");
   };
 
+  // Função para aplicar a formatação com pontos
+  const formatNcmWithDots = (value: string): string => {
+    const numericValue = stripNonNumeric(value);
+    if (!numericValue) return "";
+
+    let formattedValue = "";
+
+    if (numericValue.length >= 1) {
+      // Adiciona os primeiros 4 dígitos (posição)
+      formattedValue = numericValue.substring(0, 4);
+
+      // Se tiver 5 ou mais dígitos, adiciona o primeiro ponto e os próximos 2 dígitos
+      if (numericValue.length >= 5) {
+        formattedValue += "." + numericValue.substring(4, 6);
+
+        // Se tiver 7 ou mais dígitos, adiciona o segundo ponto e os últimos 2 dígitos
+        if (numericValue.length >= 7) {
+          formattedValue += "." + numericValue.substring(6, 8);
+        }
+      }
+    }
+
+    return formattedValue;
+  };
+
+  // Inicializa o campo com o NCM formatado, se fornecido
+  useEffect(() => {
+    if (ncm) {
+      const numericNcm = stripNonNumeric(ncm);
+      setNcmInput(numericNcm);
+      setDisplayValue(formatNcmWithDots(numericNcm));
+    }
+  }, [ncm]);
+
   // Função para validar o formato do NCM
-  const validateNcmFormat = (value: string) => {
+  const validateNcmFormat = (value: string): boolean => {
+    const numericValue = stripNonNumeric(value);
     const validLengths = [2, 4, 6, 8];
-    return validLengths.includes(value.length) || value.length === 0;
+    return (
+      validLengths.includes(numericValue.length) || numericValue.length === 0
+    );
   };
 
   // Função para atualizar o texto de ajuda e o tipo de máscara com base no comprimento do NCM
-  const updateHelpTextAndMaskType = (value: string) => {
-    if (!value) {
+  const updateHelpTextAndMaskType = (value: string): void => {
+    const numericValue = stripNonNumeric(value);
+    if (!numericValue) {
       setHelpText("");
       setMaskType(null);
       return;
     }
 
-    switch (value.length) {
+    switch (numericValue.length) {
       case 2:
         setHelpText("Busca por Capítulo");
         setMaskType("capitulo");
@@ -72,12 +110,21 @@ const InfoBasicas: React.FC<InfoBasicasProps> = ({
     updateHelpTextAndMaskType(ncmInput);
   }, [ncmInput]);
 
-  const handleNcmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const maskedValue = applyNcmMask(e.target.value);
-    setNcmInput(maskedValue);
+  const handleNcmChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const inputValue = e.target.value;
+    // Remover todos os caracteres não numéricos
+    const numericValue = stripNonNumeric(inputValue);
+    // Limitar a 8 dígitos
+    const limitedValue = numericValue.slice(0, 8);
+
+    // Atualizar o estado numérico (para busca)
+    setNcmInput(limitedValue);
+
+    // Atualizar o valor exibido com a formatação
+    setDisplayValue(formatNcmWithDots(limitedValue));
   };
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter" && isValidNcm && ncmInput.length > 0) {
       e.preventDefault();
 
@@ -127,13 +174,12 @@ const InfoBasicas: React.FC<InfoBasicasProps> = ({
           <div className="ncm-input-container">
             <input
               type="text"
-              value={ncmInput}
+              value={displayValue}
               onChange={handleNcmChange}
               onKeyPress={handleKeyPress}
               className={`ncm-input ${!isValidNcm ? "ncm-input-error" : ""}`}
-              placeholder="Digite o código NCM (2, 4, 6 ou 8 dígitos)"
-              pattern="\d{2}|\d{4}|\d{6}|\d{8}"
-              title="Insira 2, 4, 6 ou 8 dígitos"
+              placeholder="XXXX.XX.XX"
+              title="Insira 2 (Capítulo), 4 (Posição), 6 (Subposição) ou 8 (Item Completo) dígitos"
             />
             <div className="ncm-icon">
               <BsSearch />

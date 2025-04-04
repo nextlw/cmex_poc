@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ncm_attributes_integration.md</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+html,footer,header{
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Custom MD PDF CSS
+ */
+html,footer,header{
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+
+ }
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+<link rel="stylesheet" href="file:///Users/williamduarte/Pesquisa_CMEX/cmex_poc/R%3A%5C2.Travail%5C1.Enseignement%5CCours%5C_1.Outils%5C2.Developpement%5C1.SCSS%5Cmain.css" type="text/css"><link rel="stylesheet" href="file:///Users/williamduarte/Pesquisa_CMEX/cmex_poc/D%3A%5Crdaros%5CCours%5C_1.Outils%5C2.Developpement%5C1.SCSS%5Cmain.css" type="text/css">
+</head>
+
+<body>
+    <h1 id="integra%C3%A7%C3%A3o-de-atributos-ncm">Integração de Atributos NCM</h1>
+<p>Este documento contém a especificação técnica e prompts para implementação da funcionalidade de consulta e exibição de atributos NCM no sistema.</p>
+<h2 id="sum%C3%A1rio">Sumário</h2>
+<ol>
+<li><a href="#vis%C3%A3o-geral">Visão Geral</a></li>
+<li><a href="#arquitetura">Arquitetura</a></li>
+<li><a href="#prompts-de-implementa%C3%A7%C3%A3o">Prompts de Implementação</a>
+<ul>
+<li><a href="#backend-fastapi">Backend (FastAPI)</a></li>
+<li><a href="#frontend-react">Frontend (React)</a></li>
+</ul>
+</li>
+<li><a href="#esquema-de-banco-de-dados">Esquema de Banco de Dados</a></li>
+<li><a href="#fluxos-de-dados">Fluxos de Dados</a></li>
+</ol>
+<h2 id="vis%C3%A3o-geral">Visão Geral</h2>
+<p>A funcionalidade de atributos NCM permite consultar e exibir atributos específicos associados a códigos NCM. Estes atributos representam características específicas que produtos classificados sob determinada NCM devem informar para conformidade com exigências de órgãos reguladores (ANVISA, RECEITA, etc.).</p>
+<p>A implementação envolve:</p>
+<ol>
+<li>Carregar e consultar dados de atributos do arquivo JSON existente</li>
+<li>Implementar um endpoint para buscar atributos por código NCM</li>
+<li>Modificar o componente <code>TagAtributo</code> para exibir detalhes visuais dos atributos</li>
+<li>Integrar esta funcionalidade ao fluxo de consulta existente</li>
+</ol>
+<h2 id="arquitetura">Arquitetura</h2>
+<pre class="hljs"><code><div>graph TD
+    A[Cliente] --&gt;|1. Consulta NCM| B[FastAPI]
+    B --&gt;|2. Processa consulta| C[Modelo IA]
+    C --&gt;|3. Retorna NCM sugerida| B
+    B --&gt;|4. Consulta Atributos NCM| D[Serviço Atributos]
+    D --&gt;|5. Carrega do JSON| E[(Arquivo atributos.json)]
+    D --&gt;|6. Retorna atributos| B
+    B --&gt;|7. Resposta completa| A
+    A --&gt;|8. Exibe atributos| F[TagAtributo Component]
+</div></code></pre>
+<h2 id="prompts-de-implementa%C3%A7%C3%A3o">Prompts de Implementação</h2>
+<h3 id="backend-fastapi">Backend (FastAPI)</h3>
+<h4 id="prompt-1-servi%C3%A7o-de-atributos-ncm">Prompt 1: Serviço de Atributos NCM</h4>
+<pre class="hljs"><code><div><span class="hljs-meta">@fastapi</span>
+<span class="hljs-comment"># Crie um serviço para gerenciar atributos NCM em app/services/ncm_attributes_service.py</span>
+
+<span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> Dict, List, Optional, Any
+<span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NCMAttributesService</span>:</span>
+    <span class="hljs-string">"""Serviço para gerenciar atributos NCM."""</span>
+
+    _instance = <span class="hljs-literal">None</span>
+    _attributes_data = <span class="hljs-literal">None</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__new__</span><span class="hljs-params">(cls)</span>:</span>
+        <span class="hljs-string">"""Implementa padrão Singleton."""</span>
+        <span class="hljs-keyword">if</span> cls._instance <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+            cls._instance = super(NCMAttributesService, cls).__new__(cls)
+        <span class="hljs-keyword">return</span> cls._instance
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self)</span>:</span>
+        <span class="hljs-string">"""Inicializa o serviço se ainda não foi inicializado."""</span>
+        <span class="hljs-keyword">if</span> NCMAttributesService._attributes_data <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+            self._load_attributes()
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_load_attributes</span><span class="hljs-params">(self)</span>:</span>
+        <span class="hljs-string">"""Carrega os dados de atributos do arquivo JSON."""</span>
+        <span class="hljs-keyword">try</span>:
+            <span class="hljs-comment"># Caminho para o arquivo de atributos</span>
+            file_path = Path(__file__).parent.parent / <span class="hljs-string">"schemas"</span> / <span class="hljs-string">"atributos"</span> / <span class="hljs-string">"atributos.json"</span>
+
+            <span class="hljs-comment"># Verifica se o arquivo existe</span>
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> file_path.exists():
+                print(<span class="hljs-string">f"Arquivo de atributos não encontrado em: <span class="hljs-subst">{file_path}</span>"</span>)
+                NCMAttributesService._attributes_data = {<span class="hljs-string">"attributes"</span>: [], <span class="hljs-string">"ncm_map"</span>: {}}
+                <span class="hljs-keyword">return</span>
+
+            <span class="hljs-comment"># Carrega o arquivo JSON</span>
+            <span class="hljs-keyword">with</span> open(file_path, <span class="hljs-string">"r"</span>, encoding=<span class="hljs-string">"utf-8"</span>) <span class="hljs-keyword">as</span> f:
+                data = json.load(f)
+
+            <span class="hljs-comment"># Estrutura esperada: um objeto com uma lista de atributos</span>
+            attributes = data.get(<span class="hljs-string">"attributes"</span>, [])
+
+            <span class="hljs-comment"># Criar um mapa para acesso rápido: NCM -&gt; lista de atributos</span>
+            ncm_map = {}
+
+            <span class="hljs-comment"># <span class="hljs-doctag">TODO:</span> Processar o arquivo conforme sua estrutura real</span>
+            <span class="hljs-comment"># Este é um exemplo genérico que você precisará adaptar</span>
+            <span class="hljs-comment"># à estrutura real do arquivo atributos.json</span>
+
+            NCMAttributesService._attributes_data = {
+                <span class="hljs-string">"attributes"</span>: attributes,
+                <span class="hljs-string">"ncm_map"</span>: ncm_map
+            }
+
+            print(<span class="hljs-string">f"Carregados <span class="hljs-subst">{len(attributes)}</span> atributos NCM"</span>)
+
+        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
+            print(<span class="hljs-string">f"Erro ao carregar atributos NCM: <span class="hljs-subst">{str(e)}</span>"</span>)
+            NCMAttributesService._attributes_data = {<span class="hljs-string">"attributes"</span>: [], <span class="hljs-string">"ncm_map"</span>: {}}
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_attributes_for_ncm</span><span class="hljs-params">(self, ncm_code: str)</span> -&gt; List[Dict[str, Any]]:</span>
+        <span class="hljs-string">"""
+        Obtém atributos para um código NCM específico.
+
+        Args:
+            ncm_code: Código NCM para buscar atributos
+
+        Returns:
+            Lista de atributos para o NCM especificado
+        """</span>
+        <span class="hljs-comment"># Remove pontos e traços do código NCM para normalização</span>
+        normalized_ncm = ncm_code.replace(<span class="hljs-string">"."</span>, <span class="hljs-string">""</span>).replace(<span class="hljs-string">"-"</span>, <span class="hljs-string">""</span>)
+
+        <span class="hljs-comment"># Busca no mapa de NCM</span>
+        attributes = self._attributes_data[<span class="hljs-string">"ncm_map"</span>].get(normalized_ncm, [])
+
+        <span class="hljs-comment"># Se não encontrar, pode implementar uma lógica de fallback</span>
+        <span class="hljs-comment"># Por exemplo, buscar pelos primeiros dígitos</span>
+
+        <span class="hljs-keyword">return</span> attributes
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_attribute_by_code</span><span class="hljs-params">(self, attribute_code: str)</span> -&gt; Optional[Dict[str, Any]]:</span>
+        <span class="hljs-string">"""
+        Obtém um atributo específico pelo código.
+
+        Args:
+            attribute_code: Código do atributo para buscar
+
+        Returns:
+            Atributo encontrado ou None
+        """</span>
+        <span class="hljs-comment"># Busca na lista de atributos</span>
+        <span class="hljs-keyword">for</span> attr <span class="hljs-keyword">in</span> self._attributes_data[<span class="hljs-string">"attributes"</span>]:
+            <span class="hljs-keyword">if</span> attr.get(<span class="hljs-string">"codigo"</span>) == attribute_code:
+                <span class="hljs-keyword">return</span> attr
+
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
+
+<span class="hljs-comment"># Inicialização do serviço</span>
+ncm_attributes_service = NCMAttributesService()
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_ncm_attributes_service</span><span class="hljs-params">()</span> -&gt; NCMAttributesService:</span>
+    <span class="hljs-string">"""Factory function para injeção de dependência."""</span>
+    <span class="hljs-keyword">return</span> ncm_attributes_service
+</div></code></pre>
+<h4 id="prompt-2-schemas-pydantic">Prompt 2: Schemas Pydantic</h4>
+<pre class="hljs"><code><div><span class="hljs-meta">@fastapi</span>
+<span class="hljs-comment"># Crie schemas para atributos NCM em app/models/ncm_attribute_schemas.py</span>
+
+<span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> List, Optional, Union, Dict, Any
+<span class="hljs-keyword">from</span> pydantic <span class="hljs-keyword">import</span> BaseModel, Field
+<span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> date
+<span class="hljs-keyword">from</span> enum <span class="hljs-keyword">import</span> Enum
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FormaPreenchimento</span><span class="hljs-params">(str, Enum)</span>:</span>
+    <span class="hljs-string">"""Enumeração para as formas de preenchimento de atributos."""</span>
+    LISTA_ESTATICA = <span class="hljs-string">"LISTA_ESTATICA"</span>
+    BOOLEANO = <span class="hljs-string">"BOOLEANO"</span>
+    DATA = <span class="hljs-string">"DATA"</span>
+    DATA_HORA = <span class="hljs-string">"DATA_HORA"</span>
+    NUMERO_INTEIRO = <span class="hljs-string">"NUMERO_INTEIRO"</span>
+    NUMERO_REAL = <span class="hljs-string">"NUMERO_REAL"</span>
+    TEXTO = <span class="hljs-string">"TEXTO"</span>
+    DOMINIO_DINAMICO = <span class="hljs-string">"DOMINIO_DINAMICO"</span>
+    COMPOSTO = <span class="hljs-string">"COMPOSTO"</span>
+    LISTA_TABX_FILTRO = <span class="hljs-string">"LISTA_TABX_FILTRO"</span>
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Modalidade</span><span class="hljs-params">(str, Enum)</span>:</span>
+    <span class="hljs-string">"""Enumeração para as modalidades de operação."""</span>
+    IMPORTACAO = <span class="hljs-string">"IMPORTACAO"</span>
+    EXPORTACAO = <span class="hljs-string">"EXPORTACAO"</span>
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DominioItem</span><span class="hljs-params">(BaseModel)</span>:</span>
+    <span class="hljs-string">"""Item do domínio de um atributo."""</span>
+    codigo: str
+    descricao: str
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Objetivo</span><span class="hljs-params">(BaseModel)</span>:</span>
+    <span class="hljs-string">"""Objetivo de um atributo."""</span>
+    codigo: int
+    descricao: str
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Condicao</span><span class="hljs-params">(BaseModel)</span>:</span>
+    <span class="hljs-string">"""Condição para um atributo condicionado."""</span>
+    operador: Optional[str] = <span class="hljs-literal">None</span>
+    valor: Optional[str] = <span class="hljs-literal">None</span>
+    composicao: Optional[str] = <span class="hljs-literal">None</span>
+    condicao: Optional[<span class="hljs-string">"Condicao"</span>] = <span class="hljs-literal">None</span>
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AtributoNcmBase</span><span class="hljs-params">(BaseModel)</span>:</span>
+    <span class="hljs-string">"""Modelo base para atributos NCM."""</span>
+    codigo: str
+    nome: Optional[str] = <span class="hljs-literal">None</span>
+    nomeApresentacao: str
+    orientacaoPreenchimento: Optional[str] = <span class="hljs-literal">None</span>
+    formaPreenchimento: FormaPreenchimento
+    tamanhoMaximo: Optional[int] = <span class="hljs-literal">None</span>
+    mascara: Optional[str] = <span class="hljs-literal">None</span>
+    casasDecimais: Optional[int] = <span class="hljs-literal">None</span>
+    modalidade: Optional[str] = <span class="hljs-literal">None</span>
+    obrigatorio: bool = <span class="hljs-literal">False</span>
+    dataInicioVigencia: Union[str, date]
+    dataFimVigencia: Optional[Union[str, date]] = <span class="hljs-literal">None</span>
+    informacaoAdicional: Optional[str] = <span class="hljs-literal">None</span>
+    dominio: List[DominioItem] = Field(default_factory=list)
+    objetivos: List[Objetivo] = Field(default_factory=list)
+    orgaos: List[str] = Field(default_factory=list)
+    atributoCondicionante: bool = <span class="hljs-literal">False</span>
+    multivalorado: bool = <span class="hljs-literal">False</span>
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AtributoNcm</span><span class="hljs-params">(AtributoNcmBase)</span>:</span>
+    <span class="hljs-string">"""Modelo completo para atributos NCM."""</span>
+    condicionados: List[<span class="hljs-string">"AtributoCondicionado"</span>] = Field(default_factory=list)
+    listaSubatributos: List[<span class="hljs-string">"AtributoNcm"</span>] = Field(default_factory=list)
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AtributoCondicionado</span><span class="hljs-params">(BaseModel)</span>:</span>
+    <span class="hljs-string">"""Atributo condicionado por outro atributo."""</span>
+    obrigatorio: bool = <span class="hljs-literal">False</span>
+    multivalorado: bool = <span class="hljs-literal">False</span>
+    dataInicioVigencia: Union[str, date]
+    dataFimVigencia: Optional[Union[str, date]] = <span class="hljs-literal">None</span>
+    descricaoCondicao: Optional[str] = <span class="hljs-literal">None</span>
+    condicao: Optional[Condicao] = <span class="hljs-literal">None</span>
+    atributo: AtributoNcm
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NcmAttributesResponse</span><span class="hljs-params">(BaseModel)</span>:</span>
+    <span class="hljs-string">"""Resposta para consulta de atributos NCM."""</span>
+    codigoNcm: str
+    listaAtributos: List[AtributoNcm] = Field(default_factory=list)
+
+
+<span class="hljs-comment"># Resolver referências circulares</span>
+AtributoNcm.update_forward_refs()
+AtributoCondicionado.update_forward_refs()
+Condicao.update_forward_refs()
+</div></code></pre>
+<h4 id="prompt-3-router-ncm-attributes">Prompt 3: Router NCM Attributes</h4>
+<pre class="hljs"><code><div><span class="hljs-meta">@fastapi</span>
+<span class="hljs-comment"># Crie um router para atributos NCM em app/routes/ncm_attributes.py</span>
+
+<span class="hljs-keyword">from</span> fastapi <span class="hljs-keyword">import</span> APIRouter, Depends, HTTPException, Query, Path
+<span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> List, Optional
+<span class="hljs-keyword">import</span> logging
+
+<span class="hljs-keyword">from</span> ..models.ncm_attribute_schemas <span class="hljs-keyword">import</span> AtributoNcm, NcmAttributesResponse
+<span class="hljs-keyword">from</span> ..services.ncm_attributes_service <span class="hljs-keyword">import</span> get_ncm_attributes_service, NCMAttributesService
+
+<span class="hljs-comment"># Configurar logger</span>
+logger = logging.getLogger(__name__)
+
+<span class="hljs-comment"># Criar router</span>
+ncm_attributes_router = APIRouter(tags=[<span class="hljs-string">"NCM Attributes"</span>])
+
+
+<span class="hljs-meta">@ncm_attributes_router.get("/ncm/{ncm_code}/attributes",</span>
+                          response_model=NcmAttributesResponse,
+                          summary=<span class="hljs-string">"Consulta atributos associados a um código NCM"</span>)
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_ncm_attributes</span><span class="hljs-params">(
+    ncm_code: str = Path<span class="hljs-params">(..., description=<span class="hljs-string">"Código NCM para consultar atributos"</span>)</span>,
+    modalidade: Optional[str] = Query<span class="hljs-params">(None, description=<span class="hljs-string">"Modalidade (IMPORTACAO/EXPORTACAO)"</span>)</span>,
+    objetivos: Optional[List[str]] = Query<span class="hljs-params">(None, description=<span class="hljs-string">"Lista de objetivos"</span>)</span>,
+    orgaos: Optional[List[str]] = Query<span class="hljs-params">(None, description=<span class="hljs-string">"Lista de órgãos"</span>)</span>,
+    service: NCMAttributesService = Depends<span class="hljs-params">(get_ncm_attributes_service)</span>
+)</span>:</span>
+    <span class="hljs-string">"""
+    Consulta os atributos associados a um código NCM específico.
+
+    - **ncm_code**: Código NCM no formato XX.XX.XX.XX ou XXXXXXXX
+    - **modalidade**: Filtrar por modalidade (IMPORTACAO/EXPORTACAO)
+    - **objetivos**: Filtrar por objetivos (ex: PRODUTO, TRATAMENTO_ADMINISTRATIVO)
+    - **orgaos**: Filtrar por órgãos demandantes (ex: ANVISA, RECEITA)
+    """</span>
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-comment"># Obter atributos do serviço</span>
+        attributes = service.get_attributes_for_ncm(ncm_code)
+
+        <span class="hljs-comment"># Aplicar filtros se fornecidos</span>
+        <span class="hljs-keyword">if</span> modalidade:
+            attributes = [attr <span class="hljs-keyword">for</span> attr <span class="hljs-keyword">in</span> attributes <span class="hljs-keyword">if</span> attr.get(<span class="hljs-string">"modalidade"</span>) == modalidade]
+
+        <span class="hljs-keyword">if</span> objetivos:
+            filtered_attrs = []
+            <span class="hljs-keyword">for</span> attr <span class="hljs-keyword">in</span> attributes:
+                attr_objetivos = [obj.get(<span class="hljs-string">"descricao"</span>) <span class="hljs-keyword">for</span> obj <span class="hljs-keyword">in</span> attr.get(<span class="hljs-string">"objetivos"</span>, [])]
+                <span class="hljs-keyword">if</span> any(obj <span class="hljs-keyword">in</span> objetivos <span class="hljs-keyword">for</span> obj <span class="hljs-keyword">in</span> attr_objetivos):
+                    filtered_attrs.append(attr)
+            attributes = filtered_attrs
+
+        <span class="hljs-keyword">if</span> orgaos:
+            attributes = [attr <span class="hljs-keyword">for</span> attr <span class="hljs-keyword">in</span> attributes <span class="hljs-keyword">if</span> any(org <span class="hljs-keyword">in</span> attr.get(<span class="hljs-string">"orgaos"</span>, []) <span class="hljs-keyword">for</span> org <span class="hljs-keyword">in</span> orgaos)]
+
+        <span class="hljs-comment"># Construir resposta</span>
+        response = NcmAttributesResponse(
+            codigoNcm=ncm_code,
+            listaAtributos=attributes
+        )
+
+        <span class="hljs-keyword">return</span> response
+
+    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
+        logger.error(<span class="hljs-string">f"Erro ao consultar atributos para NCM <span class="hljs-subst">{ncm_code}</span>: <span class="hljs-subst">{str(e)}</span>"</span>)
+        <span class="hljs-keyword">raise</span> HTTPException(
+            status_code=<span class="hljs-number">500</span>,
+            detail=<span class="hljs-string">f"Erro ao consultar atributos para NCM <span class="hljs-subst">{ncm_code}</span>: <span class="hljs-subst">{str(e)}</span>"</span>
+        )
+
+
+<span class="hljs-meta">@ncm_attributes_router.get("/attribute/{attribute_code}",</span>
+                          response_model=AtributoNcm,
+                          summary=<span class="hljs-string">"Consulta detalhes de um atributo específico"</span>)
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_attribute_details</span><span class="hljs-params">(
+    attribute_code: str = Path<span class="hljs-params">(..., description=<span class="hljs-string">"Código do atributo"</span>)</span>,
+    service: NCMAttributesService = Depends<span class="hljs-params">(get_ncm_attributes_service)</span>
+)</span>:</span>
+    <span class="hljs-string">"""
+    Consulta os detalhes de um atributo específico pelo código.
+
+    - **attribute_code**: Código do atributo (ex: ATT_2386)
+    """</span>
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-comment"># Obter atributo do serviço</span>
+        attribute = service.get_attribute_by_code(attribute_code)
+
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> attribute:
+            <span class="hljs-keyword">raise</span> HTTPException(
+                status_code=<span class="hljs-number">404</span>,
+                detail=<span class="hljs-string">f"Atributo com código <span class="hljs-subst">{attribute_code}</span> não encontrado"</span>
+            )
+
+        <span class="hljs-keyword">return</span> attribute
+
+    <span class="hljs-keyword">except</span> HTTPException:
+        <span class="hljs-keyword">raise</span>
+    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
+        logger.error(<span class="hljs-string">f"Erro ao consultar atributo <span class="hljs-subst">{attribute_code}</span>: <span class="hljs-subst">{str(e)}</span>"</span>)
+        <span class="hljs-keyword">raise</span> HTTPException(
+            status_code=<span class="hljs-number">500</span>,
+            detail=<span class="hljs-string">f"Erro ao consultar atributo <span class="hljs-subst">{attribute_code}</span>: <span class="hljs-subst">{str(e)}</span>"</span>
+        )
+</div></code></pre>
+<h4 id="prompt-4-atualiza%C3%A7%C3%A3o-do-mainpy">Prompt 4: Atualização do main.py</h4>
+<pre class="hljs"><code><div><span class="hljs-meta">@fastapi</span>
+<span class="hljs-comment"># Atualize app/main.py para incluir o novo router</span>
+
+<span class="hljs-comment"># Adicione a importação</span>
+<span class="hljs-keyword">from</span> .routes.ncm_attributes <span class="hljs-keyword">import</span> ncm_attributes_router
+
+<span class="hljs-comment"># Na seção onde os routers são incluídos</span>
+<span class="hljs-comment"># (provavelmente próximo a app.include_router(queries_router, prefix=SETTINGS.API_V1_STR))</span>
+app.include_router(ncm_attributes_router, prefix=SETTINGS.API_V1_STR)
+</div></code></pre>
+<h4 id="prompt-5-integra%C3%A7%C3%A3o-com-o-fluxo-principal">Prompt 5: Integração com o Fluxo Principal</h4>
+<pre class="hljs"><code><div><span class="hljs-meta">@fastapi</span>
+<span class="hljs-comment"># Modifique app/routes/queries/__init__.py para integrar os atributos NCM</span>
+<span class="hljs-comment"># Encontre a função que retorna a resposta da consulta NCM e adicione:</span>
+
+<span class="hljs-comment"># Adicione a importação</span>
+<span class="hljs-keyword">from</span> ...services.ncm_attributes_service <span class="hljs-keyword">import</span> get_ncm_attributes_service
+
+<span class="hljs-comment"># Na função que processa a consulta e retorna a resposta NCM</span>
+<span class="hljs-comment"># (provavelmente uma função como direct_queries ou similar)</span>
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">direct_queries</span><span class="hljs-params">(request: Request)</span>:</span>
+    <span class="hljs-comment"># ... código existente ...</span>
+
+    <span class="hljs-comment"># Após obter a sugestao_ncm</span>
+
+    <span class="hljs-comment"># Adicionar atributos NCM à resposta</span>
+    <span class="hljs-keyword">if</span> sugestao_ncm <span class="hljs-keyword">and</span> len(sugestao_ncm) &gt; <span class="hljs-number">0</span>:
+        <span class="hljs-keyword">try</span>:
+            <span class="hljs-comment"># Obter o serviço de atributos NCM</span>
+            ncm_attributes_service = get_ncm_attributes_service()
+
+            <span class="hljs-comment"># Para cada sugestão, adicionar os atributos</span>
+            <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> sugestao_ncm:
+                ncm_code = item.get(<span class="hljs-string">"ncm"</span>, <span class="hljs-string">""</span>).replace(<span class="hljs-string">"."</span>, <span class="hljs-string">""</span>).strip()
+                <span class="hljs-keyword">if</span> ncm_code:
+                    <span class="hljs-comment"># Buscar atributos para este NCM</span>
+                    attributes = ncm_attributes_service.get_attributes_for_ncm(ncm_code)
+
+                    <span class="hljs-comment"># Adicionar ao item de resposta</span>
+                    item[<span class="hljs-string">"atributos_detalhados"</span>] = attributes
+                <span class="hljs-keyword">else</span>:
+                    item[<span class="hljs-string">"atributos_detalhados"</span>] = []
+        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
+            print(<span class="hljs-string">f"Erro ao buscar atributos NCM: <span class="hljs-subst">{str(e)}</span>"</span>)
+            <span class="hljs-comment"># Não interrompe o fluxo principal</span>
+            <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> sugestao_ncm:
+                item[<span class="hljs-string">"atributos_detalhados"</span>] = []
+
+    <span class="hljs-comment"># ... resto do código ...</span>
+
+    <span class="hljs-keyword">return</span> sugestao_ncm
+
+<span class="hljs-comment"># No DeepResearch, na função que monta o relatório final:</span>
+<span class="hljs-comment"># (procure por handleCompletedProcess ou função similar)</span>
+
+<span class="hljs-comment"># Adicione a busca de atributos ao relatório final</span>
+<span class="hljs-keyword">if</span> data.finalNcm <span class="hljs-keyword">or</span> ncmCode:
+    ncm_to_use = data.finalNcm <span class="hljs-keyword">or</span> ncmCode
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-comment"># Obter o serviço de atributos NCM</span>
+        ncm_attributes_service = get_ncm_attributes_service()
+
+        <span class="hljs-comment"># Buscar atributos para este NCM</span>
+        attributes = ncm_attributes_service.get_attributes_for_ncm(ncm_to_use)
+
+        <span class="hljs-comment"># Adicionar ao relatório final</span>
+        report[<span class="hljs-string">"detailedAttributes"</span>] = attributes
+    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
+        print(<span class="hljs-string">f"Erro ao buscar atributos NCM para relatório: <span class="hljs-subst">{str(e)}</span>"</span>)
+        report[<span class="hljs-string">"detailedAttributes"</span>] = []
+<span class="hljs-keyword">else</span>:
+    report[<span class="hljs-string">"detailedAttributes"</span>] = []
+</div></code></pre>
+<h3 id="frontend-react">Frontend (React)</h3>
+<h4 id="prompt-6-tipo-atributoncm-em-typescript">Prompt 6: Tipo AtributoNCM em TypeScript</h4>
+<pre class="hljs"><code><div><span class="hljs-meta">@frontend</span>
+<span class="hljs-comment">// Crie um arquivo de tipos em src/types/AtributoNCM.ts</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> DominioItem = {
+  codigo: <span class="hljs-built_in">string</span>;
+  descricao: <span class="hljs-built_in">string</span>;
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> Objetivo = {
+  codigo: <span class="hljs-built_in">number</span>;
+  descricao: <span class="hljs-built_in">string</span>;
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> Condicao = {
+  operador?: <span class="hljs-built_in">string</span>;
+  valor?: <span class="hljs-built_in">string</span>;
+  composicao?: <span class="hljs-built_in">string</span>;
+  condicao?: Condicao;
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> AtributoBase = {
+  codigo: <span class="hljs-built_in">string</span>;
+  nome?: <span class="hljs-built_in">string</span>;
+  nomeApresentacao: <span class="hljs-built_in">string</span>;
+  orientacaoPreenchimento?: <span class="hljs-built_in">string</span>;
+  formaPreenchimento: <span class="hljs-built_in">string</span>;
+  tamanhoMaximo?: <span class="hljs-built_in">number</span>;
+  mascara?: <span class="hljs-built_in">string</span>;
+  casasDecimais?: <span class="hljs-built_in">number</span>;
+  modalidade?: <span class="hljs-built_in">string</span>;
+  obrigatorio: <span class="hljs-built_in">boolean</span>;
+  dataInicioVigencia: <span class="hljs-built_in">string</span>;
+  dataFimVigencia?: <span class="hljs-built_in">string</span>;
+  informacaoAdicional?: <span class="hljs-built_in">string</span>;
+  dominio: DominioItem[];
+  objetivos: Objetivo[];
+  orgaos: <span class="hljs-built_in">string</span>[];
+  atributoCondicionante: <span class="hljs-built_in">boolean</span>;
+  multivalorado: <span class="hljs-built_in">boolean</span>;
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> AtributoNCM = AtributoBase &amp; {
+  condicionados: AtributoCondicionado[];
+  listaSubatributos: AtributoNCM[];
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> AtributoCondicionado = {
+  obrigatorio: <span class="hljs-built_in">boolean</span>;
+  multivalorado: <span class="hljs-built_in">boolean</span>;
+  dataInicioVigencia: <span class="hljs-built_in">string</span>;
+  dataFimVigencia?: <span class="hljs-built_in">string</span>;
+  descricaoCondicao?: <span class="hljs-built_in">string</span>;
+  condicao?: Condicao;
+  atributo: AtributoNCM;
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> NCMAttributesResponse = {
+  codigoNcm: <span class="hljs-built_in">string</span>;
+  listaAtributos: AtributoNCM[];
+};
+</div></code></pre>
+<h4 id="prompt-7-modifica%C3%A7%C3%A3o-do-tagatributo">Prompt 7: Modificação do TagAtributo</h4>
+<pre class="hljs"><code><div>@TagAtributo
+// Modifique src/components/TagAtributo/index.tsx
+
+import React from &quot;react&quot;;
+import {
+  TbSitemap,
+  TbListCheck, // Lista estática
+  TbCheckbox, // Booleano
+  TbCalendar, // Data
+  TbClock, // Data/hora
+  TbNumbers, // Número
+  TbSearch, // Domínio dinâmico
+  TbBuildingStore, // Composto
+  TbAlertTriangle, // Obrigatório
+  TbInfoCircle, // Opcional
+  TbTruckImport, // Importação
+  TbTruckExport, // Exportação
+  TbTextRecognition, // Texto
+} from &quot;react-icons/tb&quot;;
+import { IoClose } from &quot;react-icons/io5&quot;;
+import &quot;./styles.css&quot;;
+import { AtributoNCM } from &quot;../../types/AtributoNCM&quot;;
+
+export interface TagAtributoProps {
+  attribute: AtributoNCM; // Atualizado para receber o objeto completo
+  onRemove: (codigo: string) =&gt; void; // Atualizado para receber o código
+}
+
+// Mapeamento de forma de preenchimento para ícone
+const formaPreenchimentoIcon = (forma: string) =&gt; {
+  switch (forma) {
+    case &quot;LISTA_ESTATICA&quot;:
+    case &quot;LISTA_TABX_FILTRO&quot;:
+      return &lt;TbListCheck size={16} title=&quot;Lista de Valores&quot; /&gt;;
+    case &quot;BOOLEANO&quot;:
+      return &lt;TbCheckbox size={16} title=&quot;Sim/Não&quot; /&gt;;
+    case &quot;DATA&quot;:
+      return &lt;TbCalendar size={16} title=&quot;Data&quot; /&gt;;
+    case &quot;DATA_HORA&quot;:
+      return &lt;TbClock size={16} title=&quot;Data e Hora&quot; /&gt;;
+    case &quot;NUMERO_INTEIRO&quot;:
+    case &quot;NUMERO_REAL&quot;:
+      return &lt;TbNumbers size={16} title=&quot;Valor Numérico&quot; /&gt;;
+    case &quot;TEXTO&quot;:
+      return &lt;TbTextRecognition size={16} title=&quot;Texto Livre&quot; /&gt;;
+    case &quot;DOMINIO_DINAMICO&quot;:
+      return &lt;TbSearch size={16} title=&quot;Busca Dinâmica&quot; /&gt;;
+    case &quot;COMPOSTO&quot;:
+      return &lt;TbBuildingStore size={16} title=&quot;Composto&quot; /&gt;;
+    default:
+      return &lt;TbInfoCircle size={16} title={forma} /&gt;;
+  }
+};
+
+// Mapeamento de modalidade para ícone
+const modalidadeIcon = (modalidade?: string) =&gt; {
+  switch (modalidade?.toUpperCase()) {
+    case &quot;IMPORTACAO&quot;:
+      return &lt;TbTruckImport size={16} className=&quot;modalidade-icon&quot; title=&quot;Importação&quot; /&gt;;
+    case &quot;EXPORTACAO&quot;:
+      return &lt;TbTruckExport size={16} className=&quot;modalidade-icon&quot; title=&quot;Exportação&quot; /&gt;;
+    default:
+      return &lt;TbSitemap size={16} className=&quot;modalidade-icon&quot; title=&quot;Modalidade não especificada&quot; /&gt;;
+  }
+};
+
+// Ícone de obrigatoriedade
+const obrigatorioIcon = (obrigatorio: boolean) =&gt; {
+  return obrigatorio ? (
+    &lt;TbAlertTriangle size={16} className=&quot;obrigatorio-icon&quot; title=&quot;Obrigatório&quot; /&gt;
+  ) : (
+    &lt;TbInfoCircle size={16} className=&quot;opcional-icon&quot; title=&quot;Opcional&quot; /&gt;
+  );
+};
+
+const TagAtributo: React.FC&lt;TagAtributoProps&gt; = ({ attribute, onRemove }) =&gt; {
+  return (
+    &lt;li className=&quot;item-atributos flex items-center gap-2 list-none w-fit px-2 py-1&quot;&gt;
+      &lt;div className=&quot;flex items-center gap-1&quot;&gt;
+        {/* Ícone de modalidade */}
+        &lt;span className=&quot;tooltip-container&quot;&gt;
+          {modalidadeIcon(attribute.modalidade)}
+          &lt;span className=&quot;tooltip-text&quot;&gt;{attribute.modalidade || &quot;Modalidade não especificada&quot;}&lt;/span&gt;
+        &lt;/span&gt;
+
+        {/* Nome de apresentação */}
+        &lt;span&gt;{attribute.nomeApresentacao}&lt;/span&gt;
+
+        {/* Ícone de forma de preenchimento */}
+        &lt;span className=&quot;tooltip-container&quot;&gt;
+          {formaPreenchimentoIcon(attribute.formaPreenchimento)}
+          &lt;span className=&quot;tooltip-text&quot;&gt;{attribute.formaPreenchimento}&lt;/span&gt;
+        &lt;/span&gt;
+
+        {/* Ícone de obrigatoriedade */}
+        &lt;span className=&quot;tooltip-container&quot;&gt;
+          {obrigatorioIcon(attribute.obrigatorio)}
+          &lt;span className=&quot;tooltip-text&quot;&gt;{attribute.obrigatorio ? &quot;Obrigatório&quot; : &quot;Opcional&quot;}&lt;/span&gt;
+        &lt;/span&gt;
+      &lt;/div&gt;
+
+      {/* Botão de remover */}
+      &lt;button onClick={() =&gt; onRemove(attribute.codigo)}&gt;
+        &lt;IoClose /&gt;
+      &lt;/button&gt;
+    &lt;/li&gt;
+  );
+};
+
+export default TagAtributo;
+</div></code></pre>
+<h4 id="prompt-8-estilos-css-para-tagatributo">Prompt 8: Estilos CSS para TagAtributo</h4>
+<pre class="hljs"><code><div><span class="hljs-keyword">@tagatributo</span> /styles.css
+/* Modifique src/components/TagAtributo/styles.css */
+
+.item-atributos {
+  <span class="hljs-selector-tag">background-color</span>: <span class="hljs-selector-id">#f0f0f0</span>;
+  <span class="hljs-selector-tag">border-radius</span>: 4<span class="hljs-selector-tag">px</span>;
+  <span class="hljs-selector-tag">margin-right</span>: 8<span class="hljs-selector-tag">px</span>;
+  <span class="hljs-selector-tag">margin-bottom</span>: 8<span class="hljs-selector-tag">px</span>;
+  <span class="hljs-selector-tag">transition</span>: <span class="hljs-selector-tag">all</span> 0<span class="hljs-selector-class">.2s</span>;
+}
+
+<span class="hljs-selector-class">.item-atributos</span><span class="hljs-selector-pseudo">:hover</span> {
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#e5e5e5</span>;
+}
+
+<span class="hljs-selector-class">.item-atributos</span> <span class="hljs-selector-tag">button</span> {
+  <span class="hljs-attribute">background</span>: none;
+  <span class="hljs-attribute">border</span>: none;
+  <span class="hljs-attribute">cursor</span>: pointer;
+  <span class="hljs-attribute">display</span>: flex;
+  <span class="hljs-attribute">align-items</span>: center;
+  <span class="hljs-attribute">justify-content</span>: center;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#666</span>;
+}
+
+<span class="hljs-selector-class">.item-atributos</span> <span class="hljs-selector-tag">button</span><span class="hljs-selector-pseudo">:hover</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#ff4d4f</span>;
+}
+
+<span class="hljs-comment">/* Tooltip para ícones */</span>
+<span class="hljs-selector-class">.tooltip-container</span> {
+  <span class="hljs-attribute">position</span>: relative;
+  <span class="hljs-attribute">display</span>: inline-flex;
+  <span class="hljs-attribute">align-items</span>: center;
+}
+
+<span class="hljs-selector-class">.tooltip-text</span> {
+  <span class="hljs-attribute">visibility</span>: hidden;
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#000</span>;
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#fff</span>;
+  <span class="hljs-attribute">text-align</span>: center;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">4px</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">5px</span> <span class="hljs-number">8px</span>;
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">z-index</span>: <span class="hljs-number">1</span>;
+  <span class="hljs-attribute">bottom</span>: <span class="hljs-number">125%</span>;
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">50%</span>;
+  <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateX</span>(-<span class="hljs-number">50%</span>);
+  <span class="hljs-attribute">white-space</span>: nowrap;
+  <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">transition</span>: opacity <span class="hljs-number">0.3s</span>;
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">12px</span>;
+  <span class="hljs-attribute">line-height</span>: <span class="hljs-number">1.2</span>;
+}
+
+<span class="hljs-selector-class">.tooltip-container</span><span class="hljs-selector-pseudo">:hover</span> <span class="hljs-selector-class">.tooltip-text</span> {
+  <span class="hljs-attribute">visibility</span>: visible;
+  <span class="hljs-attribute">opacity</span>: <span class="hljs-number">1</span>;
+}
+
+<span class="hljs-comment">/* Estilos para ícones específicos */</span>
+<span class="hljs-selector-class">.modalidade-icon</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#1890ff</span>;
+}
+
+<span class="hljs-selector-class">.obrigatorio-icon</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#ff4d4f</span>;
+}
+
+<span class="hljs-selector-class">.opcional-icon</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#52c41a</span>;
+}
+
+<span class="hljs-comment">/* Estilos para dark mode */</span>
+<span class="hljs-keyword">@media</span> (<span class="hljs-attribute">prefers-color-scheme:</span> dark) {
+  <span class="hljs-selector-class">.item-atributos</span> {
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#262626</span>;
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#fff</span>;
+  }
+
+  <span class="hljs-selector-class">.item-atributos</span><span class="hljs-selector-pseudo">:hover</span> {
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#303030</span>;
+  }
+
+  <span class="hljs-selector-class">.item-atributos</span> <span class="hljs-selector-tag">button</span> {
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#a6a6a6</span>;
+  }
+
+  <span class="hljs-selector-class">.tooltip-text</span> {
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#000</span>;
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#fff</span>;
+  }
+}
+</div></code></pre>
+<h4 id="prompt-9-integra%C3%A7%C3%A3o-no-frontend-deepresearchsidebar">Prompt 9: Integração no Frontend (DeepResearchSidebar)</h4>
+<pre class="hljs"><code><div>@DeepResearchSidebar
+// Modifique o componente DeepResearchSidebar para exibir os atributos NCM
+
+import { AtributoNCM } from &quot;../../types/AtributoNCM&quot;;
+import TagAtributo from &quot;../TagAtributo&quot;;
+
+// ... resto do código existente
+
+// Adicione um novo estado para os atributos selecionados
+const [selectedAttributes, setSelectedAttributes] = useState&lt;AtributoNCM[]&gt;([]);
+
+// ... em algum lugar após a geração do relatório final
+// ou quando os dados da NCM são recebidos:
+
+// Adicione o processamento de atributos NCM detalhados
+useEffect(() =&gt; {
+  if (finalReport?.detailedAttributes &amp;&amp; finalReport.detailedAttributes.length &gt; 0) {
+    setSelectedAttributes(finalReport.detailedAttributes);
+  }
+}, [finalReport]);
+
+// Adicione uma função para remover atributos da lista
+const handleRemoveAttribute = (codigo: string) =&gt; {
+  setSelectedAttributes(prev =&gt; prev.filter(attr =&gt; attr.codigo !== codigo));
+};
+
+// No JSX, onde você quer exibir os atributos (talvez na seção de detalhes do produto)
+{selectedAttributes.length &gt; 0 &amp;&amp; (
+  &lt;div className=&quot;attributes-section&quot;&gt;
+    &lt;h3&gt;Atributos do Produto&lt;/h3&gt;
+    &lt;div className=&quot;attributes-list&quot;&gt;
+      &lt;ul className=&quot;flex flex-wrap&quot;&gt;
+        {selectedAttributes.map(attr =&gt; (
+          &lt;TagAtributo
+            key={attr.codigo}
+            attribute={attr}
+            onRemove={handleRemoveAttribute}
+          /&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    {/* Opcional: Botão para baixar CSV com os atributos */}
+    &lt;button
+      className=&quot;download-attributes-btn&quot;
+      onClick={() =&gt; handleDownloadAttributes()}
+    &gt;
+      Baixar Atributos (CSV)
+    &lt;/button&gt;
+  &lt;/div&gt;
+)}
+
+// Implemente a função para download de CSV
+const handleDownloadAttributes = () =&gt; {
+  // Criação do conteúdo CSV
+  const headers = [&quot;Código&quot;, &quot;Nome&quot;, &quot;Apresentação&quot;, &quot;Forma&quot;, &quot;Obrigatório&quot;, &quot;Órgãos&quot;];
+
+  const rows = selectedAttributes.map(attr =&gt; [
+    attr.codigo,
+    attr.nome || &quot;&quot;,
+    attr.nomeApresentacao,
+    attr.formaPreenchimento,
+    attr.obrigatorio ? &quot;Sim&quot; : &quot;Não&quot;,
+    attr.orgaos.join(&quot;, &quot;)
+  ]);
+
+  const csvContent = [
+    headers.join(&quot;,&quot;),
+    ...rows.map(row =&gt; row.join(&quot;,&quot;))
+  ].join(&quot;\n&quot;);
+
+  // Criação do link para download
+  const blob = new Blob([csvContent], { type: &quot;text/csv;charset=utf-8;&quot; });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement(&quot;a&quot;);
+  link.setAttribute(&quot;href&quot;, url);
+  link.setAttribute(&quot;download&quot;, `atributos_${finalReport.ncmCode.replace(/\./g, &quot;&quot;)}.csv`);
+  link.style.visibility = &quot;hidden&quot;;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+// ... resto do código existente
+</div></code></pre>
+<h2 id="esquema-de-banco-de-dados">Esquema de Banco de Dados</h2>
+<p>Para implementação no Supabase, sugerimos as seguintes tabelas:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">-- Tabela de atributos NCM</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> public.ncm_attributes (
+    <span class="hljs-keyword">id</span> <span class="hljs-keyword">UUID</span> PRIMARY <span class="hljs-keyword">KEY</span> <span class="hljs-keyword">DEFAULT</span> uuid_generate_v4(),
+    codigo <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">25</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">UNIQUE</span>,
+    nome <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">200</span>),
+    nome_apresentacao <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">40</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+    orientacao_preenchimento <span class="hljs-built_in">TEXT</span>,
+    forma_preenchimento <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+    tamanho_maximo <span class="hljs-built_in">INTEGER</span>,
+    mascara <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">50</span>),
+    casas_decimais <span class="hljs-built_in">INTEGER</span>,
+    modalidade <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">20</span>),
+    obrigatorio <span class="hljs-built_in">BOOLEAN</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">FALSE</span>,
+    data_inicio_vigencia <span class="hljs-built_in">DATE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+    data_fim_vigencia <span class="hljs-built_in">DATE</span>,
+    informacao_adicional <span class="hljs-built_in">TEXT</span>,
+    atributo_condicionante <span class="hljs-built_in">BOOLEAN</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">FALSE</span>,
+    multivalorado <span class="hljs-built_in">BOOLEAN</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">FALSE</span>,
+    created_at <span class="hljs-built_in">TIMESTAMP</span> <span class="hljs-keyword">WITH</span> <span class="hljs-built_in">TIME</span> ZONE <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NOW</span>(),
+    updated_at <span class="hljs-built_in">TIMESTAMP</span> <span class="hljs-keyword">WITH</span> <span class="hljs-built_in">TIME</span> ZONE <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NOW</span>()
+);
+
+<span class="hljs-comment">-- Tabela de relação entre NCM e atributos</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> public.ncm_attribute_relation (
+    <span class="hljs-keyword">id</span> <span class="hljs-keyword">UUID</span> PRIMARY <span class="hljs-keyword">KEY</span> <span class="hljs-keyword">DEFAULT</span> uuid_generate_v4(),
+    ncm_code <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+    attribute_id <span class="hljs-keyword">UUID</span> <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">REFERENCES</span> public.ncm_attributes(<span class="hljs-keyword">id</span>),
+    obrigatorio <span class="hljs-built_in">BOOLEAN</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">FALSE</span>,
+    multivalorado <span class="hljs-built_in">BOOLEAN</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">FALSE</span>,
+    data_inicio_vigencia <span class="hljs-built_in">DATE</span> <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+    data_fim_vigencia <span class="hljs-built_in">DATE</span>,
+    created_at <span class="hljs-built_in">TIMESTAMP</span> <span class="hljs-keyword">WITH</span> <span class="hljs-built_in">TIME</span> ZONE <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NOW</span>(),
+    updated_at <span class="hljs-built_in">TIMESTAMP</span> <span class="hljs-keyword">WITH</span> <span class="hljs-built_in">TIME</span> ZONE <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NOW</span>(),
+    <span class="hljs-keyword">UNIQUE</span>(ncm_code, attribute_id)
+);
+
+<span class="hljs-comment">-- Tabela de itens de domínio</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> public.ncm_attribute_domain_items (
+    <span class="hljs-keyword">id</span> <span class="hljs-keyword">UUID</span> PRIMARY <span class="hljs-keyword">KEY</span> <span class="hljs-keyword">DEFAULT</span> uuid_generate_v4(),
+    attribute_id <span class="hljs-keyword">UUID</span> <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">REFERENCES</span> public.ncm_attributes(<span class="hljs-keyword">id</span>),
+    codigo <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">50</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+    descricao <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">200</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+    created_at <span class="hljs-built_in">TIMESTAMP</span> <span class="hljs-keyword">WITH</span> <span class="hljs-built_in">TIME</span> ZONE <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NOW</span>(),
+    updated_at <span class="hljs-built_in">TIMESTAMP</span> <span class="hljs-keyword">WITH</span> <span class="hljs-built_in">TIME</span> ZONE <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NOW</span>(),
+    <span class="hljs-keyword">UNIQUE</span>(attribute_id, codigo)
+);
+
+<span class="hljs-comment">-- Tabela de objetivos</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> public.ncm_attribute_objectives (
+    <span class="hljs-keyword">id</span> <span class="hljs-keyword">UUID</span> PRIMARY <span class="hljs-keyword">KEY</span> <span class="hljs-keyword">DEFAULT</span> uuid_generate_v4(),
+    attribute_id <span class="hljs-keyword">UUID</span> <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">REFERENCES</span> public.ncm_attributes(<span class="hljs-keyword">id</span>),
+    codigo <span class="hljs-built_in">INTEGER</span> <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+    descricao <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">100</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+    created_at <span class="hljs-built_in">TIMESTAMP</span> <span class="hljs-keyword">WITH</span> <span class="hljs-built_in">TIME</span> ZONE <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NOW</span>(),
+    updated_at <span class="hljs-built_in">TIMESTAMP</span> <span class="hljs-keyword">WITH</span> <span class="hljs-built_in">TIME</span> ZONE <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NOW</span>(),
+    <span class="hljs-keyword">UNIQUE</span>(attribute_id, codigo)
+);
+
+<span class="hljs-comment">-- Tabela de órgãos</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> public.ncm_attribute_organs (
+    <span class="hljs-keyword">id</span> <span class="hljs-keyword">UUID</span> PRIMARY <span class="hljs-keyword">KEY</span> <span class="hljs-keyword">DEFAULT</span> uuid_generate_v4(),
+    attribute_id <span class="hljs-keyword">UUID</span> <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">REFERENCES</span> public.ncm_attributes(<span class="hljs-keyword">id</span>),
+    orgao <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+    created_at <span class="hljs-built_in">TIMESTAMP</span> <span class="hljs-keyword">WITH</span> <span class="hljs-built_in">TIME</span> ZONE <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NOW</span>(),
+    updated_at <span class="hljs-built_in">TIMESTAMP</span> <span class="hljs-keyword">WITH</span> <span class="hljs-built_in">TIME</span> ZONE <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NOW</span>(),
+    <span class="hljs-keyword">UNIQUE</span>(attribute_id, orgao)
+);
+</div></code></pre>
+<h2 id="fluxos-de-dados">Fluxos de Dados</h2>
+<h3 id="fluxo-de-consulta-ncm-e-atributos">Fluxo de Consulta NCM e Atributos</h3>
+<pre class="hljs"><code><div>sequenceDiagram
+    participant C as Cliente
+    participant F as FastAPI
+    participant LLM as Modelo IA
+    participant S as Serviço Atributos
+
+    C-&gt;&gt;F: Consulta produto
+    F-&gt;&gt;LLM: Envia consulta
+    LLM-&gt;&gt;F: Retorna NCM sugerida
+    F-&gt;&gt;S: Consulta atributos da NCM
+    S-&gt;&gt;F: Retorna lista de atributos
+    F-&gt;&gt;C: Resposta completa (NCM + atributos)
+    C-&gt;&gt;C: Exibe NCM e Tags de Atributos
+</div></code></pre>
+<h3 id="fluxo-de-deepresearch-com-atributos-ncm">Fluxo de DeepResearch com Atributos NCM</h3>
+<pre class="hljs"><code><div>sequenceDiagram
+    participant C as Cliente
+    participant F as FastAPI
+    participant LLM as Modelo IA
+    participant DR as DeepResearch
+    participant S as Serviço Atributos
+
+    C-&gt;&gt;F: Inicia DeepResearch
+    F-&gt;&gt;DR: Inicia análise
+
+    loop Passos DeepResearch
+        DR-&gt;&gt;LLM: Consulta fontes
+        LLM-&gt;&gt;DR: Retorna insights
+        DR-&gt;&gt;C: Atualiza progresso (via SSE)
+    end
+
+    DR-&gt;&gt;F: Finaliza com NCM validada
+    F-&gt;&gt;S: Consulta atributos da NCM final
+    S-&gt;&gt;F: Retorna lista de atributos
+    F-&gt;&gt;C: Relatório Final (com atributos)
+
+    C-&gt;&gt;C: Exibe relatório com Tags de Atributos
+    C-&gt;&gt;C: Opção de download CSV
+</div></code></pre>
+<h3 id="fluxo-de-dados-do-tagatributo">Fluxo de Dados do TagAtributo</h3>
+<pre class="hljs"><code><div>flowchart TD
+    A[AtributoNCM] --&gt; B[TagAtributo]
+    B --&gt; C1[Ícone Modalidade]
+    B --&gt; C2[Nome Apresentação]
+    B --&gt; C3[Ícone Forma]
+    B --&gt; C4[Ícone Obrigatório]
+
+    C1 --&gt; D1[Tooltip Modalidade]
+    C3 --&gt; D3[Tooltip Forma]
+    C4 --&gt; D4[Tooltip Obrigatoriedade]
+
+    B --&gt; E[Botão Remover]
+    E --&gt; F[Callback onRemove]
+</div></code></pre>
+
+</body>
+
+</html>

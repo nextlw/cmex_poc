@@ -11,7 +11,7 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: var(--pd-ssm) var(--pd-lg);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-primary-dark);
 }
 
 .section-header {
@@ -29,7 +29,7 @@ header {
 .bg-header {
   --tw-bg-opacity: 1;
   background-color: var(--color-background-dark);
-  border-color: var(--color-border);
+  border-color: var(--color-primary-dark);
 }
 
 .shadow-header {

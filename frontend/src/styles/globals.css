@@ -92,7 +92,7 @@ body {
   align-items: center;
   padding: 1rem 0;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-primary-dark);
   gap: 1rem;
 }
 
@@ -118,7 +118,7 @@ body {
 
 .doc-viewer-back:hover {
   color: var(--color-text-primary);
-  background-color: var(--color-background-secondary);
+  background-color: var(--color-background-dark);
 }
 
 .doc-viewer-content {

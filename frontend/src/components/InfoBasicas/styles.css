@@ -34,6 +34,8 @@
   font-size: var(--font-size-base);
   outline: none;
   transition: border-color 0.2s ease;
+  font-family: monospace; /* Usar fonte monospace para alinhar os caracteres */
+  letter-spacing: 0.5px; /* Espaçamento para melhor legibilidade */
 }
 
 .ncm-input:focus {

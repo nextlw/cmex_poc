@@ -3,3 +3,24 @@ testpaths = ["__tests__"]
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*" 
+[project]
+name = "requirements-txt"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "willy3087",email = "will.criando+nexcode-admin@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi (>=0.115.12,<0.116.0)",
+    "uvicorn (>=0.34.0,<0.35.0)"
+]
+
+[tool.poetry]
+packages = [{include = "requirements"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
