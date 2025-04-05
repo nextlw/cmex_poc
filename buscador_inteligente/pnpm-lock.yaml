@@ -62,6 +62,9 @@ importers:
       figlet:
         specifier: ^1.8.0
         version: 1.8.0
+      hjson:
+        specifier: ^3.2.2
+        version: 3.2.2
       ioredis:
         specifier: ^5.6.0
         version: 5.6.0
@@ -102,6 +105,9 @@ importers:
       '@types/figlet':
         specifier: ^1.7.0
         version: 1.7.0
+      '@types/hjson':
+        specifier: 2.4.6
+        version: 2.4.6
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
@@ -840,6 +846,9 @@ packages:
 
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
+
+  '@types/hjson@2.4.6':
+    resolution: {integrity: sha512-tEQ4hlyKfsb9WWeueUY5eRnU2eK+KdE0eofSpQ05v9Aah4VvWwIRIid/ZN1zZZ0TfeVTRDgabKKqKZXEkfD3Sw==}
 
   '@types/http-errors@2.0.4':
     resolution: {integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==}
@@ -2866,6 +2875,10 @@ packages:
   helper-cache@0.7.2:
     resolution: {integrity: sha512-ictXA4Nsj9HZcY5Sf4PyWKOXRkQLCDLJLvekaKKrQ+IGLMe4Z+u2oM1QqRGjtWeQRfQCA3NJyIzZpfmw6GvwOQ==}
     engines: {node: '>=0.10.0'}
+
+  hjson@3.2.2:
+    resolution: {integrity: sha512-MkUeB0cTIlppeSsndgESkfFD21T2nXPRaBStLtf3cAYA2bVEFdXlodZB0TukwZiobPD1Ksax5DK4RTZeaXCI3Q==}
+    hasBin: true
 
   homedir-polyfill@1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
@@ -6868,6 +6881,8 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
+  '@types/hjson@2.4.6': {}
+
   '@types/http-errors@2.0.4': {}
 
   '@types/ioredis@5.0.0':
@@ -9668,6 +9683,8 @@ snapshots:
       extend-shallow: 2.0.1
       lazy-cache: 0.2.7
       lodash.bind: 3.1.0
+
+  hjson@3.2.2: {}
 
   homedir-polyfill@1.0.3:
     dependencies:

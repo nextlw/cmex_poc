@@ -1,9 +1,10 @@
 # Bibliotecas
+import logging
+
+from app.config import SETTINGS, supabase
+from gotrue.errors import AuthApiError
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse, Response
-from app.config import supabase, SETTINGS
-from gotrue.errors import AuthApiError
-import logging
 
 # Configuração de logging
 logging.basicConfig(level=logging.INFO)
@@ -36,7 +37,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
 
         # Verifica se a rota é pública
-        if request.url.path in ["/", "/login", "/api/v1/autocomplete", "/api/v1/queries", "/api/queries", "/api/autocomplete"]:  # Lista de rotas públicas
+        if request.url.path in ["/", "/login", "/api/v1/autocomplete", "/api/v1/queries", "/api/queries", "/api/autocomplete"] or request.url.path.startswith("/api/v1/task-status-sse/"):  # Lista de rotas públicas
             logger.info(f"Rota pública acessada: {request.url.path}")
             response = await call_next(request)
             return response
@@ -60,7 +61,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
 
             return JSONResponse(
-                status_code=error.status_code, 
+                status_code=error.status_code,
                 content=error.model_dump(),
                 headers={
                     "Access-Control-Allow-Origin": origin,
@@ -69,7 +70,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
 
         try:
-            
+
             # Assumindo o formato "Bearer <token>"
             token = auth_header.split(" ")[1]
             logger.info("Token recebido, validando...")
@@ -82,12 +83,12 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 # Armazena o usuário no contexto da requisição
                 request.state.user = user.user
                 response = await call_next(request)
-                
+
                 # Adiciona headers CORS na resposta
                 if origin in SETTINGS.BACKEND_CORS_ORIGINS:
                     response.headers["Access-Control-Allow-Origin"] = origin
                     response.headers["Access-Control-Allow-Credentials"] = "true"
-                
+
                 return response
 
         except AuthApiError as e:
@@ -107,7 +108,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
 
             return JSONResponse(
-                status_code=error.status_code, 
+                status_code=error.status_code,
                 content=error.model_dump(),
                 headers={
                     "Access-Control-Allow-Origin": origin,

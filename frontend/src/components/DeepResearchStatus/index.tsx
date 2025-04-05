@@ -174,8 +174,8 @@ const DeepResearchStatus: React.FC<DeepResearchStatusProps> = ({
             key={index}
             className={`p-4 ${
               index === 0 && isLoading ? "border-l-4 border-l-primary" : ""
-            } 
-              bg-background border border-border rounded-lg shadow-sm 
+            }
+              bg-background border border-border rounded-lg shadow-sm
               flex items-start gap-2 break-words whitespace-normal flex-grow`}
           >
             {info.type === "link" && (

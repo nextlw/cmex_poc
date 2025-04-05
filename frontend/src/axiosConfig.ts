@@ -8,6 +8,8 @@ const ENV = import.meta.env.ENV || "dev";
 const baseURL =
   ENV === "dev"
     ? "http://localhost:10000/api"
+    : ENV === "local"
+    ? "http://localhost:3001/api"
     : ENV === "prod"
     ? "https://cmex-poc.onrender.com/api"
     : ENV === "staging"

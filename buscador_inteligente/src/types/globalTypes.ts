@@ -133,6 +133,14 @@ export type KnowledgeItem = {
   updated: string;
 };
 
+export type BoostedSearchSnippet = SearchSnippet & {
+  freqBoost: number;
+  hostnameBoost: number;
+  pathBoost: number;
+  jinaRerankBoost: number;
+  finalScore: number;
+};
+
 export type ReflectAction = BaseAction & {
   action: "reflect";
   questionsToAnswer: string[];
@@ -278,13 +286,13 @@ export interface SearchSnippet {
   weight?: number;
 }
 
-export interface BoostedSearchSnippet extends SearchSnippet {
-  freqBoost?: number;
-  hostnameBoost?: number;
-  pathBoost?: number;
-  jinaRerankBoost?: number;
-  finalScore?: number;
-}
+// export interface BoostedSearchSnippet extends SearchSnippet {
+//   freqBoost?: number;
+//   hostnameBoost?: number;
+//   pathBoost?: number;
+//   jinaRerankBoost?: number;
+//   finalScore?: number;
+// }
 
 export interface FiscalURL extends BoostedSearchSnippet {
   isFiscal: boolean;
@@ -574,6 +582,8 @@ export interface ChatCompletionChunkDelta {
   url?: string; // Para chunks de visita
   annotations?: URLAnnotation[];
 }
+
+export type PromptPair = { system: string; user: string };
 
 // Tipo para a escolha no Chunk de streaming
 export interface ChatCompletionChunkChoice {

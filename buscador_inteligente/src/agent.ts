@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, Schema, SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { readUrl } from "./tools/read";
 import fs from "fs/promises";
 import { SafeSearchType, search as duckSearch } from "duck-duck-scrape";
@@ -27,319 +27,114 @@ import {
   ReflectAction,
   KnowledgeItem,
   Reference,
+  BoostedSearchSnippet,
 } from "./types";
 import { TrackerContext } from "./types";
 import { jinaSearch } from "./tools/jinaSearch";
 import { LocalModelClient } from "./tools/local-model-client";
-import { spawn } from "child_process";
 import { EventEmitter } from "events";
+import { Schemas } from "./schemas";
+import { sortSelectURLs, removeExtraLineBreaks } from "./utils/url-tools";
 
+// EventEmitter para progresso
 const eventEmitter = new EventEmitter();
 
-// Definição para logs do servidor (ajuste conforme necessário)
+// Interface para logs do servidor
 interface ServerLog {
   context: { requestId: string };
   timestamp: Date;
   message: string;
 }
 
-// Array para armazenar os logs do servidor
+// Array para armazenar logs do servidor
 const serverLogs: ServerLog[] = [];
 
-// Variável global para o client do modelo
+// Cliente global do modelo
 let activeModelClient: GoogleGenerativeAI | LocalModelClient;
 
-// Função para inicializar o cliente do modelo
-function initializeModelClient(modelName?: string) {
+// Inicializa o cliente do modelo
+function initializeModelClient(
+  modelName?: string
+): GoogleGenerativeAI | LocalModelClient {
   console.log("Iniciando inicialização do cliente do modelo...");
-  console.log("Modelo solicitado:", modelName);
-
   try {
-    // Verifica se deve usar o cliente da Google para modelos Gemini
     if (modelName && modelName.startsWith("gemini-")) {
-      console.log("Detectado modelo Gemini, usando cliente GoogleGenerativeAI");
-
-      // Tenta obter a chave da API do Gemini de várias fontes
-      // 1. Variável de ambiente importada de config.ts
-      // 2. Variáveis de ambiente do processo
       const geminiApiKey =
         ENV.GEMINI_API_KEY ||
         process.env.GEMINI_API_KEY ||
         process.env.GOOGLE_API_KEY;
-
       if (!geminiApiKey) {
-        console.error("API key para Gemini não encontrada");
-        console.log("Tentando usar valor do config.json...");
-
-        // Buscar de config.json via JINA_API_KEY que está disponível
-        if (process.env.JINA_API_KEY) {
-          console.log("Usando chave alternativa para autenticação com Gemini");
-
-          // Inicializa o cliente da Google com chave alternativa
-          const googleClient = new GoogleGenerativeAI(process.env.JINA_API_KEY);
-          activeModelClient = googleClient;
-          console.log(
-            "Cliente do modelo ativo configurado para Google API (chave alternativa)"
-          );
-        } else {
-          throw new Error(
-            "Nenhuma API key válida encontrada para modelos Gemini"
-          );
-        }
-      } else {
-        // Inicializa o cliente da Google
-        console.log("Usando GEMINI_API_KEY para autenticação");
-        const googleClient = new GoogleGenerativeAI(geminiApiKey);
-        activeModelClient = googleClient;
-        console.log("Cliente do modelo ativo configurado para Google API");
+        throw new Error("API key para Gemini não encontrada");
       }
-
-      // Configura o modelo especificado
-      console.log("Configurando modelo específico:", modelName);
+      const googleClient = new GoogleGenerativeAI(geminiApiKey);
+      activeModelClient = googleClient;
       modelConfigs.agent.model = modelName;
-      console.log("Configuração do modelo atualizada");
-
-      return activeModelClient;
+      return googleClient;
     }
-
-    // Para outros modelos, usa o cliente local
-    console.log("Usando cliente local para o modelo");
-    console.log("Endpoint configurado:", LOCAL_MODEL_ENDPOINT);
-
-    // Configura o modelo local
-    console.log("Criando instância do LocalModelClient...");
     const localModel = new LocalModelClient(LOCAL_MODEL_ENDPOINT);
-
-    if (!localModel) {
-      console.error("Erro: Falha ao criar instância do LocalModelClient");
-      throw new Error("Falha ao criar instância do modelo local");
-    }
-
-    console.log("LocalModelClient criado com sucesso");
     activeModelClient = localModel;
-    console.log("Cliente do modelo ativo configurado para modo local");
-
-    // Configura o modelo se especificado
-    if (modelName) {
-      console.log("Configurando modelo específico:", modelName);
-      modelConfigs.agent.model = modelName;
-      console.log("Configuração do modelo atualizada");
-    }
-
-    return activeModelClient;
+    if (modelName) modelConfigs.agent.model = modelName;
+    return localModel;
   } catch (error) {
-    console.error("Erro fatal na inicialização do cliente do modelo:", error);
+    console.error("Erro na inicialização do cliente do modelo:", error);
     throw error;
   }
 }
 
-// Função para garantir que o cliente está inicializado
-export function ensureModelClientInitialized(modelName?: string) {
-  // Se não temos um cliente, inicialize-o
+// Garante que o cliente esteja inicializado
+export function ensureModelClientInitialized(modelName?: string): void {
   if (!activeModelClient) {
-    // Inicializa o cliente do modelo
     initializeModelClient(modelName);
     return;
   }
-
-  // Se temos um cliente e um novo modelo foi solicitado
   if (modelName) {
     const isCurrentClientLocal = activeModelClient instanceof LocalModelClient;
     const isRequestingGeminiModel = modelName.startsWith("gemini-");
-
-    // Se estamos mudando entre tipos de clientes (local/Google), reinicialize o cliente
     if (
       (isCurrentClientLocal && isRequestingGeminiModel) ||
       (!isCurrentClientLocal && !isRequestingGeminiModel)
     ) {
-      console.log("Mudando tipo de cliente de modelo, reinicializando...");
-      // Reinicializa o cliente com o novo modelo
       initializeModelClient(modelName);
     } else {
-      // Apenas atualiza o nome do modelo no cliente existente
-      console.log("Atualizando modelo no cliente existente:", modelName);
       modelConfigs.agent.model = modelName;
-      console.log("Configuração do modelo atualizada");
     }
   }
 }
 
-// Função para aguardar um tempo
-async function sleep(ms: number) {
-  // Calcula o tempo em segundos
-  const seconds = Math.ceil(ms / 1000);
-  // Exibe o tempo de espera
-  console.log(`Waiting ${seconds}s...`);
-  // Retorna uma promise que resolve após o tempo especificado
+// Função de espera
+async function sleep(ms: number): Promise<void> {
+  console.log(`Waiting ${Math.ceil(ms / 1000)}s...`);
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function getSchema(
-  allowReflect: boolean,
-  allowRead: boolean,
-  allowAnswer: boolean,
-  allowSearch: boolean
-): Schema {
-  // Define as ações possíveis
-  const actions: string[] = [];
-
-  // Schema para o tipo de ação
-  const actionSchema: Schema = {
-    type: SchemaType.STRING,
-    format: "enum",
-    enum: actions, // Será atualizado abaixo
-    description: "Must match exactly one action type",
-  };
-
-  // Schema para o pensamento
-  const thinkSchema: Schema = {
-    type: SchemaType.STRING,
-    description:
-      "Explain why choose this action, what's the thought process behind choosing this action",
-  };
-
-  // Define as propriedades do schema principal
-  const properties: Record<string, Schema> = {
-    action: actionSchema,
-    think: thinkSchema,
-  };
-
-  // Verifica se a busca é permitida
-  if (allowSearch) {
-    actions.push("search");
-    properties.searchQuery = {
-      type: SchemaType.STRING,
-      description:
-        "Only required when choosing 'search' action, must be a short, keyword-based query that BM25, tf-idf based search engines can understand.",
-    };
-  }
-
-  // Verifica se a resposta é permitida
-  if (allowAnswer) {
-    actions.push("answer");
-    properties.answer = {
-      type: SchemaType.STRING,
-      description:
-        "Only required when choosing 'answer' action, must be the final answer in natural language",
-    };
-
-    properties.references = {
-      type: SchemaType.ARRAY,
-      items: {
-        type: SchemaType.OBJECT,
-        properties: {
-          exactQuote: {
-            type: SchemaType.STRING,
-            description: "Exact relevant quote from the document",
-          },
-          url: {
-            type: SchemaType.STRING,
-            description:
-              "URL of the document; must be directly from the context",
-          },
-        },
-        required: ["exactQuote", "url"],
-      },
-      description:
-        "Must be an array of references that support the answer, each reference must contain an exact quote and the URL of the document",
-    };
-  }
-
-  // Verifica se a reflexão é permitida
-  if (allowReflect) {
-    actions.push("reflect");
-    properties.questionsToAnswer = {
-      type: SchemaType.ARRAY,
-      items: {
-        type: SchemaType.STRING,
-        description:
-          "each question must be a single line, concise and clear. not composite or compound, less than 20 words.",
-      },
-      description:
-        "List of most important questions to fill the knowledge gaps of finding the answer to the original question",
-    };
-  }
-
-  // Verifica se a leitura é permitida
-  if (allowRead) {
-    actions.push("visit");
-    properties.URLTargets = {
-      type: SchemaType.ARRAY,
-      items: {
-        type: SchemaType.STRING,
-      },
-      description:
-        "Must be an array of URLs, choose up the most relevant 30 URLs to visit",
-    };
-  }
-
-  // Atualiza os valores do enum após coletar todas as ações
-  (actionSchema as any).enum = actions;
-
-  // Retorna o schema
-  return {
-    type: SchemaType.OBJECT,
-    properties,
-    required: ["action", "think"],
-  };
-}
-
-// Tipo para BadAttemptContext (mantém opcionais)
-type BadAttemptContext = {
+// Tipo para BadAttemptContext
+interface BadAttemptContext {
   question: string;
   answer: string;
   evaluation: string;
   recap?: string;
   blame?: string;
   improvement?: string;
-};
+}
 
-/**
- * Gera um prompt detalhado para um analista de pesquisa de IA avançado,
- * que utiliza raciocínio em múltiplas etapas, para responder a uma
- * pergunta com absoluta certeza.
- *
- * @param question - A pergunta principal a ser respondida.
- * @param context - Ações anteriores realizadas que podem ser relevantes para
- *                  o contexto atual.
- * @param allQuestions - Todas as perguntas feitas até o momento, incluindo
- *                       perguntas intermediárias.
- * @param allowReflect - Indica se a ação de reflexão é permitida.
- * @param allowAnswer - Indica se a ação de resposta é permitida.
- * @param allowRead - Indica se a ação de visita a URLs é permitida.
- * @param allowSearch - Indica se a ação de busca em fontes externas é permitida.
- * @param badContext - Contexto de tentativas anteriores que falharam,
- *                     contendo a questão, resposta, avaliação e melhorias
- *                     sugeridas.
- * @param knowledge - Conhecimento acumulado que pode ser útil para responder
- *                    à pergunta principal.
- * @param allURLs - URLs disponíveis que podem ser visitadas para obter
- *                  conhecimento externo.
- * @param beastMode - Indica se o modo agressivo está ativo, permitindo respostas
- *                    parciais ou suposições educadas.
- * @returns Uma string contendo o prompt formatado, incluindo as seções de
- *          contexto, conhecimento, tentativas anteriores e ações possíveis,
- *          tudo em formato JSON e em português.
- */
-
+// Gera o prompt com lógica fiscal integrada
 function getPrompt(
   question: string,
   context?: string[],
   allQuestions?: string[],
-  allowReflect?: boolean,
-  allowAnswer?: boolean,
-  allowRead?: boolean,
-  allowSearch?: boolean,
+  allowReflect: boolean = true,
+  allowAnswer: boolean = true,
+  allowRead: boolean = true,
+  allowSearch: boolean = true,
   badContext?: BadAttemptContext[],
-  knowledge?: Array<
-    Omit<KnowledgeItem, "references"> & { references?: Reference[] | string[] }
-  >,
+  knowledge?: KnowledgeItem[],
   allURLs?: Record<string, string>,
   beastMode?: boolean
 ): string {
   const sections: string[] = [];
+  const actionSections: string[] = [];
 
-  // Determinar se a pergunta é relacionada a assuntos fiscais
+  // Detecção de consultas fiscais
   const fiscalKeywords = [
     "tributário",
     "fiscal",
@@ -367,399 +162,262 @@ function getPrompt(
     "alíquota",
     "contribuinte",
   ];
-
   const isFiscalQuery = fiscalKeywords.some((keyword) =>
     question.toLowerCase().includes(keyword.toLowerCase())
   );
 
-  sections.push(`Current date: ${new Date().toUTCString()}
+  // Cabeçalho do prompt
+  sections.push(`
+    Current date: ${new Date().toUTCString()}
 
     Você é um analista de pesquisa de IA avançado especializado em raciocínio de múltiplas etapas. Usando seus dados de treinamento e lições aprendidas anteriormente, responda à seguinte pergunta com absoluta certeza:
+    Um buscador curioso e muito experiente, consegue achar qualquer coisa na internet, procura até nos mínimos detalhes de pistas que possam te levar até a resposta correta. Suas respostas devem seguir estas regras:
+
+    1. Use sempre português do Brasil nas respostas finais
+    2. Mantenha o formato JSON conforme solicitado
+    3. Não inclua tags XML como <think> no JSON final
+    4. Se precisar explicar seu raciocínio, faça isso em português antes de dar a resposta em JSON
+
+    5. Exercício de Raciocínio Lógico Obrigatório SOMENTE PARA PROBLEMAS QUE ENVOLVEM MÚLTIPLAS VARIÁVEIS e de complexidade elevada:
+      - Identifique variáveis, crie uma matriz de possibilidades e analise cada combinação com informações específicas, base teórica, exemplos práticos e observações.
+
+    6. EXERCÍCIO DE RACIOCÍNIO OBRIGATÓRIO para classificação fiscal no Brasil:
+      - Liste todas as variáveis (estado, regime, operação), crie uma matriz de possibilidades, busque informações específicas para cada caso, cite fontes/legislação e dê exemplos práticos.
+
+    7. Aplicação da Fórmula de Bháskara para Análise de Extremos:
+      - Use x_v = -b/(2a) e f(x_v) = -Δ/(4a), com Δ = b² - 4ac, quando aplicável.
+
+    8. IMPORTANTE:
+      - Use "searchQuery" para busca, inclua "think" no JSON, nunca diga "depende" ou "não sei" sem justificar com evidências, mostre todas as possibilidades, cite legislação quando essencial, dê exemplos práticos.
 
     <question>
     ${question}
     </question>
-    `);
+  `);
 
-  // Adiciona contexto específico para consultas fiscais
+  // Contexto fiscal
   if (isFiscalQuery) {
     sections.push(`
-    <fiscal-context>
-    Você é especialista em legislação fiscal e tributária brasileira. Para consultas relacionadas a impostos, 
-    classificação fiscal e regulamentações, siga estas diretrizes:
-    
-    1. Priorize fontes oficiais do governo como Receita Federal, Ministério da Fazenda, Planalto e portais governamentais
-    2. Verifique a data das informações para garantir que estão atualizadas com a legislação vigente
-    3. Para classificação fiscal (NCM), busque o código exato e justifique com base nas características do produto
-    4. Quando mencionar alíquotas de impostos, especifique a data de validade e jurisdição aplicável
-    5. Para interpretações tributárias complexas, referencie decisões do CARF ou tribunais superiores
-    6. Seja especialmente cuidadoso ao verificar exceções regionais nas leis estaduais (ICMS) e municipais (ISS)
-    7. Identifique claramente quando houver divergências na interpretação da legislação
-    </fiscal-context>
+      <fiscal-context>
+      Você é especialista em legislação fiscal e tributária brasileira. Para consultas fiscais:
+      1. Priorize fontes oficiais (Receita Federal, Ministério da Fazenda, Planalto)
+      2. Verifique a data das informações
+      3. Para NCM, busque o código exato e justifique
+      4. Especifique data e jurisdição para alíquotas
+      5. Referencie decisões do CARF ou tribunais para interpretações complexas
+      6. Considere exceções regionais (ICMS, ISS)
+      7. Identifique divergências na legislação
+      </fiscal-context>
     `);
   }
 
-  // Adiciona a seção de contexto se existir
+  // Contexto de ações anteriores
   if (context?.length) {
     sections.push(`
-    <context>
-    Você realizou as seguintes ações:
-    ${context.join("\n")}
-    </context>
+      <context>
+      Você realizou as seguintes ações:
+      ${context.join("\n")}
+      </context>
     `);
   }
 
-  // Adiciona a seção de conhecimento se existir
+  // Conhecimento acumulado
   if (knowledge?.length) {
     const knowledgeItems = knowledge
       .map(
-        (k, i) => `
-    <knowledge-${i + 1}>
-    <question>
-    ${k.question}
-    </question>
-    <answer>
-    ${k.answer}
-    </answer>
-    ${
-      k.references && k.references.length > 0
-        ? `
-    <references>
-    ${JSON.stringify(k.references)}
-    </references>
-    `
-        : ""
-    }
-    </knowledge-${i + 1}>
+        (k: KnowledgeItem, i: number) => `
+      <knowledge-${i + 1}>
+      <question>${k.question}</question>
+      <answer>${k.answer}</answer>
+      ${
+        k.references?.length
+          ? `<references>${JSON.stringify(k.references)}</references>`
+          : ""
+      }
+      </knowledge-${i + 1}>
     `
       )
       .join("\n\n");
-
     sections.push(`
-    <knowledge>
-    Você reuniu com sucesso alguns conhecimentos que podem ser úteis para responder à pergunta original. 
-    Aqui está o conhecimento que você reuniu até agora:
-    ${knowledgeItems}
-    </knowledge>
+      <knowledge>
+      Conhecimento reunido até agora:
+      ${knowledgeItems}
+      </knowledge>
     `);
   }
 
-  // Adiciona a seção de contexto de tentativas anteriores se existir
+  // Tentativas anteriores falhas
   if (badContext?.length) {
     const attempts = badContext
       .map(
-        (c, i) => `
-    <attempt-${i + 1}>
-    - Question: ${c.question}
-    - Answer: ${c.answer}
-    - Reject Reason: ${c.evaluation}
-    ${c.recap ? `- Actions Recap: ${c.recap}` : ""} 
-    ${c.blame ? `- Actions Blame: ${c.blame}` : ""} 
-    </attempt-${i + 1}>`
+        (c: BadAttemptContext, i: number) => `
+      <attempt-${i + 1}>
+      - Question: ${c.question}
+      - Answer: ${c.answer}
+      - Reject Reason: ${c.evaluation}
+      ${c.recap ? `- Actions Recap: ${c.recap}` : ""}
+      ${c.blame ? `- Actions Blame: ${c.blame}` : ""}
+      </attempt-${i + 1}>
+    `
       )
       .join("\n\n");
-
-    const learnedStrategy = badContext
-      .map((c) => c.improvement || "")
-      .join("\n");
-
     sections.push(`
-    <bad-attempts>
-    Você tentou as seguintes ações, mas não conseguiu encontrar a resposta para a pergunta:
-    ${attempts}
-    </bad-attempts>
+      <bad-attempts>
+      Tentativas fracassadas:
+      ${attempts}
+      </bad-attempts>
     `);
-
-    if (learnedStrategy.trim()) {
-      sections.push(`
-       <learned-strategy>
-       Com base nas tentativas fracassadas, você aprendeu a seguinte estratégia:
-       ${learnedStrategy}
-       </learned-strategy>
-       `);
-    }
   }
 
-  // Construi a seção de ações
-  const actions: string[] = [];
-
-  if (allURLs && Object.keys(allURLs).length > 0 && allowRead) {
-    // Organizar URLs por relevância
-    let urlList = "";
-
-    if (isFiscalQuery) {
-      // Priorização especial para URLs fiscais
-      const priorityDomains = [
-        "gov.br",
-        "receita.fazenda.gov.br",
-        "planalto.gov.br",
-        "confaz.fazenda.gov.br",
-        "in.gov.br",
-        "siscomex.gov.br",
-      ];
-
-      // Organizar em grupos de prioridade
-      const priorityUrls: string[] = [];
-      const otherUrls: string[] = [];
-
-      Object.entries(allURLs).forEach(([url, desc]) => {
-        const urlObj = new URL(url);
-        const domain = urlObj.hostname;
-
-        if (priorityDomains.some((pd) => domain.includes(pd))) {
-          priorityUrls.push(`  +++ FONTE OFICIAL: "${url}": "${desc}"`);
-        } else {
-          otherUrls.push(`  + "${url}": "${desc}"`);
-        }
-      });
-
-      urlList = [...priorityUrls, ...otherUrls].join("\n");
-    } else {
-      // Organização padrão para URLs não fiscais
-      urlList = Object.entries(allURLs)
-        .map(([url, desc]) => `  + "${url}": "${desc}"`)
-        .join("\n");
-    }
-
-    actions.push(`
-    <action-visit>    
-    - Visite URLs da lista abaixo para obter conhecimento externo
-    - Escolha as URLs mais relevantes que possam conter a resposta
-    - Explore o máximo de URLs possíveis para encontrar a resposta
-    <url-list>
-    ${urlList}
-    </url-list>
-    - Use quando tiver resultados de busca suficientes no contexto e quiser explorar URLs específicas em profundidade
-    - Permite acessar o conteúdo completo por trás de qualquer URL
-    ${
-      isFiscalQuery
-        ? "- Para consultas fiscais, priorize fontes oficiais do governo marcadas como FONTE OFICIAL"
-        : ""
-    }
-    </action-visit>
+  // Ações disponíveis
+  if (allowRead && allURLs && Object.keys(allURLs).length > 0) {
+    const urlList = sortSelectURLs(
+      Object.entries(allURLs).map(
+        ([url, desc]) =>
+          ({
+            url,
+            merged: desc,
+            score: 1, // Ajuste conforme necessário
+          } as BoostedSearchSnippet)
+      ),
+      20
+    );
+    const urlListStr = urlList
+      .map(
+        (item: BoostedSearchSnippet, idx: number) =>
+          `  - [idx=${idx + 1}] [weight=${item.score.toFixed(2)}] "${
+            item.url
+          }": "${item.merged.slice(0, 50)}"`
+      )
+      .join("\n");
+    actionSections.push(`
+      <action-visit>
+      - Leia o conteúdo completo das URLs abaixo. Escolha as mais relevantes:
+      <url-list>
+      ${urlListStr}
+      </url-list>
+      ${
+        isFiscalQuery
+          ? "- Priorize fontes oficiais marcadas como FONTE OFICIAL"
+          : ""
+      }
+      </action-visit>
     `);
   }
 
   if (allowSearch) {
-    actions.push(`
-    <action-search>    
-    - Consulte fontes externas usando um mecanismo de busca público
-    - Concentre-se em resolver um aspecto específico da questão
-    - Forneça apenas palavras-chave de busca, não frases completas
-    ${
-      isFiscalQuery
-        ? `- Para buscas fiscais, inclua termos específicos como "legislação", "portaria", "instrução normativa" junto com os termos técnicos
-    - Considere adicionar termos como "site:gov.br" para limitar a fontes oficiais
-    - Se buscar por um NCM específico, inclua o código completo entre aspas, ex: "9503.00.99"`
-        : ""
-    }
-    </action-search>
+    actionSections.push(`
+      <action-search>
+      - Use busca pública para resolver aspectos específicos
+      - Forneça palavras-chave curtas
+      ${
+        isFiscalQuery
+          ? `
+      - Inclua "legislação", "portaria", "site:gov.br" quando aplicável
+      - Use NCM entre aspas, ex: "9503.00.99"
+      `
+          : ""
+      }
+      </action-search>
     `);
   }
 
   if (allowAnswer) {
-    const answerSection = `
-    <action-answer>
-    - Forneça a resposta final apenas quando estiver 96% certo
-    - As respostas devem ser definitivas (sem ambiguidade, incerteza ou avisos)${
-      allowReflect
-        ? "\n    - Se ainda houver dúvidas, use <action-reflect>"
-        : ""
-    }
-    - Formate sua resposta em markdown com as seguintes seções:
-      - **Resposta Direta**: Uma resposta clara e concisa à pergunta ou problema, levando em consideração o contexto e o conhecimento acumulado, podendo também ser uma negativa e explicar o porque vocie acha isso e onde procurou mas nnao encontrou.
-      - **Nota Detalhada**: Explicação adicional com contexto ou raciocínio.
-      - **Referências**: Liste todas as fontes relevantes em formato [Citação Exata](URL).
-    - Use todo o conhecimento acumulado para garantir uma resposta abrangente
-    - Inclua exemplos, dados numéricos e citações quando relevante
-    - Mantenha a formatação consistente
-    ${
-      isFiscalQuery
-        ? `
-    - Para respostas fiscais, especifique sempre:
-      - A fonte legal exata (número da lei, decreto, instrução normativa)
-      - A data de vigência da informação
-      - Possíveis exceções ou casos especiais
-      - Jurisdição aplicável (federal, estadual, municipal)
-      - Se houver divergências na interpretação, mencione as diferentes posições`
-        : ""
-    }
-    </action-answer>
-    `;
-
-    actions.push(answerSection);
+    actionSections.push(`
+      <action-answer>
+      - Responda com 96% de certeza em markdown:
+        - **Resposta Direta**: Resposta clara
+        - **Nota Detalhada**: Explicação
+        - **Referências**: [Citação Exata](URL)
+      ${allowReflect ? "- Use <action-reflect> se houver dúvidas" : ""}
+      ${
+        isFiscalQuery
+          ? `
+      - Especifique fonte legal, data de vigência, jurisdição, exceções e divergências
+      `
+          : ""
+      }
+      </action-answer>
+    `);
   }
 
   if (beastMode) {
-    actions.push(`
-    <action-answer>
-    - Qualquer resposta é melhor que nenhuma resposta
-    - Respostas parciais são permitidas, mas certifique-se de que sejam baseadas no contexto e no conhecimento que você reuniu
-    - Quando estiver incerto, suposições educadas baseadas no contexto e no conhecimento são permitidas e incentivadas
-    - As respostas devem ser definitivas (sem ambiguidade, incerteza ou avisos)
-    - Formate sua resposta em markdown com as seguintes seções:
-      - **Resposta Direta**: Uma resposta clara e concisa à pergunta.
-      - **Nota Detalhada**: Explicação adicional com contexto ou raciocínio.
-      - **Referências**: Liste todas as fontes relevantes em formato [Citação Exata](URL).
-    </action-answer>
+    actionSections.push(`
+      <action-answer>
+      - Qualquer resposta é melhor que nenhuma. Use suposições educadas se necessário, em markdown:
+        - **Resposta Direta**: Resposta clara
+        - **Nota Detalhada**: Explicação
+        - **Referências**: [Citação Exata](URL)
+      </action-answer>
     `);
   }
 
   if (allowReflect) {
-    actions.push(`
-    <action-reflect>    
-    - Realize análise crítica por meio de cenários hipotéticos ou decomposições sistemáticas
-    - Identifique lacunas de conhecimento e formule perguntas esclarecedoras essenciais
-    - As perguntas devem ser:
-      - Originais (não variações de perguntas existentes)
-      - Focadas em conceitos únicos
-      - Com menos de 20 palavras
-      - Não compostas/não complexas
-    ${
-      isFiscalQuery
-        ? `
-    - Para reflexões fiscais, considere:
-      - Especificidades de diferentes regimes fiscais
-      - Particularidades regionais da tributação
-      - Mudanças recentes na legislação
-      - Interpretações jurisprudenciais relevantes`
-        : ""
-    }
-    </action-reflect>
+    actionSections.push(`
+      <action-reflect>
+      - Identifique lacunas e formule perguntas curtas (< 20 palavras)
+      ${
+        isFiscalQuery
+          ? `
+      - Considere regimes fiscais, particularidades regionais, mudanças na legislação
+      `
+          : ""
+      }
+      </action-reflect>
     `);
   }
 
   sections.push(`
-    Baseado no contexto atual, você deve escolher uma das seguintes ações:
+    Escolha uma ação:
     <actions>
-    ${actions.join("\n\n")}
+    ${actionSections.join("\n\n")}
     </actions>
-    `);
+  `);
 
-  // Adiciona o rodapé
-  sections.push(`Responda exclusivamente em formato JSON válido correspondente ao esquema JSON exato.
+  sections.push(`
+    Responda em JSON válido, incluindo "action" e "think".
+  `);
 
-    Requisitos Críticos:
-    - Inclua APENAS UM tipo de ação
-    - Nunca adicione chaves não suportadas
-    - Exclua todo texto que não seja JSON
-    - Mantenha sintaxe JSON estrita
-    - Todo conteúdo de texto deve estar em Português (Brasil)
-    - Suporta codificação UTF-8 para caracteres especiais (á, é, í, ó, ú, â, ê, î, ô, û, ã, õ, ç)`);
-
-  return sections.join("\n");
+  return removeExtraLineBreaks(sections.join("\n\n"));
 }
-const allContext: StepAction[] = []; // todos os passos na sessão atual, incluindo aqueles que levaram a resultados errados
 
-/**
- * Atualiza o contexto atual da sessão com um novo passo.
- *
- * @param step O novo passo que será adicionado ao contexto.
- */
-function updateContext(step: any) {
+// Contexto global
+const allContext: StepAction[] = [];
+
+// Atualiza o contexto
+function updateContext(step: StepAction): void {
   allContext.push(step);
 }
 
-/**
- * Remove todos os caracteres de quebra de linha do texto fornecido.
- *
- * @param text O texto que contenha quebras de linha.
- * @returns O texto sem quebras de linha.
- */
-function removeAllLineBreaks(text: string) {
-  return text.replace(/(\r\n|\n|\r)/gm, " ");
-}
-
-/**
- * Remove todas as tags HTML do texto fornecido.
- *
- * @param text O texto que contenha tags HTML.
- * @returns O texto sem tags HTML.
- */
-function removeHTMLtags(text: string) {
-  return text.replace(/<[^>]*>?/gm, "");
-}
-
-/**
- * Sanitiza o texto fornecido, garantindo que ele esteja codificado corretamente
- * em UTF-8. Essa função utiliza o TextEncoder e o TextDecoder para codificar
- * e decodificar o texto, eliminando eventuais caracteres inválidos.
- *
- * @param text O texto a ser sanitizado.
- * @returns O texto sanitizado, codificado em UTF-8.
- */
-
-function sanitizeText(text: string) {
+// Sanitiza texto
+function sanitizeText(text: string): string {
   const decoder = new TextDecoder("utf-8");
   const encoder = new TextEncoder();
   return decoder.decode(encoder.encode(text));
 }
 
-/**
- * Tenta fazer o parse de um texto como JSON. Se falhar e a string não terminar
- * com '}', tenta corrigir adicionando '}' ao final e tenta novamente o parse.
- *
- * @param text A string contendo o JSON a ser analisado.
- * @returns O objeto JSON resultante do parse.
- * @throws Se o JSON não puder ser analisado, mesmo após tentativa de correção.
- */
-
+// Parseia JSON com correção
 function attemptJSONParse(text: string): any {
-  // Tenta fazer o parse do JSON
   try {
     return JSON.parse(text);
   } catch (e) {
-    // Tenta completar se a string não terminar com '}'
     let fixed = text.trim();
-    if (!fixed.endsWith("}")) {
-      fixed = fixed + "}";
-    }
+    if (!fixed.endsWith("}")) fixed += "}";
     try {
       return JSON.parse(fixed);
     } catch (e2) {
-      console.error(
-        "Falha ao tentar corrigir o JSON. Resposta original:",
-        text
-      );
+      console.error("Falha ao corrigir JSON:", text);
       throw e2;
     }
   }
 }
 
-// Adiciona a função captureLLMOutput para processar a saída do LLM sem causar ReferenceError
-/**
- * Captura e processa a saída do modelo de linguagem (LLM).
- * @param rawText O texto bruto retornado pelo modelo.
- * @returns O objeto JSON analisado a partir do texto sanitizado.
- */
-function captureLLMOutput(rawText: string): any {
-  return attemptJSONParse(sanitizeText(rawText));
+// Captura saída do LLM
+function captureLLMOutput(rawText: string): StepAction {
+  return attemptJSONParse(sanitizeText(rawText)) as StepAction;
 }
 
-/**
- * Função que executa o agente de raciocínio que responde às perguntas.
- *
- * O agente tem como objetivo responder às perguntas do usuário com base em
- * conhecimentos pré-concebidos. Para isso, ele utiliza um modelo de linguagem
- * treinado previamente, que gera uma ação a ser executada em cada passo.
- * As ações podem ser:
- *  - **answer**: responder à pergunta com base em conhecimentos pré-concebidos;
- *  - **reflect**: refletir sobre as lacunas de conhecimento e gerar novas perguntas;
- *  - **search**: buscar informações na Internet para sanar as lacunas de conhecimento;
- *  - **visit**: visitar as URLs relevantes encontradas na busca e extrair informações úteis;
- *
- * O agente também tem como objetivo aprender com os erros e melhorar suas respostas
- * ao longo do tempo. Para isso, ele armazena todas as perguntas e respostas em um
- * banco de dados e as utiliza para treinar o modelo de linguagem.
- *
- * @param question pergunta do usuário
- * @param tokenBudget orçamento de tokens para a execução do agente
- * @param maxBadAttempts número máximo de tentativas para responder à pergunta
- * @param existingContext contexto existente do agente, que pode ser utilizado para
- *  continuar a execução do agente de onde ele parou anteriormente
- * @returns uma promessa que resolve com o resultado da execução do agente, que
- *  inclui a resposta à pergunta e o contexto atualizado do agente
- */
+// Função principal do agente
 export async function getResponse(
   question: string,
   tokenBudget: number = 10_000_000,
@@ -776,7 +434,6 @@ export async function getResponse(
     errors: string[];
   };
 }> {
-  // Garante que o cliente está inicializado
   ensureModelClientInitialized();
 
   const context: TrackerContext = {
@@ -784,83 +441,57 @@ export async function getResponse(
       existingContext?.tokenTracker || new TokenTracker(tokenBudget),
     actionTracker:
       existingContext?.actionTracker ||
-      new ActionTracker({ requestId: "default" }),
-    outputs: [],
+      new ActionTracker({ requestId: requestId || "default" }),
+    outputs: existingContext?.outputs || [],
   };
-  if (existingContext?.outputs) {
-    context.outputs = [...existingContext.outputs];
-  }
-  context.actionTracker.trackAction({
-    gaps: [question],
-    totalStep: 0,
-    badAttempts: 0,
-  });
+
   let step = 0;
   let totalStep = 0;
   let badAttempts = 0;
   const gaps: string[] = [question];
   const allQuestions: string[] = [question];
   const allKeywords: string[] = [];
-  const allKnowledge: Array<
-    Omit<KnowledgeItem, "references"> & { references?: Reference[] | string[] }
-  > = [];
+  const allKnowledge: KnowledgeItem[] = [];
   const badContext: BadAttemptContext[] = [];
-  let diaryContext: string[] = [];
+  const diaryContext: string[] = [];
   let allowAnswer = true;
   let allowSearch = true;
   let allowRead = true;
   let allowReflect = true;
-  let prompt = "";
+  const allURLs: Record<string, string> = {};
   let thisStep: StepAction = {
     action: "answer",
     answer: "",
     references: [],
     think: "",
   };
-  let isAnswered = false;
 
-  const allURLs: Record<string, string> = {};
-  const visitedURLs: string[] = [];
   while (
     context.tokenTracker.getTotalUsage() < tokenBudget &&
     badAttempts <= maxBadAttempts
   ) {
-    // adiciona um atraso de 1s para evitar o limite de taxa
     await sleep(STEP_SLEEP);
     step++;
     totalStep++;
 
-    // DECLARAR thisStep AQUI no escopo do loop
-    let thisStep: StepAction = {
-      action: "answer", // Valor inicial padrão
-      answer: "",
-      references: [],
-      think: "",
-    };
-
-    // Atualiza o tracker com o estado *antes* da chamada do LLM
-    // (o thisStep aqui ainda é o do passo anterior ou o inicial)
     context.actionTracker.trackAction({
       totalStep,
-      thisStep, // <<< Usa o thisStep do escopo do loop
+      thisStep,
       gaps,
       badAttempts,
     });
-
-    const budgetPercentage = (
-      (context.tokenTracker.getTotalUsage() / tokenBudget) *
-      100
-    ).toFixed(2);
-    console.log(`Step ${totalStep} / Budget used ${budgetPercentage}%`);
-    console.log("Gaps:", gaps);
+    console.log(
+      `Step ${totalStep} / Budget used ${(
+        (context.tokenTracker.getTotalUsage() / tokenBudget) *
+        100
+      ).toFixed(2)}%`
+    );
     allowReflect = allowReflect && gaps.length <= 1;
-    const currentQuestion = gaps.length > 0 ? gaps.shift()! : question;
-    // atualiza todos os urls com buildURLMap
+    const currentQuestion = gaps.shift() || question;
     allowRead = allowRead && Object.keys(allURLs).length > 0;
-    allowSearch = allowSearch && Object.keys(allURLs).length < 200; // desabilita a busca quando há muitos urls já
+    allowSearch = allowSearch && Object.keys(allURLs).length < 200;
 
-    // gera o prompt para este passo
-    prompt = getPrompt(
+    const prompt = getPrompt(
       currentQuestion,
       diaryContext,
       allQuestions,
@@ -874,294 +505,81 @@ export async function getResponse(
       false
     );
 
-    // cria o modelo gerador de conteúdo
     const isGeminiModel = modelConfigs.agent.model.startsWith("gemini-");
-    let model;
-
-    if (isGeminiModel) {
-      console.log("Usando configuração específica para modelo Gemini");
-      model = activeModelClient.getGenerativeModel({
-        model: modelConfigs.agent.model,
-        generationConfig: {
-          temperature: modelConfigs.agent.temperature,
-          // O Gemini não aceita responseSchema da mesma forma que o modelo local
-          // então não enviamos essa configuração
-        },
-      });
-    } else {
-      console.log("Usando configuração para modelo local");
-      model = activeModelClient.getGenerativeModel({
-        model: modelConfigs.agent.model,
-        generationConfig: {
-          temperature: modelConfigs.agent.temperature,
-          responseMimeType: "application/json",
-          responseSchema: getSchema(
-            allowReflect,
-            allowRead,
-            allowAnswer,
-            allowSearch
-          ),
-        },
-      });
-    }
-
-    // gera o conteúdo
-    let result;
-    let response;
-    let rawResponseText;
-    let llmError = null;
+    const model = activeModelClient.getGenerativeModel({
+      model: modelConfigs.agent.model,
+      generationConfig: { temperature: modelConfigs.agent.temperature },
+    });
 
     try {
+      const result = await model.generateContent(
+        isGeminiModel ? `${prompt}\n\nResponda apenas em JSON válido.` : prompt
+      );
+      const response = await result.response;
+      let rawResponseText =
+        typeof response.text === "function"
+          ? await response.text()
+          : response.text || "{}";
+
       if (isGeminiModel) {
-        console.log("Gerando conteúdo com modelo Gemini");
-        // O Gemini precisa de instruções específicas para gerar JSON formatado
-        const geminiPrompt = `${prompt}\n\nIMPORTANTE: Responda APENAS com um objeto JSON válido seguindo o formato especificado. Não inclua texto adicional ou explicações fora do JSON.`;
-        result = await model.generateContent(geminiPrompt);
-      } else {
-        result = await model.generateContent(prompt);
-      }
-
-      response = await result.response;
-
-      // Abordagem robusta para lidar com text sendo uma função ou propriedade
-      try {
-        // Verificar se response existe e tem a propriedade text
-        if (!response) {
-          console.error("Erro: objeto response é nulo ou indefinido");
-          rawResponseText = "{}"; // Valor padrão em caso de erro
-        } else {
-          console.log("Response type:", typeof response);
-          console.log(
-            "Response properties:",
-            Object.getOwnPropertyNames(response)
-          );
-
-          // Verificar se text existe como propriedade ou método
-          if (typeof response.text === "function") {
-            console.log("text é uma função, chamando response.text()");
-            rawResponseText = await response.text();
-          } else if (response.text !== undefined) {
-            console.log(
-              "text é uma propriedade, acessando response.text diretamente"
-            );
-            rawResponseText = response.text;
-          } else if (typeof response.toString === "function") {
-            console.log("Usando toString() como fallback");
-            rawResponseText = response.toString();
-          } else {
-            console.log(
-              "Nenhum método confiável encontrado, convertendo para JSON"
-            );
-            try {
-              rawResponseText = JSON.stringify(response);
-            } catch (jsonError) {
-              console.error("Erro ao converter response para JSON:", jsonError);
-              rawResponseText = "{}";
-            }
-          }
-        }
-      } catch (textError) {
-        console.error("Erro ao acessar response.text:", textError);
-        rawResponseText = "{}";
-      }
-
-      console.log(
-        `[${requestId}] Raw LLM Response (Step ${totalStep}):`,
-        rawResponseText
-      );
-
-      // Log 0: Texto bruto ANTES do parsing
-      console.log(
-        `[${requestId}] DEBUG: Raw text ANTES de captureLLMOutput (Step ${totalStep}):`,
-        rawResponseText
-      );
-
-      // Tenta extrair JSON da resposta do Gemini, se necessário
-      if (isGeminiModel && rawResponseText) {
         const jsonRegex = /```json\s*([\s\S]*?)\s*```|(\{[\s\S]*\})/;
         const match = rawResponseText.match(jsonRegex);
-        if (match) {
-          rawResponseText = match[1] || match[2];
-          console.log(
-            `[${requestId}] JSON extraído da resposta do Gemini (Step ${totalStep}):`,
-            rawResponseText
-          );
-        }
+        if (match) rawResponseText = match[1] || match[2];
       }
 
-      const usage = response.usageMetadata;
-      context.tokenTracker.trackUsage("agent", usage?.totalTokenCount || 0);
-
-      // Tenta parsear e processar o 'think'
-      try {
-        // Log 1.1: Imediatamente ANTES de chamar captureLLMOutput
-        console.log(
-          `[${requestId}] DEBUG: Chamando captureLLMOutput (Step ${totalStep})`
-        );
-        thisStep = captureLLMOutput(rawResponseText); // <<< Atribui ao thisStep do escopo do loop
-
-        // Log 1.2: Imediatamente APÓS captureLLMOutput - verificar tipo e valor
-        console.log(
-          `[${requestId}] DEBUG: Resultado de captureLLMOutput (Step ${totalStep}):`,
-          thisStep
-        );
-        console.log(
-          `[${requestId}] DEBUG: Tipo de thisStep: ${typeof thisStep}`
-        );
-
-        // Log 1.3: Verificar se thisStep é objeto
-        console.log(
-          `[${requestId}] DEBUG: thisStep é objeto? ${
-            typeof thisStep === "object" && thisStep !== null
-          }`
-        );
-
-        // Verificar e extrair o 'think' antes de continuar
-        if (
-          thisStep &&
-          typeof thisStep === "object" &&
-          thisStep !== null &&
-          thisStep.think
-        ) {
-          // Log 1.4: Condição para rastrear 'think' é VERDADEIRA
-          console.log(
-            `[${requestId}] DEBUG: Condição thisStep.think encontrada (Step ${totalStep}).`
-          );
-          if (typeof thisStep.think === "string") {
-            // Log 2: Confirmar que o think será rastreado
-            console.log(
-              `[${requestId}] DEBUG: 'think' extraído (Step ${totalStep}): ${thisStep.think.substring(
-                0,
-                50
-              )}...`
-            );
-            context.actionTracker.trackThink(thisStep.think);
-          } else {
-            console.warn(
-              `[${requestId}] 'think' field is not a string in step ${totalStep}:`,
-              thisStep.think
-            );
-          }
-        } else {
-          // Log 1.5: Condição para rastrear 'think' é FALSA
-          console.log(
-            `[${requestId}] DEBUG: Condição thisStep.think NÃO encontrada ou thisStep não é objeto (Step ${totalStep}).`
-          );
-          // Logar o objeto se ele existir, para depuração
-          if (thisStep)
-            console.log(
-              `[${requestId}] DEBUG: Valor de thisStep quando think não foi encontrado:`,
-              thisStep
-            );
-        }
-
-        // Validar a ação (simples validação por enquanto)
-        if (
-          !thisStep ||
-          typeof thisStep !== "object" ||
-          thisStep === null ||
-          !thisStep.action
-        ) {
-          // Adicionar verificação de objeto e null
-          throw new Error(
-            "Resposta do LLM não contém uma ação válida após parsing."
-          );
-        }
-      } catch (parseError: any) {
-        // Log 3: Erro durante o PARSING
-        console.error(
-          `[${requestId}] DEBUG: ERRO no bloco try/catch do PARSING (Step ${totalStep}):`,
-          parseError?.message || parseError
-        );
-        console.error(
-          `[${requestId}] DEBUG: Raw text que causou erro de parsing:`,
-          rawResponseText
-        );
-
-        llmError = parseError;
-        thisStep = {
-          action: "reflect",
-          questionsToAnswer: ["Erro de parsing"],
-          think: `Erro ao parsear: ${parseError.message}`,
-        };
-      }
-
-      // Armazena o output bruto (AGORA definitivamente seguro)
-      // Usar asserção não nula (!) para indicar ao TS que outputs existe
-      context.outputs!.push({
-        step: totalStep,
-        rawResponseText: rawResponseText || "<Erro ao obter resposta bruta>",
-      });
-
-      // Log do passo escolhido (mesmo se for a ação de erro/reflexão)
-      const actionsStr = [allowSearch, allowRead, allowAnswer, allowReflect]
-        .map((a, i) => (a ? ["search", "read", "answer", "reflect"][i] : null))
-        .filter((a) => a)
-        .join(", ");
-      console.log(
-        `[${requestId}] Action Chosen (Step ${totalStep}): ${thisStep?.action} <- [${actionsStr}]`
+      context.tokenTracker.trackUsage(
+        "agent",
+        response.usageMetadata?.totalTokenCount || 0
       );
-      console.log(`[${requestId}] Step Details (Step ${totalStep}):`, thisStep);
+      thisStep = captureLLMOutput(rawResponseText);
+      context.outputs.push({ step: totalStep, rawResponseText });
 
-      // reseta flags
-      allowAnswer = true;
-      allowReflect = true;
-      allowRead = true;
-      allowSearch = true;
+      if (thisStep.think && typeof thisStep.think === "string") {
+        context.actionTracker.trackThink(thisStep.think);
+      }
 
-      // Atualizar contexto e action tracker com o passo definido (pode ser ação real ou de erro)
-      updateContext(thisStep as any);
-      context.actionTracker.trackAction({ thisStep: thisStep });
+      updateContext(thisStep);
+      context.actionTracker.trackAction({ thisStep });
 
-      // Processar a ação escolhida usando switch
       switch (thisStep.action) {
         case "answer": {
           const answerStep = thisStep as AnswerAction;
           if (answerStep.answer) {
-            // Adiciona ao allKnowledge
             allKnowledge.push({
               question: currentQuestion,
               answer: answerStep.answer,
-              references: answerStep.references,
+              references: answerStep.references || [],
               type: "qa",
               updated: new Date().toISOString(),
             });
           } else {
             const errorAnalysis = await analyzeSteps(diaryContext);
-            // Adiciona ao badContext
             const analysisResult = JSON.parse(errorAnalysis.analysis || "{}");
             badContext.push({
               question: currentQuestion,
-              answer: answerStep.answer,
-              evaluation: analysisResult.analysis || "",
-              recap: analysisResult.recap || "",
-              blame: analysisResult.blame || "",
-              improvement: analysisResult.improvement || "",
+              answer: answerStep.answer || "",
+              evaluation: analysisResult.analysis || "Resposta inválida",
+              recap: analysisResult.recap,
+              blame: analysisResult.blame,
+              improvement: analysisResult.improvement,
             });
+            badAttempts++;
           }
           break;
         }
         case "reflect": {
           const reflectStep = thisStep as ReflectAction;
           if (reflectStep.questionsToAnswer) {
-            // Lógica original para reflect (SEM adicionar a allKnowledge aqui)
-            const oldQuestions = [...reflectStep.questionsToAnswer]; // Copiar antes de modificar?
             const dedupResult = await dedupQueries(
               reflectStep.questionsToAnswer,
               allQuestions
             );
             const newGapQuestions = dedupResult.unique_queries;
-
             if (newGapQuestions.length > 0) {
-              diaryContext.push(/* ... */);
               gaps.push(...newGapQuestions);
               allQuestions.push(...newGapQuestions);
-              gaps.push(question); // sempre mantém a pergunta original nos gaps
+              gaps.push(question);
             } else {
-              diaryContext.push(/* ... */);
-              updateContext({
-                /* ... */
-              });
               allowReflect = false;
             }
           }
@@ -1170,15 +588,13 @@ export async function getResponse(
         case "search": {
           const searchStep = thisStep as SearchAction;
           if (searchStep.searchQuery) {
-            // Adiciona ao allKnowledge
             allKnowledge.push({
-              question: `What do Internet say about ${searchStep.searchQuery}?`,
-              answer: removeHTMLtags(searchStep.searchQuery),
+              question: `O que a internet diz sobre ${searchStep.searchQuery}?`,
+              answer: searchStep.searchQuery,
               references: [],
               type: "side-info",
               updated: new Date().toISOString(),
             });
-            // Adiciona aos allKeywords
             allKeywords.push(searchStep.searchQuery);
           }
           break;
@@ -1186,13 +602,12 @@ export async function getResponse(
         case "visit": {
           const visitStep = thisStep as VisitAction;
           if (visitStep.URLTargets) {
-            // Adiciona ao allKnowledge
             allKnowledge.push({
               question: currentQuestion,
               answer: visitStep.URLTargets.join(", "),
               references: visitStep.URLTargets.map((url: string) => ({
                 exactQuote: "",
-                url: url,
+                url,
               })),
               type: "url",
               updated: new Date().toISOString(),
@@ -1200,36 +615,20 @@ export async function getResponse(
           }
           break;
         }
-        default: {
-          console.warn(
-            `[${requestId}] Ação desconhecida ou não tratada: ${
-              (thisStep as any)?.action
-            }`
-          );
-          // Pode adicionar lógica de erro ou reflexão aqui se necessário
-          break;
-        }
       }
 
-      // ... (armazenar contexto no final do loop) ...
-    } catch (error: any) {
-      // Log 4: Erro durante a GERAÇÃO LLM
-      console.error(
-        `[${requestId}] DEBUG: ERRO no bloco try/catch da GERAÇÃO LLM (Step ${totalStep}):`,
-        error?.message || error
-      );
-      llmError = error;
+      allowAnswer = allowReflect = allowRead = allowSearch = true;
+    } catch (error) {
+      console.error("Erro na geração:", error);
       thisStep = {
         action: "reflect",
         questionsToAnswer: ["Erro de geração"],
-        think: `Erro na geração: ${error.message}`,
+        think: `Erro: ${(error as Error).message}`,
       };
+      badAttempts++;
     }
+  }
 
-    // ... (resto do código) ...
-  } // Fim do loop while
-
-  // armazena o contexto
   await storeContext(
     prompt,
     [allContext, allKeywords, allQuestions, allKnowledge],
@@ -1237,40 +636,15 @@ export async function getResponse(
     requestId || question
   );
 
-  // se a resposta foi encontrada, retorna o resultado
-  if (isAnswered) {
-    const audit = {
-      requestId: requestId || question,
-      logs: serverLogs,
-      tokenUsage: context.tokenTracker.getTotalUsage(),
-      steps: context.actionTracker.getState().totalStep,
-      errors: [],
-    };
-
-    eventEmitter.emit(`progress-${requestId || question}`, {
-      type: "query",
-      data: {
-        message: `Sua pergunta "${question}" foi registrada e está sendo processada.`,
-        buttonNumber: totalStep,
-      },
-      trackers: {
-        tokenUsage: context.tokenTracker.getTotalUsage(),
-        actionState: context.actionTracker.getState(),
-      },
-    });
-
-    return { result: thisStep, context, audit };
-  } else {
-    console.log("Enter Beast mode!!!");
-    // qualquer resposta é melhor que nenhuma resposta, última chance da humanidade
-    step++;
+  if (badAttempts > maxBadAttempts) {
+    console.log("Entrando no Beast Mode!");
     totalStep++;
-    const prompt = getPrompt(
+    const beastPrompt = getPrompt(
       question,
       diaryContext,
       allQuestions,
       false,
-      false,
+      true,
       false,
       false,
       badContext,
@@ -1278,121 +652,42 @@ export async function getResponse(
       allURLs,
       true
     );
-
-    // Verifica se estamos usando modelo Gemini no modo Beast
-    const isGeminiModel =
-      modelConfigs.agentBeastMode.model.startsWith("gemini-");
-    let model;
-
-    if (isGeminiModel) {
-      console.log(
-        "Usando configuração específica para modelo Gemini no Beast Mode"
-      );
-      model = activeModelClient.getGenerativeModel({
-        model: modelConfigs.agentBeastMode.model,
-        generationConfig: {
-          temperature: modelConfigs.agentBeastMode.temperature,
-          // Sem responseSchema para Gemini
-        },
-      });
-    } else {
-      console.log("Usando configuração para modelo local no Beast Mode");
-      model = activeModelClient.getGenerativeModel({
-        model: modelConfigs.agentBeastMode.model,
-        generationConfig: {
-          temperature: modelConfigs.agentBeastMode.temperature,
-          responseMimeType: "application/json",
-          responseSchema: getSchema(false, false, allowAnswer, false),
-        },
-      });
-    }
-
-    // Ajuste do prompt e processamento da resposta para Gemini
-    try {
-      let result;
-      if (isGeminiModel) {
-        const geminiPrompt = `${prompt}\n\nIMPORTANTE: Responda APENAS com um objeto JSON válido seguindo o formato especificado. Não inclua texto adicional ou explicações fora do JSON.`;
-        result = await model.generateContent(geminiPrompt);
-      } else {
-        result = await model.generateContent(prompt);
-      }
-
-      const response = await result.response;
-      // Verificar se text é uma função ou uma propriedade
-      let rawResponseText =
-        typeof response.text === "function"
-          ? await response.text()
-          : response.text;
-
-      // Extrai JSON da resposta do Gemini, se necessário
-      if (isGeminiModel) {
-        const jsonRegex = /```json\s*([\s\S]*?)\s*```|(\{[\s\S]*\})/;
-        const match = rawResponseText.match(jsonRegex);
-        if (match) {
-          rawResponseText = match[1] || match[2];
-          console.log(
-            "JSON extraído da resposta do Gemini no Beast Mode:",
-            rawResponseText
-          );
-        }
-      }
-
-      console.log("Raw response text:", rawResponseText);
-      const usage = response.usageMetadata;
-      context.tokenTracker.trackUsage("agent", usage?.totalTokenCount || 0);
-
-      // Verifica se o context.outputs existe, senão inicializa
-      if (!context.outputs) {
-        context.outputs = [];
-      }
-
-      // Armazena o output no context.outputs
-      context.outputs.push({
-        step: totalStep,
-        rawResponseText: rawResponseText,
-      });
-
-      // parseia o conteúdo
-      thisStep = captureLLMOutput(rawResponseText);
-      console.log(thisStep);
-    } catch (error: any) {
-      console.error("Erro ao gerar conteúdo no Beast Mode:", error);
-      // Mantém thisStep atual em caso de erro
-    }
-
-    const audit = {
-      logs: serverLogs,
-      tokenUsage: context.tokenTracker.getTotalUsage(),
-      steps: context.actionTracker.getState().totalStep,
-      errors: [],
-    };
-
-    // retorna o resultado
-    return { result: thisStep, context, audit };
+    const model = activeModelClient.getGenerativeModel({
+      model: modelConfigs.agentBeastMode.model,
+      generationConfig: {
+        temperature: modelConfigs.agentBeastMode.temperature,
+      },
+    });
+    const result = await model.generateContent(beastPrompt);
+    const response = await result.response;
+    const rawResponseText =
+      typeof response.text === "function"
+        ? await response.text()
+        : response.text || "{}";
+    thisStep = captureLLMOutput(rawResponseText);
   }
+
+  const audit = {
+    logs: serverLogs,
+    tokenUsage: context.tokenTracker.getTotalUsage(),
+    steps: totalStep,
+    errors: [],
+  };
+
+  return { result: thisStep, context, audit };
 }
 
-/**
- * Armazena o contexto em arquivos de texto
- *
- * @param prompt prompt usado para gerar o conteúdo
- * @param memory memória do agente
- * @param step número do passo atualizado
- */
+// Armazena o contexto
 async function storeContext(
   prompt: string,
   memory: any[][],
   step: number,
   requestId: string
-) {
+): Promise<void> {
   try {
-    // Usa o requestId fornecido ao invés de gerar um novo
     const queryDir = `queries/${requestId}`;
     await fs.mkdir(queryDir, { recursive: true });
-
-    // Salva os arquivos na pasta específica da query
     await fs.writeFile(`${queryDir}/prompt-${step}.txt`, prompt);
-
     const [context, keywords, questions, knowledge] = memory;
     await fs.writeFile(
       `${queryDir}/context.json`,
@@ -1411,82 +706,21 @@ async function storeContext(
       JSON.stringify(knowledge, null, 2)
     );
   } catch (error) {
-    console.error(`Context storage failed for query ${requestId}:`, error);
+    console.error(`Erro ao armazenar contexto para ${requestId}:`, error);
   }
 }
 
-async function loadContext(requestId: string, step: number) {
-  try {
-    const queryDir = `queries/${requestId}`;
-    // Usa o "step" para carregar o arquivo de prompt correspondente (se necessário)
-    const prompt = await fs.readFile(`${queryDir}/prompt-${step}.txt`, "utf-8");
-    const context = JSON.parse(
-      await fs.readFile(`${queryDir}/context.json`, "utf-8")
-    );
-    const keywords = JSON.parse(
-      await fs.readFile(`${queryDir}/queries.json`, "utf-8")
-    );
-    const questions = JSON.parse(
-      await fs.readFile(`${queryDir}/questions.json`, "utf-8")
-    );
-    const knowledge = JSON.parse(
-      await fs.readFile(`${queryDir}/knowledge.json`, "utf-8")
-    );
-
-    // Retorna também o prompt correspondente ao passo, se desejar usá-lo
-    return [prompt, context, keywords, questions, knowledge];
-  } catch (error) {
-    console.error(
-      `Failed to load context for query ${requestId} at step ${step}:`,
-      error
-    );
-    return ["", [], [], [], []];
-  }
-}
-
-/**
- * Função principal que executa o agente de raciocínio
- *
- * @returns uma promessa que resolve com o resultado da execução do agente
- */
-export async function main() {
+// Função principal
+export async function main(): Promise<void> {
   const question = process.argv[2] || "";
   const modelArg = process.argv[3];
-
-  // Use ensureModelClientInitialized para garantir a inicialização
   ensureModelClientInitialized(modelArg);
-
-  // executa o agente de raciocínio
-  const { result: finalStep, context: tracker } = (await getResponse(
-    question
-  )) as { result: AnswerAction; context: TrackerContext };
-
-  // imprime a resposta final
-  console.log("Final Answer:", finalStep.answer);
-  tracker.tokenTracker.printSummary();
+  const { result, context } = await getResponse(question);
+  console.log("Final Answer:", (result as AnswerAction).answer);
+  context.tokenTracker.printSummary();
   console.log("Modelo rodando:", modelConfigs.agent.model);
-
-  // // Integração com o script de finalização
-  // try {
-  //     const pythonProcess = spawn('python', ['finalizacao.py', question, finalStep.answer], {
-  //         stdio: ['inherit', 'inherit', 'inherit']
-  //     });
-  //     // Trata erros
-  //     pythonProcess.on('error', (error: Error) => {
-  //         console.error('Erro ao executar script de finalização:', error);
-  //     });
-  //     // Trata o fechamento do script
-  //     pythonProcess.on('close', (code: number | null) => {
-  //         if (code !== 0) {
-  //             console.error(`Script de finalização encerrou com código ${code}`);
-  //         }
-  //     });
-  // } catch (error) {
-  //     console.error('Erro ao executar script de finalização:', error);
-  // }
 }
 
-// executa a função principal
 if (require.main === module) {
   main().catch(console.error);
 }

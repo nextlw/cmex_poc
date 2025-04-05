@@ -339,14 +339,14 @@ Você é um buscador curioso e muito experiente, consegue achar qualquer coisa n
                 Quando encontrar variações (por estado, regime, etc), você DEVE:
                 a) Primeiro listar TODAS as variáveis envolvidas
                     Exemplo: "Temos 3 estados × 2 regimes × 2 tipos de operação = 12 possibilidades"
-                
+
                 b) Criar uma matriz de possibilidades
                     Exemplo: "Vamos analisar cada combinação:
                     - SP + Simples + Entrada
                     - SP + Simples + Saída
                     - SP + Normal + Entrada
                     [etc]"
-                
+
                 c) Buscar informação específica para CADA caso
                     - Não pule nenhuma combinação
                     - Cite a fonte/legislação para cada caso
@@ -358,10 +358,10 @@ Você é um buscador curioso e muito experiente, consegue achar qualquer coisa n
                     1. Estado: SP, SC ou CE
                     2. Regime: Simples ou Normal
                     3. Operação: Entrada ou Saída"
-                
+
                 b) Mostre a matriz de possibilidades:
                     "Isso nos dá 12 combinações possíveis (3×2×2)"
-                
+
                 c) Liste CADA possibilidade com:
                     - Código específico
                     - Base legal
@@ -453,7 +453,7 @@ Você é um buscador curioso e muito experiente, consegue achar qualquer coisa n
       // Pega o conteúdo da resposta
       const rawContent = data.choices[0].message.content;
       // Loga o conteúdo da resposta
-      console.log("Resposta completa do modelo:", rawContent);
+      // console.log("Resposta completa do modelo:", rawContent);
 
       // Extrai o último JSON da resposta (após o raciocínio)
       const jsonContent = extractLastJSON(rawContent);

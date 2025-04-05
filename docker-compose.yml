@@ -42,7 +42,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6378
     ports:
-      - "8001:8000"
+      - "11000:10000"
     depends_on:
       - redis
     networks:
@@ -52,7 +52,7 @@ services:
     build: ./frontend
     env_file: ./frontend/.env
     environment:
-      - FASTAPI_URL=http://fastapi:8000
+      - FASTAPI_URL=http://fastapi:10000
       - BUSCADOR_URL=http://buscador:3001
     ports:
       - "3002:3001"

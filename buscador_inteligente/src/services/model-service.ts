@@ -116,7 +116,7 @@ export class ModelService extends EventEmitter {
       modelName: "local-model",
       displayName: "Local",
       description: "Modelo local executado no servidor",
-      baseUrl: process.env.LOCAL_MODEL_URL || "http://localhost:8000/v1",
+      baseUrl: process.env.LOCAL_MODEL_URL || "http://localhost:1234",
       supportsStreaming: true,
       supportsJsonMode: false,
       maxContextLength: 32000,

@@ -23,9 +23,15 @@ importers:
       '@tippyjs/react':
         specifier: ^4.2.6
         version: 4.2.6(react-dom@19.1.0(react@19.0.0))(react@19.0.0)
+      eventsource-polyfill:
+        specifier: ^0.9.6
+        version: 0.9.6
       figlet:
         specifier: ^1.8.0
         version: 1.8.0
+      hjson:
+        specifier: ^3.2.2
+        version: 3.2.2
       react-icons:
         specifier: ^5.5.0
         version: 5.5.0(react@19.0.0)
@@ -880,6 +886,9 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
 
+  eventsource-polyfill@0.9.6:
+    resolution: {integrity: sha512-LyMFp2oPDGhum2lMvkjqKZEwWd2/AoXyt8aoyftTBMWwPHNgU+2tdxhTHPluDxoz+z4gNj0uHAPR9nqevATMbg==}
+
   exit-hook@1.1.1:
     resolution: {integrity: sha512-MsG3prOVw1WtLXAZbM3KiYtooKR1LvxHh3VHsVtIy0uiUu8usxgB/94DP2HxtD/661lLdB6yzQ09lGJSQr6nkg==}
     engines: {node: '>=0.10.0'}
@@ -1157,6 +1166,10 @@ packages:
   helper-cache@0.7.2:
     resolution: {integrity: sha512-ictXA4Nsj9HZcY5Sf4PyWKOXRkQLCDLJLvekaKKrQ+IGLMe4Z+u2oM1QqRGjtWeQRfQCA3NJyIzZpfmw6GvwOQ==}
     engines: {node: '>=0.10.0'}
+
+  hjson@3.2.2:
+    resolution: {integrity: sha512-MkUeB0cTIlppeSsndgESkfFD21T2nXPRaBStLtf3cAYA2bVEFdXlodZB0TukwZiobPD1Ksax5DK4RTZeaXCI3Q==}
+    hasBin: true
 
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
@@ -3532,6 +3545,8 @@ snapshots:
 
   esprima@4.0.1: {}
 
+  eventsource-polyfill@0.9.6: {}
+
   exit-hook@1.1.1: {}
 
   expand-args@0.4.3:
@@ -3892,6 +3907,8 @@ snapshots:
       extend-shallow: 2.0.1
       lazy-cache: 0.2.7
       lodash.bind: 3.1.0
+
+  hjson@3.2.2: {}
 
   hoist-non-react-statics@3.3.2:
     dependencies:

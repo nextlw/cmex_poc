@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
   const [pesquisa, setPesquisa] = useState("");
 
   const [selectedModel, setSelectedModel] = useState<string | null>(
-    "Nex-0.5-Preview-2025"
+    "Nex-0.2-Beta"
   );
 
   const [dropdownSelection, setDropdownSelection] =

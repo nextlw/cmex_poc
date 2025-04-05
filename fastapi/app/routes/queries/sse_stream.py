@@ -2,19 +2,78 @@
 Módulo para streaming de atualizações de tarefas usando Server-Sent Events (SSE)
 """
 
-import json
 import asyncio
-import httpx
+import json
+import logging
 from typing import AsyncGenerator
-from fastapi import APIRouter, Request
+
+import httpx
+
+from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
+
+from ...config import supabase  # Importando o cliente Supabase
 from ...services.redis_service import CHANNELS, redis_client
+
+# Configuração de logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Criar um router para os endpoints SSE
 sse_router = APIRouter()
 
 # Tempo máximo de espera para SSE (2 horas)
 MAX_SSE_TIMEOUT = 2 * 60 * 60  # em segundos
+
+
+def validate_token(token: str) -> bool:
+    """
+    Valida um token de acesso, aceitando token do Supabase ou UUID temporário.
+
+    Args:
+        token: O token de acesso a ser validado ou UUID temporário
+
+    Returns:
+        bool: True se o token for válido, False caso contrário
+    """
+    try:
+        # Log para depuração
+        logger.info(f"Validando token: {token[:20]}...")
+
+        # Verifica se é um UUID válido (para usuários temporários)
+        try:
+            import uuid
+
+            # Tenta converter o token para UUID
+            uuid_obj = uuid.UUID(token)
+            logger.info(f"Token validado como UUID temporário: {uuid_obj}")
+            return True
+        except ValueError:
+            # Não é um UUID válido, continua para validação Supabase
+            logger.info("Token não é um UUID, tentando validação Supabase")
+
+        # Tenta validar com Supabase
+        try:
+            user = supabase.auth.get_user(token)
+            if user and user.user:
+                logger.info(f"Token validado com sucesso via Supabase para usuário: {user.user.id}")
+                return True
+        except Exception as e:
+            logger.warning(f"Validação via Supabase falhou: {str(e)}")
+
+            # Se o token parece ser um JWT válido (estrutura básica), podemos permitir temporariamente
+            parts = token.split('.')
+            if len(parts) == 3 and all(len(p) > 0 for p in parts):
+                logger.warning("Permitindo acesso com token que parece ser JWT válido")
+                return True
+
+        # Se chegou até aqui, nenhuma validação teve sucesso
+        logger.error(f"Não foi possível validar o token")
+        return False
+
+    except Exception as e:
+        logger.error(f"Erro geral ao validar token: {str(e)}")
+        return False
 
 
 async def task_status_sse_generator(request_id: str) -> AsyncGenerator[str, None]:
@@ -144,12 +203,11 @@ async def task_status_sse_generator(request_id: str) -> AsyncGenerator[str, None
 
 
 @sse_router.get("/task-status-sse/{request_id}")
-async def task_status_sse(request_id: str, request: Request):
-    """
-    Endpoint SSE para streaming de atualizações de status de tarefas.
-    Este endpoint mantém uma conexão aberta com o cliente e envia atualizações
-    em tempo real conforme o progresso da tarefa.
-    """
+async def task_status_sse(request_id: str, request: Request, token: str = Query(None)):
+    # Token é opcional agora que a rota é pública
+    # Log para depuração
+    logger.info(f"Requisição SSE recebida para task ID: {request_id}")
+
     # Definir cabeçalhos específicos para SSE
     headers = {
         "Content-Type": "text/event-stream",

@@ -294,9 +294,11 @@ const DeepResearchSidebar: React.FC<DeepResearchSidebarProps> = ({
 
     // Determina a URL base
     const API_URL =
-      import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
-    const SSE_URL = `${API_URL}/task-status-sse/${requestId}`;
+      import.meta.env.VITE_API_URL || "http://localhost:10000/api/v1";
 
+    // Obter o token da sessão ou localStorage
+    const token = session?.access_token || localStorage.getItem("token");
+    const SSE_URL = `${API_URL}/task-status-sse/${requestId}?token=${token}`;
     console.log("Iniciando conexão SSE para URL:", SSE_URL);
 
     // Cria uma nova conexão EventSource

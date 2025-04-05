@@ -191,11 +191,11 @@ export const modelConfigs: ToolConfigs = {
 /**
  * Tempo de espera entre passos.
  */
-export const STEP_SLEEP = config.defaults.step_sleep;
+export const STEP_SLEEP = configJson.defaults.step_sleep;
 
 // Tipos
 export type LLMProvider = "openai" | "gemini" | "vertex";
-export type ToolName = keyof typeof config.models.gemini.tools;
+export type ToolName = keyof typeof configJson.models.gemini.tools;
 
 // Determina o provedor LLM
 export const LLM_PROVIDER: LLMProvider = (() => {
