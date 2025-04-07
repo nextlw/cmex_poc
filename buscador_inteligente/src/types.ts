@@ -306,4 +306,5 @@ import { ActionTracker } from "./utils/action-tracker";
 export interface TrackerContext {
   tokenTracker: TokenTracker;
   actionTracker: ActionTracker;
+  outputs?: Array<{ step: number; rawResponseText: string }>;
 }

@@ -28,13 +28,15 @@ import {
   KnowledgeItem,
   Reference,
   BoostedSearchSnippet,
-} from "./types";
+} from "./types/globalTypes";
 import { TrackerContext } from "./types";
 import { jinaSearch } from "./tools/jinaSearch";
 import { LocalModelClient } from "./tools/local-model-client";
 import { EventEmitter } from "events";
-import { Schemas } from "./schemas";
-import { sortSelectURLs, removeExtraLineBreaks } from "./utils/url-tools";
+import { Schemas } from "./utils/schemas";
+import { sortSelectURLs } from "./utils/url-tools";
+import { smartMergeStrings } from "./utils/text-tools";
+import { formatDateBasedOnType } from "./utils/date-tools";
 
 // EventEmitter para progresso
 const eventEmitter = new EventEmitter();
@@ -107,7 +109,7 @@ async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Tipo para BadAttemptContext
+// Tipo para contexto de tentativas falhas
 interface BadAttemptContext {
   question: string;
   answer: string;
@@ -130,9 +132,9 @@ function getPrompt(
   knowledge?: KnowledgeItem[],
   allURLs?: Record<string, string>,
   beastMode?: boolean
-): string {
-  const sections: string[] = [];
-  const actionSections: string[] = [];
+): { system: string; urlList?: string[] | undefined } {
+  const sections: string[] = []; // Array para armazenar seções do prompt
+  const actionSections: string[] = []; // Array para armazenar seções de ações do prompt
 
   // Detecção de consultas fiscais
   const fiscalKeywords = [
@@ -278,19 +280,21 @@ function getPrompt(
             url,
             merged: desc,
             score: 1, // Ajuste conforme necessário
-          } as BoostedSearchSnippet)
+          } as unknown as BoostedSearchSnippet)
       ),
       20
     );
-    const urlListStr = urlList
-      .map(
-        (item: BoostedSearchSnippet, idx: number) =>
-          `  - [idx=${idx + 1}] [weight=${item.score.toFixed(2)}] "${
-            item.url
-          }": "${item.merged.slice(0, 50)}"`
-      )
-      .join("\n");
-    actionSections.push(`
+
+    if (allowRead && urlList.length > 0) {
+      const urlListStr = urlList
+        .map(
+          (item, idx) =>
+            `  - [idx=${idx + 1}] [weight=${item.score.toFixed(2)}] "${
+              item.url
+            }": "${item.merged.slice(0, 50)}"`
+        )
+        .join("\n");
+      actionSections.push(`
       <action-visit>
       - Leia o conteúdo completo das URLs abaixo. Escolha as mais relevantes:
       <url-list>
@@ -303,6 +307,7 @@ function getPrompt(
       }
       </action-visit>
     `);
+    }
   }
 
   if (allowSearch) {
@@ -378,7 +383,10 @@ function getPrompt(
     Responda em JSON válido, incluindo "action" e "think".
   `);
 
-  return removeExtraLineBreaks(sections.join("\n\n"));
+  return {
+    system: smartMergeStrings(sections.join("\n\n"), ""),
+    urlList: allURLs ? Object.keys(allURLs).slice(0, 20) : undefined,
+  };
 }
 
 // Contexto global
@@ -465,9 +473,10 @@ export async function getResponse(
     references: [],
     think: "",
   };
+  let lastPrompt: { system: string; urlList?: string[] } = { system: "" };
 
   while (
-    context.tokenTracker.getTotalUsage() < tokenBudget &&
+    context.tokenTracker.getTotalUsage().totalTokens < tokenBudget &&
     badAttempts <= maxBadAttempts
   ) {
     await sleep(STEP_SLEEP);
@@ -482,7 +491,7 @@ export async function getResponse(
     });
     console.log(
       `Step ${totalStep} / Budget used ${(
-        (context.tokenTracker.getTotalUsage() / tokenBudget) *
+        (context.tokenTracker.getTotalUsage().totalTokens / tokenBudget) *
         100
       ).toFixed(2)}%`
     );
@@ -504,6 +513,7 @@ export async function getResponse(
       allURLs,
       false
     );
+    lastPrompt = prompt;
 
     const isGeminiModel = modelConfigs.agent.model.startsWith("gemini-");
     const model = activeModelClient.getGenerativeModel({
@@ -513,7 +523,9 @@ export async function getResponse(
 
     try {
       const result = await model.generateContent(
-        isGeminiModel ? `${prompt}\n\nResponda apenas em JSON válido.` : prompt
+        isGeminiModel
+          ? `${prompt.system}\n\nResponda apenas em JSON válido.`
+          : prompt.system
       );
       const response = await result.response;
       let rawResponseText =
@@ -532,7 +544,7 @@ export async function getResponse(
         response.usageMetadata?.totalTokenCount || 0
       );
       thisStep = captureLLMOutput(rawResponseText);
-      context.outputs.push({ step: totalStep, rawResponseText });
+      context.outputs!.push({ step: totalStep, rawResponseText });
 
       if (thisStep.think && typeof thisStep.think === "string") {
         context.actionTracker.trackThink(thisStep.think);
@@ -630,7 +642,7 @@ export async function getResponse(
   }
 
   await storeContext(
-    prompt,
+    lastPrompt,
     [allContext, allKeywords, allQuestions, allKnowledge],
     totalStep,
     requestId || question
@@ -658,7 +670,7 @@ export async function getResponse(
         temperature: modelConfigs.agentBeastMode.temperature,
       },
     });
-    const result = await model.generateContent(beastPrompt);
+    const result = await model.generateContent(beastPrompt.system);
     const response = await result.response;
     const rawResponseText =
       typeof response.text === "function"
@@ -669,7 +681,7 @@ export async function getResponse(
 
   const audit = {
     logs: serverLogs,
-    tokenUsage: context.tokenTracker.getTotalUsage(),
+    tokenUsage: context.tokenTracker.getTotalUsage().totalTokens,
     steps: totalStep,
     errors: [],
   };
@@ -679,7 +691,7 @@ export async function getResponse(
 
 // Armazena o contexto
 async function storeContext(
-  prompt: string,
+  prompt: string | { system: string; urlList?: string[] },
   memory: any[][],
   step: number,
   requestId: string
@@ -687,7 +699,8 @@ async function storeContext(
   try {
     const queryDir = `queries/${requestId}`;
     await fs.mkdir(queryDir, { recursive: true });
-    await fs.writeFile(`${queryDir}/prompt-${step}.txt`, prompt);
+    const promptText = typeof prompt === "string" ? prompt : prompt.system;
+    await fs.writeFile(`${queryDir}/prompt-${step}.txt`, promptText);
     const [context, keywords, questions, knowledge] = memory;
     await fs.writeFile(
       `${queryDir}/context.json`,

@@ -11,10 +11,10 @@ import { EventEmitter } from "events";
 import { getResponse } from "./agent";
 import {
   StepAction,
-  StreamMessage,
   TrackerContext,
   AnswerAction,
-} from "./types";
+  StreamMessage,
+} from "./types/globalTypes";
 import fs from "fs/promises";
 import path from "path";
 import { TokenTracker } from "./utils/token-tracker";
@@ -24,7 +24,7 @@ import { specs } from "./swagger";
 import chokidar from "chokidar";
 import { Server as WebSocketServer, WebSocket } from "ws";
 import http from "http";
-import { QuerySession } from "./types";
+import { QuerySession } from "./types/globalTypes";
 import { ensureModelClientInitialized } from "./agent";
 import { ncmRouter } from "./controllers/ncm";
 import { processarDeepResearch } from "./controllers/deepResearchNCM";
@@ -458,10 +458,11 @@ function createProgressEmitter(
   return () => {
     const state = context.actionTracker.getState();
     const budgetInfo = {
-      used: context.tokenTracker.getTotalUsage(),
+      used: context.tokenTracker.getTotalUsage().totalTokens,
       total: budget || 1_000_000,
       percentage: (
-        (context.tokenTracker.getTotalUsage() / (budget || 1_000_000)) *
+        (context.tokenTracker.getTotalUsage().totalTokens /
+          (budget || 1_000_000)) *
         100
       ).toFixed(2),
     };
@@ -472,7 +473,7 @@ function createProgressEmitter(
       step: state.totalStep,
       budget: budgetInfo,
       trackers: {
-        tokenUsage: context.tokenTracker.getTotalUsage(),
+        tokenUsage: context.tokenTracker.getTotalUsage().totalTokens,
         actionState: context.actionTracker.getState(),
       },
     });
@@ -499,7 +500,7 @@ function cleanup(requestId: string) {
  */
 function emitTrackerUpdate(requestId: string, context: TrackerContext) {
   const state = context.actionTracker.getState();
-  const tokenUsage = context.tokenTracker.getTotalUsage();
+  const tokenUsage = context.tokenTracker.getTotalUsage().totalTokens;
 
   eventEmitter.emit(`progress-${requestId}`, {
     type: "progress",
@@ -512,7 +513,7 @@ function emitTrackerUpdate(requestId: string, context: TrackerContext) {
   // Adicionar publicação via Redis
   publishTaskUpdate(requestId, "tracker_update", {
     state: context.actionTracker.getState(),
-    tokenUsage: context.tokenTracker.getTotalUsage(),
+    tokenUsage: context.tokenTracker.getTotalUsage().totalTokens,
   });
 }
 
@@ -790,7 +791,7 @@ app.post("/api/v1/query", (async (req: Request, res: Response) => {
             reasoning: answerResult.accumulatedReasoning,
           },
           trackers: {
-            tokenUsage: context.tokenTracker.getTotalUsage(),
+            tokenUsage: context.tokenTracker.getTotalUsage().totalTokens,
             actionState: context.actionTracker.getState(),
           },
         });
@@ -819,7 +820,7 @@ app.post("/api/v1/query", (async (req: Request, res: Response) => {
         data: error?.message || "Unknown error",
         status: 500,
         trackers: {
-          tokenUsage: context.tokenTracker.getTotalUsage(),
+          tokenUsage: context.tokenTracker.getTotalUsage().totalTokens,
           actionState: context.actionTracker.getState(),
         },
       });
