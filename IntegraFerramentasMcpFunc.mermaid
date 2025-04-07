@@ -1,0 +1,193 @@
+---
+config:
+  theme: redux-dark
+  look: neo
+  layout: elk
+---
+flowchart TB
+ subgraph subGraph0["Frontend (deepsearch-ui-nexcode)"]
+        UI["Interface do Usuário"]
+        Input["Input de Mensagem"]
+        APIKey["Gerenciamento de API Key"]
+        FileUpload["Upload de Arquivos"]
+  end
+ subgraph subGraph1["Backend (Servidor)"]
+        API["API Endpoint"]
+        Auth["Autenticação"]
+        TokenTracker["Token Tracker"]
+        ActionTracker["Action Tracker"]
+  end
+ subgraph Processamento["Processamento"]
+        Agent["Agente de Pesquisa"]
+        Search["Serviço de Busca"]
+        LLM["Modelo de Linguagem"]
+        Tools["Ferramentas"]
+  end
+ subgraph subGraph3["Ferramentas Disponíveis"]
+        Browser["Browser Tool Nativo"]
+        SearchTool["Search Tool Nativo"]
+        CodeTool["Code Tool Nativo"]
+        ReflectTool["Reflect Tool Nativo"]
+        MCPBridge["MCP Bridge"]
+        MCPRunner["MCP Runner"]
+        MCPAgent["MCP Agent"]
+        MCPServer["MCP Server"]
+  end
+ subgraph subGraph4["Ferramentas Sistema (MCP)"]
+        MCPBash["bash.py"]
+        MCPTerminal["terminal.py"]
+        MCPPythonExec["python_execute.py"]
+        MCPFileOps["file_operators.py"]
+        MCPFileSaver["file_saver.py"]
+        MCPStrReplace["str_replace_editor.py"]
+  end
+ subgraph subGraph5["Ferramentas Navegação (MCP)"]
+        MCPBrowserTool["browser_use_tool.py"]
+        MCPWebSearch["web_search.py"]
+  end
+ subgraph subGraph6["Ferramentas IA (MCP)"]
+        MCPChatCompletion["create_chat_completion.py"]
+        MCPPlanning["planning.py"]
+  end
+ subgraph subGraph7["Ferramentas Controle (MCP)"]
+        MCPControl["mcp.py"]
+        MCPTerminate["terminate.py"]
+        MCPToolCollectionMgr["tool_collection.py"]
+  end
+ subgraph subGraph8["Navegador-main Tools"]
+        MCPTools["Tool Collection"]
+        subGraph4
+        subGraph5
+        subGraph6
+        subGraph7
+  end
+ subgraph subGraph9["Árvore de Decisão de Ferramentas"]
+    direction TB
+        NeedInfo{"Precisa de Informações?"}
+        NeedWebInfo{"Informação está na Web?"}
+        WebInteraction{"Interação Web Necessária?"}
+        FileOperation{"Operação com Arquivos?"}
+        CodeExecution{"Execução de Código?"}
+        DirectAnswer["Resposta Direta"]
+        SimpleWeb["Leitura Simples"]
+        ComplexWeb["Interação Complexa"]
+        ReflectionNeeded["Reflexão"]
+        CodeChoice["Escolha de Execução"]
+  end
+ subgraph subGraph10["Loop de Raciocínio Integrado"]
+        Question["Pergunta do Usuário"]
+        Analysis["Análise da Pergunta"]
+        StrategySelection["Seleção de Estratégia"]
+        subGraph9
+        ToolExecution["Execução da Ferramenta"]
+        ResultAnalysis["Análise de Resultados"]
+        KnowledgeIntegration["Integração ao Conhecimento"]
+        NextStep["Próximo Passo"]
+  end
+ subgraph subGraph11["Busca e Navegação Web"]
+        SearchToolNode["Search Tool Nativo"]
+        SearchToolDesc["[Busca geral na web] [Recupera snippets e URLs] [Identifica fontes relevantes]"]
+        BrowserToolNode["Browser Tool Nativo"]
+        BrowserToolDesc["Leitura básica de páginas- Extração de texto- Sem interação complexa"]
+        MCPWebSearchNode["web_search.py (MCP)"]
+        MCPWebSearchDesc["Busca especializada
+- Filtros avançados
+- Resultados detalhados"]
+        MCPBrowserUseNode["browser_use_tool.py (MCP)"]
+        MCPBrowserUseDesc["Interação completa com páginas
+- Cliques e preenchimento de formulários
+- Navegação sequencial
+- Extração estruturada"]
+  end
+ subgraph subGraph12["Sistema e Arquivos (Funções MCP)"]
+        MCPBashFunc["bash.py (Função)"]
+        MCPTerminalFunc["terminal.py (Função)"]
+        MCPPythonExecFunc["python_execute.py (Função)"]
+        MCPFileOpsFunc["file_operators.py (Função)"]
+        MCPFileSaverFunc["file_saver.py (Função)"]
+  end
+ subgraph subGraph13["Processamento e Reflexão"]
+        CodeToolFunc["Code Tool Nativo"]
+        ReflectToolFunc["Reflect Tool Nativo"]
+        MCPPlanningFunc["planning.py (Função MCP)"]
+        MCPChatCompletionFunc["create_chat_completion.py (Função MCP)"]
+  end
+ subgraph subGraph14["Ferramentas e Suas Funções"]
+        subGraph11
+        subGraph12
+        subGraph13
+  end
+    NeedInfo -- Sim --> NeedWebInfo & NeedWebInfo
+    NeedInfo -- Não --> DirectAnswer & DirectAnswer
+    NeedWebInfo -- Sim --> WebInteraction & WebInteraction
+    NeedWebInfo -- Não --> FileOperation & FileOperation
+    WebInteraction -- Simples --> SimpleWeb & SimpleWeb
+    WebInteraction -- Complexa --> ComplexWeb & ComplexWeb
+    FileOperation -- Sim --> CodeExecution & CodeExecution & MCPFileOpsFunc & MCPFileSaverFunc
+    FileOperation -- Não --> ReflectionNeeded & ReflectionNeeded
+    CodeExecution -- Sim --> CodeChoice & CodeChoice
+    CodeExecution -- Não --> ReflectionNeeded & ReflectionNeeded
+    SearchToolNode --> SearchToolDesc
+    BrowserToolNode --> BrowserToolDesc
+    MCPWebSearchNode --> MCPWebSearchDesc
+    MCPBrowserUseNode --> MCPBrowserUseDesc
+    UI -- "1. Envia Pergunta" --> Input
+    Input -- Inicia --> Question
+    Input -- "2. Valida API Key" --> APIKey
+    APIKey -- "3. Envia Requisição" --> API
+    API -- "4. Autentica" --> Auth
+    Auth -- "5. Inicializa Trackers" --> TokenTracker
+    TokenTracker -- "6. Processa" --> Agent
+    Agent -- Inicia --> Analysis
+    Analysis --> StrategySelection
+    StrategySelection --> NeedInfo
+    SimpleWeb -- Usa --> BrowserToolNode
+    SimpleWeb -- Alternativa --> MCPWebSearchNode
+    ComplexWeb -- Usa --> MCPBrowserUseNode
+    CodeChoice -- Python --> MCPPythonExecFunc
+    CodeChoice -- Shell --> MCPBashFunc
+    CodeChoice -- Terminal --> MCPTerminalFunc
+    ReflectionNeeded -- Usa --> ReflectToolFunc
+    ReflectionNeeded -- Alternativa --> MCPPlanningFunc
+    StrategySelection -- Determina ferramenta para --> ToolExecution
+    ToolExecution --> ResultAnalysis
+    ResultAnalysis --> KnowledgeIntegration
+    KnowledgeIntegration --> NextStep
+    NextStep -- Continuar --> NeedInfo
+    NextStep -- Responder --> DirectAnswer
+    DirectAnswer -- Gera resposta para --> API
+    API -- "12. Atualiza UI" --> UI
+    Tools -- Usa se necessário --> MCPBridge
+    MCPBridge -- Inicializa --> MCPRunner
+    MCPRunner -- Registra --> MCPAgent
+    MCPAgent -- Conecta --> MCPServer
+    MCPServer -- Acessa --> MCPTools
+    MCPTools --> MCPBash & MCPTerminal & MCPPythonExec & MCPFileOps & MCPFileSaver & MCPBrowserTool & MCPWebSearch & MCPPlanning & MCPChatCompletion & MCPControl & MCPTerminate & MCPToolCollectionMgr
+    MCPBash --> MCPBashFunc
+    MCPTerminal --> MCPTerminalFunc
+    MCPPythonExec --> MCPPythonExecFunc
+    MCPFileOps --> MCPFileOpsFunc
+    MCPFileSaver --> MCPFileSaverFunc
+    MCPBrowserTool --> MCPBrowserUseNode
+    MCPWebSearch --> MCPWebSearchNode
+    MCPPlanning --> MCPPlanningFunc
+    MCPChatCompletion --> MCPChatCompletionFunc
+    Tools --> Browser & SearchTool & CodeTool & ReflectTool
+    Browser --> BrowserToolNode
+    SearchTool --> SearchToolNode
+    CodeTool --> CodeToolFunc
+    ReflectTool --> ReflectToolFunc
+    TokenTracker -- Monitora --> Agent
+    ActionTracker -- Monitora --> Agent
+     SearchToolDesc:::Sky
+     BrowserToolDesc:::Aqua
+     MCPWebSearchDesc:::Pine
+     MCPWebSearchDesc:::Peach
+     MCPBrowserUseDesc:::Ash
+    classDef Sky stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+    classDef Aqua stroke-width:1px, stroke-dasharray:none, stroke:#46EDC8, fill:#DEFFF8, color:#378E7A
+    classDef Pine stroke-width:1px, stroke-dasharray:none, stroke:#254336, fill:#27654A, color:#FFFFFF
+    classDef Ash stroke-width:1px, stroke-dasharray:none, stroke:#999999, fill:#EEEEEE, color:#000000
+    classDef Peach stroke-width:1px, stroke-dasharray:none, stroke:#FBB35A, fill:#FFEFDB, color:#8F632D
+    style subGraph9 stroke:none
+    style subGraph11 stroke:#FFFFFF,fill:#424242

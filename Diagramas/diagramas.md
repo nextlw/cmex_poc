@@ -1,0 +1,344 @@
+---
+config:
+  theme: redux-dark
+  look: classic
+  layout: elk
+---
+
+flowchart TB
+subgraph subGraph0["Frontend (deepsearch-ui-nexcode)"]
+UI["Interface do Usuário"]
+Input["Input de Mensagem"]
+APIKey["Gerenciamento de API Key"]
+FileUpload["Upload de Arquivos"]
+end
+subgraph subGraph1["Backend (Servidor)"]
+API["API Endpoint"]
+Auth["Autenticação"]
+TokenTracker["Token Tracker"]
+ActionTracker["Action Tracker"]
+end
+subgraph Processamento["Processamento"]
+Agent["Agente de Pesquisa"]
+Search["Serviço de Busca"]
+LLM["Modelo de Linguagem"]
+Tools["Ferramentas"]
+end
+subgraph subGraph3["Ferramentas Disponíveis"]
+Browser["Browser Tool Nativo"]
+SearchTool["Search Tool Nativo"]
+CodeTool["Code Tool Nativo"]
+ReflectTool["Reflect Tool Nativo"]
+MCPBridge["MCP Bridge"]
+MCPRunner["MCP Runner"]
+MCPAgent["MCP Agent"]
+MCPServer["MCP Server"]
+end
+subgraph subGraph4["Ferramentas Sistema (MCP)"]
+MCPBash["bash.py"]
+MCPTerminal["terminal.py"]
+MCPPythonExec["python_execute.py"]
+MCPFileOps["file_operators.py"]
+MCPFileSaver["file_saver.py"]
+MCPStrReplace["str_replace_editor.py"]
+end
+subgraph subGraph5["Ferramentas Navegação (MCP)"]
+MCPBrowserTool["browser_use_tool.py"]
+MCPWebSearch["web_search.py"]
+end
+subgraph subGraph6["Ferramentas IA (MCP)"]
+MCPChatCompletion["create_chat_completion.py"]
+MCPPlanning["planning.py"]
+end
+subgraph subGraph7["Ferramentas Controle (MCP)"]
+MCPControl["mcp.py"]
+MCPTerminate["terminate.py"]
+MCPToolCollectionMgr["tool_collection.py"]
+end
+subgraph subGraph8["Navegador-main Tools"]
+MCPTools["Tool Collection"]
+subGraph4
+subGraph5
+subGraph6
+subGraph7
+end
+subgraph subGraph9["Árvore de Decisão de Ferramentas"]
+direction TB
+NeedInfo{"Precisa de Informações?"}
+NeedWebInfo{"Informação está na Web?"}
+WebInteraction{"Interação Web Necessária?"}
+FileOperation{"Operação com Arquivos?"}
+CodeExecution{"Execução de Código?"}
+DirectAnswer["Resposta Direta"]
+SimpleWeb["Leitura Simples"]
+ComplexWeb["Interação Complexa"]
+ReflectionNeeded["Reflexão"]
+CodeChoice["Escolha de Execução"]
+end
+subgraph subGraph10["Loop de Raciocínio Integrado"]
+Question["Pergunta do Usuário"]
+Analysis["Análise da Pergunta"]
+StrategySelection["Seleção de Estratégia"]
+subGraph9
+ToolExecution["Execução da Ferramenta"]
+ResultAnalysis["Análise de Resultados"]
+KnowledgeIntegration["Integração ao Conhecimento"]
+NextStep["Próximo Passo"]
+end
+subgraph subGraph11["Busca e Navegação Web"]
+SearchToolNode["Search Tool Nativo"]
+SearchToolDesc["[Busca geral na web] [Recupera snippets e URLs] [Identifica fontes relevantes]"]
+BrowserToolNode["Browser Tool Nativo"]
+BrowserToolDesc["Leitura básica de páginas- Extração de texto- Sem interação complexa"]
+MCPWebSearchNode["web_search.py (MCP)"]
+MCPWebSearchDesc["Busca especializada
+
+- Filtros avançados
+- Resultados detalhados"]
+  MCPBrowserUseNode["browser_use_tool.py (MCP)"]
+  MCPBrowserUseDesc["Interação completa com páginas
+- Cliques e preenchimento de formulários
+- Navegação sequencial
+- Extração estruturada"]
+  end
+  subgraph subGraph12["Sistema e Arquivos (Funções MCP)"]
+  MCPBashFunc["bash.py (Função)"]
+  MCPTerminalFunc["terminal.py (Função)"]
+  MCPPythonExecFunc["python_execute.py (Função)"]
+  MCPFileOpsFunc["file_operators.py (Função)"]
+  MCPFileSaverFunc["file_saver.py (Função)"]
+  end
+  subgraph subGraph13["Processamento e Reflexão"]
+  CodeToolFunc["Code Tool Nativo"]
+  ReflectToolFunc["Reflect Tool Nativo"]
+  MCPPlanningFunc["planning.py (Função MCP)"]
+  MCPChatCompletionFunc["create_chat_completion.py (Função MCP)"]
+  end
+  subgraph subGraph14["Ferramentas e Suas Funções"]
+  subGraph11
+  subGraph12
+  subGraph13
+  end
+  subgraph Fluxo_Métodos_Acesso["Métodos de Acesso ao Sistema"]
+  Fluxo_MA["Terminal/Shell"]
+  Fluxo_MB["APIs do Sistema Operacional"]
+  Fluxo_MC["Interfaces de Scripting"]
+  Fluxo_MD["Bibliotecas Nativas"]
+  Fluxo_ME["Serviços do Sistema"]
+  end
+  subgraph Fluxo_Operações_Arquivo["Operações de Arquivo"]
+  Fluxo_OA["Localizar find/search"]
+  Fluxo_OB["Criar create/touch"]
+  Fluxo_OC["Abrir open/read"]
+  Fluxo_OD["Editar write/append"]
+  Fluxo_OE["Verificar validate/check"]
+  Fluxo_OF["Salvar save/close"]
+  Fluxo_OG["Mover move/rename"]
+  Fluxo_OH["Excluir delete/remove"]
+  end
+  subgraph s3["Mecanismos de Recuperação"]
+  Fluxo_RA["Criar recursos ausentes"]
+  Fluxo_RB["Solicitar permissões"]
+  Fluxo_RC["Alternar métodos de acesso"]
+  Fluxo_RD["Usar locais alternativos"]
+  Fluxo_RE["Oferecer operação manual"]
+  Fluxo_RF["Registrar para tentativa posterior"]
+  end
+  subgraph Fluxo_Verificações_Segurança["Verificações de Segurança"]
+  Fluxo_SA["Validação de caminhos"]
+  Fluxo_SB["Sanitização de inputs"]
+  Fluxo_SC["Escopo limitado de acesso"]
+  Fluxo_SD["Validação de operações"]
+  Fluxo_SE["Verificação de permissões"]
+  Fluxo_SF["Auditoria de ações"]
+  end
+  subgraph subGraph19["Fluxo Detalhado de Operação (Exemplo: Adicionar Item à Lista)"]
+  Fluxo_B["Servidor HabilityCode"]
+  Fluxo_A["Cliente Browser"]
+  Fluxo_C["Inicialização Detalhada"]
+  Fluxo_D["Preparação do Ambiente Detalhada"]
+  Fluxo_E{"Ciclo de Processamento Detalhado"}
+  Fluxo_F["Análise da Intenção Detalhada"]
+  Fluxo_G["Decomposição da Tarefa Detalhada"]
+  Fluxo_H["Plano de Execução Detalhado"]
+  Fluxo_I["Descoberta do Sistema Detalhada"]
+  Fluxo_J["Identificação de APIs Detalhada"]
+  Fluxo_K["Métodos de Acesso Detalhado"]
+  Fluxo_L["Geração de Comandos Detalhada"]
+  Fluxo_M["Conjunto de Comandos Detalhado"]
+  Fluxo_N["Execução de Comando Detalhada"]
+  Fluxo_O["Retorno do Sistema Detalhado"]
+  Fluxo_P["Arquivo Localizado Detalhado"]
+  Fluxo_Q["Erro na Execução Detalhado"]
+  Fluxo_R["Diagnóstico do Problema Detalhado"]
+  Fluxo_S["Estratégias de Recuperação Detalhadas"]
+  Fluxo_T["Recuperação Detalhada"]
+  Fluxo_U["Operação de Arquivo Detalhada"]
+  Fluxo_V["Adição de Conteúdo Detalhada"]
+  Fluxo_W["Verificação Detalhada"]
+  Fluxo_X["Salvamento Detalhado"]
+  Fluxo_Y["Relatório de Operação Detalhado"]
+  Fluxo_Métodos_Acesso
+  Fluxo_Operações_Arquivo
+  s3
+  Fluxo_Verificações_Segurança
+  end
+  NeedInfo -- [Sim] --> NeedWebInfo & NeedWebInfo
+  NeedInfo -- [Não] --> DirectAnswer & DirectAnswer
+  NeedWebInfo -- [Sim] --> WebInteraction & WebInteraction
+  NeedWebInfo -- [Não] --> FileOperation & FileOperation
+  WebInteraction -- [Simples] --> SimpleWeb & SimpleWeb
+  WebInteraction -- [Complexa] --> ComplexWeb & ComplexWeb
+  FileOperation -- [Sim] --> CodeExecution & CodeExecution & MCPFileOpsFunc & MCPFileSaverFunc
+  FileOperation -- [Não] --> ReflectionNeeded & ReflectionNeeded
+  CodeExecution -- [Sim] --> CodeChoice & CodeChoice
+  CodeExecution -- [Não] --> ReflectionNeeded & ReflectionNeeded
+  SearchToolNode --> SearchToolDesc
+  BrowserToolNode --> BrowserToolDesc
+  MCPWebSearchNode --> MCPWebSearchDesc
+  MCPBrowserUseNode --> MCPBrowserUseDesc
+  UI -- "[1. Envia Pergunta]" --> Input
+  Input -- [Inicia] --> Question
+  Input -- "[2. Valida API Key]" --> APIKey
+  APIKey -- "[3. Envia Requisição]" --> API
+  API -- "[4. Autentica]" --> Auth
+  Auth -- "[5. Inicializa Trackers]" --> TokenTracker
+  TokenTracker -- "[6. Processa]" --> Agent
+  Agent -- [Inicia] --> Analysis
+  Analysis --> StrategySelection
+  StrategySelection --> NeedInfo
+  SimpleWeb -- [Usa] --> BrowserToolNode
+  SimpleWeb -- [Alternativa] --> MCPWebSearchNode
+  ComplexWeb -- [Usa] --> MCPBrowserUseNode
+  CodeChoice -- [Python] --> MCPPythonExecFunc
+  CodeChoice -- [Shell] --> MCPBashFunc
+  CodeChoice -- [Terminal] --> MCPTerminalFunc
+  ReflectionNeeded -- [Usa] --> ReflectToolFunc
+  ReflectionNeeded -- [Alternativa] --> MCPPlanningFunc
+  StrategySelection -- [Determina ferramenta para] --> ToolExecution
+  ToolExecution --> ResultAnalysis
+  ResultAnalysis --> KnowledgeIntegration
+  KnowledgeIntegration --> NextStep
+  NextStep -- [Continuar] --> NeedInfo
+  NextStep -- [Responder] --> DirectAnswer
+  DirectAnswer -- [Gera resposta para] --> API
+  API -- "[12. Atualiza UI]" --> UI
+  Tools -- [Usa se necessário] --> MCPBridge
+  MCPBridge -- [Inicializa] --> MCPRunner
+  MCPRunner -- [Registra] --> MCPAgent
+  MCPAgent -- [Conecta] --> MCPServer
+  MCPServer -- [Acessa] --> MCPTools
+  MCPTools --> MCPBash & MCPTerminal & MCPPythonExec & MCPFileOps & MCPFileSaver & MCPBrowserTool & MCPWebSearch & MCPPlanning & MCPChatCompletion & MCPControl & MCPTerminate & MCPToolCollectionMgr
+  MCPBash --> MCPBashFunc
+  MCPTerminal --> MCPTerminalFunc
+  MCPPythonExec --> MCPPythonExecFunc
+  MCPFileOps --> MCPFileOpsFunc
+  MCPFileSaver --> MCPFileSaverFunc
+  MCPBrowserTool --> MCPBrowserUseNode
+  MCPWebSearch --> MCPWebSearchNode
+  MCPPlanning --> MCPPlanningFunc
+  MCPChatCompletion --> MCPChatCompletionFunc
+  Tools --> Browser & SearchTool & CodeTool & ReflectTool
+  Browser --> BrowserToolNode
+  SearchTool --> SearchToolNode
+  CodeTool --> CodeToolFunc
+  ReflectTool --> ReflectToolFunc
+  TokenTracker -- Monitora --> Agent
+  ActionTracker -- Monitora --> Agent
+  Fluxo_A -- POST /api/query --> Fluxo_B
+  Fluxo_B -- Analisa: adicionar lista de compras ao arquivo X --> Fluxo_C
+  Fluxo_C -- Configuração do agente (permissões, sandbox, escopo) --> Fluxo_D
+  Fluxo_D -- Configura sandbox seguro com acesso controlado --> Fluxo_E
+  Fluxo_E -- action: parse_user_intent\nintent: manipular_arquivo, adicionar_conteúdo\ntarget: arquivo_X, lista_compras --> Fluxo_F
+  Fluxo_F -- Identifica operações necessárias --> Fluxo_G
+  Fluxo_G -- tasks: localizar_arquivo, abrir_arquivo,\nadicionar_conteúdo, salvar_arquivo --> Fluxo_H
+  Fluxo_E -- action: system_discovery\nenvironment: os_type, permissions, paths --> Fluxo_I
+  Fluxo_I -- Detecta ambiente macOS --> Fluxo_J
+  Fluxo_J -- apis: filesystem, spotlight, terminal --> Fluxo_K
+  Fluxo_E -- action: generate_commands\nos: macOS, task: localizar_arquivo --> Fluxo_L
+  Fluxo_L -- "Comandos relevantes para macOS:\n1. mdfind 'nome_arquivo'\n2. find ~ -name 'nome_arquivo'\n3. Spotlight via script AppleScript" --> Fluxo_M
+  Fluxo_E -- action: execute_command\ncommand: Terminal('mdfind arquivo_X')\nfallbacks: find, AppleScript --> Fluxo_N
+  Fluxo_N -- Executa no sandbox com permissões limitadas --> Fluxo_O
+  Fluxo_O -- status: success\nresult: path: '/Users/nome/arquivo_X' --> Fluxo_P
+  Fluxo_O -- status: error\nerror_code: 'FILE_NOT_FOUND'\ndetails: 'Arquivo não encontrado' --> Fluxo_Q
+  Fluxo_Q -- Análise do erro --> Fluxo_R
+  Fluxo_R -- diagnosis:\nerror_type: 'acesso_sistema'\nroot_cause: 'arquivo inexistente ou sem permissão'\napproaches: criar_arquivo, verificar_permissões, buscar_alternativas --> Fluxo_S
+  Fluxo_S -- action: recover_operation\napproach: criar_arquivo\nparams: path: '/Users/nome/arquivo_X' --> Fluxo_T
+  Fluxo_T --> Fluxo_E
+  Fluxo_P -- action: file_operation\noperation: 'open'\nmode: 'append'\npath: '/Users/nome/arquivo_X' --> Fluxo_U
+  Fluxo_U -- "action: write_content\ncontent: 'Lista de compras:\n- Item 1\n- Item 2\n- Item 3'\nposition: 'EOF'" --> Fluxo_V
+  Fluxo_V -- action: verify_changes\noperation: 'read'\npatterns: 'Lista de compras' --> Fluxo_W
+  Fluxo_W -- action: save_file\npath: '/Users/nome/arquivo_X' --> Fluxo_X
+  Fluxo_X -- action: generate_report\noperations: localizar, abrir, escrever, verificar, salvar\nstatus: 'success'\ndetails: 'Lista de compras adicionada com sucesso' --> Fluxo_Y
+  Fluxo_Y -- Resultado detalhado com evidências e passos executados --> Fluxo_A
+  Fluxo_D --- Fluxo_Verificações_Segurança
+  Fluxo_I --- Fluxo_Métodos_Acesso
+  Fluxo_N --- Fluxo_Métodos_Acesso
+  Fluxo_U --- Fluxo_Operações_Arquivo
+  Fluxo_S --- Fluxo_Métodos_Acesso
+  ToolExecution -- [Inicia Ciclo Detalhado] --> Fluxo_E
+  MCPTerminalFunc -- [Dispara] --> Fluxo_N
+  MCPPythonExecFunc -- [Dispara] --> Fluxo_N
+  MCPBashFunc -- [Dispara] --> Fluxo_N
+  MCPFileOpsFunc -- [Dispara] --> Fluxo_U
+  MCPFileSaverFunc -- [Dispara] --> Fluxo_X
+  Fluxo_Y -- [Atualiza] --> ResultAnalysis
+  Fluxo_Q -- [Informa Erro ao] --> ResultAnalysis
+  Fluxo_Métodos_Acesso --> MCPTerminal & MCPBash & MCPPythonExec
+  Fluxo_Operações_Arquivo --> MCPFileOps & MCPFileSaver
+  subGraph19 --> n1["Untitled Node"]
+  SearchToolDesc:::Sky
+  BrowserToolDesc:::Aqua
+  MCPWebSearchDesc:::Pine
+  MCPWebSearchDesc:::Peach
+  MCPBrowserUseDesc:::Ash
+  classDef Sky stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+  classDef Aqua stroke-width:1px, stroke-dasharray:none, stroke:#46EDC8, fill:#DEFFF8, color:#378E7A
+  classDef Pine stroke-width:1px, stroke-dasharray:none, stroke:#254336, fill:#27654A, color:#FFFFFF
+  classDef Ash stroke-width:1px, stroke-dasharray:none, stroke:#999999, fill:#EEEEEE, color:#000000
+  classDef Peach stroke-width:1px, stroke-dasharray:none, stroke:#FBB35A, fill:#FFEFDB, color:#8F632D
+  style MCPToolCollectionMgr fill:#FF6D00
+  style subGraph9 stroke:none,fill:#00C853
+  style subGraph11 stroke:#FFFFFF,fill:#424242
+  linkStyle 0 stroke:#FF6D00,fill:none
+  linkStyle 1 stroke:#FF6D00,fill:none
+  linkStyle 2 stroke:#00C853,fill:none
+  linkStyle 3 stroke:#00C853,fill:none
+  linkStyle 4 stroke:#FF6D00,fill:none
+  linkStyle 5 stroke:#FF6D00,fill:none
+  linkStyle 6 stroke:#D50000,fill:none
+  linkStyle 7 stroke:#D50000,fill:none
+  linkStyle 8 stroke:#2962FF,fill:none
+  linkStyle 9 stroke:#2962FF,fill:none
+  linkStyle 10 stroke:#FF6D00,fill:none
+  linkStyle 11 stroke:#FF6D00,fill:none
+  linkStyle 12 stroke:#FF6D00,fill:none
+  linkStyle 13 stroke:#FF6D00,fill:none
+  linkStyle 14 stroke:#2962FF,fill:none
+  linkStyle 15 stroke:#2962FF,fill:none
+  linkStyle 17 stroke:#00C853,fill:none
+  linkStyle 18 stroke:#2962FF,fill:none
+  linkStyle 19 stroke:#2962FF,fill:none
+  linkStyle 20 stroke:#FFD600,fill:none
+  linkStyle 21 stroke:#FFD600,fill:none
+  linkStyle 27 stroke:#00C853,fill:none
+  linkStyle 33 stroke:#FFD600,fill:none
+  linkStyle 34 stroke:#FFD600,fill:none
+  linkStyle 35 stroke:#FF6D00,fill:none
+  linkStyle 36 stroke:#2962FF,fill:none
+  linkStyle 37 stroke:#AA00FF,fill:none
+  linkStyle 38 stroke:#2962FF,fill:none
+  linkStyle 39 stroke:#AA00FF,fill:none
+  linkStyle 40 stroke:#00C853,fill:none
+  linkStyle 41 stroke:#000000,fill:none
+  linkStyle 42 stroke:#2962FF,fill:none
+  linkStyle 43 stroke:#FFD600,fill:none
+  linkStyle 44 stroke:#FFD600,fill:none
+  linkStyle 45 stroke:#FFD600,fill:none
+  linkStyle 46 stroke:#FF6D00,fill:none
+  linkStyle 47 stroke:#FF6D00,fill:none
+  linkStyle 48 stroke:#FF6D00,fill:none
+  linkStyle 49 stroke:#00C853,fill:none
+  linkStyle 50 stroke:#00C853,fill:none
+  linkStyle 125 stroke:#FFD600,fill:none
+  linkStyle 126 stroke:#D50000

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Catálogo de Produtos</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: #f0f2f5; /* Tom de cinza claro similar ao fundo */
+        margin: 0;
+        padding: 20px;
+      }
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #1e3a56; /* Azul escuro para o título */
+        margin-bottom: 25px;
+        font-weight: 600;
+      }
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(
+          auto-fit,
+          minmax(220px, 1fr)
+        ); /* Grid responsivo */
+        gap: 20px; /* Espaçamento entre os cartões */
+      }
+      .kpi-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Alinha título e valor */
+        min-height: 100px; /* Altura mínima para consistência */
+      }
+      .kpi-card .title {
+        font-size: 0.9em;
+        color: #555;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .kpi-card .value {
+        font-size: 2.2em; /* Tamanho grande para o número */
+        font-weight: 700;
+        color: #1e3a56; /* Azul escuro para o valor */
+        text-align: right; /* Alinha o número à direita como na imagem */
+      }
+      /* Estilos específicos podem ser adicionados aqui para cores diferentes, etc. */
+      .kpi-card.warning .value {
+        color: #ff8c00; /* Laranja para pendências */
+      }
+
+      /* Placeholder para os cards vazios */
+      .placeholder-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        min-height: 100px; /* Mesma altura mínima */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <h1>Início</h1>
+
+      <div class="kpi-grid">
+        <!-- KPI 1: Total de Produtos Catalogados -->
+        <div class="kpi-card">
+          <div class="title">Produtos Catalogados</div>
+          <div class="value">12.580</div>
+        </div>
+
+        <!-- KPI 2: Produtos com Licença Pendente -->
+        <div class="kpi-card warning">
+          <div class="title">Pendentes de Licença</div>
+          <div class="value">45</div>
+        </div>
+
+        <!-- KPI 3: NCMs Gerenciadas -->
+        <div class="kpi-card">
+          <div class="title">NCMs Gerenciadas</div>
+          <div class="value">1.230</div>
+        </div>
+
+        <!-- KPI 4: Operadores Estrangeiros -->
+        <div class="kpi-card">
+          <div class="title">Operadores Estrangeiros</div>
+          <div class="value">850</div>
+        </div>
+
+        <!-- KPI 5: Taxa de Validação Automática -->
+        <div class="kpi-card">
+          <div class="title">Taxa de Validação</div>
+          <div class="value">
+            99.8<span style="font-size: 0.5em; vertical-align: super">%</span>
+          </div>
+        </div>
+
+        <!-- KPI 6: Cobertura de Atributos por NCM -->
+        <div class="kpi-card">
+          <div class="title">Cobertura de Atributos</div>
+          <div class="value">
+            95<span style="font-size: 0.5em; vertical-align: super">%</span>
+          </div>
+        </div>
+
+        <!-- KPI 7: Prontidão para Órgãos Anuentes -->
+        <div class="kpi-card">
+          <div class="title">Prontidão Órgãos Anuentes</div>
+          <div class="value">
+            88<span style="font-size: 0.5em; vertical-align: super">%</span>
+          </div>
+        </div>
+
+        <!-- KPI 8: Produtos Identificados como Alto Risco -->
+        <div class="kpi-card warning">
+          <div class="title">Produtos Alto Risco</div>
+          <div class="value">152</div>
+        </div>
+      </div>
+      <!-- Outras seções do dashboard podem ser adicionadas aqui -->
+    </div>
+  </body>
+</html>

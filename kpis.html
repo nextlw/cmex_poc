@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard KPIs - Análise de Importadores</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: #f0f2f5; /* Tom de cinza similar ao dashboard */
+        margin: 0;
+        padding: 20px;
+      }
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #1e3a56;
+        margin-bottom: 25px;
+        font-weight: 600;
+      }
+
+      /* Grid para KPIs menores */
+      .small-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(
+          auto-fit,
+          minmax(180px, 1fr)
+        ); /* 4 colunas responsivas */
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .small-kpi-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 80px;
+      }
+      .small-kpi-card .title {
+        font-size: 0.85em;
+        color: #555;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .small-kpi-card .value {
+        font-size: 1.8em;
+        font-weight: 700;
+        color: #1e3a56;
+        text-align: right;
+      }
+      .small-kpi-card .value .subtext {
+        font-size: 0.5em; /* Para texto menor junto ao valor */
+        font-weight: 400;
+        color: #555;
+        display: block;
+        text-align: right;
+      }
+
+      /* Grid para Widgets Maiores */
+      .large-widget-grid {
+        display: grid;
+        grid-template-columns: repeat(
+          auto-fit,
+          minmax(300px, 1fr)
+        ); /* 3 colunas responsivas */
+        gap: 20px;
+      }
+      .widget-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        height: 380px; /* A altura fixa adicionada */
+        display: flex; /* Para ajudar a controlar conteúdo interno se necessário */
+        flex-direction: column; /* Mantém o fluxo normal */
+        /* A altura será definida pelo conteúdo */
+      }
+      .widget-card h2,
+      .widget-card h3 {
+        text-align: left;
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #333;
+      }
+      .widget-card .description-content {
+        background-color: #f8f9fa; /* Fundo levemente diferente para descrições */
+        padding: 15px;
+        border-radius: 5px;
+        font-size: 0.9em;
+        color: #444;
+      }
+      .widget-card .description-content h3 {
+        margin-top: 0;
+        color: #555;
+      }
+      .widget-card .description-content ul {
+        list-style: disc;
+        margin-left: 20px;
+        padding-left: 0;
+      }
+      .widget-card .description-content li {
+        margin-bottom: 10px;
+      }
+      .widget-card canvas {
+        max-width: 100%;
+        /* A altura agora é controlada pelo container e opções do chart */
+        max-height: calc(100% - 40px); /* Exemplo: Deixa espaço para título */
+      }
+
+      /* Estilos específicos dos cartões de KPI movidos */
+      .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px; /* Reduzido para caber melhor */
+        justify-content: center;
+        margin-top: 10px;
+      }
+      .kpi-card {
+        background-color: #f9f9f9;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        flex: 1 1 150px; /* Ajustado para caber melhor */
+        max-width: 180px;
+        min-width: 140px;
+      }
+      .kpi-card h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #333;
+        font-size: 1em;
+      }
+      .kpi-metric {
+        margin-bottom: 8px;
+        font-size: 0.9em;
+      }
+      .kpi-metric strong {
+        display: block;
+        font-size: 1.2em;
+        color: #0056b3;
+        margin-top: 2px;
+      }
+      .kpi-metric.delivery-time strong.fast {
+        color: #28a745;
+      }
+      .kpi-metric.delivery-time strong.medium {
+        color: #ffc107;
+      }
+      .kpi-metric.delivery-time strong.slow {
+        color: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <h1>Dashboard KPIs - Análise de Importadores</h1>
+
+      <!-- Linha de KPIs Menores -->
+      <div class="small-kpi-grid">
+        <div class="small-kpi-card">
+          <div class="title">Importadores</div>
+          <div class="value">4</div>
+        </div>
+        <div class="small-kpi-card">
+          <div class="title">Total Produtos</div>
+          <div class="value">455</div>
+        </div>
+        <div class="small-kpi-card">
+          <div class="title">NCMs Distintos</div>
+          <div class="value">85</div>
+        </div>
+        <div class="small-kpi-card">
+          <div class="title">Produtos Ativos</div>
+          <div class="value">400</div>
+        </div>
+      </div>
+
+      <!-- Grid de Widgets Maiores -->
+      <div class="large-widget-grid">
+        <!-- Widget 1: Gráfico de Barras (Produtos por Importador) -->
+        <div class="widget-card">
+          <h2>Total de Produtos por Importador</h2>
+          <canvas id="myChart"></canvas>
+        </div>
+
+        <!-- Widget 2: Gráfico de Dispersão (Produtos vs Vendas) -->
+        <div class="widget-card">
+          <h2>Produtos vs Vendas (Simulado)</h2>
+          <canvas id="scatterChart"></canvas>
+        </div>
+
+        <!-- Widget 3: Produtos por Status -->
+        <div class="widget-card">
+          <h2>Produtos por Status</h2>
+          <canvas id="statusChart"></canvas>
+        </div>
+
+        <!-- Widget 4: Top 5 NCMs por Quantidade -->
+        <div class="widget-card">
+          <h2>Top 5 NCMs por Quantidade</h2>
+          <canvas id="ncmChart"></canvas>
+        </div>
+
+        <!-- Widget 5: Últimos Produtos Cadastrados -->
+        <div class="widget-card">
+          <h2>Últimos Produtos Cadastrados</h2>
+          <div
+            id="recentProductsList"
+            style="font-size: 0.9em; max-height: 250px; overflow-y: auto"
+          >
+            <!-- Lista será preenchida por JS -->
+            <ul style="list-style: none; padding-left: 0">
+              <li style="padding: 5px 0; border-bottom: 1px solid #eee">
+                Carregando...
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Widget 6: Perfil dos Importadores (Radar Chart) -->
+        <div class="widget-card">
+          <h3>Perfil dos Importadores</h3>
+          <canvas id="importerRadarChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- Script para Gráfico de Barras ---
+      const ctx = document.getElementById("myChart").getContext("2d");
+      const myChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: [
+            "Importador A",
+            "Importador B",
+            "Importador C",
+            "Importador D",
+          ],
+          datasets: [
+            {
+              label: "Total de Produtos",
+              data: [120, 85, 200, 50],
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+              ],
+              borderColor: [
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          indexAxis: "y", // Tornar horizontal para melhor encaixe talvez
+          scales: {
+            x: {
+              beginAtZero: true,
+            },
+          },
+          plugins: {
+            legend: { display: false }, // Ocultar legenda para economizar espaço
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = context.dataset.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  // Ajuste para eixo Y como label e X como valor (se horizontal)
+                  if (context.parsed.x !== null) {
+                    label += context.parsed.x + " produtos";
+                  }
+                  return label;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // --- Script para Gráfico de Dispersão ---
+      const scatterCtx = document
+        .getElementById("scatterChart")
+        .getContext("2d");
+      const scatterData = [
+        { x: 120, y: 50000, label: "Importador A" },
+        { x: 85, y: 30000, label: "Importador B" },
+        { x: 200, y: 90000, label: "Importador C" },
+        { x: 50, y: 15000, label: "Importador D" },
+      ];
+      const segmentThreshold = 40000;
+      scatterData.forEach((point) => {
+        point.segment =
+          point.y >= segmentThreshold ? "Alto Volume" : "Baixo Volume";
+      });
+      const scatterChart = new Chart(scatterCtx, {
+        type: "scatter",
+        data: {
+          datasets: [
+            {
+              label: "Importadores (Produtos vs Vendas)",
+              data: scatterData,
+              backgroundColor: scatterData.map((point) =>
+                point.segment === "Alto Volume"
+                  ? "rgba(255, 99, 132, 0.6)"
+                  : "rgba(54, 162, 235, 0.6)"
+              ),
+              borderColor: scatterData.map((point) =>
+                point.segment === "Alto Volume"
+                  ? "rgba(255, 99, 132, 1)"
+                  : "rgba(54, 162, 235, 1)"
+              ),
+              pointRadius: 6, // Reduzido levemente
+              pointHoverRadius: 8,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            x: {
+              type: "linear",
+              position: "bottom",
+              title: {
+                display: true,
+                text: "Nº Produtos",
+                font: { size: 10 }, // Reduzir fonte do título do eixo
+              },
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Vendas (Sim.)",
+                font: { size: 10 }, // Reduzir fonte do título do eixo
+              },
+            },
+          },
+          plugins: {
+            legend: { display: false }, // Ocultar legenda
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  const dataPoint = context.raw;
+                  let label = dataPoint.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  label += `(${dataPoint.x} Prod, V: ${dataPoint.y}, ${dataPoint.segment})`; // Abreviei
+                  return label;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // --- Script para Gráfico de Status (Doughnut) ---
+      const statusCtx = document.getElementById("statusChart").getContext("2d");
+      const statusChart = new Chart(statusCtx, {
+        type: "doughnut",
+        data: {
+          labels: ["Ativos", "Inativos"],
+          datasets: [
+            {
+              label: "Status dos Produtos",
+              data: [400, 55], // Dados simulados: Ativos, Inativos
+              backgroundColor: [
+                "rgba(75, 192, 192, 0.6)", // Verde-azulado para Ativos
+                "rgba(255, 99, 132, 0.6)", // Vermelho para Inativos
+              ],
+              borderColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = context.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  if (context.parsed !== null) {
+                    label += context.parsed;
+                  }
+                  return label;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // --- Script para Gráfico Top 5 NCMs (Barra Horizontal) ---
+      const ncmCtx = document.getElementById("ncmChart").getContext("2d");
+      const ncmChart = new Chart(ncmCtx, {
+        type: "bar",
+        data: {
+          labels: [
+            "1234.56.78",
+            "9876.54.32",
+            "1122.33.44",
+            "5566.77.88",
+            "9900.11.22",
+          ], // NCMs simulados
+          datasets: [
+            {
+              label: "Quantidade de Produtos",
+              data: [50, 40, 35, 30, 25], // Quantidades simuladas
+              backgroundColor: "rgba(54, 162, 235, 0.6)", // Azul
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          indexAxis: "y", // Torna o gráfico horizontal
+          responsive: true,
+          scales: {
+            x: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "Quantidade",
+                font: { size: 10 },
+              },
+            },
+            y: {
+              ticks: { font: { size: 10 } }, // Diminuir fonte do eixo Y se necessário
+            },
+          },
+          plugins: {
+            legend: {
+              display: false, // Oculta a legenda
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return ` Quantidade: ${context.parsed.x}`;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // --- Script para Lista de Últimos Produtos ---
+      const recentProductsData = [
+        { name: "Produto X", code: "ABC001", date: "10/07/24" },
+        { name: "Produto Y", code: "DEF002", date: "10/07/24" },
+        { name: "Produto Z", code: "GHI003", date: "09/07/24" },
+        { name: "Produto W", code: "JKL004", date: "09/07/24" },
+        { name: "Produto V", code: "MNO005", date: "08/07/24" },
+      ];
+      const productListElement = document.getElementById("recentProductsList");
+      let productListHTML =
+        '<ul style="list-style: none; padding-left: 0; margin: 0;">';
+      recentProductsData.forEach((product) => {
+        productListHTML += `
+          <li style="padding: 6px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+            <span>${product.name} (${product.code})</span>
+            <small style="color: #666;">${product.date}</small>
+          </li>`;
+      });
+      productListHTML += "</ul>";
+      productListElement.innerHTML = productListHTML;
+
+      // --- Script para gerar o Gráfico de Radar (Substitui os cartões) ---
+      const radarCtx = document
+        .getElementById("importerRadarChart")
+        .getContext("2d");
+      const radarData = {
+        labels: ["Produtos", "NCMs Cobertos", "% Ativos"],
+        datasets: [
+          {
+            label: "Importador A",
+            data: [120, 15, 95],
+            fill: true,
+            backgroundColor: "rgba(255, 99, 132, 0.2)",
+            borderColor: "rgb(255, 99, 132)",
+            pointBackgroundColor: "rgb(255, 99, 132)",
+            pointBorderColor: "#fff",
+            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderColor: "rgb(255, 99, 132)",
+          },
+          {
+            label: "Importador B",
+            data: [85, 12, 98],
+            fill: true,
+            backgroundColor: "rgba(54, 162, 235, 0.2)",
+            borderColor: "rgb(54, 162, 235)",
+            pointBackgroundColor: "rgb(54, 162, 235)",
+            pointBorderColor: "#fff",
+            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderColor: "rgb(54, 162, 235)",
+          },
+          {
+            label: "Importador C",
+            data: [200, 25, 90],
+            fill: true,
+            backgroundColor: "rgba(255, 206, 86, 0.2)",
+            borderColor: "rgb(255, 206, 86)",
+            pointBackgroundColor: "rgb(255, 206, 86)",
+            pointBorderColor: "#fff",
+            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderColor: "rgb(255, 206, 86)",
+          },
+          {
+            label: "Importador D",
+            data: [50, 8, 100],
+            fill: true,
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgb(75, 192, 192)",
+            pointBackgroundColor: "rgb(75, 192, 192)",
+            pointBorderColor: "#fff",
+            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderColor: "rgb(75, 192, 192)",
+          },
+        ],
+      };
+
+      const radarChart = new Chart(radarCtx, {
+        type: "radar",
+        data: radarData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false, // Permite que o gráfico se ajuste melhor ao card
+          elements: {
+            line: {
+              borderWidth: 2, // Linhas um pouco mais finas
+            },
+          },
+          scales: {
+            r: {
+              // Configuração do eixo radial (valores)
+              beginAtZero: true,
+              // Pode ser necessário ajustar ticks ou sugerir escala logarítmica se os valores forem muito díspares
+              ticks: { backdropPadding: 10, font: { size: 8 } }, // Ajusta padding e fonte dos ticks
+            },
+          },
+          plugins: {
+            legend: {
+              position: "top",
+              labels: { font: { size: 10 } }, // Fonte menor na legenda
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = context.dataset.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  if (context.parsed.r !== null) {
+                    // Adiciona o nome do eixo (métrica) ao tooltip
+                    label += `${context.label}: ${context.parsed.r}`;
+                  }
+                  return label;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // --- Script para gerar os cartões KPI (Movido para Widget 6) ---
+      /*
+      const kpiCardData = [
+         { name: "Importador A", products: 120, ncms: 15, activePercent: 95, lastUpdate: '09/07/24' },
+         { name: "Importador B", products: 85,  ncms: 12, activePercent: 98, lastUpdate: '10/07/24' },
+         { name: "Importador C", products: 200, ncms: 25, activePercent: 90, lastUpdate: '08/07/24' },
+         { name: "Importador D", products: 50,  ncms: 8,  activePercent: 100, lastUpdate: '10/07/24' }
+      ];
+      const cardArea = document.getElementById("kpi-card-area");
+      cardArea.innerHTML = ''; // Limpa a área caso já tenha algo
+      kpiCardData.forEach((data) => {
+        const card = document.createElement("div");
+        card.className = "kpi-card";
+
+        card.innerHTML = `
+              <h4>${data.name}</h4>
+              <div class="kpi-metric">
+                  Produtos
+                  <strong>${data.products}</strong>
+              </div>
+              <div class="kpi-metric">
+                  NCMs Cobertos
+                  <strong>${data.ncms}</strong>
+              </div>
+               <div class="kpi-metric">
+                  % Ativos
+                  <strong>${data.activePercent}%</strong>
+              </div>
+              <div class="kpi-metric">
+                  Últ. Atualização
+                  <strong style="font-size: 1em; color: #555">${ data.lastUpdate }</strong>
+              </div>
+          `;
+        cardArea.appendChild(card);
+      });
+      */
+      // --- Fim do Script para gerar os cartões KPI ---
+    </script>
+  </body>
+</html>
