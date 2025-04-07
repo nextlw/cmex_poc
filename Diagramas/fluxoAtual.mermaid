@@ -1,0 +1,81 @@
+---
+config:
+  theme: redux-dark
+  look: classic
+  layout: elk
+---
+flowchart TB
+    subgraph "Frontend (React/Vite - cmex_poc/frontend)"
+        FE_UI["User Interface (React Component)"]
+        FE_Service["Service/Hook (e.g., useApiRequest)"]
+        FE_Auth["Auth State/Storage (JWT Token)"]
+        FE_Request["API Request Construction (fetch/axios)"]
+        FE_Display["Display Results (Update State)"]
+    end
+
+    subgraph "Backend (FastAPI - cmex_poc/fastapi)"
+        FASTAPI_Route["API Route (e.g., /api/v1/catalog/search)"]
+        FASTAPI_Auth["Auth Middleware/Dependency (verify_token)"]
+        FASTAPI_Pydantic["Input Validation (Pydantic Model)"]
+        FASTAPI_Logic["Business Logic (Service Function)"]
+        FASTAPI_DBCall["Database Interaction (SQLAlchemy ORM)"]
+        FASTAPI_DB["Database (e.g., PostgreSQL)"]
+        FASTAPI_Tables["(Tables: products, ncm, importers, etc.)"]
+        FASTAPI_DeepSearchCall["HTTP Client Call (httpx)"]
+        FASTAPI_Env["Environment Vars (.env - BUSCADOR_URL, BUSCADOR_API_KEY)"]
+        FASTAPI_Response["Response Formatting"]
+    end
+
+    subgraph "Buscador Inteligente (Node.js? - cmex_poc/buscador_inteligente)"
+        BUSCADOR_Route["API Route (e.g., /deep-search)"]
+        BUSCADOR_Auth["API Key Auth (Optional)"]
+        BUSCADOR_Parse["Request Parsing"]
+        BUSCADOR_Core["Core Search Logic (Vector DB/LLM/Search Index)"]
+        BUSCADOR_Data["(Data Sources: Redis?, Files?, DB?)"]
+        BUSCADOR_Response[Response Generation]
+    end
+
+    %% Fluxo Principal
+    FE_UI -- "|1. User submits search query|" --> FE_Service
+    FE_Service -- "|2. Get JWT from storage|" --> FE_Auth
+    FE_Auth -- "|3. Token|" --> FE_Service
+    FE_Service -- "|4. Construct Request (query, token)|" --> FE_Request
+    FE_Request -- "|5. POST Request|" --> FASTAPI_Route
+
+    %% Processamento FastAPI
+    FASTAPI_Route -- "|6. Request received|" --> FASTAPI_Auth
+    FASTAPI_Auth -- "|7. Verify JWT Token|" --> FASTAPI_Pydantic
+    FASTAPI_Pydantic -- "|8. Validate Request Body|" --> FASTAPI_Logic
+    FASTAPI_Logic -- "|9. Determine Search Type|" --> FASTAPI_DBCall{Standard Search}
+    FASTAPI_Logic -- "|9. Determine Search Type|" --> FASTAPI_DeepSearchCall{Deep Search Needed}
+
+    %% Caminho Standard Search (FastAPI only)
+    FASTAPI_DBCall -- "|10a. Build Query|" ---> FASTAPI_DB
+    FASTAPI_DB -- "|11a. Access Tables|" ---> FASTAPI_Tables
+    FASTAPI_Tables -- "|12a. Raw Data|" ---> FASTAPI_DB
+    FASTAPI_DB -- "|13a. Query Results|" ---> FASTAPI_DBCall
+    FASTAPI_DBCall -- "|14a. Processed DB Data|" ---> FASTAPI_Response
+
+    %% Caminho Deep Search (FastAPI -> Buscador -> FastAPI)
+    FASTAPI_DeepSearchCall -- "|10b. Get Buscador URL/Key|" --> FASTAPI_Env
+    FASTAPI_Env -- "|11b. Credentials|" --> FASTAPI_DeepSearchCall
+    FASTAPI_DeepSearchCall -- "|12b. POST /deep-search (query, api_key)|" --> BUSCADOR_Route
+    BUSCADOR_Route -- "|13b. Request|" --> BUSCADOR_Auth
+    BUSCADOR_Auth -- "|14b. Validate API Key (Optional)|" --> BUSCADOR_Parse
+    BUSCADOR_Parse -- "|15b. Parsed Query|" --> BUSCADOR_Core
+    BUSCADOR_Core -- "|16b. Access Data/Indexes|" --> BUSCADOR_Data
+    BUSCADOR_Data -- "|17b. Search Data|" --> BUSCADOR_Core
+    BUSCADOR_Core -- "|18b. Processed Results|" --> BUSCADOR_Response
+    BUSCADOR_Response -- "|19b. Structured JSON Response|" --> FASTAPI_DeepSearchCall
+    FASTAPI_DeepSearchCall -- "|20b. Buscador Results|" --> FASTAPI_Response
+
+    %% Resposta Final para Frontend
+    FASTAPI_Response -- "|Final. Format Structured JSON|" --> FASTAPI_Route
+    FASTAPI_Route -- "|Final+1. HTTP 200 OK|" --> FE_Request
+    FE_Request -- "|Final+2. Receive JSON Response|" --> FE_Service
+    FE_Service -- "|Final+3. Process Data|" --> FE_Display
+    FE_Display -- "|Final+4. Update UI State|" --> FE_UI
+
+    %% Estilização (Opcional, para clareza)
+    style FASTAPI_DB fill:#f9d,stroke:#333,stroke-width:2px
+    style BUSCADOR_Data fill:#ccf,stroke:#333,stroke-width:2px
