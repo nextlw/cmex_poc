@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+**IMPORTANTE**
+**Regras de implementação no projeto de desenvolvimento a serem seguidas de forma rígidas**
+1. tipos dever sempre ser organizados e servidos pelo shared-type exceto interfaces de componentes que devem ser armazenadas e importadas do types.ts da pasta do componente.
+2. componente novos sempre precisam seguir a mesma formatação dos já existentes:
+
+        frontend/src/PastacomNomeDoComponente/
+                                            |
+                                            |__index.tsx
+                                            |__styles.css
+                                            |__types.css
+========================================================================
+3. qualquer implementação *node.js* só pode acontecer com autorização do usuário  com a mensagem específica "nodeImplement" e para que o usuário entenda explique o que será como será e o mais importante, o que irá impactar;
+4. qualquer implementação python só pode ocorrer na pasta fastapi;
+5. Qualquer implementação de front só pode ocorrer depois de uma análize dos schemas e tipos que ele espera e manda;
+6. Estilos de cores e tamnhos só podem ser consumidos exclusivamente do arquivo tokens.css;
+7. sempre ler a documentação referente ao assunto na pasta docs/ antes da implementação;
+8. Essa implementação deve ocorrer completa e caso algum erro no código se apresente precisa ser corrigido antes do término da tarefa, observando as regras anteriores;
+9. você não pode fazer alterações ou escrever qualquer coisa sem antes entender a lógica do projeto como um todo;
+10. Rode sempre os comando usando o pnpm.
+**IMPORTANTE**
