@@ -1,4 +1,4 @@
-# IA Generativa como Agente (CMEX Agent)
+# IDE Inteligente CMEX (CMEX IDE)
 
 ## Índice
 
@@ -16,7 +16,7 @@
 
 ## Visão Geral
 
-**CMEX Agent** é uma plataforma de inteligência artificial generativa capaz de executar tarefas cotidianas para usuários em seus computadores ou na internet. O agente atua como um assistente virtual avançado que compreende comandos em linguagem natural e executa ações complexas de forma autônoma, trazendo ganhos significativos de produtividade e automação para profissionais e empresas.
+**CMEX IDE** é uma IDE inteligente baseada no VSCode e Cursor, que utiliza IA generativa para automatizar tarefas de desenvolvimento, manipulação de arquivos, análise de dados e navegação web. O agente atua como um assistente virtual avançado que compreende comandos em linguagem natural e executa ações complexas diretamente no ambiente de desenvolvimento do usuário.
 
 ## Problema e Solução
 
@@ -24,351 +24,389 @@
 
 ```mermaid
 graph TD
-    A[Tarefas repetitivas consomem tempo] --> E[Perda de produtividade]
-    B[Múltiplos sistemas sem integração] --> E
-    C[Complexidade de análise de dados] --> E
-    D[Dificuldade em organizar informações] --> E
+    A[Tarefas repetitivas de desenvolvimento] --> E[Perda de produtividade]
+    B[Complexidade de análise de dados] --> E
+    C[Dificuldade em manipular múltiplos arquivos] --> E
+    D[Pesquisa manual na web] --> E
     E --> F[Custos operacionais elevados]
     E --> G[Decisões baseadas em dados limitados]
     G --> H[Oportunidades perdidas]
 ```
 
-![Diagrama de problemas](/Users/williamduarte/Pesquisa_CMEX/cmex_poc/docs/apresentacao/fluxos/fluxoAi/mermaid-diagram-2025-03-31-153135.png)
-
-- Profissionais gastam horas em tarefas administrativas repetitivas
-- Análise de dados exige conhecimento técnico especializado
-- Integração entre sistemas requer desenvolvimento custoso
-- Informações essenciais ficam dispersas em múltiplas plataformas
+- Desenvolvedores gastam horas em tarefas repetitivas de código
+- Análise de dados exige múltiplas ferramentas e conhecimentos
+- Integração entre diferentes tipos de arquivos é complexa
+- Pesquisa e coleta de informações é manual e demorada
 
 ### A Solução
 
 ```mermaid
 graph TD
-    A[CMEX Agent] --> B[Compreende linguagem natural]
-    A --> C[Executa tarefas autônomas]
-    A --> D[Integra múltiplas plataformas]
-    B --> E[Comandos complexos em linguagem simples]
-    C --> F[Automação de processos end-to-end]
-    D --> G[Unifica dados de múltiplas fontes]
-    E --> H[Acessibilidade para todos os profissionais]
-    F --> I[Economia de tempo e recursos]
-    G --> J[Insights de negócios mais completos]
+    A[CMEX IDE] --> B[Manipulação de arquivos]
+    A --> C[Análise de dados]
+    A --> D[Navegação web inteligente]
+    B --> E[Edição automática de código]
+    C --> F[Processamento de planilhas]
+    D --> G[Pesquisa contextual]
+    E --> H[Produtividade aumentada]
+    F --> I[Insights rápidos]
+    G --> J[Informações precisas]
 ```
 
-![Diagrama de solução](/Users/williamduarte/Pesquisa_CMEX/cmex_poc/docs/apresentacao/fluxos/fluxoAi/mermaid-diagram-2025-03-31-153206.png)
-
-- Agente de IA que compreende o contexto e intenção do usuário
-- Capacidade de executar tarefas complexas através de múltiplos sistemas
-- Aprendizado contínuo para aprimoramento das capacidades
-- Interface conversacional simples e intuitiva
+- IDE baseada em VSCode/Cursor com capacidades de IA
+- Motor Chromium integrado para navegação web
+- Processamento de planilhas e arquivos locais
+- Interface amigável para automação de tarefas
 
 ## Casos de Uso
 
-### Caso 1: Automatização de Relatórios de Horas
+### Caso 1: Análise e Manipulação de Planilhas
 
-**Desafio:** Profissionais perdem horas preenchendo relatórios de horas trabalhadas.
+**Desafio:** Análise manual de grandes volumes de dados em planilhas.
 
-**Solução CMEX Agent:**
-
-```mermaid
-sequenceDiagram
-    Usuário->>CMEX Agent: Solicita preenchimento da planilha de horas
-    CMEX Agent->>Sistema: Busca planilha no computador
-    CMEX Agent->>Navegador: Acessa histórico para encontrar o Azure DevOps
-    CMEX Agent->>Azure: Consulta tarefas dos últimos 10 dias
-    CMEX Agent->>CMEX Agent: Processa dados e calcula horas
-    CMEX Agent->>Usuário: Apresenta tabela com cálculos para aprovação
-    Usuário->>CMEX Agent: Aprova a tabela
-    CMEX Agent->>Planilha: Preenche automaticamente
-    CMEX Agent->>Usuário: Confirma conclusão e mostra resultado
-```
-
-![Diagrama de automação de relatórios](/Users/williamduarte/Pesquisa_CMEX/cmex_poc/docs/apresentacao/fluxos/fluxoAi/mermaid-diagram-2025-03-31-153232.png)
-
-### Caso 2: Análise de Vendas e Geração de Insights
-
-**Desafio:** Análise de dados de vendas demanda conhecimento técnico e tempo.
-
-**Solução CMEX Agent:**
+**Solução CMEX IDE:**
 
 ```mermaid
 sequenceDiagram
-    Usuário->>CMEX Agent: Solicita análise de desempenho de vendas do trimestre
-    CMEX Agent->>Sistemas: Conecta-se aos sistemas de vendas (CRM, ERP)
-    CMEX Agent->>Dados: Extrai e consolida dados de múltiplas fontes
-    CMEX Agent->>Análise: Identifica tendências, produtos destaque e anomalias
-    CMEX Agent->>Visualização: Gera gráficos e dashboards interativos
-    CMEX Agent->>Insights: Produz recomendações estratégicas baseadas em dados
-    CMEX Agent->>Usuário: Apresenta relatório completo com visualizações e insights
-    CMEX Agent->>Agenda: Programa alertas para métricas importantes
+    Usuário->>CMEX IDE: Solicita análise de planilha
+    CMEX IDE->>Sistema: Acessa arquivo local
+    CMEX IDE->>LLM: Processa dados
+    CMEX IDE->>Usuário: Apresenta insights
+    Usuário->>CMEX IDE: Solicita alterações
+    CMEX IDE->>Planilha: Aplica modificações
+    CMEX IDE->>Usuário: Confirma conclusão
 ```
 
-![Diagrama de análise de vendas](/Users/williamduarte/Pesquisa_CMEX/cmex_poc/docs/apresentacao/fluxos/fluxoAi/mermaid-diagram-2025-03-31-153248.png)
+### Caso 2: Pesquisa Profunda na Web
 
-### Caso 3: Pesquisa e Síntese de Informações de Mercado
+**Desafio:** Coleta e análise manual de informações da web.
 
-**Desafio:** Acompanhar concorrentes e mercado exige pesquisa constante e síntese de informações.
-
-**Solução CMEX Agent:**
+**Solução CMEX IDE:**
 
 ```mermaid
 sequenceDiagram
-    Usuário->>CMEX Agent: Solicita pesquisa sobre concorrentes e tendências do setor
-    CMEX Agent->>Internet: Pesquisa informações sobre concorrentes principais
-    CMEX Agent->>Bases de Dados: Acessa fontes especializadas do setor
-    CMEX Agent->>Redes Sociais: Monitora menções e sentimento sobre marcas
-    CMEX Agent->>Notícias: Analisa notícias recentes do setor
-    CMEX Agent->>CMEX Agent: Compila e organiza informações relevantes
-    CMEX Agent->>Relatório: Cria documento com benchmarking e análise SWOT
-    CMEX Agent->>Alertas: Configura monitoramento contínuo de tópicos-chave
-    CMEX Agent->>Usuário: Entrega relatório completo com sumário executivo
+    Usuário->>CMEX IDE: Solicita pesquisa
+    CMEX IDE->>Chromium: Navega em sites
+    CMEX IDE->>LLM: Analisa conteúdo
+    CMEX IDE->>Usuário: Apresenta resultados
+    Usuário->>CMEX IDE: Solicita mais detalhes
+    CMEX IDE->>Web: Coleta informações adicionais
+    CMEX IDE->>Usuário: Entrega relatório completo
 ```
-
-![Diagrama de pesquisa de mercado](/Users/williamduarte/Pesquisa_CMEX/cmex_poc/docs/apresentacao/fluxos/fluxoAi/mermaid-diagram-2025-03-31-153309.png)
 
 ## Mercado e Oportunidade
 
 ### Dados do Mercado
 
-- Mercado global de assistentes virtuais avançados em crescimento acelerado
-- Adoção crescente de automação de processos em empresas de todos os portes
-- Empresas buscando soluções para maximizar produtividade e reduzir custos operacionais
-- Análise de dados se tornando essencial para competitividade
+- Mercado global de IDEs em crescimento acelerado
+- Demanda por automação em desenvolvimento
+- Necessidade de análise de dados integrada
+- Busca por produtividade em desenvolvimento
 
 ### Oportunidade
 
 ```mermaid
 pie
     title "Segmentos de Mercado Alvo"
-    "Pequenas e Médias Empresas" : 55
-    "Grandes Corporações" : 25
-    "Profissionais Autônomos" : 20
+    "Desenvolvedores" : 40
+    "Analistas de Dados" : 30
+    "Pesquisadores" : 30
 ```
-
-![Gráfico de segmentos de mercado](/Users/williamduarte/Pesquisa_CMEX/cmex_poc/docs/apresentacao/fluxos/fluxoAi/mermaid-diagram-2025-03-31-153330.png)
 
 ## Diferencial Competitivo
 
 ### Vantagens Únicas
 
-- **Execução Multi-plataforma**: Atua tanto em ambiente local quanto na internet
-- **Contextualização Avançada**: Entende o contexto do usuário e personaliza respostas
-- **Autonomia Real**: Capacidade de realizar tarefas completas sem intervenções constantes
-- **Segurança e Privacidade**: Modelo próprio que garante controle sobre os dados
+- **Integração com VSCode/Cursor**: Familiaridade e compatibilidade
+- **Automação Local**: Processamento direto nos arquivos do usuário
+- **Navegação Web Inteligente**: Motor Chromium integrado
+- **Preço Competitivo**: R$ 99/mês por usuário
 
 ### Comparativo com Concorrentes
 
-| Funcionalidade              | CMEX Agent | Manus AI | Open AI |
-| --------------------------- | ---------- | -------- | ------- |
-| Execução Autônoma           | ✓          | ✓        | ✓       |
-| Acesso a Múltiplos Sistemas | ✓          | ⨯        | ⨯       |
-| Adaptação ao Contexto       | ✓          | ✓        | ✓       |
-| Personalização Avançada     | ✓          | ⨯        |         |
-| Modelo Próprio              | ✓          | ⨯        | ✓       |
-| Integração Sistemas Locais  | ✓          | ⨯        | ⨯       |
+| Funcionalidade          | CMEX IDE | Manus AI | GitHub Copilot |
+| ----------------------- | -------- | -------- | -------------- |
+| Edição de Código        | ✓        | ✓        | ✓              |
+| Manipulação de Arquivos | ✓        | ⨯        | ⨯              |
+| Navegação Web           | ✓        | ⨯        | ⨯              |
+| Análise de Dados        | ✓        | ⨯        | ⨯              |
+| Preço Mensal (R$)       | 99       | 299      | 99             |
 
 ## Modelo de Negócio
 
 ### Monetização
 
-- **Plano Premium**: R$ 281,26/mês por usuário (US$ 49,00 convertido à taxa atual)
-- Pacotes empresariais com preços diferenciados por volume
-- API para desenvolvedores com modelo de preço por chamada
+- **Plano Mensal**: R$ 99/mês por usuário
+- **Plano Anual**: R$ 990/ano (2 meses grátis)
+- **Plano Empresarial**: Preços personalizados
 
 ### Ciclo de Vendas
 
 ```mermaid
 graph LR
-    A[Marketing de Conteúdo] --> B[Demonstração]
-    B --> C[Trial de 14 dias]
-    C --> D[Onboarding]
-    D --> E[Assinatura Premium]
-    E --> F[Expansão dentro da empresa]
-    F --> G[Renovação e upgrade]
+    A[Download Gratuito] --> B[Teste de 14 dias]
+    B --> C[Onboarding]
+    C --> D[Assinatura]
+    D --> E[Expansão]
+    E --> F[Renovação]
 ```
-
-![Ciclo de vendas](/Users/williamduarte/Pesquisa_CMEX/cmex_poc/docs/apresentacao/fluxos/fluxoAi/mermaid-diagram-2025-03-31-153355.png)
 
 ## Estratégia de Lançamento
 
-### Fase 1: MVP e Testes Fechados (3 meses)
+### Fase 1: MVP (30 de Maio)
 
-- Desenvolvimento do MVP focado em casos de uso específicos
-- Testes com grupo seleto de beta testers
-- Coleta intensiva de feedback para refinamento
+- Desenvolvimento da IDE base
+- Integração com LLM Qwen2.5-7B
+- Funcionalidades de manipulação de arquivos
+- Análise de planilhas
+- Navegação web básica
 
-### Fase 2: Lançamento Limitado (6 meses)
+### Fase 2: Investimento (Junho - Dezembro)
 
-- Foco inicial em análise de dados para empresários
-- Marketing direcionado para early adopters
-- Desenvolvimento de casos de uso específicos por segmento
-
-### Fase 3: Expansão de Mercado (12 meses)
-
-- Ampliação das funcionalidades para novos casos de uso
-- Desenvolvimento de integrações com sistemas populares
-- Programa de parcerias com desenvolvedores e consultores
+- Busca de investimentos
+- Expansão da equipe
+- Desenvolvimento de novas funcionalidades
+- Marketing e aquisição de usuários
 
 ## Projeção Financeira
 
-Receita Anual Projetada
+### Custos de Desenvolvimento
 
-- AnoUsuários AtivosReceita Mensal (US$) | Receita Mensal (R$)Receita Anual (R$) 11.000$49.000              | R$ 281.260R$ 3.375.120 25.000$245.000             | R$ 1.406.300R$ 16.875.600 315.000$735.000             | R$ 4.218.900R$ 50.626.800
+#### Fase 1 (MVP - 30 de Maio)
 
-_Taxa de câmbio considerada: US$ 1,00 = R$ 5,74_
+- Desenvolvedor Principal (50h/semana): R$ 12.000/mês
+- Desenvolvedor Frontend (20h/semana): R$ 4.000/mês
+- Total Fase 1: R$ 16.000/mês
 
-### Previsão de Crescimento
+#### Fase 2 (Junho - Dezembro)
 
-| Período | Usuários Ativos Projetados |
-| ------- | -------------------------- |
-| Mês 6   | 500                        |
-| Mês 12  | 1.000                      |
-| Mês 18  | 3.000                      |
-| Mês 24  | 5.000                      |
-| Mês 30  | 10.000                     |
-| Mês 36  | 15.000                     |
+- Desenvolvedor Principal (Full-time): R$ 12.000/mês
+- Desenvolvedor Frontend (20h/semana): R$ 4.000/mês
+- Total Fase 2: R$ 16.000/mês
+
+#### Fase 3 (Janeiro - Abril 2025)
+
+- Desenvolvedor Principal (Full-time): R$ 12.000/mês
+- Desenvolvedor Frontend (Full-time): R$ 4.000/mês
+- Closer: R$ 2.000/mês + comissão
+- Total Fase 3: R$ 18.000/mês
+
+#### Fase 4 (Maio - Junho 2025)
+
+- Desenvolvedor Principal (Full-time): R$ 12.000/mês
+- Desenvolvedor Frontend (Full-time): R$ 4.000/mês
+- Closer: R$ 2.000/mês + comissão
+- Total Fase 4: R$ 18.000/mês
+
+### Fluxo de Implementação
 
 ```mermaid
-pie
-    title "Distribuição da Receita Mensal (5.000 usuários)"
-    "Custos Operacionais" : 529530.00
-    "P&D e Expansão" : 421890.00
-    "Margem Líquida" : 454880.00
+gantt
+    title Fluxo de Implementação CMEX IDE
+    dateFormat  YYYY-MM-DD
+    section MVP
+    Desenvolvimento IDE Base      :2024-03-01, 2024-04-30
+    Integração LLM               :2024-04-15, 2024-05-15
+    Testes Beta                  :2024-05-16, 2024-05-30
+    section Fase 2
+    Busca de Investimentos       :2024-06-01, 2024-08-31
+    Expansão Equipe             :2024-09-01, 2024-09-30
+    Novas Funcionalidades        :2024-10-01, 2024-12-31
+    section Fase 3
+    Implementação Voz           :2025-01-01, 2025-02-28
+    Melhorias Interface         :2025-03-01, 2025-03-31
+    Marketing Inicial           :2025-01-01, 2025-04-30
+    section Fase 4
+    Desenvolvimento Mobile      :2025-05-01, 2025-06-15
+    Marketplace Extensões       :2025-05-16, 2025-06-30
+    Expansão Marketing          :2025-05-01, 2025-06-30
 ```
 
-![Gráfico de distribuição de receita](/Users/williamduarte/Pesquisa_CMEX/cmex_poc/docs/apresentacao/fluxos/fluxoAi/mermaid-diagram-2025-03-31-153431.png)
+### Estratégia de Vendas e Marketing
+
+#### Canais de Vendas
+
+1. **Vendas Diretas**
+
+   - SDR (Sales Development Representative)
+     - Prospecção ativa via LinkedIn
+     - Cold calling para empresas de tecnologia
+     - Email marketing segmentado
+   - Closer
+     - Demonstrações personalizadas
+     - Negociação de contratos
+     - Onboarding de clientes
+
+2. **Marketing Digital**
+
+   - SEO e Conteúdo
+     - Blog técnico
+     - Tutoriais em vídeo
+     - Documentação detalhada
+   - Redes Sociais
+     - LinkedIn (foco em desenvolvedores)
+     - Twitter (comunidade tech)
+     - GitHub (código aberto)
+
+3. **Parcerias**
+
+   - Influenciadores Tech
+     - YouTubers de programação
+     - Streamers de desenvolvimento
+     - Bloggers técnicos
+   - Comunidades
+     - Discord de desenvolvedores
+     - Grupos de WhatsApp
+     - Fóruns especializados
+
+4. **Eventos**
+
+   - Meetups locais
+   - Conferências de tecnologia
+   - Webinars técnicos
+
+#### Influenciadores Alvo
+
+1. **Desenvolvimento**
+
+   - Filipe Deschamps
+   - Rocketseat
+   - Alura
+   - Cod3r
+   - Dev Soutinho
+
+2. **Produtividade**
+
+   - Tiago Brunet
+   - Christian Barbosa
+   - Gustavo Cerbasi
+
+3. **Tecnologia**
+
+   - TecMundo
+   - Olhar Digital
+   - Canaltech
+
+### Custos Mensais Estimados
+
+| Item                | Custo Mensal (R$) |
+| ------------------- | ----------------- |
+| LLM (1M tokens/dia) | 1.125             |
+| Vercel              | 500               |
+| Desenvolvimento     | 16.000            |
+| Marketing           | 5.000             |
+| Closer              | 2.000             |
+| **Total**           | **24.625**        |
 
 ## Infraestrutura e Custos
 
 ### Infraestrutura
 
-- **Modelo Próprio**: Hospedado em AWS/Azure com containers Docker
-- **Alta Disponibilidade**: Distribuição em múltiplas regiões
-- **Segurança**: Isolamento de dados e criptografia avançada
+- **LLM**: Qwen2.5-7B no OpenRouter
+- **Frontend**: Vercel
+- **Downloads**: Vercel
+- **IDE**: Electron + VSCode/Cursor
 
-### Custos Mensais Estimados (Para 5.000 usuários)
+### Custos Mensais Estimados
 
-| Item                   | Descrição                  | Custo Mensal (US$) | Custo Mensal (R$) |     |     |     |     |
-| ---------------------- | -------------------------- | ------------------ | ----------------- | --- | --- | --- | --- |
-| Infraestrutura Cloud   | AWS/Azure (EC2, S3, etc.)  | $12.000,00         | R$ 68.880,00      |     |     |     |     |
-| Modelo de IA           | Treinamento e inferência   | $15.000,00         | R$ 86.100,00      |     |     |     |     |
-| Largura de Banda       | Transferência de dados     | $3.000,00          | R$ 17.220,00      |     |     |     |     |
-| Integração             | APIs de terceiros          | $2.000,00          | R$ 11.480,00      |     |     |     |     |
-| Equipe Desenvolvimento | _Detalhado abaixo_         | $10.453,00         | R$ 60.000,00      |     |     |     |     |
-| Equipe de IA           | Especialistas em ML/NLP    | $13.937,00         | R$ 80.000,00      |     |     |     |     |
-| Suporte Técnico        | Atendimento e treinamento  | $8.362,00          | R$ 48.000,00      |     |     |     |     |
-| Marketing              | Aquisição de clientes      | $10.000,00         | R$ 57.400,00      |     |     |     |     |
-| Tokens LLMs            | Inferência e processamento | $17.500,00         | R$ 100.450,00     |     |     |     |     |
-| **Total**              |                            | **$92.252,00**     | **R$ 529.530,00** |     |     |     |     |
-
-### Detalhamento da Equipe de Desenvolvimento
-
-| Função                    | Regime         | Valor                 | Horas Mensais | Total Mensal     |     |     |     |     |     |     |     |     |     |
-| ------------------------- | -------------- | --------------------- | ------------- | ---------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CTO                       | Fixo           | R$ 15.000,00/mês      | -             | R$ 15.000,00     |     |     |     |     |     |     |     |     |     |     |     |
-| Frontend Sênior           | R$ 80,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 9.600,00      |     |     |     |     |     |     |     |     |     |     |     |     |
-| Backend Sênior            | R$ 100,00/hora | 6h/dia, 5 dias/semana | 120h          | R$ 12.000,00     |     |     |     |     |     |     |     |     |     |     |     |     |
-| DevOps                    | R$ 90,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 10.800,00     |     |     |     |     |     |     |     |     |     |     |     |     |
-| Fullstack Pleno           | R$ 70,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 8.400,00      |     |     |     |     |     |     |     |     |     |     |     |     |
-| QA Especializado          | R$ 35,00/hora  | 6h/dia, 5 dias/semana | 120h          | R$ 4.200,00      |     |     |     |     |     |     |     |     |     |     |     |     |
-| **Total Desenvolvimento** |                |                       |               | **R$ 60.000,00** |     |     |     |     |     |     |     |     |     |
-
-### Detalhamento das Equipes de Suporte
-
-| Função                    | Quantidade | Custo Mensal Individual | Total Mensal     |     |     |     |
-| ------------------------- | ---------- | ----------------------- | ---------------- | --- | --- | --- | --- |
-| **Equipe de IA**          |            |                         |                  |     |     |     |
-| Cientista de Dados Sênior | 2          | R$ 20.000,00            | R$ 40.000,00     |     |     |     |     |
-| Engenheiro de ML          | 2          | R$ 15.000,00            | R$ 30.000,00     |     |     |     |     |
-| Especialista em NLP       | 1          | R$ 10.000,00            | R$ 10.000,00     |     |     |     |     |
-| **Total Equipe de IA**    |            |                         | **R$ 80.000,00** |     |     |     |
-| **Suporte Técnico**       |            |                         |                  |     |     |     |
-| Coordenador de Suporte    | 1          | R$ 12.000,00            | R$ 12.000,00     |     |     |     |     |
-| Especialista L2           | 2          | R$ 8.000,00             | R$ 16.000,00     |     |     |     |     |
-| Analista de Suporte L1    | 5          | R$ 4.000,00             | R$ 20.000,00     |     |     |     |     |
-| **Total Suporte Técnico** |            |                         | **R$ 48.000,00** |     |     |     |
-
-### Detalhamento de Custos com LLMs
-
-| Serviço        | Finalidade                                  | Consumo Estimado | Custo Mensal (R$) |
-| -------------- | ------------------------------------------- | ---------------- | ----------------- |
-| GPT-4o         | Processamento de linguagem natural avançado | 700M tokens/mês  | R$ 40.180,00      |
-| Claude 3 Opus  | Análise contextual e semântica              | 500M tokens/mês  | R$ 34.440,00      |
-| Mistral Large  | Processamento de dados estruturados         | 400M tokens/mês  | R$ 25.830,00      |
-| **Total LLMs** |                                             |                  | **R$ 100.450,00** |
-
-### Implementações Planejadas
-
-A equipe de desenvolvimento será responsável por implementar:
-
-1. **Infraestrutura e DevOps**
-
-   - Arquitetura serverless multi-região
-   - Sistema de cacheamento para respostas frequentes
-   - Pipeline de CI/CD para implantação contínua
-
-2. **Módulos Especializados**
-
-   - Conector universal para sistemas empresariais
-   - Sistema de análise de dados com visualização automatizada
-   - Agente de automação para tarefas em desktop e navegadores
-
-3. **Integrações**
-
-   - Conectores para Microsoft 365, Google Workspace
-   - Integração com ERPs populares (SAP, Oracle, Totvs)
-   - APIs para extensibilidade por desenvolvedores
-
-- Margem Operacional (5.000 usuários)
-
-```mermaid
-pie
-    title "Distribuição da Receita Mensal (5.000 usuários)"
-    "Custos Operacionais" : 529530.00
-    "P&D e Expansão" : 421890.00
-    "Margem Líquida" : 454880.00
-```
-
-### Comparativo de Cenários
-
-| Cenário     | Receita Mensal  | Custos Operacionais | Reinvestimento P&D | Margem Líquida | % Margem |     |     |     |     |     |     |
-| ----------- | --------------- | ------------------- | ------------------ | -------------- | -------- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Otimista    | R$ 1.406.300,00 | R$ 413.280,00       | R$ 421.890,00      | R$ 571.130,00  | 40,6%    |     |     |     |     |     |     |     |     |
-| Realista    | R$ 1.406.300,00 | R$ 529.530,00       | R$ 421.890,00      | R$ 454.880,00  | 32,3%    |     |     |     |     |     |     |     |     |
-| Conservador | R$ 1.406.300,00 | R$ 529.530,00       | R$ 561.890,00      | R$ 314.880,00  | 22,4%    |     |     |     |     |     |     |     |     |
-
-> **Nota:** O cenário conservador considera um maior investimento em P&D para aprimorar os algoritmos de automação e expandir as capacidades do agente, essencial em um mercado altamente competitivo de IA.
+| Item                | Custo Mensal (R$) |
+| ------------------- | ----------------- |
+| LLM (1M tokens/dia) | 1.125             |
+| Vercel              | 500               |
+| Desenvolvimento     | 16.000            |
+| Marketing           | 5.000             |
+| Closer              | 2.000             |
+| **Total**           | **24.625**        |
 
 ## Roadmap
 
-### Curto Prazo (6 meses)
+### Curto Prazo (MVP - 30 de Maio)
 
-- API para desenvolvedores
-- Integração com sistemas ERP/CRM populares
-- Ampliação dos recursos de análise de dados
+- IDE base com VSCode/Cursor
+- Integração com LLM
+- Manipulação de arquivos
+- Análise de planilhas
+- Navegação web básica
 
-### Médio Prazo (12 meses)
+### Médio Prazo (30 de Abril 2025)
 
-- Integração com mais sistemas corporativos
-- Capacidades avançadas de planejamento e estratégia
-- Plataforma para criação de agentes customizados
+- Implementação de voz
+- Melhorias na interface
+- Novas funcionalidades de automação
 
-### Longo Prazo (24 meses)
+### Longo Prazo (30 de Junho 2025)
 
-- Ecossistema completo de automação empresarial
-- Marketplace de agentes especializados por setor
-- Capacidades avançadas de machine learning
+- Versão mobile
+- Marketplace de extensões
+- Integrações avançadas
 
 ## Equipe e Contato
 
 ### Nossa Equipe
 
-- Especialistas em IA e machine learning
-- Desenvolvedores experientes em integração de sistemas
-- Consultores de negócios com experiência em transformação digital
+- Desenvolvedor Principal (50h/semana)
+- Desenvolvedor Frontend (20h/semana)
 
 ### Próximos Passos
 
-- Solicite uma demonstração personalizada
-- Conheça nossos casos de sucesso
-- Agende uma reunião com nossos especialistas
+- Desenvolvimento do MVP
+- Testes com usuários beta
+- Busca de investimentos
+
+### Custos Totais Projetados (12 de Abril - Dezembro 2024)
+
+| Mês       | Desenvolvimento | Marketing     | Closer        | LLM          | Vercel       | Ferramentas  | Novas Implementações      | Total          |
+| :-------- | :-------------- | :------------ | :------------ | :----------- | :----------- | :----------- | :------------------------ | :------------- | --- | --- | --- | --- |
+| Abr       | R$ 3.600\*      | R$ 2.500      | -             | R$ 562       | R$ 250       | R$ 1.000     | -                         | R$ 7.912       |     |     |     |     |
+| Mai       | R$ 7.200\*      | R$ 5.000      | -             | R$ 1.125     | R$ 500       | R$ 2.000     | -                         | R$ 15.825      |     |     |     |     |
+| Jun       | R$ 16.000       | R$ 5.000      | R$ 2.000      | R$ 1.125     | R$ 500       | -            | R$ 3.000 (Integração MCP) | R$ 27.625      |     |     |     |     |
+| Jul       | R$ 16.000       | R$ 5.000      | R$ 2.000      | R$ 1.125     | R$ 500       | -            | R$ 3.000 (Integração MCP) | R$ 27.625      |     |     |     |     |
+| Ago       | R$ 16.000       | R$ 5.000      | R$ 2.000      | R$ 1.125     | R$ 500       | -            | R$ 3.000 (Integração MCP) | R$ 27.625      |     |     |     |     |
+| Set       | R$ 16.000       | R$ 5.000      | R$ 2.000      | R$ 1.125     | R$ 500       | -            | R$ 5.000 (Chat por Voz)   | R$ 29.625      |     |     |     |     |
+| Out       | R$ 16.000       | R$ 5.000      | R$ 2.000      | R$ 1.125     | R$ 500       | -            | R$ 5.000 (Chat por Voz)   | R$ 29.625      |     |     |     |     |
+| Nov       | R$ 16.000       | R$ 5.000      | R$ 2.000      | R$ 1.125     | R$ 500       | -            | R$ 5.000 (Chat por Voz)   | R$ 29.625      |     |     |     |     |
+| Dez       | R$ 16.000       | R$ 5.000      | R$ 2.000      | R$ 1.125     | R$ 500       | -            | R$ 5.000 (Chat por Voz)   | R$ 29.625      |     |     |     |     |
+| **Total** | **R$ 123.800**  | **R$ 42.500** | **R$ 14.000** | **R$ 9.562** | **R$ 3.750** | **R$ 3.000** | **R$ 24.000**             | **R$ 220.612** |     |     |     |     |
+
+\*Desenvolvedor Principal (30h/semana): R$ 7.200/mês
+Desenvolvedor Frontend (20h/semana): R$ 4.000/mês
+
+#### Detalhamento das Ferramentas (Abril-Maio)
+
+- Cursor Pro: R$ 500/mês
+- Ambiente de Testes: R$ 1.000/mês
+- Outras Ferramentas: R$ 500/mês
+- Total: R$ 2.000/mês
+
+#### Detalhamento das Novas Implementações
+
+1. **Integração MCP (Junho-Agosto)**
+
+   - Desenvolvimento de visão computacional
+   - Integração com dispositivos
+   - Automação de sistemas
+   - Custo total: R$ 9.000
+
+2. **Chat por Voz (Setembro-Dezembro)**
+
+   - Desenvolvimento de reconhecimento de voz
+   - Síntese de voz
+   - Integração com LLM
+   - Custo total: R$ 20.000
+
+#### Projeção de Receita (Abril-Dezembro)
+
+| Mês       | Usuários | Receita Mensal (R$) |
+| :-------- | :------- | :------------------ |
+| Abr       | 0        | 0                   |
+| Mai       | 50       | 4.950               |
+| Jun       | 100      | 9.900               |
+| Jul       | 200      | 19.800              |
+| Ago       | 400      | 39.600              |
+| Set       | 600      | 59.400              |
+| Out       | 800      | 79.200              |
+| Nov       | 1.000    | 99.000              |
+| Dez       | 1.200    | 118.800             |
+| **Total** |          | **R$ 430.650**      |
+
+**Saldo Projetado: R$ 209.938**
