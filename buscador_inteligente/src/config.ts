@@ -2,13 +2,25 @@ import dotenv from "dotenv";
 import { ProxyAgent, setGlobalDispatcher } from "undici";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createOpenAI, OpenAIProviderSettings } from "@ai-sdk/openai";
-import configJson from "../config.json";
+import configJsonImport from "../config.json";
 
 /**
  * Indica se deve usar o modelo local.
  */
 export const USE_LOCAL_MODEL = false;
 console.log("Modo de modelo:", USE_LOCAL_MODEL ? "Local" : "Remoto");
+
+/**
+ * Interface para modelo disponível
+ */
+export interface AvailableModel {
+  name: string;
+  displayName: string;
+  description: string;
+  maxContextLength: number;
+  supportsStreaming: boolean;
+  supportsJsonMode: boolean;
+}
 
 /**
  * Interface de configuração do modelo.
@@ -77,10 +89,18 @@ interface ConfigJson {
   defaults: DefaultsConfig;
   providers: Record<string, ProviderConfig>;
   models: Record<string, ModelsConfig>;
+  available_models: Record<string, AvailableModel[]>;
 }
 
 // Carrega o config.json com tipagem
-const config: ConfigJson = configJson;
+const importedConfig = configJsonImport as any;
+const config: ConfigJson = {
+  env: importedConfig.env,
+  defaults: importedConfig.defaults,
+  providers: importedConfig.providers,
+  models: importedConfig.models,
+  available_models: importedConfig.available_models || {},
+};
 
 // Configuração do ambiente
 const env: EnvConfig = { ...config.env };
@@ -191,11 +211,16 @@ export const modelConfigs: ToolConfigs = {
 /**
  * Tempo de espera entre passos.
  */
-export const STEP_SLEEP = configJson.defaults.step_sleep;
+export const STEP_SLEEP = configJsonImport.defaults.step_sleep;
 
 // Tipos
-export type LLMProvider = "openai" | "gemini" | "vertex";
-export type ToolName = keyof typeof configJson.models.gemini.tools;
+export type LLMProvider =
+  | "openai"
+  | "gemini"
+  | "vertex"
+  | "anthropic"
+  | "local";
+export type ToolName = keyof typeof configJsonImport.models.gemini.tools;
 
 // Determina o provedor LLM
 export const LLM_PROVIDER: LLMProvider = (() => {
@@ -208,14 +233,19 @@ export const LLM_PROVIDER: LLMProvider = (() => {
 
 function isValidProvider(provider: string): provider is LLMProvider {
   return (
-    provider === "openai" || provider === "gemini" || provider === "vertex"
+    provider === "openai" ||
+    provider === "gemini" ||
+    provider === "vertex" ||
+    provider === "anthropic" ||
+    provider === "local"
   );
 }
 
 // Obtém a configuração de uma ferramenta
 export function getToolConfig(toolName: ToolName): ModelConfig {
   const providerConfig =
-    config.models[LLM_PROVIDER === "vertex" ? "gemini" : LLM_PROVIDER];
+    config.models[LLM_PROVIDER === "vertex" ? "gemini" : LLM_PROVIDER] ||
+    config.models.openai;
   const defaultConfig = providerConfig.default;
   const toolOverrides = providerConfig.tools[toolName];
 
@@ -233,23 +263,42 @@ export function getMaxTokens(toolName: ToolName): number {
 // Obtém a instância do modelo
 export function getModel(toolName: ToolName) {
   const configTool = getToolConfig(toolName);
-  const providerConfig = config.providers[LLM_PROVIDER];
+  const providerConfig =
+    config.providers[LLM_PROVIDER] || config.providers.openai;
 
   if (LLM_PROVIDER === "openai") {
-    if (!env.OPENAI_API_KEY) {
+    if (!env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY) {
       throw new Error("OPENAI_API_KEY not found");
     }
 
     const opt: OpenAIProviderSettings = {
-      apiKey: env.OPENAI_API_KEY,
+      apiKey: process.env.OPENAI_API_KEY || env.OPENAI_API_KEY,
       compatibility: providerConfig?.clientConfig?.compatibility,
     };
 
-    if (env.OPENAI_BASE_URL) {
-      opt.baseURL = env.OPENAI_BASE_URL;
+    if (env.OPENAI_BASE_URL || process.env.OPENAI_BASE_URL) {
+      opt.baseURL = process.env.OPENAI_BASE_URL || env.OPENAI_BASE_URL;
     }
 
     return createOpenAI(opt)(configTool.model);
+  }
+
+  if (LLM_PROVIDER === "anthropic") {
+    const createAnthropic = require("@ai-sdk/anthropic").createAnthropic;
+    if (!process.env.ANTHROPIC_API_KEY) {
+      throw new Error("ANTHROPIC_API_KEY not found");
+    }
+
+    return createAnthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    })(configTool.model);
+  }
+
+  if (LLM_PROVIDER === "local") {
+    return createOpenAI({
+      baseURL: LOCAL_MODEL_ENDPOINT,
+      apiKey: "not-needed", // LM Studio não requer API key
+    })(configTool.model);
   }
 
   if (LLM_PROVIDER === "vertex") {
@@ -266,29 +315,43 @@ export function getModel(toolName: ToolName) {
     })(configTool.model);
   }
 
-  if (!env.GEMINI_API_KEY) {
+  if (!env.GEMINI_API_KEY && !process.env.GEMINI_API_KEY) {
     throw new Error("GEMINI_API_KEY not found");
   }
 
   if (toolName === "searchGrounding") {
-    return createGoogleGenerativeAI({ apiKey: env.GEMINI_API_KEY })(
-      configTool.model,
-      { useSearchGrounding: true }
-    );
+    return createGoogleGenerativeAI({
+      apiKey: process.env.GEMINI_API_KEY || env.GEMINI_API_KEY,
+    })(configTool.model, { useSearchGrounding: true });
   }
-  return createGoogleGenerativeAI({ apiKey: env.GEMINI_API_KEY })(
-    configTool.model
-  );
+  return createGoogleGenerativeAI({
+    apiKey: process.env.GEMINI_API_KEY || env.GEMINI_API_KEY,
+  })(configTool.model);
 }
 
 // Validação das variáveis de ambiente
-if (LLM_PROVIDER === "gemini" && !env.GEMINI_API_KEY)
+if (
+  LLM_PROVIDER === "gemini" &&
+  !env.GEMINI_API_KEY &&
+  !process.env.GEMINI_API_KEY
+)
   throw new Error("GEMINI_API_KEY not found");
-if (LLM_PROVIDER === "openai" && !env.OPENAI_API_KEY)
+if (
+  LLM_PROVIDER === "openai" &&
+  !env.OPENAI_API_KEY &&
+  !process.env.OPENAI_API_KEY
+)
   throw new Error("OPENAI_API_KEY not found");
-if (!env.JINA_API_KEY) throw new Error("JINA_API_KEY not found");
+if (LLM_PROVIDER === "anthropic" && !process.env.ANTHROPIC_API_KEY)
+  throw new Error("ANTHROPIC_API_KEY not found");
+if (
+  SEARCH_PROVIDER === "jina" &&
+  !env.JINA_API_KEY &&
+  !process.env.JINA_API_KEY
+)
+  throw new Error("JINA_API_KEY not found");
 
-export const JINA_API_KEY = env.JINA_API_KEY;
+export const JINA_API_KEY = process.env.JINA_API_KEY || env.JINA_API_KEY;
 
 export const BRAVE_API_KEY = process.env.BRAVE_API_KEY || "";
 
@@ -307,7 +370,13 @@ const configSummary = {
   },
   tools: Object.fromEntries(
     Object.keys(
-      config.models[LLM_PROVIDER === "vertex" ? "gemini" : LLM_PROVIDER].tools
+      config.models[
+        LLM_PROVIDER === "vertex"
+          ? "gemini"
+          : config.models[LLM_PROVIDER]
+          ? LLM_PROVIDER
+          : "openai"
+      ].tools
     ).map((name) => [name, getToolConfig(name as ToolName)])
   ),
   defaults: {
@@ -315,5 +384,42 @@ const configSummary = {
   },
 };
 
-// Removendo o log detalhado da configuração
-// console.log('Configuration Summary:', JSON.stringify(configSummary, null, 2));
+// Exportando a configuração completa com modelos adicionais
+export const configJson: ConfigJson = {
+  env: env,
+  defaults: config.defaults,
+  providers: config.providers,
+  models: config.models,
+  available_models: {
+    ...config.available_models,
+    anthropic: [
+      {
+        name: "claude-3-5-sonnet",
+        displayName: "Claude 3.5 Sonnet",
+        description:
+          "Modelo mais recente da Anthropic com ótimo equilíbrio entre velocidade e capacidade",
+        maxContextLength: 200000,
+        supportsStreaming: true,
+        supportsJsonMode: true,
+      },
+      {
+        name: "claude-3-opus",
+        displayName: "Claude 3 Opus",
+        description: "Modelo de maior capacidade da Anthropic",
+        maxContextLength: 200000,
+        supportsStreaming: true,
+        supportsJsonMode: true,
+      },
+    ],
+    local: [
+      {
+        name: "qwen2.5-7b-instruct-1m",
+        displayName: "Qwen 2.5 7B Instruct",
+        description: "Modelo local executado via LM Studio na porta 1234",
+        maxContextLength: 8192,
+        supportsStreaming: true,
+        supportsJsonMode: false,
+      },
+    ],
+  },
+};

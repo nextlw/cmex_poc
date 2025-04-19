@@ -31,6 +31,7 @@ import { processarDeepResearch } from "./controllers/deepResearchNCM";
 import { modelRouter } from "./controllers/modelController";
 import figlet from "figlet";
 import jinaApiRoutes from "./routes/jina-api-routes";
+import { authMiddleware } from "./middleware/auth";
 
 // Sobrescrever console.log antes de qualquer outra parte do código para filtrar todas as mensagens
 const originalConsoleLog = console.log;
@@ -283,6 +284,9 @@ app.use(
  */
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+// Adicionar middleware de autenticação global
+app.use(authMiddleware as RequestHandler);
 
 // Importar e registrar o roteador de API Jina
 app.use("/v1", jinaApiRoutes);

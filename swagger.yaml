@@ -1,0 +1,343 @@
+openapi: 3.0.0
+info:
+  title: API Unificada CMEX
+  description: Documentação unificada de todas as APIs do sistema CMEX
+  version: 1.0.0
+  contact:
+    name: Suporte CMEX
+    email: suporte@cmex.com.br
+
+servers:
+  - url: http://localhost:3001
+    description: Servidor Node.js
+  - url: http://localhost:10000
+    description: Servidor FastAPI
+  - url: http://localhost:3002
+    description: Servidor Node-Jina
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: string
+        status_code:
+          type: integer
+
+    Query:
+      type: object
+      required:
+        - q
+      properties:
+        q:
+          type: string
+          description: A pergunta a ser respondida
+        budget:
+          type: number
+          description: Orçamento de tokens
+        maxBadAttempt:
+          type: number
+          description: Número máximo de tentativas ruins
+        modelo:
+          type: string
+          description: Nome do modelo a ser usado
+
+    Model:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "jina-deepsearch-v1"
+        object:
+          type: string
+          example: "model"
+        created:
+          type: integer
+          example: 1686935002
+        owned_by:
+          type: string
+          example: "jina-ai"
+
+    StreamResponse:
+      type: object
+      properties:
+        type:
+          type: string
+        data:
+          type: object
+        step:
+          type: integer
+        budget:
+          type: object
+        trackers:
+          type: object
+
+    TaskResult:
+      type: object
+      properties:
+        action:
+          type: string
+        think:
+          type: string
+        answer:
+          type: string
+        references:
+          type: array
+          items:
+            type: object
+
+    NCMRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          description: Consulta sobre NCM
+        options:
+          type: object
+          properties:
+            deepResearch:
+              type: boolean
+              description: Realizar pesquisa aprofundada
+
+paths:
+  /api/v1/query:
+    post:
+      summary: Envia uma pergunta para ser respondida
+      tags:
+        - Queries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Query"
+      responses:
+        "200":
+          description: ID da requisição gerado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requestId:
+                    type: string
+
+  /api/v1/stream/{requestId}:
+    get:
+      summary: Recebe atualizações em tempo real de uma consulta
+      tags:
+        - Streaming
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Stream de eventos SSE
+          content:
+            text/event-stream:
+              schema:
+                $ref: "#/components/schemas/StreamResponse"
+
+  /api/v1/task/{requestId}:
+    get:
+      summary: Obtém o resultado de uma tarefa específica
+      tags:
+        - Tasks
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Resultado da tarefa
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskResult"
+
+  /v1/models:
+    get:
+      tags:
+        - JinaUI
+      summary: Lista os modelos disponíveis
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Lista de modelos obtida com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  object:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Model"
+
+  /v1/models/{model}:
+    get:
+      tags:
+        - JinaUI
+      summary: Obtém informações de um modelo específico
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: model
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Informações do modelo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Model"
+
+  /api/v1/ncm:
+    post:
+      summary: Realiza consulta sobre NCM
+      tags:
+        - NCM
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NCMRequest"
+      responses:
+        "200":
+          description: Resultado da consulta NCM
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/v1/logs:
+    get:
+      summary: Obtém logs do servidor
+      tags:
+        - Logs
+      parameters:
+        - name: level
+          in: query
+          schema:
+            type: string
+        - name: since
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+      responses:
+        "200":
+          description: Logs do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logs:
+                    type: array
+                    items:
+                      type: object
+                  count:
+                    type: integer
+                  total:
+                    type: integer
+
+  /api/v1/logs/stream:
+    get:
+      summary: Stream de logs em tempo real
+      tags:
+        - Logs
+      responses:
+        "200":
+          description: Stream de eventos SSE com logs
+          content:
+            text/event-stream:
+              schema:
+                type: object
+
+  /api/v1/queries:
+    get:
+      summary: Lista todas as queries realizadas
+      tags:
+        - Queries
+      responses:
+        "200":
+          description: Lista de queries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  queries:
+                    type: array
+                    items:
+                      type: object
+
+  /api/v1/knowledge/{id}:
+    get:
+      summary: Obtém conhecimento específico
+      tags:
+        - Knowledge
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Conhecimento encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /health:
+    get:
+      summary: Verifica o status da API
+      tags:
+        - Health
+      responses:
+        "200":
+          description: Status da API
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
