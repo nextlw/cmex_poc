@@ -27,8 +27,8 @@ import {
   ReflectAction,
   KnowledgeItem,
   Reference,
-} from "./types";
-import { TrackerContext } from "./types";
+} from "./types/globalTypes";
+import { TrackerContext } from "./types/globalTypes";
 import { jinaSearch } from "./tools/jinaSearch";
 import { LocalModelClient } from "./tools/local-model-client";
 import { spawn } from "child_process";
@@ -822,7 +822,7 @@ export async function getResponse(
   const allURLs: Record<string, string> = {};
   const visitedURLs: string[] = [];
   while (
-    context.tokenTracker.getTotalUsage() < tokenBudget &&
+    context.tokenTracker.getTotalUsage().totalTokens < tokenBudget &&
     badAttempts <= maxBadAttempts
   ) {
     // adiciona um atraso de 1s para evitar o limite de taxa
@@ -848,7 +848,7 @@ export async function getResponse(
     });
 
     const budgetPercentage = (
-      (context.tokenTracker.getTotalUsage() / tokenBudget) *
+      (context.tokenTracker.getTotalUsage().totalTokens / tokenBudget) *
       100
     ).toFixed(2);
     console.log(`Step ${totalStep} / Budget used ${budgetPercentage}%`);
@@ -1242,7 +1242,7 @@ export async function getResponse(
     const audit = {
       requestId: requestId || question,
       logs: serverLogs,
-      tokenUsage: context.tokenTracker.getTotalUsage(),
+      tokenUsage: context.tokenTracker.getTotalUsage().totalTokens,
       steps: context.actionTracker.getState().totalStep,
       errors: [],
     };
@@ -1254,7 +1254,7 @@ export async function getResponse(
         buttonNumber: totalStep,
       },
       trackers: {
-        tokenUsage: context.tokenTracker.getTotalUsage(),
+        tokenUsage: context.tokenTracker.getTotalUsage().totalTokens,
         actionState: context.actionTracker.getState(),
       },
     });
@@ -1362,7 +1362,7 @@ export async function getResponse(
 
     const audit = {
       logs: serverLogs,
-      tokenUsage: context.tokenTracker.getTotalUsage(),
+      tokenUsage: context.tokenTracker.getTotalUsage().totalTokens,
       steps: context.actionTracker.getState().totalStep,
       errors: [],
     };
