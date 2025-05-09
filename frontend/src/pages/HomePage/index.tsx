@@ -271,12 +271,26 @@ const HomePage: React.FC = () => {
     try {
       let response;
       let modeloUsado = selectedModel;
+      // Verificar se ncmSugerido é uma string antes de usar startsWith
       let isPesquisaNCM =
-        pesquisa.startsWith("NCM:") || ncmSugerido.startsWith("NCM:");
+        pesquisa.startsWith("NCM:") || (typeof ncmSugerido === 'string' && ncmSugerido.startsWith("NCM:"));
 
       // Extrair o código NCM se estiver no formato "NCM: 12345678"
+      // Garantir que ncmSugerido seja tratado como string sem causar erro de estrutura circular
+      let ncmSugeridoStr = '';
+      if (typeof ncmSugerido === 'string') {
+        ncmSugeridoStr = ncmSugerido;
+      } else if (ncmSugerido === null || ncmSugerido === undefined) {
+        ncmSugeridoStr = '';
+      } else if (typeof ncmSugerido === 'object') {
+        // Se for um elemento DOM ou objeto complexo, usar um valor simples
+        ncmSugeridoStr = '[NCM Sugerido]';
+      } else {
+        // Para números e outros valores simples
+        ncmSugeridoStr = String(ncmSugerido);
+      }
       let consulta = ncmSugerido
-        ? `${pesquisa} com NCM sugerido ${ncmSugerido}`
+        ? `${pesquisa} com NCM sugerido ${ncmSugeridoStr}`
         : pesquisa;
 
       if (isPesquisaNCM) {

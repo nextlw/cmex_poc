@@ -36,7 +36,7 @@ const serviceConfig: Record<ServiceId, ServiceConfig> = {
     port: getEnvPort("REDIS_PORT", 6378),
   },
   fastapi: {
-    command: `cd ../fastapi && python -m uvicorn app.main:app --reload --port ${getEnvPort(
+    command: `cd /Users/williamduarte/NCMproduto/cmex_poc/fastapi && python -m uvicorn app.main:app --reload --port ${getEnvPort(
       "FASTAPI_PORT",
       10000
     )}`,
@@ -44,21 +44,21 @@ const serviceConfig: Record<ServiceId, ServiceConfig> = {
   },
   node: {
     command:
-      "cd /Users/williamduarte/Pesquisa_CMEX/cmex_poc/buscador_inteligente && ./start-dev-server.sh > ./node.log 2>&1 &",
+      "cd /Users/williamduarte/NCMproduto/cmex_poc/buscador_inteligente && ./start-dev-server.sh > ./node.log 2>&1 &",
     port: 3001,
   },
   frontend: {
-    command: "cd ../frontend && pnpm dev",
+    command: "cd /Users/williamduarte/NCMproduto/cmex_poc/frontend && pnpm dev",
     port: getEnvPort("FRONTEND_PORT", 5173),
   },
   "node-jina": {
     command:
-      "cd ../node-DeepResearch-nexcode && ./start-dev-server.sh > ./node-jina.log 2>&1 &",
+      "cd /Users/williamduarte/NCMproduto/cmex_poc/node-DeepResearch-nexcode && ./start-dev-server.sh > ./node-jina.log 2>&1 &",
     port: 3002,
   },
   "ui-jina": {
     command:
-      "cd /Users/williamduarte/Pesquisa_CMEX/cmex_poc/deepsearch-ui-nexcode && ./start-dev-server.sh > ./ui-jina.log 2>&1 &",
+      "cd /Users/williamduarte/NCMproduto/cmex_poc/deepsearch-ui-nexcode && ./start-dev-server.sh > ./ui-jina.log 2>&1 &",
     port: 8080,
   },
 };

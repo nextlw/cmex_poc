@@ -3,7 +3,7 @@ aiohttp==3.11.13
 aiosignal==1.3.2
 annotated-types==0.7.0
 anthropic==0.49.0
-anyio==4.9.0
+anyio>=3.7.1,<5.0.0
 async-timeout==4.0.3
 attrs==25.1.0
 beautifulsoup4==4.12.3
@@ -17,14 +17,14 @@ contourpy==1.3.1
 coverage==7.6.12
 cryptography==44.0.2
 cycler==0.12.1
-deep-translator==1.11.4
+deep-translator>=1.11.4
 Deprecated==1.2.18
 deprecation==2.1.0
 distlib==0.3.9
 distro==1.9.0
 et_xmlfile==2.0.0
 exceptiongroup==1.2.2
-fastapi==0.109.2
+fastapi>=0.104.1,<0.116.0
 filelock==3.17.0
 fonttools==4.55.4
 frozenlist==1.5.0
@@ -37,7 +37,6 @@ google-auth==2.38.0
 google-auth-httplib2==0.2.0
 google-generativeai==0.8.4
 googleapis-common-protos==1.69.0
-deep-translator>=1.11.4
 gotrue==2.11.4
 greenlet==3.1.1
 grpcio==1.71.0rc2
@@ -64,7 +63,7 @@ lxml==5.3.1
 Markdown==3.7
 MarkupSafe==3.0.2
 matplotlib==3.10.0
-mcp==1.4.1
+mcp>=1.4.1
 mpmath==1.3.0
 msgpack==1.0.7
 multidict==6.1.0
@@ -91,7 +90,7 @@ protobuf==5.29.3
 pyasn1==0.6.1
 pyasn1_modules==0.4.1
 pycparser==2.22
-pydantic==2.11.1
+pydantic>=2.11.1,<3.0.0
 pydantic-settings==2.8.1
 pydantic_core==2.33.0
 pyee==12.1.1
@@ -120,10 +119,10 @@ sentence-transformers==3.4.1
 six==1.17.0
 sniffio==1.3.1
 soupsieve==2.6
-sse-starlette==2.2.1
+sse-starlette>=0.10.0
 sseclient==0.0.27
 sseclient-py==1.8.0
-starlette<=0.46.1
+starlette>=0.27.0
 storage3==0.11.3
 StrEnum==0.4.15
 supabase==2.13.0
@@ -140,7 +139,7 @@ typing_extensions==4.12.2
 tzdata==2025.1
 uritemplate==4.1.1
 urllib3==2.3.0
-uvicorn==0.27.1
+uvicorn>=0.27.1,<0.35.0
 virtualenv==20.29.1
 websockets==14.2
 wrapt==1.17.2
@@ -148,4 +147,3 @@ yarl==1.18.3
 zipp==3.21.0
 aiofiles
 toml
-requests

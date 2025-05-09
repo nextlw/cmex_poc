@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+starlette
+sse-starlette
+mcp
+python-multipart
+python-dotenv
+requests
+aiofiles
+toml

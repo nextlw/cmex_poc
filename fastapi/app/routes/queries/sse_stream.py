@@ -56,13 +56,15 @@ def validate_token(token: str) -> bool:
         try:
             user = supabase.auth.get_user(token)
             if user and user.user:
-                logger.info(f"Token validado com sucesso via Supabase para usuário: {user.user.id}")
+                logger.info(
+                    f"Token validado com sucesso via Supabase para usuário: {user.user.id}"
+                )
                 return True
         except Exception as e:
             logger.warning(f"Validação via Supabase falhou: {str(e)}")
 
             # Se o token parece ser um JWT válido (estrutura básica), podemos permitir temporariamente
-            parts = token.split('.')
+            parts = token.split(".")
             if len(parts) == 3 and all(len(p) > 0 for p in parts):
                 logger.warning("Permitindo acesso com token que parece ser JWT válido")
                 return True
@@ -86,7 +88,7 @@ async def task_status_sse_generator(request_id: str) -> AsyncGenerator[str, None
     Isso garante que recebemos atualizações o mais rápido possível.
     """
     # URL do endpoint Node.js para status da tarefa
-    task_url = f"http://localhost:3001/api/v1/task-status/{request_id}"
+    task_url = f"http://localhost:3002/api/v1/task-status/{request_id}"
 
     # Contador para controlar a frequência de polling
     poll_counter = 0

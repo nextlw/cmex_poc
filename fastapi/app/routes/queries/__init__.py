@@ -1,25 +1,28 @@
 # Bibliotecas
-import uuid
-from fastapi import APIRouter, Request, HTTPException, Depends, Query, Header
-from fastapi.responses import JSONResponse
-import time
-import httpx
-import json
 import asyncio  # Importar asyncio no início do arquivo
+import json
+import time
+import uuid
 
-# Utils
-from .claude import obter_sugestoes_claude
-from .gemini import obter_sugestoes_gemini
-from .gpt import obter_sugestoes_gpt4
-from .deepseek import obter_sugestoes_deepseek
-from .qwen import obter_sugestoes_qwen
-from ...config import supabase, SETTINGS
-from ...utils.parsers import filtrar_atributos_relevantes_com_llm
+import httpx
+
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
+from fastapi.responses import JSONResponse
+
+from ...config import SETTINGS, supabase
 
 # Schemas
 from ...models.error import Erro, ErrorDetail
 from ...models.schemas import ConsultaProduto
 from ...schemas.pesquisas import RegistroPesquisas
+from ...utils.parsers import filtrar_atributos_relevantes_com_llm
+
+# Utils
+from .claude import obter_sugestoes_claude
+from .deepseek import obter_sugestoes_deepseek
+from .gemini import obter_sugestoes_gemini
+from .gpt import obter_sugestoes_gpt4
+from .qwen import obter_sugestoes_qwen
 
 # Cria um router para o endpoint /queries
 queries_router = APIRouter()
@@ -375,7 +378,7 @@ async def direct_queries(request: Request):
 async def validar_com_deepresearch(consulta: str, modelo: str, sugestao_ncm: list):
     try:
         # Endpoint da API Node.js para DeepResearch
-        url = "http://localhost:3001/api/v1/query"
+        url = "http://localhost:3002/api/v1/query"
 
         # Extrai as informações para validação
         ncm_sugerido = sugestao_ncm[0].get("ncm", "") if sugestao_ncm else ""
@@ -384,12 +387,12 @@ async def validar_com_deepresearch(consulta: str, modelo: str, sugestao_ncm: lis
         # Prepara a pergunta para o DeepResearch com instruções detalhadas
         pergunta = f"""
         Valide se o NCM {ncm_sugerido} ({descricao}) está correto para o produto: {consulta}.
-        
+
         Durante sua análise, informe cada etapa que está realizando:
         1. Quais fontes oficiais você está consultando
         2. Quais tabelas ou regras está verificando
         3. Se encontrou menções deste produto com esta NCM
-        
+
         Finalize sua resposta com 'confirmado', 'negado' ou 'sugestão alternativa' seguido pela justificativa detalhada.
         """
 
@@ -497,7 +500,7 @@ async def get_task_status(request_id: str, request: Request):
 
     try:
         # Endpoint da API Node.js para verificar o status da tarefa
-        task_url = f"http://localhost:3001/api/v1/task-status/{request_id}"
+        task_url = f"http://localhost:3002/api/v1/task-status/{request_id}"
 
         async with httpx.AsyncClient(timeout=7200.0) as client:
             try:
@@ -680,7 +683,7 @@ async def cancel_process(request: Request):
             # Usa o httpx para fazer uma requisição ao serviço Node.js
             async with httpx.AsyncClient() as client:
                 node_response = await client.post(
-                    "http://localhost:3001/api/v1/cancel",
+                    "http://localhost:3002/api/v1/cancel",
                     json={"requestId": request_id},
                     timeout=3.0,  # Timeout curto, pois apenas precisa iniciar o processo de cancelamento
                 )
@@ -695,7 +698,7 @@ async def cancel_process(request: Request):
                     )
                     # Tenta a abordagem alternativa - trash-query
                     trash_response = await client.post(
-                        "http://localhost:3001/api/v1/trash-query",
+                        "http://localhost:3002/api/v1/trash-query",
                         json={"id": request_id},
                         timeout=3.0,
                     )
