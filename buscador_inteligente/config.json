@@ -6,12 +6,15 @@
     "OPENAI_API_KEY": "",
     "JINA_API_KEY": "",
     "BRAVE_API_KEY": "",
-    "DEFAULT_MODEL_NAME": ""
+    "SERPER_API_KEY": "",
+    "DEFAULT_MODEL_NAME": "",
+    "OPENROUTER_REFERER": "",
+    "OPENROUTER_TITLE": ""
   },
   "defaults": {
     "search_provider": "jina",
-    "llm_provider": "gemini",
-    "step_sleep": 0
+    "llm_provider": "local",
+    "step_sleep": 100
   },
   "providers": {
     "gemini": {
@@ -22,6 +25,24 @@
       "clientConfig": {
         "compatibility": "strict"
       }
+    },
+    "openrouter": {
+      "createClient": "createOpenAI",
+      "clientConfig": {
+        "baseURL": "https://openrouter.ai/api/v1",
+        "compatibility": "strict",
+        "defaultHeaders": {
+          "HTTP-Referer": "${OPENROUTER_REFERER}",
+          "X-Title": "${OPENROUTER_TITLE}"
+        }
+      }
+    },
+    "local": {
+      "createClient": "createOpenAI",
+      "clientConfig": {
+        "baseURL": "http://localhost:1234/v1",
+        "apiKey": "not-needed"
+      }
     }
   },
   "models": {
@@ -29,13 +50,13 @@
       "default": {
         "model": "gemini-2.0-flash",
         "temperature": 0,
-        "maxTokens": 8000
+        "maxTokens": 2000
       },
       "tools": {
         "coder": { "temperature": 0.7 },
         "searchGrounding": { "temperature": 0 },
         "dedup": { "temperature": 0.1 },
-        "evaluator": {},
+        "evaluator": { "temperature": 0.6, "maxTokens": 200 },
         "errorAnalyzer": {},
         "queryRewriter": { "temperature": 0.1 },
         "agent": { "temperature": 0.7 },
@@ -60,6 +81,74 @@
         "agentBeastMode": { "temperature": 0.7 },
         "fallback": { "temperature": 0 }
       }
+    },
+    "openrouter": {
+      "default": {
+        "model": "meta-llama/llama-3-8b-instruct:free",
+        "temperature": 0.2,
+        "maxTokens": 8000
+      },
+      "tools": {
+        "coder": { "temperature": 0.7 },
+        "searchGrounding": { "temperature": 0 },
+        "dedup": { "temperature": 0.1 },
+        "evaluator": { "model": "openai/gpt-4o" },
+        "errorAnalyzer": {},
+        "queryRewriter": { "temperature": 0.1 },
+        "agent": { "temperature": 0.7 },
+        "agentBeastMode": { "temperature": 0.7 },
+        "fallback": { "temperature": 0 }
+      }
+    },
+    "local": {
+      "default": {
+        "model": "qwen2.5-7b-instruct-1m",
+        "temperature": 0.2,
+        "maxTokens": 4096
+      },
+      "tools": {
+        "coder": { "temperature": 0.7 },
+        "searchGrounding": { "temperature": 0 },
+        "dedup": { "temperature": 0.1 },
+        "evaluator": { "temperature": 0.6 },
+        "errorAnalyzer": {},
+        "queryRewriter": { "temperature": 0.1 },
+        "agent": { "temperature": 0.7 },
+        "agentBeastMode": { "temperature": 0.7 },
+        "fallback": { "temperature": 0 }
+      }
     }
+  },
+  "available_models": {
+    "gemini": [
+      {
+        "name": "gemini-2.0-flash",
+        "displayName": "Gemini 2.0 Flash",
+        "description": "Modelo mais rápido da família Gemini 2.0",
+        "maxContextLength": 1000000,
+        "supportsStreaming": true,
+        "supportsJsonMode": true
+      }
+    ],
+    "openai": [
+      {
+        "name": "gpt-4o-mini",
+        "displayName": "GPT-4 Mini",
+        "description": "Versão otimizada do GPT-4",
+        "maxContextLength": 8000,
+        "supportsStreaming": true,
+        "supportsJsonMode": true
+      }
+    ],
+    "openrouter": [
+      {
+        "name": "meta-llama/llama-4-scout:free",
+        "displayName": "Llama 4 Scout",
+        "description": "Modelo Llama 4 via OpenRouter",
+        "maxContextLength": 8000,
+        "supportsStreaming": true,
+        "supportsJsonMode": true
+      }
+    ]
   }
 }

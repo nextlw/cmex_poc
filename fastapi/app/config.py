@@ -33,7 +33,7 @@ class Settings(BaseSettings):
 
     # Configurações do Gemini
     GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
-    GOOGLE_MODEL: str = "gemini-1.5-pro"
+    GOOGLE_MODEL: str = "gemini-2.0-flash"
 
     # Configurações do Anthropic
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
@@ -115,7 +115,7 @@ def format_prompt(consulta_produto):
                 Operação: {consulta_produto.operacao if consulta_produto.operacao else "Não informado"}
                 Regime tributário: {consulta_produto.regimeTributario if consulta_produto.regimeTributario else "Não informado"}
                 Tributação: {consulta_produto.tributacao if consulta_produto.tributacao else "Não informado"}
-            
+
             Retorne APENAS um JSON, **SEM** texto adicional, no seguinte formato:
             {{
                 "ncm": "XX.XX.XX.XX",
@@ -150,7 +150,7 @@ def format_prompt(consulta_produto):
                     "cst_saida": "valor real do CST de saída"
                 }}
             }}
-            
+
             IMPORTANTE sobre o tipo_tributario:
             - Como especialista tributário, analise cuidadosamente as tabelas EFD Contribuições da Receita Federal
             - Utilize as tabelas 4.3.1 a 4.3.6 do Manual EFD Contribuições para determinar o tipo tributário correto
@@ -179,7 +179,7 @@ MODEL_MAPPING = {
         "max_tokens": 500,
         "temperature": 0.2,
     },
-    "Gemini-1.5-pro": {
+    "Gemini-2.0-flash": {
         "model_name": SETTINGS.GOOGLE_MODEL,
         "max_tokens": 500,
         "temperature": 0.2,

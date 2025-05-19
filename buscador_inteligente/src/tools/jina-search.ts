@@ -1,6 +1,6 @@
 import https from "https";
 import { TokenTracker } from "../utils/token-tracker";
-import { SearchResponse } from "../types";
+import { SearchResponse } from "../types/globalTypes";
 import { JINA_API_KEY } from "../config";
 
 export function search(

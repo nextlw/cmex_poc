@@ -1,6 +1,6 @@
 import { generateText } from "ai";
 import { getModel } from "../config";
-import { TrackerContext } from "../types";
+import { TrackerContext } from "../types/globalTypes";
 
 /**
  * Repairs markdown content with � characters by using Gemini to guess the missing text

@@ -1,6 +1,6 @@
 import { TokenTracker } from "../utils/token-tracker";
 import { DeepResearch } from "../modules/deepResearch";
-import { FastApiNCMResult, ConsultaProduto } from "../types";
+import { FastApiNCMResult, ConsultaProduto } from "../types/globalTypes";
 import { modelFactory } from "../controllers/deepResearchNCM";
 import fs from "fs";
 import path from "path";

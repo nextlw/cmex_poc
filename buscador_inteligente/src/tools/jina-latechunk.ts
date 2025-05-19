@@ -1,4 +1,4 @@
-import { TrackerContext } from "../types";
+import { TrackerContext } from "../types/globalTypes";
 import axios from "axios";
 import { JINA_API_KEY } from "../config";
 import { Schemas } from "../utils/schemas";

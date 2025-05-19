@@ -5,7 +5,7 @@ import {
   EvaluationCriteria,
   EvaluationResponse,
   EvaluationType,
-} from "../types";
+} from "../types/globalTypes";
 import { readUrl, removeAllLineBreaks } from "./read";
 import { LocalModelClient } from "./local-model-client";
 import { modelConfigs, LOCAL_MODEL_ENDPOINT } from "../config";

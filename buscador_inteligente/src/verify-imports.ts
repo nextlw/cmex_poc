@@ -10,7 +10,7 @@ import {
   StepAction,
   TrackerContext,
   AnswerAction,
-} from "./types";
+} from "./types/globalTypes";
 
 console.log("✅ Todas as importações de tipos estão funcionando corretamente.");
 

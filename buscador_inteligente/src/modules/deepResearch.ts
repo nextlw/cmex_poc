@@ -1,5 +1,5 @@
 import { TokenTracker } from "../utils/token-tracker";
-import { FastApiNCMResult, ConsultaProduto } from "../types";
+import { FastApiNCMResult, ConsultaProduto } from "../types/globalTypes";
 
 export { FastApiNCMResult };
 

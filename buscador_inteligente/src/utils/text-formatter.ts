@@ -9,7 +9,7 @@ import {
   QuoteBlock,
   AlertBlock,
   ListItem,
-} from "../types";
+} from "../types/globalTypes";
 
 /**
  * Classe para formatar texto em blocos estruturados

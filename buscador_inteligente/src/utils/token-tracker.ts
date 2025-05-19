@@ -1,11 +1,13 @@
 import { EventEmitter } from "events";
 
-import { TokenUsage } from "../types";
+import { TokenUsage } from "../types/globalTypes";
 import { LanguageModelUsage } from "ai";
 
 export class TokenTracker extends EventEmitter {
   private usages: TokenUsage[] = [];
   private budget?: number;
+  // Para compatibilidade com o código antigo
+  private modelUsage: Record<string, number> = {};
 
   constructor(budget?: number) {
     super();
@@ -21,18 +23,63 @@ export class TokenTracker extends EventEmitter {
     }
   }
 
-  trackUsage(tool: string, usage: LanguageModelUsage) {
-    const u = { tool, usage };
-    this.usages.push(u);
-    this.emit("usage", usage);
+  // Método principal da nova versão
+  trackUsage(tool: string, usage: LanguageModelUsage | number) {
+    // Compatibilidade: Se usage for um número, convertemos para objeto LanguageModelUsage
+    let usageObj: LanguageModelUsage;
+    
+    if (typeof usage === 'number') {
+      usageObj = { 
+        promptTokens: Math.floor(usage / 2), 
+        completionTokens: Math.ceil(usage / 2), 
+        totalTokens: usage 
+      };
+    } else {
+      usageObj = usage;
+    }
+    
+    const u = { tool, usage: usageObj };
+    this.usages.push(u as any);
+    this.emit("usage", usageObj);
+    
+    // Atualiza modelUsage para compatibilidade com código antigo
+    this.modelUsage[tool] = (this.modelUsage[tool] || 0) + usageObj.totalTokens;
   }
 
+  // Métodos para compatibilidade com código antigo
+  addTokens(modelName: string, count: number): void {
+    this.trackUsage(modelName, count);
+  }
+
+  registerTokenUsage(modelName: string, promptTokens: number, completionTokens?: number): void {
+    const totalTokens = promptTokens + (completionTokens || 0);
+    this.trackUsage(modelName, {
+      promptTokens: promptTokens,
+      completionTokens: completionTokens || 0,
+      totalTokens: totalTokens
+    });
+  }
+  
+  trackTokens(data: { tool: string, tokens: number }): void {
+    this.trackUsage(data.tool, data.tokens);
+  }
+
+  getUsageByModel(modelName?: string): Record<string, number> {
+    if (modelName) {
+      return { [modelName]: this.modelUsage[modelName] || 0 };
+    }
+    return { ...this.modelUsage };
+  }
+
+  // Métodos da nova versão
   getTotalUsage(): LanguageModelUsage {
     return this.usages.reduce(
       (acc, { usage }) => {
-        acc.promptTokens += usage.promptTokens;
-        acc.completionTokens += usage.completionTokens;
-        acc.totalTokens += usage.totalTokens;
+        if (usage) {
+          acc.promptTokens += usage.promptTokens || 0;
+          acc.completionTokens += usage.completionTokens || 0;
+          acc.totalTokens += usage.totalTokens || 0;
+        }
         return acc;
       },
       { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
@@ -46,9 +93,11 @@ export class TokenTracker extends EventEmitter {
   } {
     return this.usages.reduce(
       (acc, { usage }) => {
-        acc.prompt_tokens += usage.promptTokens;
-        acc.completion_tokens += usage.completionTokens;
-        acc.total_tokens += usage.totalTokens;
+        if (usage) {
+          acc.prompt_tokens += usage.promptTokens || 0;
+          acc.completion_tokens += usage.completionTokens || 0;
+          acc.total_tokens += usage.totalTokens || 0;
+        }
         return acc;
       },
       { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
@@ -57,7 +106,9 @@ export class TokenTracker extends EventEmitter {
 
   getUsageBreakdown(): Record<string, number> {
     return this.usages.reduce((acc, { tool, usage }) => {
-      acc[tool] = (acc[tool] || 0) + usage.totalTokens;
+      if (usage) {
+        acc[tool] = (acc[tool] || 0) + (usage.totalTokens || 0);
+      }
       return acc;
     }, {} as Record<string, number>);
   }
@@ -73,6 +124,7 @@ export class TokenTracker extends EventEmitter {
 
   reset() {
     this.usages = [];
+    this.modelUsage = {};
   }
 }
 

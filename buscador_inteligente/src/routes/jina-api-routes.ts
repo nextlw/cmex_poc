@@ -16,7 +16,7 @@ import {
   ChatMessage,
   ContentPart,
   URLCitation,
-} from "../types";
+} from "../types/globalTypes";
 import { ChatCompletionRequestSchema } from "../schemas/ui-api-schema";
 
 /**
@@ -408,11 +408,11 @@ router.post("/chat/completions", (async (req: Request, res: Response) => {
         },
       })) || [];
 
-    const rawTokenCount = agentContext.tokenTracker.getTotalUsage();
+    const tokenUsage = agentContext.tokenTracker.getTotalUsage();
     const usage: TokenUsageData = {
-      promptTokens: Math.floor(rawTokenCount / 2),
-      completionTokens: Math.ceil(rawTokenCount / 2),
-      totalTokens: rawTokenCount,
+      promptTokens: tokenUsage.promptTokens,
+      completionTokens: tokenUsage.completionTokens,
+      totalTokens: tokenUsage.totalTokens,
     };
 
     const visitedURLs: string[] = [];
@@ -525,11 +525,11 @@ router.post("/chat/completions", (async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error(`[${requestId}] Erro principal:`, error);
     const errorMessage = error?.message || "Ocorreu um erro interno";
-    const rawTokenCount = context.tokenTracker.getTotalUsage();
+    const tokenUsage = context.tokenTracker.getTotalUsage();
     const usage: TokenUsageData = {
-      promptTokens: Math.floor(rawTokenCount / 2),
+      promptTokens: tokenUsage.promptTokens,
       completionTokens: 0,
-      totalTokens: rawTokenCount,
+      totalTokens: tokenUsage.totalTokens,
     };
 
     if (body.stream && res.headersSent && !res.writableEnded) {

@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import { ncmRouter } from "../controllers/ncm";
 import { processarDeepResearch } from "../controllers/deepResearchNCM";
 import { TokenTracker } from "../utils/token-tracker";
-import { ConsultaProduto, FastApiNCMResult } from "../types";
+import { ConsultaProduto, FastApiNCMResult } from "../types/globalTypes";
 import * as fs from "fs";
 import * as path from "path";
 import * as dotenv from "dotenv";

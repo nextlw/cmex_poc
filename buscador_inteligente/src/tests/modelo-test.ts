@@ -1,4 +1,4 @@
-import { ConsultaProduto } from "../types";
+import { ConsultaProduto } from "../types/globalTypes";
 import {
   TokenTracker,
   DeepResearch,

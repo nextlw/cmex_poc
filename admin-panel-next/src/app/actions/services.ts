@@ -58,7 +58,7 @@ const serviceConfig: Record<ServiceId, ServiceConfig> = {
   },
   "ui-jina": {
     command:
-      "cd /Users/williamduarte/Pesquisa_CMEX/cmex_poc/deepsearch-ui-nexcode && ./start-spa.sh > ./ui-jina.log 2>&1 &",
+      "cd /Users/williamduarte/NCMproduto/cmex_poc/deepsearch-ui-nexcode && ./start-dev-server.sh > ./ui-jina.log 2>&1 &",
     port: 8080,
   },
 };
